@@ -62,7 +62,9 @@ const Footer = () => {
   return (
     <footer className="flex flex-col md:flex-row gap-8 p-8 justify-between bg-light-footer dark:bg-dark-footer border-t border-light-foreground dark:border-primary/30 w-full text-center max-h-fit transition-all duration-200 ease-in-out">
       <div className="flex flex-col md:flex-row gap-6 items-center">
-        <img src="/logos/artifex-logo.png" alt="Artifex Labs Logo" className="w-[50px]" />
+        <a href="https://artifex.finance/">
+          <img src="/logos/artifex-logo.png" alt="Artifex Labs Logo" className="w-[50px]" />
+        </a>
         <p className="pt-1">All rights reserved © 2025</p>
       </div>
 
