@@ -18,8 +18,8 @@ import {
   type OracleUTxO,
   type OrderUTxO,
   type PoolUTxO,
-} from '@reverse-djed/txs'
-import { registryByNetwork } from '@reverse-djed/registry'
+} from '@open-djed/txs'
+import { registryByNetwork } from '@open-djed/registry'
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { logger } from 'hono/logger'
@@ -28,8 +28,8 @@ import { z } from 'zod'
 import 'zod-openapi/extend'
 import { describeRoute } from 'hono-openapi'
 import { validator as zValidator } from 'hono-openapi/zod'
-import { Blockfrost } from '@reverse-djed/blockfrost'
-import { OracleDatum, OrderDatum, PoolDatum } from '@reverse-djed/data'
+import { Blockfrost } from '@open-djed/blockfrost'
+import { OracleDatum, OrderDatum, PoolDatum } from '@open-djed/data'
 import TTLCache from '@isaacs/ttlcache'
 import { createMiddleware } from 'hono/factory'
 import {
