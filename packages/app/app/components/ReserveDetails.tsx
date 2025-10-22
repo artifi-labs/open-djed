@@ -3,7 +3,7 @@ import { formatNumber, formatValue, type Value } from '~/utils'
 import { Skeleton } from './Skeleton'
 import { SkeletonWrapper } from './SkeletonWrapper'
 import { ReserveRatioGraph } from './ReserveRatioGraph'
-import { maxReserveRatio, minReserveRatio } from '@reverse-djed/math'
+import { maxReserveRatio, minReserveRatio } from '@open-djed/math'
 import { useState } from 'react'
 
 export function ReserveDetails() {

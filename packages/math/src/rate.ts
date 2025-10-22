@@ -1,4 +1,4 @@
-import type { PoolDatum } from '@reverse-djed/data'
+import type { PoolDatum } from '@open-djed/data'
 import { Rational, type RationalFields } from './rational'
 
 export type PartialOracleDatum = { oracleFields: { adaUSDExchangeRate: RationalFields } }

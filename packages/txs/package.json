@@ -1,10 +1,13 @@
 {
-  "name": "@reverse-djed/txs",
+  "name": "@open-djed/txs",
   "version": "0.0.1",
   "main": "src/index.ts",
   "scripts": {},
   "type": "module",
   "dependencies": {
-    "@lucid-evolution/lucid": "^0.4.27"
+    "@lucid-evolution/lucid": "^0.4.27",
+    "@open-djed/math": "workspace:*",
+    "@open-djed/data": "workspace:*",
+    "@open-djed/registry": "workspace:*"
   }
 }

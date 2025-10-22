@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState } from 'react'
 import { decode } from 'cbor2'
 import { useEnv } from './EnvContext'
 import { z } from 'zod'
-import { registryByNetwork } from '@reverse-djed/registry'
+import { registryByNetwork } from '@open-djed/registry'
 import { useLocalStorage } from 'usehooks-ts'
 
 type WalletMetadata = {

@@ -12,7 +12,7 @@ import { DEFAULT_SHOW_BALANCE } from '~/utils'
 import Tooltip from './Tooltip'
 import { useApiClient } from '~/context/ApiClientContext'
 import JSONbig from 'json-bigint'
-import type { OrderUTxO } from '@reverse-djed/txs'
+import type { OrderUTxO } from '@open-djed/txs'
 
 const SUPPORTED_WALLET_IDS = ['eternl', 'lace', 'vespr', 'begin', 'gerowallet']
 

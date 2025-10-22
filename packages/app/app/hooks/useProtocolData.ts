@@ -1,4 +1,4 @@
-import type { TokenType, ActionType } from '@reverse-djed/api'
+import type { TokenType, ActionType } from '@open-djed/api'
 import {
   djedADABurnRate,
   djedADAMintRate,
@@ -12,8 +12,8 @@ import {
   Rational,
   djedADARate,
   shenADARate,
-} from '@reverse-djed/math'
-import { registryByNetwork } from '@reverse-djed/registry'
+} from '@open-djed/math'
+import { registryByNetwork } from '@open-djed/registry'
 import { useQuery } from '@tanstack/react-query'
 import { useApiClient } from '~/context/ApiClientContext'
 import { useEnv } from '~/context/EnvContext'

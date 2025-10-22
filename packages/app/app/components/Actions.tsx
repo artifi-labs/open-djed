@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Action } from './Action'
-import type { TokenType } from '@reverse-djed/api'
+import type { TokenType } from '@open-djed/api'
 
 type ActionsProps = {
   token: TokenType

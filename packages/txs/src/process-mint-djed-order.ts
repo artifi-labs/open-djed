@@ -1,5 +1,5 @@
 import { Constr, Data, type LucidEvolution, type UTxO } from '@lucid-evolution/lucid'
-import { type Network, type Registry } from '@reverse-djed/registry'
+import { type Network, type Registry } from '@open-djed/registry'
 import {
   OrderBurnRedeemer,
   PoolDatum,
@@ -7,7 +7,7 @@ import {
   ProcessOrderSpendPoolRedeemer,
   WithdrawRedeemer,
   toBech32,
-} from '@reverse-djed/data'
+} from '@open-djed/data'
 import type { OrderUTxO, PoolUTxO } from './types'
 
 export const processMintDjedOrder = ({

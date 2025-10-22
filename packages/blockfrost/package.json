@@ -1,10 +1,11 @@
 {
-  "name": "@reverse-djed/blockfrost",
+  "name": "@open-djed/blockfrost",
   "version": "0.0.1",
   "type": "module",
   "main": "src/index.ts",
   "scripts": {},
   "dependencies": {
+    "@lucid-evolution/lucid": "^0.4.29",
     "zod": "^3.24.3"
   }
 }
