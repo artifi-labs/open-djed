@@ -26,6 +26,7 @@
     "packages/*"
   ],
   "dependencies": {
+    "@eslint/js": "^9.38.0",
     "json-bigint": "^1.0.0",
     "zod-openapi": "^4.2.4"
   }
