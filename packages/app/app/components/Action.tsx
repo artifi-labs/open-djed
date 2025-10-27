@@ -3,14 +3,14 @@ import { useWallet } from '~/context/WalletContext'
 import Button from '~/components/Button'
 import { useApiClient } from '~/context/ApiClientContext'
 import { useProtocolData } from '~/hooks/useProtocolData'
-import { registryByNetwork } from '@reverse-djed/registry'
+import { registryByNetwork } from '@open-djed/registry'
 import { AmountInput } from '~/components/AmountInput'
-import type { ActionType, TokenType } from '@reverse-djed/api'
+import type { ActionType, TokenType } from '@open-djed/api'
 import { useEnv } from '~/context/EnvContext'
 import Toast from './Toast'
 import { formatNumber, formatValue, type Value } from '~/utils'
-import { Rational } from '@reverse-djed/math'
-import { AppError } from '@reverse-djed/api/src/errors'
+import { Rational } from '@open-djed/math'
+import { AppError } from '@open-djed/api/src/errors'
 import Tooltip from './Tooltip'
 import { SkeletonWrapper } from './SkeletonWrapper'
 
@@ -138,7 +138,7 @@ export const Action = ({ action, token, onActionStart, onActionComplete }: Actio
             <p className="font-medium">{action} fee</p>
             <Tooltip
               text={`
-              Fee paid to the pool and distributed to SHEN holders when they burn tokens. 
+              Fee paid to the pool and distributed to SHEN holders when they burn tokens.
               Calculated as ${actionData?.actionFeePercentage ?? '-'}% of the base cost.`}
             />
           </div>
@@ -165,7 +165,7 @@ export const Action = ({ action, token, onActionStart, onActionComplete }: Actio
                 ${new Rational({
                   numerator: registry.operatorFeeConfig.min,
                   denominator: 1_000_000n,
-                }).toNumber()} 
+                }).toNumber()}
                 ADA and maximum of ${Number(registry.operatorFeeConfig.max) * 1e-6} ADA.`}
             />
           </div>

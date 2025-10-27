@@ -1,6 +1,6 @@
 import { Constr, Data, type LucidEvolution, type UTxO } from '@lucid-evolution/lucid'
-import { type Network, type Registry } from '@reverse-djed/registry'
-import { CancelOrderSpendRedeemer, OrderBurnRedeemer, toBech32 } from '@reverse-djed/data'
+import { type Network, type Registry } from '@open-djed/registry'
+import { CancelOrderSpendRedeemer, OrderBurnRedeemer, toBech32 } from '@open-djed/data'
 import type { OrderUTxO } from './types'
 
 export const cancelOrderByOwner = ({

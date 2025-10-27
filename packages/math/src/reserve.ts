@@ -1,4 +1,4 @@
-import type { PoolDatum } from '@reverse-djed/data'
+import type { PoolDatum } from '@open-djed/data'
 import { Rational, type RationalFields } from './rational'
 import { djedADARate, shenADARate, type PartialOracleDatum, type PartialPoolDatum } from './rate'
 import { maxBigInt } from './bigint'
