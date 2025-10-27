@@ -26,6 +26,8 @@
     "packages/*"
   ],
   "dependencies": {
-    "@eslint/js": "^9.38.0"
+    "@eslint/js": "^9.38.0",
+    "json-bigint": "^1.0.0",
+    "react-router-dom": "^7.9.4"
   }
 }
