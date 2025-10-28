@@ -11,6 +11,7 @@ import {
   stakeCredentialOf,
 } from '@lucid-evolution/lucid'
 import {
+  cancelOrderByOwner,
   createBurnDjedOrder,
   createBurnShenOrder,
   createMintDjedOrder,
@@ -382,6 +383,92 @@ const app = new Hono()
         }
         console.error('Unhandled error in orders endpoint:', err)
         throw new InternalServerError()
+      }
+    },
+  )
+  .post(
+    '/cancel-order',
+    describeRoute({
+      description: 'Build a cancel-order transaction and return it as CBOR',
+      tags: ['Action'],
+      responses: {
+        200: {
+          description: 'Successfully built the cancel order transaction',
+          content: {
+            'text/plain': {
+              example: '84a40081825820...',
+            },
+          },
+        },
+        400: {
+          description: 'Bad Request',
+          content: {
+            'application/json': {
+              example: { error: 'BadRequestError', message: 'Invalid input' },
+            },
+          },
+        },
+        500: {
+          description: 'Internal Server Error',
+          content: {
+            'application/json': {
+              example: { error: 'InternalServerError', message: 'Something went wrong.' },
+            },
+          },
+        },
+      },
+    }),
+    zValidator(
+      'json',
+      z.object({
+        hexAddress: z.string(),
+        utxosCborHex: z.array(z.string()),
+        txHash: z.string(),
+      }),
+    ),
+    async (c) => {
+      try {
+        const { hexAddress, utxosCborHex, txHash } = c.req.valid('json')
+
+        const lucid = await getLucid()
+        const allOrders = await getOrderUTxOs()
+        const targetOrder = allOrders.find((o) => o.txHash === txHash)
+
+        if (!targetOrder) {
+          throw new BadRequestError('Order UTxO not found for given outRef.')
+        }
+
+        let addressBech32
+        try {
+          addressBech32 = CML.Address.from_hex(hexAddress).to_bech32()
+        } catch {
+          throw new ValidationError('Invalid Cardano address format.')
+        }
+
+        lucid.selectWallet.fromAddress(
+          addressBech32,
+          utxosCborHex.map((cborHex) => coreToUtxo(CML.TransactionUnspentOutput.from_cbor_hex(cborHex))),
+        )
+
+        const tx = await cancelOrderByOwner({
+          network: env.NETWORK,
+          lucid,
+          registry,
+          orderUTxO: targetOrder,
+          orderMintingPolicyRefUTxO: registry.orderMintingPolicyRefUTxO,
+          orderSpendingValidatorRefUTxO: registry.orderSpendingValidatorRefUTxO,
+        }).complete({ localUPLCEval: false })
+
+        const txCbor = tx.toCBOR()
+        console.log('Cancel-order Tx CBOR:', txCbor)
+        return c.text(txCbor)
+      } catch (err) {
+        if (err instanceof AppError) {
+          console.error(`${err.name}: ${err.message}`)
+          return c.json({ error: err.name, message: err.message }, err.status)
+        }
+        console.error('Unhandled error:', err)
+        return c.json({ error: 'InternalServerError', message: 'Something went wrong.' }, 500)
       }
     },
   )

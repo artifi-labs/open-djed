@@ -13,6 +13,8 @@ import Tooltip from './Tooltip'
 import { useApiClient } from '~/context/ApiClientContext'
 import JSONbig from 'json-bigint'
 import type { OrderUTxO } from '@open-djed/txs'
+import Toast from './Toast'
+import { AppError } from '@open-djed/api/src/errors'
 
 const SUPPORTED_WALLET_IDS = ['eternl', 'lace', 'vespr', 'begin', 'gerowallet']
 
@@ -25,6 +27,13 @@ export const Header = () => {
   const [orders, setOrders] = useState<OrderUTxO[]>([])
   const [tooltipText, setTooltipText] = useState('Click to copy full Tx Hash')
   const client = useApiClient()
+  const [toastProps, setToastProps] = useState<{ message: string; type: 'success' | 'error'; show: boolean }>(
+    {
+      message: '',
+      type: 'success',
+      show: false,
+    },
+  )
 
   const fetchOrders = async () => {
     if (!wallet) return
@@ -99,6 +108,47 @@ export const Header = () => {
         ? `${wallet.address.slice(0, 5)}...${wallet.address.slice(-6)}`
         : 'Loading address...'
     : 'Connect wallet'
+
+  const handleCancelOrder = async (orderTx: string) => {
+    const { Transaction, TransactionWitnessSet } = await import('@dcspark/cardano-multiplatform-lib-browser')
+    if (!wallet) return
+
+    try {
+      const utxos = await wallet.utxos()
+      if (!utxos) throw new Error('No UTXOs found')
+      const address = await wallet.getChangeAddress()
+
+      const response = await client.api['cancel-order'].$post({
+        json: { hexAddress: address, utxosCborHex: utxos, txHash: orderTx },
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new AppError(errorData.message)
+      }
+
+      const txCbor = await response.text()
+
+      console.log('Unsigned transaction CBOR: ', txCbor)
+      const signature = await wallet.signTx(txCbor)
+      console.log('Signature: ', signature)
+      const tx = Transaction.from_cbor_hex(txCbor)
+      const body = tx.body()
+      const witnessSet = tx.witness_set()
+      witnessSet.add_all_witnesses(TransactionWitnessSet.from_cbor_hex(signature))
+      const signedTxCbor = Transaction.new(body, witnessSet, true).to_cbor_hex()
+      console.log('Signed transaction CBOR: ', signedTxCbor)
+      const txHash = await wallet.submitTx(signedTxCbor)
+      console.log('Transaction hash:', txHash)
+      setToastProps({ message: `Order cancelation submitted: ${txHash}`, type: 'success', show: true })
+    } catch (err) {
+      console.error('Action failed:', err)
+      if (err instanceof AppError) {
+        setToastProps({ message: `${err.message}`, type: 'error', show: true })
+        return
+      }
+    }
+  }
 
   return (
     <>
@@ -345,7 +395,12 @@ export const Header = () => {
                             key={index}
                             className="bg-primary text-dark-text p-4 rounded-xl w-full max-w-2xl shadow space-y-2 overflow-y-auto"
                           >
-                            <p className="font-semibold text-lg">Order #{index + 1}</p>
+                            <div className="flex flex-row items-center justify-between">
+                              <p className="font-semibold text-lg">Order #{index + 1}</p>
+                              <Button className="bg-red-400" onClick={() => handleCancelOrder(order.txHash)}>
+                                Cancel
+                              </Button>
+                            </div>
                             <div className="flex justify-between text-sm font-medium">
                               <span className="font-bold text-xl">{actionType}</span>
                               <span>{creationDate}</span>
@@ -404,6 +459,12 @@ export const Header = () => {
           </div>
         )}
       </Sidebar>
+      <Toast
+        message={toastProps.message}
+        show={toastProps.show}
+        onClose={() => setToastProps({ ...toastProps, show: false })}
+        type={toastProps.type}
+      />
     </>
   )
 }

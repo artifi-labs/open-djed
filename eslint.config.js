@@ -33,8 +33,10 @@ export default [
       'prefer-const': 'error',
     },
     languageOptions: {
+      parser: tsparser,
       parserOptions: {
-        project: globalThis.process.cwd().match(/packages\/.+/) ? '../../tsconfig.json' : 'tsconfig.json',
+        project: './tsconfig.json',
+        tsconfigRootDir: import.meta.dirname,
       },
     },
   },
