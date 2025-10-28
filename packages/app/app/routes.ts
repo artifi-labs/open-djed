@@ -6,4 +6,5 @@ export default [
   route('/shen', 'routes/shen.tsx'),
   route('/privacy', 'routes/privacy.tsx'),
   route('/terms', 'routes/terms.tsx'),
+  route('*', 'routes/not_found.tsx'),
 ] satisfies RouteConfig
