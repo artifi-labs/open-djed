@@ -4,6 +4,7 @@ import { useEnv } from './EnvContext'
 import { z } from 'zod'
 import { registryByNetwork } from '@open-djed/registry'
 import { useLocalStorage } from 'usehooks-ts'
+import Toast from '~/components/Toast'
 
 type WalletMetadata = {
   id: string
@@ -67,6 +68,13 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
   const [wallet, setWallet] = useState<Wallet | null>(null)
   const [wallets, setWallets] = useState<WalletMetadata[]>([])
   const [connectedWalletId, setConnectedWalletId] = useLocalStorage<string | null>('connectedWalletId', null)
+  const [toastProps, setToastProps] = useState<{ message: string; type: 'success' | 'error'; show: boolean }>(
+    {
+      message: '',
+      type: 'success',
+      show: false,
+    },
+  )
   const { network } = useEnv()
 
   useEffect(() => {
@@ -106,7 +114,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
       const api = await window.cardano[id].enable()
 
       if ((await api.getNetworkId()) !== networkIds[network]) {
-        alert(`Please connect to a ${network} wallet`)
+        setToastProps({ message: `Please connect to a ${network} wallet`, type: 'error', show: true })
         return
       }
 
@@ -173,6 +181,12 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
   return (
     <WalletContext.Provider value={{ wallet, wallets, connect, detectWallets, disconnect }}>
       {children}
+      <Toast
+        message={toastProps.message}
+        show={toastProps.show}
+        onClose={() => setToastProps({ ...toastProps, show: false })}
+        type={toastProps.type}
+      />
     </WalletContext.Provider>
   )
 }
