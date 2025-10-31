@@ -1,7 +1,16 @@
 import * as Lucid from '@lucid-evolution/lucid'
-import { type EvalRedeemer, type Transaction } from '@lucid-evolution/core-types'
+import {
+  type Address,
+  type Credential,
+  type EvalRedeemer,
+  type Script,
+  type Transaction,
+  type Unit,
+  type UTxO,
+} from '@lucid-evolution/core-types'
 import packageJson from '../../cli/package.json' with { type: 'json' }
 import { z } from 'zod'
+import { CML } from '@lucid-evolution/lucid'
 
 const BlockSchema = z.object({
   slot: z.number(),
@@ -68,6 +77,65 @@ export class Blockfrost extends Lucid.Blockfrost {
 
     return evalRedeemers
   }
+
+  async getMempoolUtxosWithUnit(addressOrCredential: Address | Credential, unit: Unit): Promise<UTxO[]> {
+    const queryPredicate = (() => {
+      if (typeof addressOrCredential === 'string') return addressOrCredential
+      const credentialBech32 =
+        addressOrCredential.type === 'Key'
+          ? CML.Ed25519KeyHash.from_hex(addressOrCredential.hash).to_bech32('addr_vkh')
+          : CML.ScriptHash.from_hex(addressOrCredential.hash).to_bech32('addr_vkh')
+      return credentialBech32
+    })()
+
+    // gets every tx_hash registered in the mempool, for a given address
+    let mempoolPage = 1
+    const mempoolTxs: { tx_hash: string }[] = []
+
+    while (true) {
+      const pageResult: { tx_hash: string }[] = await fetch(
+        `${this.url}/mempool/addresses/${queryPredicate}?page=${mempoolPage}`,
+        { headers: { project_id: this.projectId, lucid } },
+      ).then((res) => res.json())
+
+      if (!Array.isArray(pageResult) || pageResult.length === 0) break
+
+      mempoolTxs.push(...pageResult)
+      mempoolPage++
+    }
+
+    if (mempoolTxs.length === 0) return []
+
+    const result: UTxO[] = []
+
+    for (const { tx_hash } of mempoolTxs) {
+      const mempoolTx: BlockfrostMempoolTx = await fetch(`${this.url}/mempool/${tx_hash}`, {
+        headers: { project_id: this.projectId, lucid },
+      }).then((res) => res.json())
+
+      if (!mempoolTx) continue
+
+      const outputs = mempoolTx.outputs || []
+
+      const filteredOutputs = outputs
+        .filter((out) => out.amount.some((amt) => amt.unit === unit))
+        .map((out) => ({
+          txHash: tx_hash,
+          outputIndex: out.output_index,
+          address: out.address,
+          assets: Object.fromEntries(out.amount.map(({ unit: u, quantity }) => [u, BigInt(quantity)])),
+          datumHash: (!out.inline_datum && out.data_hash) || undefined,
+          datum: out.inline_datum || undefined,
+          scriptRef: out.reference_script_hash
+            ? ({ type: 'PlutusV3', script: out.reference_script_hash } as Script)
+            : null,
+        }))
+
+      result.push(...filteredOutputs)
+    }
+
+    return result
+  }
 }
 
 type BlockfrostRedeemer = {
@@ -83,6 +151,56 @@ type BlockfrostRedeemer = {
     | {
         CannotCreateEvaluationContext: unknown
       }
+}
+
+type BlockfrostMempoolTx = {
+  tx: {
+    hash: string
+    output_amount: {
+      unit: string
+      quantity: string
+    }[]
+    fees: string
+    deposit: string
+    size: number
+    invalid_before: string | null
+    invalid_hereafter: string | null
+    utxo_count: number
+    withdrawal_count: number
+    mir_cert_count: number
+    delegation_count: number
+    stake_cert_count: number
+    pool_update_count: number
+    pool_retire_count: number
+    asset_mint_or_burn_count: number
+    redeemer_count: number
+    valid_contract: boolean
+  }
+  inputs: {
+    address: string
+    tx_hash: string
+    output_index: number
+    collateral: boolean
+    reference: boolean
+  }[]
+  outputs: {
+    address: string
+    amount: {
+      unit: string
+      quantity: string
+    }[]
+    output_index: number
+    data_hash?: string
+    inline_datum?: string
+    collateral: boolean
+    reference_script_hash?: string
+  }[]
+  redeemers: {
+    tx_index: number
+    purpose: string
+    unit_mem: string
+    unit_steps: string
+  }[]
 }
 
 const lucid = packageJson.version // Lucid version
