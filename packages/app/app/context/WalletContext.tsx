@@ -33,6 +33,7 @@ type WalletContextType = {
   connect: (id: string) => Promise<void>
   detectWallets: () => void
   disconnect: () => void
+  refreshWallet: () => Promise<void>
 }
 const hexToAscii = (hex: string) => {
   const clean = hex.replace(/[^0-9A-Fa-f]/g, '')
@@ -170,8 +171,13 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
     setConnectedWalletId(null)
   }
 
+  const refreshWallet = async () => {
+    if (!connectedWalletId) return
+    await connect(connectedWalletId)
+  }
+
   return (
-    <WalletContext.Provider value={{ wallet, wallets, connect, detectWallets, disconnect }}>
+    <WalletContext.Provider value={{ wallet, wallets, connect, detectWallets, disconnect, refreshWallet }}>
       {children}
     </WalletContext.Provider>
   )

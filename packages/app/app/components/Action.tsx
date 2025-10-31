@@ -31,7 +31,7 @@ export const Action = ({ action, token, onActionStart, onActionComplete }: Actio
     },
   )
   const client = useApiClient()
-  const { wallet } = useWallet()
+  const { wallet, refreshWallet } = useWallet()
 
   const { isPending, error, data } = useProtocolData()
   const { network } = useEnv()
@@ -95,6 +95,8 @@ export const Action = ({ action, token, onActionStart, onActionComplete }: Actio
 
       const txHash = await txRes.text()
       if (!txHash) throw new AppError('Transaction submitted, but no hash was returned.')
+
+      refreshWallet()
 
       setToastProps({
         message: `Transaction submitted: ${txHash}`,
