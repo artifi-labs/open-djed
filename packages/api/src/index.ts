@@ -385,6 +385,70 @@ const app = new Hono()
       }
     },
   )
+  .post(
+    '/submit-tx',
+    cacheMiddleware,
+    describeRoute({
+      description: 'Submit a signed transaction',
+      tags: ['Action'],
+      responses: {
+        200: {
+          description: 'Successfully submits a transaction',
+          content: {
+            'text/plain': {
+              example: 'Order',
+            },
+          },
+        },
+        400: {
+          description: 'Bad Request',
+          content: {
+            'text/plain': {
+              example: 'Bad Request',
+            },
+          },
+        },
+        500: {
+          description: 'Internal Server Error',
+          content: {
+            'text/plain': {
+              example: 'Internal Server Error',
+            },
+          },
+        },
+      },
+    }),
+    zValidator('json', z.object({ txCbor: z.string() })),
+    async (c) => {
+      console.log('Helloooooooo')
+      let json
+
+      try {
+        json = c.req.valid('json')
+        if (!json?.txCbor) {
+          throw new ValidationError('Missing hexAddress in request.')
+        }
+      } catch (e) {
+        console.error('Invalid or missing request payload.', e)
+        throw new ValidationError('Invalid or missing request payload.')
+      }
+
+      try {
+        const txSubmit = await blockfrost.submitTx(json.txCbor)
+
+        return new Response(JSONbig.stringify({ txSubmit }), {
+          headers: { 'Content-Type': 'application/json' },
+        })
+      } catch (err) {
+        if (err instanceof AppError) {
+          console.error(`${err.name}: ${err.message}`)
+          return c.json({ error: err.name, message: err.message }, err.status)
+        }
+        console.error('Unhandled error:', err)
+        return c.json({ error: 'InternalServerError', message: 'Something went wrong.' }, 500)
+      }
+    },
+  )
 
 serve(
   {

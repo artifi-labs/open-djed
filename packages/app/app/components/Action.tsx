@@ -57,35 +57,69 @@ export const Action = ({ action, token, onActionStart, onActionComplete }: Actio
       })
 
       if (!response.ok) {
-        const errorData = await response.json()
-        throw new AppError(errorData.message)
+        const errorData = (await response.json()) as { message?: string }
+        throw new AppError(errorData?.message || 'Failed to build transaction.')
       }
 
       const txCbor = await response.text()
-
       console.log('Unsigned transaction CBOR: ', txCbor)
+
       const signature = await wallet.signTx(txCbor)
       console.log('Signature: ', signature)
+
       const tx = Transaction.from_cbor_hex(txCbor)
       const body = tx.body()
       const witnessSet = tx.witness_set()
       witnessSet.add_all_witnesses(TransactionWitnessSet.from_cbor_hex(signature))
+
       const signedTxCbor = Transaction.new(body, witnessSet, true).to_cbor_hex()
       console.log('Signed transaction CBOR: ', signedTxCbor)
-      const txHash = await wallet.submitTx(signedTxCbor)
-      console.log('Transaction hash:', txHash)
-      setToastProps({ message: `Transaction submitted: ${txHash}`, type: 'success', show: true })
+
+      const txRes = await client.api['submit-tx'].$post({
+        json: { txCbor: signedTxCbor },
+      })
+
+      if (!txRes.ok) {
+        let errorMessage = `Request failed with status ${txRes.status}`
+
+        try {
+          const errorBody = (await txRes.json()) as { message?: string; error?: string }
+          errorMessage = errorBody?.message || errorBody?.error || errorMessage
+        } catch {
+          const text = await txRes.text()
+          if (text) errorMessage = text
+        }
+
+        throw new AppError(errorMessage)
+      }
+
+      const txHash = await txRes.text()
+      if (!txHash) throw new AppError('Transaction submitted, but no hash was returned.')
+
+      setToastProps({
+        message: `Transaction submitted: ${txHash}`,
+        type: 'success',
+        show: true,
+      })
 
       onActionComplete()
     } catch (err) {
       console.error('Action failed:', err)
+
       if (err instanceof AppError) {
-        setToastProps({ message: `${err.message}`, type: 'error', show: true })
-        onActionComplete()
-        return
+        setToastProps({
+          message: `${err.message}`,
+          type: 'error',
+          show: true,
+        })
+      } else {
+        setToastProps({
+          message: `Transaction failed. Please try again.`,
+          type: 'error',
+          show: true,
+        })
       }
 
-      setToastProps({ message: `Transaction failed. Please try again.`, type: 'error', show: true })
       onActionComplete()
     }
   }
