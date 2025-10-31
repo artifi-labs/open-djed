@@ -121,18 +121,21 @@ export const getOracleUTxO = async () => {
   return oracleUTxO
 }
 
-const getOrderUTxOs = async () => {
+const getOrderUTxOs = async (userAddr: string) => {
   const cached = chainDataCache.get<OrderUTxO[]>('orderUTxOs')
   if (cached) return cached
-  const rawOrderUTxOs = await blockfrost.getUtxosWithUnit(registry.orderAddress, registry.orderAssetId)
+  const mempoolUtxos = await blockfrost.getMempoolUtxosWithUnit(userAddr, registry.orderAssetId)
+  const utxosToProcess =
+    mempoolUtxos.length > 0
+      ? mempoolUtxos
+      : await blockfrost.getUtxosWithUnit(registry.orderAddress, registry.orderAssetId)
   const orderUTxOs = await Promise.all(
-    rawOrderUTxOs.map(async (rawOrderUTxO) => {
+    utxosToProcess.map(async (orderUtxo) => {
       const rawDatum =
-        rawOrderUTxO.datum ??
-        (rawOrderUTxO.datumHash ? await blockfrost.getDatum(rawOrderUTxO.datumHash) : undefined)
+        orderUtxo.datum ?? (orderUtxo.datumHash ? await blockfrost.getDatum(orderUtxo.datumHash) : undefined)
       if (!rawDatum) throw new Error(`Couldn't get order datum.`)
       return {
-        ...rawOrderUTxO,
+        ...orderUtxo,
         orderDatum: Data.from(rawDatum, OrderDatum),
       }
     }),
@@ -307,7 +310,6 @@ const app = new Hono()
   )
   .post(
     '/orders',
-    cacheMiddleware,
     describeRoute({
       description: 'Get the pending orders',
       tags: ['Action'],
@@ -338,22 +340,32 @@ const app = new Hono()
         },
       },
     }),
-    zValidator('json', z.object({ usedAddresses: z.array(z.string()) })),
+    zValidator('json', z.object({ usedAddresses: z.array(z.string()), userAddr: z.string() })),
     async (c) => {
       let json
 
       try {
         json = c.req.valid('json')
         if (!json?.usedAddresses) {
-          throw new ValidationError('Missing hexAddress in request.')
+          throw new ValidationError('Missing used addresses in request.')
+        }
+        if (!json?.userAddr) {
+          throw new ValidationError('Missing user address in request.')
         }
       } catch (e) {
         console.error('Invalid or missing request payload.', e)
         throw new ValidationError('Invalid or missing request payload.')
       }
 
+      let address
       try {
-        const allOrders = await getOrderUTxOs()
+        address = CML.Address.from_hex(json.userAddr).to_bech32()
+      } catch {
+        throw new ValidationError('Invalid Cardano address format.')
+      }
+
+      try {
+        const allOrders = await getOrderUTxOs(address)
 
         const usedAddressesKeys = json.usedAddresses.map((addr) => {
           try {
@@ -420,7 +432,6 @@ const app = new Hono()
     }),
     zValidator('json', z.object({ txCbor: z.string() })),
     async (c) => {
-      console.log('Helloooooooo')
       let json
 
       try {
