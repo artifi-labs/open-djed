@@ -1,12 +1,14 @@
 export default {
   input: ['app/**/*.{js,jsx,ts,tsx}'],
+  createOldCatalogs: false,
   locales: ['en', 'pt'],
   output: './locales/$LOCALE/$NAMESPACE.json',
   defaultNamespace: 'translation',
   keySeparator: true,
   namespaceSeparator: false,
   useKeysAsDefaultValue: true,
-  defaultValue: "__STRING_NOT_TRANSLATED__",
+  defaultValue: "",
+  keepRemoved: false,
   interpolation: {
     prefix: '{{',
     suffix: '}}'

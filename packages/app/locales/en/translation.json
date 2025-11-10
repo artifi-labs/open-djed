@@ -56,7 +56,7 @@
   "tokenDetails.burnAmount": "Burnable Amount",
   "coin.stablecoin": "stablecoin",
   "home.whatIsOpenDjed": "What is Open DJED?",
-  "home.openDjedDescription": "<strong>Open DJED</strong> is a transparent, community-driven web application for interacting with the DJED algorithmic stablecoin protocol on <strong>Cardano</strong>—built without the barriers of proprietary code.",
+  "home.openDjedDescription": "<strong>Open DJED</strong> is a transparent, community-driven web application for interacting with the DJED algorithmic stablecoin protocol on <strong>Cardano</strong> - built without the barriers of proprietary code.",
   "home.openDjedDevelopment": "Developed by <strong>Artifex Labs</strong>, Open DJED is the result of a deep reverse-engineering effort of the original DJED application. We've recreated the user interface and interaction logic while maintaining full protocol compatibility—then made everything open source for the entire Cardano ecosystem to explore, audit, and improve.",
   "home.whyOpenDjed": "Why Open DJED?",
   "home.openDjedBenefits": "<strong>Protocol-compatible</strong> - Same overcollateralized logic that powers DJED.",
