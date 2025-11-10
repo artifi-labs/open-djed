@@ -122,9 +122,7 @@ export const Action = ({ action, token, onActionStart, onActionComplete }: Actio
         <div className="flex justify-between">
           <div className="flex flex-row space-x-4">
             <p className="font-medium">{t('action.baseCost')}</p>
-            <Tooltip
-              text={t('action.tooltip.baseCost')} 
-            />
+            <Tooltip text={t('action.tooltip.baseCost')} />
           </div>
           <SkeletonWrapper isPending={isPending}>
             <p className="text-lg flex justify-center items-center">
@@ -139,7 +137,9 @@ export const Action = ({ action, token, onActionStart, onActionComplete }: Actio
         </div>
         <div className="flex justify-between">
           <div className="flex flex-row space-x-4">
-            <p className="font-medium">{action} {t('action.actionFee')}</p>
+            <p className="font-medium">
+              {action} {t('action.actionFee')}
+            </p>
             <Tooltip
               text={t('action.tooltip.actionFee', {
                 percentage: actionData?.actionFeePercentage ?? '-',
@@ -212,9 +212,7 @@ export const Action = ({ action, token, onActionStart, onActionComplete }: Actio
         <div className="flex justify-between">
           <div className="flex flex-row space-x-4">
             <p className="font-medium">{t('action.refundable')}</p>
-            <Tooltip
-              text={t('action.tooltip.refundable')}
-            />
+            <Tooltip text={t('action.tooltip.refundable')} />
           </div>
           <SkeletonWrapper isPending={isPending}>
             <p className="text-lg flex justify-center items-center">
@@ -254,9 +252,7 @@ export const Action = ({ action, token, onActionStart, onActionComplete }: Actio
         <div className="flex justify-between">
           <div className="flex flex-row space-x-4">
             <p className="font-medium">{t('action.youReceive')}</p>
-            <Tooltip 
-              text={t('action.tooltip.youReceive')}
-            />
+            <Tooltip text={t('action.tooltip.youReceive')} />
           </div>
           <SkeletonWrapper isPending={isPending}>
             <p className="text-lg flex justify-center items-center">
@@ -272,7 +268,7 @@ export const Action = ({ action, token, onActionStart, onActionComplete }: Actio
         <div className="flex justify-between">
           <div className="flex flex-row space-x-4">
             <p className="font-medium">{t('action.price')}</p>
-            <Tooltip 
+            <Tooltip
               text={t('action.tooltip.price', {
                 token: token,
               })}

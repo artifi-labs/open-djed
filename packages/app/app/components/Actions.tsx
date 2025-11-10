@@ -45,7 +45,9 @@ export const Actions = ({ token }: ActionsProps) => {
         </div>
 
         {/* Loading state or other statuses */}
-        {isActionPending && <div className="mt-4 text-center text-lg">{t('actions.processingAction')}...</div>}
+        {isActionPending && (
+          <div className="mt-4 text-center text-lg">{t('actions.processingAction')}...</div>
+        )}
       </div>
     </div>
   )

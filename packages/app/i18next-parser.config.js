@@ -7,15 +7,15 @@ export default {
   keySeparator: true,
   namespaceSeparator: false,
   useKeysAsDefaultValue: true,
-  defaultValue: "",
+  defaultValue: '',
   keepRemoved: false,
   interpolation: {
     prefix: '{{',
-    suffix: '}}'
+    suffix: '}}',
   },
   react: {
     transSupportBasicHtmlNodes: true,
     transKeepBasicHtmlNodesFor: ['br', 'strong', 'i'],
-    removeExtraWhitespaces: true
-  }
-};
+    removeExtraWhitespaces: true,
+  },
+}

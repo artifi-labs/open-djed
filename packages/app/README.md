@@ -78,7 +78,6 @@ After running the extractor, review and update the generated translations as nee
 - Locale files live in `packages/app/locales/<lang>/` as JSON files per namespace.
 - Edit those JSON files directly and restart the dev server if necessary. `react-i18next` will pick up JSON changes on reload.
 
-
 ## TODO
 
 - [ ] Deploy Mainnet test app per PR.

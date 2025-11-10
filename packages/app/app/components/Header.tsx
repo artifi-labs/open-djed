@@ -96,10 +96,10 @@ export const Header = () => {
 
   const walletButtonText = wallet
     ? wallet.balance.handle
-      ? `$${wallet.balance.handle}`
+      ? `${wallet.balance.handle}`
       : wallet.address
         ? `${wallet.address.slice(0, 5)}...${wallet.address.slice(-6)}`
-        : `$${t('header.address.loading')}...`
+        : `${t('header.address.loading')}...`
     : t('header.wallet.connect')
 
   return (
@@ -238,7 +238,7 @@ export const Header = () => {
                 <div className="flex flex-row justify-between w-full">
                   <h1 className="font-bold">{t('header.available.balance')}:</h1>
                   <Tooltip
-                    text={`${showBalance ? t("common.hide") : t("common.show")} ${t('wallet.balance')}`}
+                    text={`${showBalance ? t('common.hide') : t('common.show')} ${t('wallet.balance')}`}
                     tooltipDirection="left"
                     children={
                       <span className="cursor-pointer" onClick={() => setShowBalance(!showBalance)}>

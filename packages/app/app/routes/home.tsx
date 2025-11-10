@@ -85,31 +85,31 @@ export default function Home() {
             <ul className="list-disc list-inside pl-2 space-y-1">
               <li>
                 <i className="fas fa-brain text-primary mr-2"></i>
-                  <Trans i18nKey="home.openDjedBenefits" components={{ strong: <strong /> }} />
+                <Trans i18nKey="home.openDjedBenefits" components={{ strong: <strong /> }} />
               </li>
               <li>
                 <i className="fas fa-wrench text-primary mr-2"></i>
-                  <Trans i18nKey="home.openDjedFeatures" components={{ strong: <strong /> }} />
+                <Trans i18nKey="home.openDjedFeatures" components={{ strong: <strong /> }} />
               </li>
               <li>
                 <i className="fas fa-seedling text-primary mr-2"></i>
-                  <Trans i18nKey="home.openDjedCommunity" components={{ strong: <strong /> }} />
+                <Trans i18nKey="home.openDjedCommunity" components={{ strong: <strong /> }} />
               </li>
               <li>
                 <i className="fas fa-signal text-primary mr-2"></i>
-                  <Trans i18nKey="home.openDjedAccessibility" components={{ strong: <strong /> }} />
+                <Trans i18nKey="home.openDjedAccessibility" components={{ strong: <strong /> }} />
               </li>
               <li>
                 <i className="fas fa-earth-americas text-primary mr-2"></i>
-                  <Trans i18nKey="home.openDjedGlobal" components={{ strong: <strong /> }} />
+                <Trans i18nKey="home.openDjedGlobal" components={{ strong: <strong /> }} />
               </li>
               <li>
                 <i className="fas fa-receipt text-primary mr-2"></i>
-                  <Trans i18nKey="home.openDjedFees" components={{ strong: <strong /> }} />
+                <Trans i18nKey="home.openDjedFees" components={{ strong: <strong /> }} />
               </li>
               <li>
                 <i className="fas fa-coins text-primary mr-2"></i>
-                  <Trans i18nKey="home.openDjedOptimizations" components={{ strong: <strong /> }} />
+                <Trans i18nKey="home.openDjedOptimizations" components={{ strong: <strong /> }} />
               </li>
             </ul>
           </div>
@@ -129,9 +129,7 @@ export default function Home() {
             </div>
           </div>
 
-          <p className="font-bold">
-            {t('home.joinUs')}
-          </p>
+          <p className="font-bold">{t('home.joinUs')}</p>
 
           <div className="flex justify-end items-center mt-4">
             <input

@@ -27,54 +27,45 @@ export default function PrivacyPage() {
     <div className="flex flex-col gap-10 justify-center items-center w-full p-8">
       <div className="flex flex-col text-center">
         <h1 className="text-4xl font-bold">{t('privacy.title')}</h1>
-        <p className="text-sm text-muted-foreground mt-1">{t('privacy.effectiveDate', {date: effectiveDate})}</p>
+        <p className="text-sm text-muted-foreground mt-1">
+          {t('privacy.effectiveDate', { date: effectiveDate })}
+        </p>
       </div>
 
       <div className="w-full max-w-4xl flex flex-col gap-6 text-base leading-relaxed">
-        <p>
-          {t('privacy.intro')}
-        </p>
+        <p>{t('privacy.intro')}</p>
 
         <section>
           <h2 className="text-xl font-semibold mb-2">{t('privacy.sections.dataCollection')}</h2>
           <p>
-            <Trans i18nKey="privacy.paragraphs.noPersonalData" components={{ strong: <strong/> }} />
-            
+            <Trans i18nKey="privacy.paragraphs.noPersonalData" components={{ strong: <strong /> }} />
           </p>
         </section>
 
         <section>
           <h3 className="text-lg font-medium mb-1">{t('privacy.sections.wallets')}</h3>
-          <p>
-            {t('privacy.paragraphs.wallet')}
-            
-          </p>
+          <p>{t('privacy.paragraphs.wallet')}</p>
         </section>
 
         <section>
           <h2 className="text-xl font-semibold mb-2">{t('privacy.sections.cookies')}</h2>
           <p>
-            <Trans i18nKey="privacy.paragraphs.cookies" components={{ strong: <strong/> }} />
+            <Trans i18nKey="privacy.paragraphs.cookies" components={{ strong: <strong /> }} />
           </p>
           <ul className="list-disc list-inside space-y-1">
             <li>{t('privacy.list.theme')}</li>
             <li>{t('privacy.list.network')}</li>
           </ul>
           <p>
-            <Trans i18nKey="privacy.paragraphs.cookiesDetails" components={{ strong: <strong/> }} />
-            
+            <Trans i18nKey="privacy.paragraphs.cookiesDetails" components={{ strong: <strong /> }} />
           </p>
         </section>
 
         <section>
           <h2 className="text-xl font-semibold mb-2">{t('privacy.sections.analytics')}</h2>
+          <p>{t('privacy.paragraphs.analytics1')}</p>
           <p>
-            {t('privacy.paragraphs.analytics1')}
-            
-          </p>
-          <p>
-            <Trans i18nKey="privacy.paragraphs.analytics2" components={{ strong: <strong/> }} />
-            
+            <Trans i18nKey="privacy.paragraphs.analytics2" components={{ strong: <strong /> }} />
           </p>
           <p>{t('privacy.paragraphs.analytics3')}</p>
         </section>
@@ -82,8 +73,7 @@ export default function PrivacyPage() {
         <section>
           <h2 className="text-xl font-semibold mb-2">{t('privacy.sections.openSource')}</h2>
           <p>
-            {t('privacy.paragraphs.openSource')}
-            {' '}
+            {t('privacy.paragraphs.openSource')}{' '}
             <a
               href="https://www.gnu.org/licenses/gpl-3.0.html"
               target="_blank"
@@ -95,8 +85,7 @@ export default function PrivacyPage() {
             .
           </p>
           <p>
-            {t('privacy.paragraphs.sourceCode')}
-            {' '}
+            {t('privacy.paragraphs.sourceCode')}{' '}
             <a
               href="https://github.com/artifex-labs/open-djed"
               target="_blank"
@@ -110,10 +99,7 @@ export default function PrivacyPage() {
 
         <section>
           <h2 className="text-xl font-semibold mb-2">{t('privacy.sections.authentication')}</h2>
-          <p>
-            {t('privacy.paragraphs.authentication')}
-            
-          </p>
+          <p>{t('privacy.paragraphs.authentication')}</p>
         </section>
 
         <section>

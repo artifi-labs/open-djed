@@ -10,7 +10,7 @@ interface ReserveRatioGraphProps {
 
 export function ReserveRatioGraph({ currentRatio, minRatio, maxRatio }: ReserveRatioGraphProps) {
   const { t } = useTranslation()
-  
+
   const reserves = [
     {
       label: t('reserveRatioGraph.min'),

@@ -44,7 +44,9 @@ export const TokenDetails = ({ token, route }: TokenDetailsProps) => {
 
   return (
     <div className="bg-light-foreground dark:bg-dark-foreground shadow-md rounded-xl p-4 md:p-6 w-full mx-auto overflow-x-auto">
-      <h2 className="text-2xl font-bold mb-6 ">{token} {t('tokenDetails.title')}</h2>
+      <h2 className="text-2xl font-bold mb-6 ">
+        {token} {t('tokenDetails.title')}
+      </h2>
       <div className="flex flex-col gap-6 min-w-fit">
         <div className="grid grid-cols-1 gap-3">
           <TokenDetailsRow
