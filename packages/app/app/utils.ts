@@ -1,4 +1,4 @@
-import type { TokenType } from '@reverse-djed/api'
+import type { TokenType } from '@open-djed/api'
 import {
   adaDJEDRate,
   adaSHENRate,
@@ -6,7 +6,7 @@ import {
   shenADARate,
   type PartialOracleDatum,
   type PartialPoolDatum,
-} from '@reverse-djed/math'
+} from '@open-djed/math'
 
 export function formatNumber(
   value: number,

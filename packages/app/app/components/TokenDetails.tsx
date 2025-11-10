@@ -1,6 +1,6 @@
 import { useProtocolData } from '~/hooks/useProtocolData'
 import { NavLink } from 'react-router'
-import type { TokenType } from '@reverse-djed/api'
+import type { TokenType } from '@open-djed/api'
 import { formatNumber, formatValue, type Value } from '~/utils'
 import { SkeletonWrapper } from './SkeletonWrapper'
 import { useTranslation } from 'react-i18next'

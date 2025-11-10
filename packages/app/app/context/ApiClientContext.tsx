@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react'
 import { hc } from 'hono/client'
-import type { AppType } from '@reverse-djed/api'
+import type { AppType } from '@open-djed/api'
 
 const ClientContext = createContext<ReturnType<typeof hc<AppType>> | null>(null)
 

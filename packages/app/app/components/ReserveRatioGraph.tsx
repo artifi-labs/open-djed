@@ -59,7 +59,7 @@ export function ReserveRatioGraph({ currentRatio, minRatio, maxRatio }: ReserveR
             <Tooltip
               text={`${formatNumber(Math.round(value * 100), { minimumFractionDigits: 0 })}%`}
               style={{ display: 'contents' }}
-              tootlipModalClass={tooltipModalClass || ''}
+              tooltipModalClass={tooltipModalClass || ''}
             >
               <div className="relative flex flex-col items-center justify-center">
                 <div className={style} />

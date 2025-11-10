@@ -1,4 +1,4 @@
-import type { Network } from '@reverse-djed/registry'
+import type { Network } from '@open-djed/registry'
 
 export type LoaderData = {
   apiUrl: string

@@ -4,7 +4,7 @@ import { Header } from './Header'
 import { WalletProvider } from '../context/WalletContext'
 import { EnvContext } from '../context/EnvContext'
 import Footer from './Footer/Footer'
-import type { Network } from '@reverse-djed/registry'
+import type { Network } from '@open-djed/registry'
 import '../statics/css/layout.css'
 
 type Props = {

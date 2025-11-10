@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState } from 'react'
 import { decode } from 'cbor2'
 import { useEnv } from './EnvContext'
 import { z } from 'zod'
-import { registryByNetwork } from '@reverse-djed/registry'
+import { registryByNetwork } from '@open-djed/registry'
 import { useLocalStorage } from 'usehooks-ts'
 
 type WalletMetadata = {
@@ -15,6 +15,7 @@ type Wallet = {
   signTx: (txCbor: string) => Promise<string>
   submitTx: (txCbor: string) => Promise<string>
   getChangeAddress: () => Promise<string>
+  getUsedAddresses: () => Promise<string[]>
   address: string | null
   utxos: () => Promise<string[] | undefined>
   balance: {
@@ -143,6 +144,10 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
         const address = await api.getChangeAddress()
         return address
       }
+      const getUsedAddresses = async () => {
+        const oldAddresses = await api.getUsedAddresses()
+        return oldAddresses
+      }
       setWallet({
         icon: window.cardano[id].icon,
         balance: parsedBalance,
@@ -153,6 +158,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
         signTx: (txCbor: string) => api.signTx(txCbor, false),
         submitTx: api.submitTx,
         getChangeAddress,
+        getUsedAddresses,
       })
     } catch (err) {
       console.error(`Failed to enable ${id}`, err)

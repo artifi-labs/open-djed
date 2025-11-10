@@ -1,5 +1,5 @@
 {
-  "name": "@reverse-djed/app",
+  "name": "@open-djed/app",
   "private": true,
   "type": "module",
   "scripts": {
@@ -15,12 +15,16 @@
     "@dcspark/cardano-multiplatform-lib-browser": "^6.2.0",
     "@fortawesome/fontawesome-free": "^6.7.2",
     "@lucid-evolution/lucid": "^0.4.27",
+    "@open-djed/api": "workspace:*",
+    "@open-djed/math": "workspace:*",
+    "@open-djed/registry": "workspace:*",
     "@tanstack/react-query": "^5.77.2",
     "cbor2": "^1.12.0",
     "cookie": "^1.0.2",
     "framer-motion": "^12.16.0",
     "i18next": "^25.2.1",
     "i18next-browser-languagedetector": "^8.2.0",
+    "hono": "^4.10.2",
     "isbot": "^5.1.28",
     "posthog-js": "^1.246.0",
     "react": "^19.1.0",
@@ -30,7 +34,10 @@
     "react-router": "^7.6.1",
     "usehooks-ts": "^3.1.1",
     "vite-plugin-top-level-await": "^1.5.0",
-    "vite-plugin-wasm": "^3.4.1"
+    "vite-plugin-wasm": "^3.4.1",
+    "zod": "^4.1.12",
+    "json-bigint": "^1.0.0",
+    "react-router-dom": "^7.9.4"
   },
   "devDependencies": {
     "@cloudflare/vite-plugin": "^1.2.4",
@@ -44,7 +51,7 @@
     "i18next-parser": "^9.3.0",
     "tailwindcss": "^4.1.7",
     "typescript": "^5.8.3",
-    "vite": "^6.3.5",
+    "vite": "^7.1.11",
     "vite-tsconfig-paths": "^5.1.4",
     "wrangler": "^4.16.1"
   }

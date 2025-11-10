@@ -1,5 +1,5 @@
 {
-  "name": "@reverse-djed/cli",
+  "name": "@open-djed/cli",
   "version": "0.0.1",
   "type": "module",
   "main": "src/index.ts",
