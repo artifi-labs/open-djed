@@ -24,7 +24,7 @@ export default function PrivacyPage() {
 
       <div className="w-full max-w-4xl flex flex-col gap-6 text-base leading-relaxed">
         <p>
-          Artifex Labs is committed to privacy and transparency. This Privacy Policy outlines what data we
+          Artifi Labs is committed to privacy and transparency. This Privacy Policy outlines what data we
           collect and how it is used.
         </p>
 
@@ -90,12 +90,12 @@ export default function PrivacyPage() {
           <p>
             Source code:{' '}
             <a
-              href="https://github.com/artifex-labs/open-djed"
+              href="https://github.com/artifi-labs/open-djed"
               target="_blank"
               rel="noopener noreferrer"
               className="underline text-primary"
             >
-              github.com/artifex-labs/open-djed
+              github.com/artifi-labs/open-djed
             </a>
           </p>
         </section>
