@@ -5,8 +5,10 @@ import { SkeletonWrapper } from './SkeletonWrapper'
 import { ReserveRatioGraph } from './ReserveRatioGraph'
 import { maxReserveRatio, minReserveRatio } from '@open-djed/math'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 export function ReserveDetails() {
+  const { t } = useTranslation()
   const { isPending, error, data } = useProtocolData()
   const [showGraph, setShowGraph] = useState(true)
   if (error) return <div className="text-red-500 font-bold">ERROR: {error.message}</div>
@@ -16,7 +18,7 @@ export function ReserveDetails() {
   return (
     <div className="bg-light-foreground dark:bg-dark-foreground shadow-md rounded-xl p-2 md:p-4 w-full max-w-lg">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-bold">Reserve Details</h2>
+        <h2 className="text-xl font-bold">{t('reserveDetails.title')}</h2>
         <div className="flex items-center space-x-2 bg-primary dark:bg-primary rounded-full p-1 relative">
           <div
             className={`absolute h-8 w-8 bg-white dark:bg-black rounded-full transition-all duration-300 ease-in-out ${
@@ -39,7 +41,7 @@ export function ReserveDetails() {
       </div>
 
       <div className="flex flex-col gap-2">
-        <p className="font-medium">Reserve Ratio</p>
+        <p className="font-medium">{t('reserveDetails.reserveRatio')}</p>
         {isPending ? (
           <Skeleton width="w-full" height="h-3" />
         ) : showGraph ? (
@@ -51,22 +53,22 @@ export function ReserveDetails() {
         ) : (
           <div>
             <div className="flex flex-row justify-between">
-              <p className="text-gray-600 dark:text-gray-400">Current Ratio:</p>
+              <p className="text-gray-600 dark:text-gray-400">{t('reserveDetails.currentRatio')}:</p>
               <p className="text-lg">{formatNumber(currentRatio * 100, { maximumFractionDigits: 2 })} %</p>
             </div>
             <div className="flex flex-row justify-between">
-              <p className="text-gray-600 dark:text-gray-400">Min Ratio:</p>
+              <p className="text-gray-600 dark:text-gray-400">{t('reserveDetails.minRatio')}:</p>
               <p className="text-lg">{minReserveRatio.toNumber() * 100} %</p>
             </div>
             <div className="flex flex-row justify-between">
-              <p className="text-gray-600 dark:text-gray-400">Max Ratio:</p>
+              <p className="text-gray-600 dark:text-gray-400">{t('reserveDetails.maxRatio')}:</p>
               <p className="text-lg">{maxReserveRatio.toNumber() * 100} %</p>
             </div>
           </div>
         )}
 
         <div className="flex flex-row justify-between">
-          <p className="font-medium">Reserve Value</p>
+          <p className="font-medium">{t('reserveDetails.ReserveValue')}</p>
           <SkeletonWrapper isPending={isPending}>
             <p className="text-lg">{data ? formatValue(data.protocolData.reserve.amount) : '-'}</p>
             <p className="text-xs text-gray-700 dark:text-gray-400">
