@@ -21,14 +21,14 @@ const Footer = () => {
     },
     {
       label: 'Twitter',
-      href: 'https://x.com/artifex_labs',
+      href: 'https://x.com/artifi_labs',
       tooltip: 'Follow us for more news',
       lightIcon: '/logos/x-dark-logo.svg',
       darkIcon: '/logos/x-logo.svg',
     },
     {
       label: 'Github',
-      href: 'https://github.com/artifex-labs/open-djed',
+      href: 'https://github.com/artifi-labs/open-djed',
       tooltip: 'Look at source code',
       lightIcon: '/logos/github-dark.svg',
       darkIcon: '/logos/github-white.svg',
@@ -62,8 +62,8 @@ const Footer = () => {
   return (
     <footer className="flex flex-col md:flex-row gap-8 p-8 justify-between bg-light-footer dark:bg-dark-footer border-t border-light-foreground dark:border-primary/30 w-full text-center max-h-fit transition-all duration-200 ease-in-out">
       <div className="flex flex-col md:flex-row gap-6 items-center">
-        <a href="https://artifex.finance/">
-          <img src="/logos/artifex-logo.png" alt="Artifex Labs Logo" className="w-[50px]" />
+        <a href="https://artifi.finance/">
+          <img src="/logos/artifi-logo.png" alt="Artifi Labs Logo" className="w-[50px]" />
         </a>
         <p className="pt-1">All rights reserved © 2025</p>
       </div>

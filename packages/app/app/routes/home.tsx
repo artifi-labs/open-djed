@@ -74,7 +74,7 @@ export default function Home() {
           </p>
 
           <p>
-            Developed by <strong>Artifex Labs</strong>, Open DJED is the result of a deep reverse-engineering
+            Developed by <strong>Artifi Labs</strong>, Open DJED is the result of a deep reverse-engineering
             effort of the original DJED application. We've recreated the user interface and interaction logic
             while maintaining full protocol compatibility—then made everything open source for the entire
             Cardano ecosystem to explore, audit, and improve.
@@ -133,7 +133,7 @@ export default function Home() {
               </p>
 
               <p>
-                <strong>Artifex Labs</strong> builds open-source, permissionless tools for the Cardano
+                <strong>Artifi Labs</strong> builds open-source, permissionless tools for the Cardano
                 ecosystem. Open DJED is our first major release—and we're only just getting started!
               </p>
             </div>
