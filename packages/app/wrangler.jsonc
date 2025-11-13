@@ -8,7 +8,7 @@
   "compatibility_date": "2025-04-04",
   "main": "./workers/app.ts",
   "vars": {
-    "API_URL": "https://api.djed.artifex.finance",
+    "API_URL": "https://api.djed.artifi.finance",
     "NETWORK": "Mainnet",
     "CONFIG": "{ \"Mainnet\": \"https://djed.artifi.finance\", \"Preprod\": \"https://preprod.djed.artifi.finance\"}",
     "POSTHOG_API_URL": "https://ph.artifi.finance/",
@@ -41,7 +41,7 @@
         },
       ],
       "vars": {
-        "API_URL": "https://preprod.api.djed.artifex.finance",
+        "API_URL": "https://preprod.api.djed.artifi.finance",
         "NETWORK": "Preprod",
         "CONFIG": "{ \"Mainnet\": \"https://djed.artifi.finance\", \"Preprod\": \"https://preprod.djed.artifi.finance\"}",
         "POSTHOG_API_URL": "https://ph.artifi.finance/",
