@@ -41,7 +41,7 @@ const Footer = () => {
     },
     {
       label: 'Status',
-      href: 'https://status.artifex.finance/',
+      href: 'https://status.artifi.finance/',
       tooltip: 'Service status page',
       element: <i className="fas fa-heartbeat text-red-500"></i>,
     },

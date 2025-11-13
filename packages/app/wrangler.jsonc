@@ -4,14 +4,14 @@
  */
 {
   "$schema": "../../node_modules/wrangler/config-schema.json",
-  "name": "reverse-djed-app",
+  "name": "open-djed-app",
   "compatibility_date": "2025-04-04",
   "main": "./workers/app.ts",
   "vars": {
     "API_URL": "https://api.djed.artifex.finance",
     "NETWORK": "Mainnet",
-    "CONFIG": "{ \"Mainnet\": \"https://djed.artifex.finance\", \"Preprod\": \"https://preprod.djed.artifex.finance\"}",
-    "POSTHOG_API_URL": "https://ph.artifex.finance/",
+    "CONFIG": "{ \"Mainnet\": \"https://djed.artifi.finance\", \"Preprod\": \"https://preprod.djed.artifi.finance\"}",
+    "POSTHOG_API_URL": "https://ph.artifi.finance/",
   },
   "observability": {
     "logs": {
@@ -19,6 +19,10 @@
     },
   },
   "routes": [
+    {
+      "pattern": "djed.artifi.finance",
+      "custom_domain": true,
+    },
     {
       "pattern": "djed.artifex.finance",
       "custom_domain": true,
@@ -28,6 +32,10 @@
     "preprod": {
       "routes": [
         {
+          "pattern": "preprod.djed.artifi.finance",
+          "custom_domain": true,
+        },
+        {
           "pattern": "preprod.djed.artifex.finance",
           "custom_domain": true,
         },
@@ -35,8 +43,8 @@
       "vars": {
         "API_URL": "https://preprod.api.djed.artifex.finance",
         "NETWORK": "Preprod",
-        "CONFIG": "{ \"Mainnet\": \"https://djed.artifex.finance\", \"Preprod\": \"https://preprod.djed.artifex.finance\"}",
-        "POSTHOG_API_URL": "https://ph.artifex.finance/",
+        "CONFIG": "{ \"Mainnet\": \"https://djed.artifi.finance\", \"Preprod\": \"https://preprod.djed.artifi.finance\"}",
+        "POSTHOG_API_URL": "https://ph.artifi.finance/",
       },
     },
   },
