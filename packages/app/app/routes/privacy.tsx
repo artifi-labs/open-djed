@@ -87,12 +87,12 @@ export default function PrivacyPage() {
           <p>
             {t('privacy.paragraphs.sourceCode')}{' '}
             <a
-              href="https://github.com/artifex-labs/open-djed"
+              href="https://github.com/artifi-labs/open-djed"
               target="_blank"
               rel="noopener noreferrer"
               className="underline text-primary"
             >
-              github.com/artifex-labs/open-djed
+              github.com/artifi-labs/open-djed
             </a>
           </p>
         </section>

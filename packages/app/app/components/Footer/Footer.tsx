@@ -24,14 +24,14 @@ const Footer = () => {
     },
     {
       label: 'Twitter',
-      href: 'https://x.com/artifex_labs',
+      href: 'https://x.com/artifi_labs',
       tooltip: t('footer.tooltips.twitter'),
       lightIcon: '/logos/x-dark-logo.svg',
       darkIcon: '/logos/x-logo.svg',
     },
     {
       label: 'Github',
-      href: 'https://github.com/artifex-labs/open-djed',
+      href: 'https://github.com/artifi-labs/open-djed',
       tooltip: t('footer.tooltips.github'),
       lightIcon: '/logos/github-dark.svg',
       darkIcon: '/logos/github-white.svg',
@@ -44,7 +44,7 @@ const Footer = () => {
     },
     {
       label: t('footer.links.status'),
-      href: 'https://status.artifex.finance/',
+      href: 'https://status.artifi.finance/',
       tooltip: t('footer.tooltips.status'),
       element: <i className="fas fa-heartbeat text-red-500"></i>,
     },
@@ -67,8 +67,8 @@ const Footer = () => {
   return (
     <footer className="flex flex-col md:flex-row gap-8 p-8 justify-between bg-light-footer dark:bg-dark-footer border-t border-light-foreground dark:border-primary/30 w-full text-center max-h-fit transition-all duration-200 ease-in-out">
       <div className="flex flex-col md:flex-row gap-6 items-center">
-        <a href="https://artifex.finance/">
-          <img src="/logos/artifex-logo.png" alt="Artifex Labs Logo" className="w-[50px]" />
+        <a href="https://artifi.finance/">
+          <img src="/logos/artifi-logo.png" alt="Artifi Labs Logo" className="w-[50px]" />
         </a>
         <p className="pt-1">{t('footer.rightsReserved', { year: currentYear })}</p>
       </div>
