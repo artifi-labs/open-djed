@@ -121,18 +121,21 @@ export const getOracleUTxO = async () => {
   return oracleUTxO
 }
 
-const getOrderUTxOs = async () => {
+const getOrderUTxOs = async (userAddr: string) => {
   const cached = chainDataCache.get<OrderUTxO[]>('orderUTxOs')
   if (cached) return cached
-  const rawOrderUTxOs = await blockfrost.getUtxosWithUnit(registry.orderAddress, registry.orderAssetId)
+  const mempoolUtxos = await blockfrost.getMempoolUtxosWithUnit(userAddr, registry.orderAssetId)
+  const utxosToProcess =
+    mempoolUtxos.length > 0
+      ? mempoolUtxos
+      : await blockfrost.getUtxosWithUnit(registry.orderAddress, registry.orderAssetId)
   const orderUTxOs = await Promise.all(
-    rawOrderUTxOs.map(async (rawOrderUTxO) => {
+    utxosToProcess.map(async (orderUtxo) => {
       const rawDatum =
-        rawOrderUTxO.datum ??
-        (rawOrderUTxO.datumHash ? await blockfrost.getDatum(rawOrderUTxO.datumHash) : undefined)
+        orderUtxo.datum ?? (orderUtxo.datumHash ? await blockfrost.getDatum(orderUtxo.datumHash) : undefined)
       if (!rawDatum) throw new Error(`Couldn't get order datum.`)
       return {
-        ...rawOrderUTxO,
+        ...orderUtxo,
         orderDatum: Data.from(rawDatum, OrderDatum),
       }
     }),
@@ -307,7 +310,6 @@ const app = new Hono()
   )
   .post(
     '/orders',
-    cacheMiddleware,
     describeRoute({
       description: 'Get the pending orders',
       tags: ['Action'],
@@ -338,22 +340,32 @@ const app = new Hono()
         },
       },
     }),
-    zValidator('json', z.object({ usedAddresses: z.array(z.string()) })),
+    zValidator('json', z.object({ usedAddresses: z.array(z.string()), userAddr: z.string() })),
     async (c) => {
       let json
 
       try {
         json = c.req.valid('json')
         if (!json?.usedAddresses) {
-          throw new ValidationError('Missing hexAddress in request.')
+          throw new ValidationError('Missing used addresses in request.')
+        }
+        if (!json?.userAddr) {
+          throw new ValidationError('Missing user address in request.')
         }
       } catch (e) {
         console.error('Invalid or missing request payload.', e)
         throw new ValidationError('Invalid or missing request payload.')
       }
 
+      let address
       try {
-        const allOrders = await getOrderUTxOs()
+        address = CML.Address.from_hex(json.userAddr).to_bech32()
+      } catch {
+        throw new ValidationError('Invalid Cardano address format.')
+      }
+
+      try {
+        const allOrders = await getOrderUTxOs(address)
 
         const usedAddressesKeys = json.usedAddresses.map((addr) => {
           try {
@@ -382,6 +394,69 @@ const app = new Hono()
         }
         console.error('Unhandled error in orders endpoint:', err)
         throw new InternalServerError()
+      }
+    },
+  )
+  .post(
+    '/submit-tx',
+    cacheMiddleware,
+    describeRoute({
+      description: 'Submit a signed transaction',
+      tags: ['Action'],
+      responses: {
+        200: {
+          description: 'Successfully submits a transaction',
+          content: {
+            'text/plain': {
+              example: 'Order',
+            },
+          },
+        },
+        400: {
+          description: 'Bad Request',
+          content: {
+            'text/plain': {
+              example: 'Bad Request',
+            },
+          },
+        },
+        500: {
+          description: 'Internal Server Error',
+          content: {
+            'text/plain': {
+              example: 'Internal Server Error',
+            },
+          },
+        },
+      },
+    }),
+    zValidator('json', z.object({ txCbor: z.string() })),
+    async (c) => {
+      let json
+
+      try {
+        json = c.req.valid('json')
+        if (!json?.txCbor) {
+          throw new ValidationError('Missing hexAddress in request.')
+        }
+      } catch (e) {
+        console.error('Invalid or missing request payload.', e)
+        throw new ValidationError('Invalid or missing request payload.')
+      }
+
+      try {
+        const txSubmit = await blockfrost.submitTx(json.txCbor)
+
+        return new Response(JSONbig.stringify({ txSubmit }), {
+          headers: { 'Content-Type': 'application/json' },
+        })
+      } catch (err) {
+        if (err instanceof AppError) {
+          console.error(`${err.name}: ${err.message}`)
+          return c.json({ error: err.name, message: err.message }, err.status)
+        }
+        console.error('Unhandled error:', err)
+        return c.json({ error: 'InternalServerError', message: 'Something went wrong.' }, 500)
       }
     },
   )

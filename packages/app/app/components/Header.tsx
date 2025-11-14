@@ -30,10 +30,11 @@ export const Header = () => {
     if (!wallet) return
     const usedAddress = await wallet.getUsedAddresses()
     if (!usedAddress) throw new Error('Failed to get used address')
+    const address = await wallet.getChangeAddress()
 
     try {
       const res = await client.api.orders.$post({
-        json: { usedAddresses: usedAddress },
+        json: { usedAddresses: usedAddress, userAddr: address },
       })
 
       if (!res.ok) {
