@@ -10,9 +10,8 @@ import Sidebar from './Sidebar'
 import { useLocalStorage } from 'usehooks-ts'
 import { DEFAULT_SHOW_BALANCE } from '~/utils'
 import Tooltip from './Tooltip'
-import { useApiClient } from '~/context/ApiClientContext'
-import JSONbig from 'json-bigint'
-import type { OrderUTxO } from '@open-djed/txs'
+import Toast from './Toast'
+import Orders from './Orders'
 
 const SUPPORTED_WALLET_IDS = ['eternl', 'lace', 'vespr', 'begin', 'gerowallet']
 
@@ -22,37 +21,13 @@ export const Header = () => {
   const { wallet, wallets, connect, detectWallets, disconnect } = useWallet()
   const [menuOpen, setMenuOpen] = useState(false)
   const [showBalance, setShowBalance] = useLocalStorage<boolean | null>('showBalance', DEFAULT_SHOW_BALANCE)
-  const [orders, setOrders] = useState<OrderUTxO[]>([])
-  const [tooltipText, setTooltipText] = useState('Click to copy full Tx Hash')
-  const client = useApiClient()
-
-  const fetchOrders = async () => {
-    if (!wallet) return
-    const usedAddress = await wallet.getUsedAddresses()
-    if (!usedAddress) throw new Error('Failed to get used address')
-
-    try {
-      const res = await client.api.orders.$post({
-        json: { usedAddresses: usedAddress },
-      })
-
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`)
-      }
-
-      const data = await res.text()
-      const parsed = JSONbig.parse(data)
-      setOrders(parsed.orders)
-    } catch (err) {
-      console.error('Error fetching orders:', err)
-    }
-  }
-
-  useEffect(() => {
-    fetchOrders().catch((err) => {
-      console.error('Failed to fetch orders:', err)
-    })
-  }, [wallet])
+  const [toastProps, setToastProps] = useState<{ message: string; type: 'success' | 'error'; show: boolean }>(
+    {
+      message: '',
+      type: 'success',
+      show: false,
+    },
+  )
 
   // Navigation links data
   const navLinks = [
@@ -290,86 +265,7 @@ export const Header = () => {
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="flex flex-col justify-start items-start gap-4 w-full">
-                  <h1 className="font-bold">Pending Orders:</h1>
-                  <div className="flex flex-col justify-center items-center gap-6 w-full">
-                    {orders && orders.length > 0 ? (
-                      orders.map((order, index) => {
-                        const actionFields = order.orderDatum?.actionFields
-                        const creationDate = new Date(Number(order.orderDatum?.creationDate)).toLocaleString()
-
-                        const copyTxHash = () => {
-                          navigator.clipboard
-                            .writeText(order.txHash)
-                            .then(() => {
-                              setTooltipText('Copied!')
-                              setTimeout(() => setTooltipText('Click to copy full Tx Hash'), 2000)
-                            })
-                            .catch(() => {
-                              setTooltipText('Failed to copy')
-                              setTimeout(() => setTooltipText('Click to copy full Tx Hash'), 2000)
-                            })
-                        }
-
-                        const formatLovelace = (amount: bigint) => {
-                          return (Number(amount) / 1000000).toLocaleString(undefined, {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 6,
-                          })
-                        }
-
-                        let actionType = ''
-                        let conversionLine = ''
-
-                        if ('MintDJED' in actionFields) {
-                          actionType = 'Mint DJED'
-                          const adaAmount = formatLovelace(actionFields.MintDJED.adaAmount)
-                          const djedAmount = formatLovelace(actionFields.MintDJED.djedAmount)
-                          conversionLine = `${adaAmount} ADA => ${djedAmount} DJED`
-                        } else if ('BurnDJED' in actionFields) {
-                          actionType = 'Burn DJED'
-                          const djedAmount = formatLovelace(actionFields.BurnDJED.djedAmount)
-                          conversionLine = `${djedAmount} DJED`
-                        } else if ('MintSHEN' in actionFields) {
-                          actionType = 'Mint SHEN'
-                          const adaAmount = formatLovelace(actionFields.MintSHEN.adaAmount)
-                          const shenAmount = formatLovelace(actionFields.MintSHEN.shenAmount)
-                          conversionLine = `${adaAmount} ADA => ${shenAmount} SHEN`
-                        } else if ('BurnSHEN' in actionFields) {
-                          actionType = 'Burn SHEN'
-                          const shenAmount = formatLovelace(actionFields.BurnSHEN.shenAmount)
-                          conversionLine = `${shenAmount} SHEN`
-                        }
-
-                        return (
-                          <div
-                            key={index}
-                            className="bg-primary text-dark-text p-4 rounded-xl w-full max-w-2xl shadow space-y-2 overflow-y-auto"
-                          >
-                            <p className="font-semibold text-lg">Order #{index + 1}</p>
-                            <div className="flex justify-between text-sm font-medium">
-                              <span className="font-bold text-xl">{actionType}</span>
-                              <span>{creationDate}</span>
-                            </div>
-                            <p className="text-md">{conversionLine}</p>
-                            <Tooltip
-                              text={tooltipText}
-                              tooltipDirection="top"
-                              tooltipModalClass="text-light-text dark:text-dark-text"
-                            >
-                              <p
-                                onClick={copyTxHash}
-                                className="text-sm cursor-pointer select-none hover:underline text-muted-foreground"
-                              >
-                                Tx Hash: {order.txHash.slice(0, 22)}...#{order.outputIndex}
-                              </p>
-                            </Tooltip>
-                          </div>
-                        )
-                      })
-                    ) : (
-                      <p className="font-semibold text-red-500">No pending orders.</p>
-                    )}
-                  </div>
+                  <Orders wallet={wallet} setToastProps={setToastProps} />
                 </div>
               </div>
             </div>
@@ -404,6 +300,12 @@ export const Header = () => {
           </div>
         )}
       </Sidebar>
+      <Toast
+        message={toastProps.message}
+        show={toastProps.show}
+        onClose={() => setToastProps({ ...toastProps, show: false })}
+        type={toastProps.type}
+      />
     </>
   )
 }

@@ -12,7 +12,7 @@ type WalletMetadata = {
   icon: string
 }
 
-type Wallet = {
+export type Wallet = {
   signTx: (txCbor: string) => Promise<string>
   submitTx: (txCbor: string) => Promise<string>
   getChangeAddress: () => Promise<string>
