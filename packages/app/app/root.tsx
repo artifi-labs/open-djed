@@ -1,4 +1,5 @@
 import './app.css'
+import 'i18n'
 import '@fortawesome/fontawesome-free/css/all.min.css'
 import { Links, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData } from 'react-router'
 import { links as fontLinks } from './lib/loader'
@@ -18,7 +19,7 @@ export default function App() {
   const { apiUrl, network, config, initialIsDark, posthog } = useLoaderData<LoaderData>()
 
   return (
-    <html lang="en" className={initialIsDark || ''}>
+    <html className={initialIsDark || ''}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />

@@ -1,6 +1,7 @@
 import { type JSX } from 'react'
 import FooterIcon from './FooterIcon'
 import Tooltip from '../Tooltip'
+import { useTranslation } from 'react-i18next'
 
 interface FooterLink {
   label: string
@@ -11,50 +12,54 @@ interface FooterLink {
   element?: JSX.Element
 }
 
+const currentYear = new Date().getFullYear()
+
 const Footer = () => {
+  const { t } = useTranslation()
+
   const footerLinks: FooterLink[] = [
     {
       label: 'Discord',
       href: 'https://discord.gg/MhYP7w8n8p',
-      tooltip: 'Join our community Discord server',
+      tooltip: t('footer.tooltips.discord'),
       lightIcon: '/logos/discord-logo.png',
     },
     {
       label: 'Twitter',
       href: 'https://x.com/artifi_labs',
-      tooltip: 'Follow us for more news',
+      tooltip: t('footer.tooltips.twitter'),
       lightIcon: '/logos/x-dark-logo.svg',
       darkIcon: '/logos/x-logo.svg',
     },
     {
       label: 'Github',
       href: 'https://github.com/artifi-labs/open-djed',
-      tooltip: 'Look at source code',
+      tooltip: t('footer.tooltips.github'),
       lightIcon: '/logos/github-dark.svg',
       darkIcon: '/logos/github-white.svg',
     },
     {
       label: 'djed.xyz',
       href: 'https://djed.xyz',
-      tooltip: 'Official djed app',
+      tooltip: t('footer.tooltips.djed'),
       lightIcon: '/logos/djed.svg',
     },
     {
-      label: 'Status',
+      label: t('footer.links.status'),
       href: 'https://status.artifi.finance/',
-      tooltip: 'Service status page',
+      tooltip: t('footer.tooltips.status'),
       element: <i className="fas fa-heartbeat text-red-500"></i>,
     },
     {
-      label: 'Terms',
+      label: t('footer.links.terms'),
       href: '/terms',
-      tooltip: 'Terms of Service',
+      tooltip: t('footer.tooltips.terms'),
       element: <i className="fas fa-file-contract text-primary-500"></i>,
     },
     {
-      label: 'Privacy',
+      label: t('footer.links.privacy'),
       href: '/privacy',
-      tooltip: 'Privacy Policy',
+      tooltip: t('footer.tooltips.privacy'),
       element: <i className="fas fa-user-secret text-primary-500"></i>,
     },
   ]
@@ -65,7 +70,7 @@ const Footer = () => {
         <a href="https://artifi.finance/">
           <img src="/logos/artifi-logo.png" alt="Artifi Labs Logo" className="w-[50px]" />
         </a>
-        <p className="pt-1">All rights reserved © 2025</p>
+        <p className="pt-1">{t('footer.rightsReserved', { year: currentYear })}</p>
       </div>
 
       <div className="flex flex-col md:flex-row gap-6 items-center">

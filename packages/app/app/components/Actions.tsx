@@ -1,14 +1,16 @@
 import { useState } from 'react'
 import { Action } from './Action'
 import type { TokenType } from '@open-djed/api'
+import { useTranslation } from 'react-i18next'
+import { ACTIONS } from '~/constants'
 
 type ActionsProps = {
   token: TokenType
 }
 
-const ACTIONS = ['Mint', 'Burn'] as const
-
 export const Actions = ({ token }: ActionsProps) => {
+  const { t } = useTranslation()
+
   const [isActionPending, setIsActionPending] = useState(false)
 
   const handleActionStart = () => {
@@ -24,7 +26,7 @@ export const Actions = ({ token }: ActionsProps) => {
       <div className="flex flex-col gap-6 w-full px-4">
         <div className="text-center text-xl font-bold mb-4 flex flex-col items-center">
           <span className="text-5xl">{token}</span>
-          <span>Actions</span>
+          <span>{t('actions.title')}</span>
         </div>
 
         <div className="flex flex-wrap justify-center gap-6 w-full max-w-screen-lg mx-auto">
@@ -42,7 +44,9 @@ export const Actions = ({ token }: ActionsProps) => {
         </div>
 
         {/* Loading state or other statuses */}
-        {isActionPending && <div className="mt-4 text-center text-lg">Processing action...</div>}
+        {isActionPending && (
+          <div className="mt-4 text-center text-lg">{t('actions.processingAction')}...</div>
+        )}
       </div>
     </div>
   )

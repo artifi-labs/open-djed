@@ -1,5 +1,6 @@
 import { formatNumber } from '~/utils'
 import Tooltip from './Tooltip'
+import { useTranslation } from 'react-i18next'
 
 interface ReserveRatioGraphProps {
   currentRatio: number
@@ -8,21 +9,23 @@ interface ReserveRatioGraphProps {
 }
 
 export function ReserveRatioGraph({ currentRatio, minRatio, maxRatio }: ReserveRatioGraphProps) {
+  const { t } = useTranslation()
+
   const reserves = [
     {
-      label: 'Min',
+      label: t('reserveRatioGraph.min'),
       value: minRatio,
       position: 'top-full mt-1',
       style: 'w-1 h-5 bg-black dark:bg-white',
     },
     {
-      label: 'Max',
+      label: t('reserveRatioGraph.max'),
       value: maxRatio,
       position: 'top-full mt-1',
       style: 'w-1 h-5 bg-black dark:bg-white',
     },
     {
-      label: 'Current',
+      label: t('reserveRatioGraph.current'),
       value: currentRatio,
       position: 'bottom-full mb-1',
       style: 'w-5 h-5 rounded-full border-2 border-black bg-white dark:bg-black dark:border-white',
