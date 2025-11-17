@@ -73,10 +73,21 @@ The `i18n:extract` script uses `bunx i18next-parser` (configured by `i18next-par
 
 After running the extractor, review and update the generated translations as needed, then commit the locale files.
 
+### Language detection and caching
+
+- The application uses the browser's preferred language (via the i18next browser language detector) to select the initial language. The detected language is cached in`localStorage` under the key `i18nextLng` so subsequent loads can read the cached value quickly.
+
 ### Editing translations
 
 - Locale files live in `packages/app/locales/<lang>/` as JSON files per namespace.
-- Edit those JSON files directly and restart the dev server if necessary. `react-i18next` will pick up JSON changes on reload.
+- Edit those JSON files directly.
+
+## Local storage
+
+| Key          | Storage                         | Purpose                                              | Notes                                                                                                                                                                                                        |
+| ------------ | ------------------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `i18nextLng` | `localStorage`                  | Cached user language (selected or detected)          | Set by `i18next-browser-languagedetector`.                                                                                                                                                                   |
+| `theme`      | `localStorage` + cookie `theme` | Cached user theme preference (`'dark'` or `'light'`) | Theme is persisted in `localStorage` under `theme` and also written to a cookie named `theme` (in production the cookie is set for `.artifex.finance`). The app also respects system `prefers-color-scheme`. |
 
 ## TODO
 
