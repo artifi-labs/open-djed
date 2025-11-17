@@ -137,9 +137,7 @@ export const Action = ({ action, token, onActionStart, onActionComplete }: Actio
         </div>
         <div className="flex justify-between">
           <div className="flex flex-row space-x-4">
-            <p className="font-medium">
-              {action} {t('action.actionFee')}
-            </p>
+            <p className="font-medium">{t('action.actionFee', { action: action })}</p>
             <Tooltip
               text={t('action.tooltip.actionFee', {
                 percentage: actionData?.actionFeePercentage ?? '-',

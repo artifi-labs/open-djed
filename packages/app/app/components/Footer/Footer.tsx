@@ -12,6 +12,8 @@ interface FooterLink {
   element?: JSX.Element
 }
 
+const currentYear = new Date().getFullYear()
+
 const Footer = () => {
   const { t } = useTranslation()
 
@@ -61,8 +63,6 @@ const Footer = () => {
       element: <i className="fas fa-user-secret text-primary-500"></i>,
     },
   ]
-
-  const currentYear = new Date().getFullYear()
 
   return (
     <footer className="flex flex-col md:flex-row gap-8 p-8 justify-between bg-light-footer dark:bg-dark-footer border-t border-light-foreground dark:border-primary/30 w-full text-center max-h-fit transition-all duration-200 ease-in-out">
