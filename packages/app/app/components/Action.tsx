@@ -13,6 +13,7 @@ import { Rational } from '@open-djed/math'
 import { AppError } from '@open-djed/api/src/errors'
 import Tooltip from './Tooltip'
 import { SkeletonWrapper } from './SkeletonWrapper'
+import { getWalletData } from '~/lib/getWalletData'
 
 type ActionProps = {
   action: ActionType
@@ -47,9 +48,7 @@ export const Action = ({ action, token, onActionStart, onActionComplete }: Actio
     onActionStart()
 
     try {
-      const utxos = await wallet.utxos()
-      if (!utxos) throw new Error('No UTXOs found')
-      const address = await wallet.getChangeAddress()
+      const { address, utxos } = await getWalletData(wallet)
 
       const response = await client.api[':token'][':action'][':amount']['tx'].$post({
         param: { token, action, amount: amount.toString() },
