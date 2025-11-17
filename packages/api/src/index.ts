@@ -374,6 +374,8 @@ const app = new Hono()
           ),
         )
 
+        console.log('Order:', filteredOrders)
+
         return new Response(JSONbig.stringify({ orders: filteredOrders }), {
           headers: { 'Content-Type': 'application/json' },
         })
@@ -424,15 +426,16 @@ const app = new Hono()
         hexAddress: z.string(),
         utxosCborHex: z.array(z.string()),
         txHash: z.string(),
+        outIndex: z.number(),
       }),
     ),
     async (c) => {
       try {
-        const { hexAddress, utxosCborHex, txHash } = c.req.valid('json')
+        const { hexAddress, utxosCborHex, txHash, outIndex } = c.req.valid('json')
 
         const lucid = await getLucid()
         const allOrders = await getOrderUTxOs()
-        const targetOrder = allOrders.find((o) => o.txHash === txHash)
+        const targetOrder = allOrders.find((o) => o.txHash === txHash && o.outputIndex === outIndex)
 
         if (!targetOrder) {
           throw new BadRequestError('Order UTxO not found for given outRef.')
