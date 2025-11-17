@@ -14,6 +14,7 @@ import { AppError } from '@open-djed/api/src/errors'
 import Tooltip from './Tooltip'
 import { SkeletonWrapper } from './SkeletonWrapper'
 import { useTranslation } from 'react-i18next'
+import { useActionLabels } from '~/hooks/useLabels'
 
 type ActionProps = {
   action: ActionType
@@ -39,6 +40,8 @@ export const Action = ({ action, token, onActionStart, onActionComplete }: Actio
   const { network } = useEnv()
   const protocolData = data?.protocolData
   const actionData = data?.tokenActionData(token, action, amount)
+
+  const actionLabels = useActionLabels()
 
   if (error) return <div className="text-red-500 font-bold">Error: {error.message}</div>
 
@@ -137,7 +140,7 @@ export const Action = ({ action, token, onActionStart, onActionComplete }: Actio
         </div>
         <div className="flex justify-between">
           <div className="flex flex-row space-x-4">
-            <p className="font-medium">{t('action.actionFee', { action: action })}</p>
+            <p className="font-medium">{t('action.actionFee', { action: actionLabels[action] })}</p>
             <Tooltip
               text={t('action.tooltip.actionFee', {
                 percentage: actionData?.actionFeePercentage ?? '-',
@@ -307,7 +310,7 @@ export const Action = ({ action, token, onActionStart, onActionComplete }: Actio
             amount > balance
           }
         >
-          {action.replace(/^\w/, (c) => c.toUpperCase())}
+          {actionLabels[action]}
         </Button>
       </div>
       <Toast

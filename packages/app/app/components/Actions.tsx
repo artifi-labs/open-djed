@@ -2,12 +2,11 @@ import { useState } from 'react'
 import { Action } from './Action'
 import type { TokenType } from '@open-djed/api'
 import { useTranslation } from 'react-i18next'
+import { ACTIONS } from '~/constants'
 
 type ActionsProps = {
   token: TokenType
 }
-
-const ACTIONS = ['Mint', 'Burn'] as const
 
 export const Actions = ({ token }: ActionsProps) => {
   const { t } = useTranslation()

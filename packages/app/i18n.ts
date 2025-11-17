@@ -22,7 +22,7 @@ i18n
     nsSeparator: false,
 
     detection: {
-      order: ['cookie', 'localStorage', 'sessionStorage', 'navigator'],
+      order: ['localStorage', 'navigator'],
       caches: ['localStorage'],
       lookupLocalStorage: 'i18nextLng',
     },

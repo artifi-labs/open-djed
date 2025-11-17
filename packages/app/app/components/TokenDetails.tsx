@@ -4,6 +4,7 @@ import type { TokenType } from '@open-djed/api'
 import { formatNumber, formatValue, type Value } from '~/utils'
 import { SkeletonWrapper } from './SkeletonWrapper'
 import { useTranslation } from 'react-i18next'
+import { useActionLabels } from '~/hooks/useLabels'
 
 type TokenDetailsProps = {
   token: TokenType
@@ -41,6 +42,8 @@ export const TokenDetails = ({ token, route }: TokenDetailsProps) => {
   const { isPending, error, data } = useProtocolData()
   if (error) return <div className="text-red-500 font-bold">ERROR: {error.message}</div>
   const toUSD = data ? (value: Value) => data.to(value, 'DJED') : undefined
+
+  const actionLabels = useActionLabels()
 
   return (
     <div className="bg-light-foreground dark:bg-dark-foreground shadow-md rounded-xl p-4 md:p-6 w-full mx-auto overflow-x-auto">
@@ -86,7 +89,7 @@ export const TokenDetails = ({ token, route }: TokenDetailsProps) => {
             to={route}
             className="w-full text-white font-bold bg-primary hover:bg-primary-hover cursor-pointer transition-opacity px-4 py-2 rounded-lg flex items-center justify-center"
           >
-            Mint/Burn
+            {actionLabels.Mint}/{actionLabels.Burn}
           </NavLink>
         </div>
       </div>
