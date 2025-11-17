@@ -13,6 +13,8 @@ import { Rational } from '@open-djed/math'
 import { AppError } from '@open-djed/api/src/errors'
 import Tooltip from './Tooltip'
 import { SkeletonWrapper } from './SkeletonWrapper'
+import { signAndSubmitTx } from '~/lib/signAndSubmitTx'
+import { getWalletData } from '~/lib/getWalletData'
 
 type ActionProps = {
   action: ActionType
@@ -47,9 +49,7 @@ export const Action = ({ action, token, onActionStart, onActionComplete }: Actio
     onActionStart()
 
     try {
-      const utxos = await wallet.utxos()
-      if (!utxos) throw new Error('No UTXOs found')
-      const address = await wallet.getChangeAddress()
+      const { address, utxos } = await getWalletData(wallet)
 
       const response = await client.api[':token'][':action'][':amount']['tx'].$post({
         param: { token, action, amount: amount.toString() },
@@ -62,18 +62,7 @@ export const Action = ({ action, token, onActionStart, onActionComplete }: Actio
       }
 
       const txCbor = await response.text()
-
-      console.log('Unsigned transaction CBOR: ', txCbor)
-      const signature = await wallet.signTx(txCbor)
-      console.log('Signature: ', signature)
-      const tx = Transaction.from_cbor_hex(txCbor)
-      const body = tx.body()
-      const witnessSet = tx.witness_set()
-      witnessSet.add_all_witnesses(TransactionWitnessSet.from_cbor_hex(signature))
-      const signedTxCbor = Transaction.new(body, witnessSet, true).to_cbor_hex()
-      console.log('Signed transaction CBOR: ', signedTxCbor)
-      const txHash = await wallet.submitTx(signedTxCbor)
-      console.log('Transaction hash:', txHash)
+      const txHash = await signAndSubmitTx(wallet, txCbor, Transaction, TransactionWitnessSet)
       setToastProps({ message: `Transaction submitted: ${txHash}`, type: 'success', show: true })
 
       onActionComplete()

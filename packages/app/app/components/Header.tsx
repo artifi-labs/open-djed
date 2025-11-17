@@ -10,11 +10,8 @@ import Sidebar from './Sidebar'
 import { useLocalStorage } from 'usehooks-ts'
 import { DEFAULT_SHOW_BALANCE } from '~/utils'
 import Tooltip from './Tooltip'
-import { useApiClient } from '~/context/ApiClientContext'
-import JSONbig from 'json-bigint'
-import type { OrderUTxO } from '@open-djed/txs'
 import Toast from './Toast'
-import { AppError } from '@open-djed/api/src/errors'
+import Orders from './Orders'
 
 const SUPPORTED_WALLET_IDS = ['eternl', 'lace', 'vespr', 'begin', 'gerowallet']
 
@@ -24,9 +21,6 @@ export const Header = () => {
   const { wallet, wallets, connect, detectWallets, disconnect } = useWallet()
   const [menuOpen, setMenuOpen] = useState(false)
   const [showBalance, setShowBalance] = useLocalStorage<boolean | null>('showBalance', DEFAULT_SHOW_BALANCE)
-  const [orders, setOrders] = useState<OrderUTxO[]>([])
-  const [tooltipText, setTooltipText] = useState('Click to copy full Tx Hash')
-  const client = useApiClient()
   const [toastProps, setToastProps] = useState<{ message: string; type: 'success' | 'error'; show: boolean }>(
     {
       message: '',
@@ -34,34 +28,6 @@ export const Header = () => {
       show: false,
     },
   )
-
-  const fetchOrders = async () => {
-    if (!wallet) return
-    const usedAddress = await wallet.getUsedAddresses()
-    if (!usedAddress) throw new Error('Failed to get used address')
-
-    try {
-      const res = await client.api.orders.$post({
-        json: { usedAddresses: usedAddress },
-      })
-
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`)
-      }
-
-      const data = await res.text()
-      const parsed = JSONbig.parse(data)
-      setOrders(parsed.orders)
-    } catch (err) {
-      console.error('Error fetching orders:', err)
-    }
-  }
-
-  useEffect(() => {
-    fetchOrders().catch((err) => {
-      console.error('Failed to fetch orders:', err)
-    })
-  }, [wallet])
 
   // Navigation links data
   const navLinks = [
@@ -108,47 +74,6 @@ export const Header = () => {
         ? `${wallet.address.slice(0, 5)}...${wallet.address.slice(-6)}`
         : 'Loading address...'
     : 'Connect wallet'
-
-  const handleCancelOrder = async (orderTx: string) => {
-    const { Transaction, TransactionWitnessSet } = await import('@dcspark/cardano-multiplatform-lib-browser')
-    if (!wallet) return
-
-    try {
-      const utxos = await wallet.utxos()
-      if (!utxos) throw new Error('No UTXOs found')
-      const address = await wallet.getChangeAddress()
-
-      const response = await client.api['cancel-order'].$post({
-        json: { hexAddress: address, utxosCborHex: utxos, txHash: orderTx },
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new AppError(errorData.message)
-      }
-
-      const txCbor = await response.text()
-
-      console.log('Unsigned transaction CBOR: ', txCbor)
-      const signature = await wallet.signTx(txCbor)
-      console.log('Signature: ', signature)
-      const tx = Transaction.from_cbor_hex(txCbor)
-      const body = tx.body()
-      const witnessSet = tx.witness_set()
-      witnessSet.add_all_witnesses(TransactionWitnessSet.from_cbor_hex(signature))
-      const signedTxCbor = Transaction.new(body, witnessSet, true).to_cbor_hex()
-      console.log('Signed transaction CBOR: ', signedTxCbor)
-      const txHash = await wallet.submitTx(signedTxCbor)
-      console.log('Transaction hash:', txHash)
-      setToastProps({ message: `Order cancelation submitted: ${txHash}`, type: 'success', show: true })
-    } catch (err) {
-      console.error('Action failed:', err)
-      if (err instanceof AppError) {
-        setToastProps({ message: `${err.message}`, type: 'error', show: true })
-        return
-      }
-    }
-  }
 
   return (
     <>
@@ -340,91 +265,7 @@ export const Header = () => {
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="flex flex-col justify-start items-start gap-4 w-full">
-                  <h1 className="font-bold">Pending Orders:</h1>
-                  <div className="flex flex-col justify-center items-center gap-6 w-full">
-                    {orders && orders.length > 0 ? (
-                      orders.map((order, index) => {
-                        const actionFields = order.orderDatum?.actionFields
-                        const creationDate = new Date(Number(order.orderDatum?.creationDate)).toLocaleString()
-
-                        const copyTxHash = () => {
-                          navigator.clipboard
-                            .writeText(order.txHash)
-                            .then(() => {
-                              setTooltipText('Copied!')
-                              setTimeout(() => setTooltipText('Click to copy full Tx Hash'), 2000)
-                            })
-                            .catch(() => {
-                              setTooltipText('Failed to copy')
-                              setTimeout(() => setTooltipText('Click to copy full Tx Hash'), 2000)
-                            })
-                        }
-
-                        const formatLovelace = (amount: bigint) => {
-                          return (Number(amount) / 1000000).toLocaleString(undefined, {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 6,
-                          })
-                        }
-
-                        let actionType = ''
-                        let conversionLine = ''
-
-                        if ('MintDJED' in actionFields) {
-                          actionType = 'Mint DJED'
-                          const adaAmount = formatLovelace(actionFields.MintDJED.adaAmount)
-                          const djedAmount = formatLovelace(actionFields.MintDJED.djedAmount)
-                          conversionLine = `${adaAmount} ADA => ${djedAmount} DJED`
-                        } else if ('BurnDJED' in actionFields) {
-                          actionType = 'Burn DJED'
-                          const djedAmount = formatLovelace(actionFields.BurnDJED.djedAmount)
-                          conversionLine = `${djedAmount} DJED`
-                        } else if ('MintSHEN' in actionFields) {
-                          actionType = 'Mint SHEN'
-                          const adaAmount = formatLovelace(actionFields.MintSHEN.adaAmount)
-                          const shenAmount = formatLovelace(actionFields.MintSHEN.shenAmount)
-                          conversionLine = `${adaAmount} ADA => ${shenAmount} SHEN`
-                        } else if ('BurnSHEN' in actionFields) {
-                          actionType = 'Burn SHEN'
-                          const shenAmount = formatLovelace(actionFields.BurnSHEN.shenAmount)
-                          conversionLine = `${shenAmount} SHEN`
-                        }
-
-                        return (
-                          <div
-                            key={index}
-                            className="bg-primary text-dark-text p-4 rounded-xl w-full max-w-2xl shadow space-y-2 overflow-y-auto"
-                          >
-                            <div className="flex flex-row items-center justify-between">
-                              <p className="font-semibold text-lg">Order #{index + 1}</p>
-                              <Button className="bg-red-400" onClick={() => handleCancelOrder(order.txHash)}>
-                                Cancel
-                              </Button>
-                            </div>
-                            <div className="flex justify-between text-sm font-medium">
-                              <span className="font-bold text-xl">{actionType}</span>
-                              <span>{creationDate}</span>
-                            </div>
-                            <p className="text-md">{conversionLine}</p>
-                            <Tooltip
-                              text={tooltipText}
-                              tooltipDirection="top"
-                              tooltipModalClass="text-light-text dark:text-dark-text"
-                            >
-                              <p
-                                onClick={copyTxHash}
-                                className="text-sm cursor-pointer select-none hover:underline text-muted-foreground"
-                              >
-                                Tx Hash: {order.txHash.slice(0, 22)}...#{order.outputIndex}
-                              </p>
-                            </Tooltip>
-                          </div>
-                        )
-                      })
-                    ) : (
-                      <p className="font-semibold text-red-500">No pending orders.</p>
-                    )}
-                  </div>
+                  <Orders wallet={wallet} setToastProps={setToastProps} />
                 </div>
               </div>
             </div>
