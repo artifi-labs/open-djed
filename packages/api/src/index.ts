@@ -126,10 +126,8 @@ const getOrderUTxOs = async (userAddr: string) => {
   const cached = chainDataCache.get<OrderUTxO[]>('orderUTxOs')
   if (cached) return cached
   const mempoolUtxos = await blockfrost.getMempoolUtxosWithUnit(userAddr, registry.orderAssetId)
-  const utxosToProcess =
-    mempoolUtxos.length > 0
-      ? mempoolUtxos
-      : await blockfrost.getUtxosWithUnit(registry.orderAddress, registry.orderAssetId)
+  const onchainUtxos = await blockfrost.getUtxosWithUnit(registry.orderAddress, registry.orderAssetId)
+  const utxosToProcess = [...mempoolUtxos, ...onchainUtxos]
   const orderUTxOs = await Promise.all(
     utxosToProcess.map(async (orderUtxo) => {
       const rawDatum =

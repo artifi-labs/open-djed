@@ -32,9 +32,10 @@ export default function Orders({
     if (!wallet) return
     const usedAddress = await wallet.getUsedAddresses()
     if (!usedAddress) throw new Error('Failed to get used address')
+    const { address } = await getWalletData(wallet)
 
     try {
-      const res = await client.api.orders.$post({ json: { usedAddresses: usedAddress } })
+      const res = await client.api.orders.$post({ json: { usedAddresses: usedAddress, userAddr: address } })
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`)
       const data = await res.text()
       const parsed = JSONbig.parse(data)
