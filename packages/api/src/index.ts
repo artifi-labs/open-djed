@@ -125,8 +125,16 @@ export const getOracleUTxO = async () => {
 const getOrderUTxOs = async (userAddr: string) => {
   const cached = chainDataCache.get<OrderUTxO[]>('orderUTxOs')
   if (cached) return cached
-  const mempoolUtxos = await blockfrost.getMempoolUtxosWithUnit(userAddr, registry.orderAssetId)
-  const onchainUtxos = await blockfrost.getUtxosWithUnit(registry.orderAddress, registry.orderAssetId)
+  const mempoolUtxosUntagged = await blockfrost.getMempoolUtxosWithUnit(userAddr, registry.orderAssetId)
+  const mempoolUtxos = mempoolUtxosUntagged.map((utxo) => ({
+    ...utxo,
+    orderStatus: 'mempool',
+  }))
+  const onchainUtxosUntagged = await blockfrost.getUtxosWithUnit(registry.orderAddress, registry.orderAssetId)
+  const onchainUtxos = onchainUtxosUntagged.map((utxo) => ({
+    ...utxo,
+    orderStatus: 'onchain',
+  }))
   const utxosToProcess = [...mempoolUtxos, ...onchainUtxos]
   const orderUTxOs = await Promise.all(
     utxosToProcess.map(async (orderUtxo) => {
@@ -139,8 +147,16 @@ const getOrderUTxOs = async (userAddr: string) => {
       }
     }),
   )
-  chainDataCache.set('orderUTxOs', orderUTxOs)
-  return orderUTxOs
+  const uniqueMap = new Map<string, (typeof orderUTxOs)[0]>()
+  for (const utxo of orderUTxOs) {
+    const key = `${utxo.txHash}-${utxo.outputIndex}`
+    if (!uniqueMap.has(key)) {
+      uniqueMap.set(key, utxo)
+    }
+  }
+  const deduplicatedOrderUtxos = Array.from(uniqueMap.values())
+  chainDataCache.set('orderUTxOs', deduplicatedOrderUtxos)
+  return deduplicatedOrderUtxos
 }
 
 export const getChainTime = async () => {

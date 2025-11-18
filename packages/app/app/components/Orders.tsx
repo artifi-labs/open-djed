@@ -10,6 +10,8 @@ import { signAndSubmitTx } from '~/lib/signAndSubmitTx'
 import { useApiClient } from '~/context/ApiClientContext'
 import type { Wallet } from '~/context/WalletContext'
 
+type Order = OrderUTxO & { orderStatus: 'mempool' }
+
 export default function Orders({
   wallet,
   setToastProps,
@@ -23,7 +25,7 @@ export default function Orders({
     }>
   >
 }) {
-  const [orders, setOrders] = useState<OrderUTxO[]>([])
+  const [orders, setOrders] = useState<Order[]>([])
   const [tooltipText, setTooltipText] = useState('Click to copy full Tx Hash')
 
   const client = useApiClient()
@@ -141,7 +143,9 @@ export default function Orders({
                   className="bg-primary text-dark-text p-4 rounded-xl w-full max-w-2xl shadow space-y-2"
                 >
                   <div className="flex items-center justify-between">
-                    <p className="font-semibold text-lg">Order #{index + 1}</p>
+                    <p className="font-semibold text-lg">
+                      Order #{index + 1} - {order.orderStatus}
+                    </p>
                     <Button
                       className="bg-red-400"
                       onClick={() => handleCancelOrder(order.txHash, order.outputIndex)}
