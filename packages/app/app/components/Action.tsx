@@ -14,6 +14,7 @@ import { AppError } from '@open-djed/api/src/errors'
 import Tooltip from './Tooltip'
 import { SkeletonWrapper } from './SkeletonWrapper'
 import { getWalletData } from '~/lib/getWalletData'
+import { signAndSubmitTx } from '~/lib/signAndSubmitTx'
 
 type ActionProps = {
   action: ActionType
@@ -61,39 +62,8 @@ export const Action = ({ action, token, onActionStart, onActionComplete }: Actio
       }
 
       const txCbor = await response.text()
-      console.log('Unsigned transaction CBOR: ', txCbor)
 
-      const signature = await wallet.signTx(txCbor)
-      console.log('Signature: ', signature)
-
-      const tx = Transaction.from_cbor_hex(txCbor)
-      const body = tx.body()
-      const witnessSet = tx.witness_set()
-      witnessSet.add_all_witnesses(TransactionWitnessSet.from_cbor_hex(signature))
-
-      const signedTxCbor = Transaction.new(body, witnessSet, true).to_cbor_hex()
-      console.log('Signed transaction CBOR: ', signedTxCbor)
-
-      const txRes = await client.api['submit-tx'].$post({
-        json: { txCbor: signedTxCbor },
-      })
-
-      if (!txRes.ok) {
-        let errorMessage = `Request failed with status ${txRes.status}`
-
-        try {
-          const errorBody = (await txRes.json()) as { message?: string; error?: string }
-          errorMessage = errorBody?.message || errorBody?.error || errorMessage
-        } catch {
-          const text = await txRes.text()
-          if (text) errorMessage = text
-        }
-
-        throw new AppError(errorMessage)
-      }
-
-      const txHash = await txRes.text()
-      if (!txHash) throw new AppError('Transaction submitted, but no hash was returned.')
+      const txHash = await signAndSubmitTx(client, wallet, txCbor, Transaction, TransactionWitnessSet)
 
       refreshWallet()
 

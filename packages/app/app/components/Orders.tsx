@@ -62,7 +62,7 @@ export default function Orders({
         throw new AppError(errorData.message)
       }
       const txCbor = await response.text()
-      const txHash = await signAndSubmitTx(wallet, txCbor, Transaction, TransactionWitnessSet)
+      const txHash = await signAndSubmitTx(client, wallet, txCbor, Transaction, TransactionWitnessSet)
       setToastProps({ message: `Order cancelation submitted: ${txHash}`, type: 'success', show: true })
     } catch (err) {
       console.error('Action failed:', err)
