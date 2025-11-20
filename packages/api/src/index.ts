@@ -122,33 +122,65 @@ export const getOracleUTxO = async () => {
   return oracleUTxO
 }
 
+type OrderStatus = 'mempool' | 'onchain'
+
+type CustomOrderUTxO = OrderUTxO & {
+  orderStatus: OrderStatus
+  cancelled: boolean
+}
+
 const getOrderUTxOs = async (userAddr: string) => {
   const cached = chainDataCache.get<OrderUTxO[]>('orderUTxOs')
   if (cached) return cached
-  const mempoolUtxosUntagged = await blockfrost.getMempoolUtxosWithUnit(userAddr, registry.orderAssetId)
+
+  const mempoolUtxosUntagged = await blockfrost.getMempoolUtxosByAddress(userAddr)
   const mempoolUtxos = mempoolUtxosUntagged.map((utxo) => ({
     ...utxo,
-    orderStatus: 'mempool',
+    orderStatus: 'mempool' as OrderStatus,
   }))
   const onchainUtxosUntagged = await blockfrost.getUtxosWithUnit(registry.orderAddress, registry.orderAssetId)
   const onchainUtxos = onchainUtxosUntagged.map((utxo) => ({
     ...utxo,
-    orderStatus: 'onchain',
+    orderStatus: 'onchain' as OrderStatus,
   }))
+
   const utxosToProcess = [...mempoolUtxos, ...onchainUtxos]
-  const orderUTxOs = await Promise.all(
-    utxosToProcess.map(async (orderUtxo) => {
-      const rawDatum =
-        orderUtxo.datum ?? (orderUtxo.datumHash ? await blockfrost.getDatum(orderUtxo.datumHash) : undefined)
+
+  const orderUtxos: CustomOrderUTxO[] = []
+  const cancellationTxHashes = new Set<string>()
+
+  for (const utxo of utxosToProcess) {
+    const hasOrderTicket = Object.keys(utxo.assets).some((asset) => asset.includes(registry.orderAssetId))
+
+    if (hasOrderTicket) {
+      const rawDatum = utxo.datum ?? (utxo.datumHash ? await blockfrost.getDatum(utxo.datumHash) : undefined)
       if (!rawDatum) throw new Error(`Couldn't get order datum.`)
-      return {
-        ...orderUtxo,
+
+      orderUtxos.push({
+        ...utxo,
         orderDatum: Data.from(rawDatum, OrderDatum),
+        cancelled: false,
+      })
+    } else if (utxo.datum) {
+      const txHashMatch = utxo.datum.match(/5820([a-f0-9]{64})/i)
+      if (txHashMatch && txHashMatch[1]) {
+        cancellationTxHashes.add(txHashMatch[1])
       }
-    }),
-  )
-  const uniqueMap = new Map<string, (typeof orderUTxOs)[0]>()
-  for (const utxo of orderUTxOs) {
+    }
+  }
+
+  const processedOrderUtxos = orderUtxos.map((utxo) => {
+    if (cancellationTxHashes.has(utxo.txHash)) {
+      return {
+        ...utxo,
+        cancelled: true,
+      }
+    }
+    return utxo
+  })
+
+  const uniqueMap = new Map<string, OrderUTxO>()
+  for (const utxo of processedOrderUtxos) {
     const key = `${utxo.txHash}-${utxo.outputIndex}`
     if (!uniqueMap.has(key)) {
       uniqueMap.set(key, utxo)

@@ -10,11 +10,12 @@ import { signAndSubmitTx } from '~/lib/signAndSubmitTx'
 import { useApiClient } from '~/context/ApiClientContext'
 import type { Wallet } from '~/context/WalletContext'
 
-type Order = OrderUTxO & { orderStatus: 'mempool' }
+type Order = OrderUTxO & { orderStatus: 'mempool' | 'onchain'; cancelled: boolean }
 
 export default function Orders({
   wallet,
   setToastProps,
+  refreshWallet,
 }: {
   wallet: Wallet
   setToastProps: React.Dispatch<
@@ -24,6 +25,7 @@ export default function Orders({
       show: boolean
     }>
   >
+  refreshWallet: () => Promise<void>
 }) {
   const [orders, setOrders] = useState<Order[]>([])
   const [tooltipText, setTooltipText] = useState('Click to copy full Tx Hash')
@@ -49,7 +51,7 @@ export default function Orders({
 
   useEffect(() => {
     fetchOrders().catch((e) => console.error(e))
-  }, [wallet])
+  }, [])
 
   const handleCancelOrder = async (orderTx: string, outIndex: number) => {
     const { Transaction, TransactionWitnessSet } = await import('@dcspark/cardano-multiplatform-lib-browser')
@@ -66,6 +68,7 @@ export default function Orders({
       const txCbor = await response.text()
       const txHash = await signAndSubmitTx(client, wallet, txCbor, Transaction, TransactionWitnessSet)
       setToastProps({ message: `Order cancelation submitted: ${txHash}`, type: 'success', show: true })
+      await refreshWallet()
     } catch (err) {
       console.error('Action failed:', err)
       if (err instanceof AppError) {
@@ -157,6 +160,13 @@ export default function Orders({
                     <span className="font-bold text-xl">{actionType}</span>
                     <span>{creationDate}</span>
                   </div>
+                  <p className="text-md">
+                    {order.orderStatus === 'onchain'
+                      ? order.cancelled
+                        ? 'Order cancellation in mempool'
+                        : 'Order waiting processing'
+                      : ''}
+                  </p>
                   <p className="text-md">{conversionLine}</p>
 
                   <Tooltip

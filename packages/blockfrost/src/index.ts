@@ -5,7 +5,6 @@ import {
   type EvalRedeemer,
   type Script,
   type Transaction,
-  type Unit,
   type UTxO,
 } from '@lucid-evolution/core-types'
 import packageJson from '../../cli/package.json' with { type: 'json' }
@@ -78,7 +77,7 @@ export class Blockfrost extends Lucid.Blockfrost {
     return evalRedeemers
   }
 
-  async getMempoolUtxosWithUnit(addressOrCredential: Address | Credential, unit: Unit): Promise<UTxO[]> {
+  async getMempoolUtxosByAddress(addressOrCredential: Address | Credential): Promise<UTxO[]> {
     const queryPredicate = (() => {
       if (typeof addressOrCredential === 'string') return addressOrCredential
       const credentialBech32 =
@@ -117,19 +116,17 @@ export class Blockfrost extends Lucid.Blockfrost {
 
       const outputs = mempoolTx.outputs || []
 
-      const filteredOutputs = outputs
-        .filter((out) => out.amount.some((amt) => amt.unit === unit))
-        .map((out) => ({
-          txHash: tx_hash,
-          outputIndex: out.output_index,
-          address: out.address,
-          assets: Object.fromEntries(out.amount.map(({ unit: u, quantity }) => [u, BigInt(quantity)])),
-          datumHash: (!out.inline_datum && out.data_hash) || undefined,
-          datum: out.inline_datum || undefined,
-          scriptRef: out.reference_script_hash
-            ? ({ type: 'PlutusV3', script: out.reference_script_hash } as Script)
-            : null,
-        }))
+      const filteredOutputs = outputs.map((out) => ({
+        txHash: tx_hash,
+        outputIndex: out.output_index,
+        address: out.address,
+        assets: Object.fromEntries(out.amount.map(({ unit: u, quantity }) => [u, BigInt(quantity)])),
+        datumHash: (!out.inline_datum && out.data_hash) || undefined,
+        datum: out.inline_datum || undefined,
+        scriptRef: out.reference_script_hash
+          ? ({ type: 'PlutusV3', script: out.reference_script_hash } as Script)
+          : null,
+      }))
 
       result.push(...filteredOutputs)
     }

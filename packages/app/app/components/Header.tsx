@@ -18,7 +18,7 @@ const SUPPORTED_WALLET_IDS = ['eternl', 'lace', 'vespr', 'begin', 'gerowallet']
 export const Header = () => {
   const [isWalletSidebarOpen, setIsWalletSidebarOpen] = useState(false)
   const { network, config } = useEnv()
-  const { wallet, wallets, connect, detectWallets, disconnect } = useWallet()
+  const { wallet, wallets, connect, detectWallets, disconnect, refreshWallet } = useWallet()
   const [menuOpen, setMenuOpen] = useState(false)
   const [showBalance, setShowBalance] = useLocalStorage<boolean | null>('showBalance', DEFAULT_SHOW_BALANCE)
   const [toastProps, setToastProps] = useState<{ message: string; type: 'success' | 'error'; show: boolean }>(
@@ -265,7 +265,7 @@ export const Header = () => {
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="flex flex-col justify-start items-start gap-4 w-full">
-                  <Orders wallet={wallet} setToastProps={setToastProps} />
+                  <Orders wallet={wallet} setToastProps={setToastProps} refreshWallet={refreshWallet} />
                 </div>
               </div>
             </div>
