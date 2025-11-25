@@ -29,8 +29,8 @@ export const Input = ({
         <input
           id={id}
           type={type}
-          className={`border-2 border-primary rounded-md px-4 py-2 text-lg w-full focus:outline-none disabled:bg-gray-100 dark:disabled:bg-gray-700 ${
-            error ? 'text-red-500 border-red-500' : ''
+          className={`no-spinner border-2 border-primary rounded-md px-4 py-2 text-lg w-full focus:outline-none disabled:bg-gray-100 dark:disabled:bg-gray-700 ${
+            error ? 'text-red-500' : ''
           }`}
           value={value}
           onChange={handleInputChange}
