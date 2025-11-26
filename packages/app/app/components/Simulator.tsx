@@ -259,13 +259,8 @@ const Simulator = () => {
             </div>
           </div>
         </div>
-        <ShenYieldChart
-        // shenAmount={shenAmount}
-        // buyDate={buyDate}
-        // sellDate={sellDate}
-        // buyAdaPrice={buyAdaPrice}
-        // sellAdaPrice={sellAdaPrice}
-        />
+        <ShenYieldChart toUSD={toUSD} buyDate={buyDate} sellDate={sellDate} initialHoldings={100} totalPnLUSD={totalPnL} totalPnLADA={totalPnL} />
+
       </div>
       <Toast
         message={toastProps.message}

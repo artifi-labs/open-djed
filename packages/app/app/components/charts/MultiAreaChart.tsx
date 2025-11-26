@@ -23,6 +23,7 @@ interface CustomTooltipProps {
   label?: string
   xKey: string
   tickFormatter?: (value: number) => string
+  tooltipFormatter?: (value: number, dataKey: string, payload: any) => string
 }
 
 type MultiAreaChartProps = {
@@ -38,9 +39,10 @@ type MultiAreaChartProps = {
   interval?: number
   areas: AreaSeries[]
   tickFormatter?: (value: number) => string
+  tooltipFormatter?: (value: number, dataKey: string, payload: any) => string
 }
 
-const CustomTooltip = ({ active, payload, label, xKey, tickFormatter }: CustomTooltipProps) => {
+const CustomTooltip = ({ active, payload, label, xKey, tickFormatter, tooltipFormatter }: CustomTooltipProps) => {
   if (active && payload && payload.length) {
     return (
       <div className="border-primary bg-light-foreground dark:bg-dark-foreground flex w-[220px] flex-col gap-[4px] rounded-[4px] border p-[8px]">
@@ -54,7 +56,13 @@ const CustomTooltip = ({ active, payload, label, xKey, tickFormatter }: CustomTo
               <div className="h-2 w-2 rounded-full" style={{ backgroundColor: entry.stroke }} />
               <p className="text-sm ">{entry.dataKey}</p>
             </div>
-            <p className="text-sm">{tickFormatter ? tickFormatter(entry.value) : entry.value}</p>
+            <p className="text-sm">
+              {tooltipFormatter 
+                ? tooltipFormatter(entry.value, entry.dataKey, entry.payload)
+                : tickFormatter 
+                ? tickFormatter(entry.value) 
+                : entry.value}
+            </p>
           </div>
         ))}
       </div>
@@ -76,6 +84,7 @@ export function MultiAreaChart({
   interval = 2,
   areas,
   tickFormatter,
+  tooltipFormatter,
 }: MultiAreaChartProps) {
   return (
     <div className="flex h-full w-full flex-col gap-[24px]">
@@ -125,7 +134,7 @@ export function MultiAreaChart({
             tick={{ fontSize: 12, fontFamily: 'Poppins', fill: '#4885c7', fontWeight: 400 }}
           />
 
-          <Tooltip content={<CustomTooltip xKey={xKey} tickFormatter={tickFormatter} />} />
+          <Tooltip content={<CustomTooltip xKey={xKey} tickFormatter={tickFormatter} tooltipFormatter={tooltipFormatter} />} />
 
           {areas.map((area, index) => (
             <Area
