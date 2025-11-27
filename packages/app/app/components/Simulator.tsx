@@ -38,7 +38,6 @@ const Simulator = () => {
 
   const buyFees = sumValues(mintData?.operatorFee ?? {}, mintData?.actionFee ?? {})
   const sellFees = sumValues(burnData?.operatorFee ?? {}, burnData?.actionFee ?? {})
-  const sellFeesADA = (sellFees.ADA ?? 0) + (data?.to ? data?.to({ SHEN: sellFees.SHEN ?? 0 }, 'ADA') : 0)
 
   const stakingRewards = expectedStakingReturn(
     data?.to({ SHEN: shenAmount }, 'ADA') ?? 0,
