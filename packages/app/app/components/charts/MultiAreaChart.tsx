@@ -23,7 +23,7 @@ interface CustomTooltipProps {
   label?: string
   xKey: string
   tickFormatter?: (value: number) => string
-  tooltipFormatter?: (value: number, dataKey: string, payload: any) => string
+  tooltipFormatter?: (value: number, dataKey: string, payload: Record<string, unknown>) => string
 }
 
 type MultiAreaChartProps = {
@@ -39,13 +39,20 @@ type MultiAreaChartProps = {
   interval?: number
   areas: AreaSeries[]
   tickFormatter?: (value: number) => string
-  tooltipFormatter?: (value: number, dataKey: string, payload: any) => string
+  tooltipFormatter?: (value: number, dataKey: string, payload: Record<string, unknown>) => string
 }
 
-const CustomTooltip = ({ active, payload, label, xKey, tickFormatter, tooltipFormatter }: CustomTooltipProps) => {
+const CustomTooltip = ({
+  active,
+  payload,
+  label,
+  xKey,
+  tickFormatter,
+  tooltipFormatter,
+}: CustomTooltipProps) => {
   if (active && payload && payload.length) {
     return (
-      <div className="border-primary bg-light-foreground dark:bg-dark-foreground flex w-[220px] flex-col gap-[4px] rounded-[4px] border p-[8px]">
+      <div className="border-primary bg-light-foreground dark:bg-dark-foreground flex w-[250px] flex-col gap-[4px] rounded-[4px] border p-[8px]">
         <div className="flex flex-row">
           <p className="flex-1 text-sm capitalize">{xKey}</p>
           <p className="text-sm ">{label}</p>
@@ -57,11 +64,11 @@ const CustomTooltip = ({ active, payload, label, xKey, tickFormatter, tooltipFor
               <p className="text-sm ">{entry.dataKey}</p>
             </div>
             <p className="text-sm">
-              {tooltipFormatter 
+              {tooltipFormatter
                 ? tooltipFormatter(entry.value, entry.dataKey, entry.payload)
-                : tickFormatter 
-                ? tickFormatter(entry.value) 
-                : entry.value}
+                : tickFormatter
+                  ? tickFormatter(entry.value)
+                  : entry.value}
             </p>
           </div>
         ))}
@@ -90,12 +97,12 @@ export function MultiAreaChart({
     <div className="flex h-full w-full flex-col gap-[24px]">
       {/* Title and Legend Row */}
       <div className="flex flex-col items-start justify-between gap-4 lg:items-start xl:flex-row">
-        <h3 className="flex-1 text-lg font-medium xl:mr-8 xl:flex-none">{title}</h3>
+        <h3 className="text-primary flex-1 text-lg font-medium xl:mr-8 xl:flex-none">{title}</h3>
         <div className="flex flex-wrap items-center justify-center gap-2">
           {areas.map((area: AreaSeries, index: number) => (
             <div key={index} className="flex min-w-0 items-center gap-1">
               <div className="h-3 w-3 shrink-0 rounded-full" style={{ backgroundColor: area.strokeColor }} />
-              <span className="truncate text-sm font-medium">{area.dataKey}</span>
+              <span className="text-secondary truncate text-sm font-medium">{area.dataKey}</span>
             </div>
           ))}
         </div>
@@ -120,7 +127,7 @@ export function MultiAreaChart({
             interval={interval}
             axisLine={false}
             tickLine={false}
-            tick={{ dy: 12, fontSize: 12, fontFamily: 'Poppins', fill: '#4885c7', fontWeight: 400 }}
+            tick={{ dy: 12, fontSize: 12, fontFamily: 'Poppins', fill: '#D0D0D0', fontWeight: 400 }}
           />
 
           <YAxis
@@ -131,10 +138,14 @@ export function MultiAreaChart({
             tickFormatter={tickFormatter}
             axisLine={false}
             tickLine={false}
-            tick={{ fontSize: 12, fontFamily: 'Poppins', fill: '#4885c7', fontWeight: 400 }}
+            tick={{ fontSize: 12, fontFamily: 'Poppins', fill: '#D0D0D0', fontWeight: 400 }}
           />
 
-          <Tooltip content={<CustomTooltip xKey={xKey} tickFormatter={tickFormatter} tooltipFormatter={tooltipFormatter} />} />
+          <Tooltip
+            content={
+              <CustomTooltip xKey={xKey} tickFormatter={tickFormatter} tooltipFormatter={tooltipFormatter} />
+            }
+          />
 
           {areas.map((area, index) => (
             <Area

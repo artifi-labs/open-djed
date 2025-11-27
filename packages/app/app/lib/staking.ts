@@ -1,4 +1,4 @@
-type CreditEntry = {
+export type CreditEntry = {
   date: string // ISO date
   daysSinceLastCredit: number
   reward: number

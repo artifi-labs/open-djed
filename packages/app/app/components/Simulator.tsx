@@ -36,6 +36,10 @@ const Simulator = () => {
   const mintData = data?.tokenActionData('SHEN', 'Mint', shenAmount ?? 0)
   const burnData = data?.tokenActionData('SHEN', 'Burn', shenAmount ?? 0)
 
+  const buyFees = sumValues(mintData?.operatorFee ?? {}, mintData?.actionFee ?? {})
+  const sellFees = sumValues(burnData?.operatorFee ?? {}, burnData?.actionFee ?? {})
+  const sellFeesADA = (sellFees.ADA ?? 0) + (data?.to ? data?.to({ SHEN: sellFees.SHEN ?? 0 }, 'ADA') : 0)
+
   const stakingRewards = expectedStakingReturn(
     data?.to({ SHEN: shenAmount }, 'ADA') ?? 0,
     buyDate,
@@ -48,13 +52,11 @@ const Simulator = () => {
 
   const initialADAHoldings =
     (mintData?.toReceive.ADA ?? 0) + (data?.to ? data?.to({ SHEN: mintData?.toReceive.SHEN ?? 0 }, 'ADA') : 0)
-  console.log('initial holdings: ', initialADAHoldings)
   const finalADAHoldings =
     (burnData?.toReceive.ADA ?? 0) +
     stakingRewards.totalCreditedRewards +
     stakingRewards.totalPendingRewards +
     (feesShare ?? 0)
-  console.log('final holdings: ', finalADAHoldings)
   const valueAtBuy = (toUSD ? toUSD({ ADA: initialADAHoldings }) : 0) * (buyAdaPrice ?? 0)
   const valueAtSell = (toUSD ? toUSD(burnData?.toReceive ?? {}) : 0) * (sellAdaPrice ?? 0)
   const adaPnL = valueAtSell - valueAtBuy
@@ -172,16 +174,9 @@ const Simulator = () => {
                 <Tooltip text={t('simulator.system.tooltips.first')} />
               </div>
               <SkeletonWrapper isPending={isPending}>
-                <p className="text-lg flex justify-center items-center">
-                  {formatValue(sumValues(mintData?.operatorFee ?? {}, mintData?.actionFee ?? {}) ?? {})}
-                </p>
+                <p className="text-lg flex justify-center items-center">{formatValue(buyFees ?? {})}</p>
                 <p className="text-xs text-gray-700 dark:text-gray-400">
-                  {toUSD
-                    ? `$${formatNumber(
-                        toUSD(sumValues(mintData?.operatorFee ?? {}, mintData?.actionFee ?? {}) ?? {}),
-                        { maximumFractionDigits: 2 },
-                      )}`
-                    : '-'}
+                  {toUSD ? `$${formatNumber(toUSD(buyFees ?? {}), { maximumFractionDigits: 2 })}` : '-'}
                 </p>
               </SkeletonWrapper>
             </div>
@@ -191,16 +186,9 @@ const Simulator = () => {
                 <Tooltip text={t('simulator.system.tooltips.second')} />
               </div>
               <SkeletonWrapper isPending={isPending}>
-                <p className="text-lg flex justify-center items-center">
-                  {formatValue(sumValues(burnData?.operatorFee ?? {}, burnData?.actionFee ?? {}) ?? {})}
-                </p>
+                <p className="text-lg flex justify-center items-center">{formatValue(sellFees ?? {})}</p>
                 <p className="text-xs text-gray-700 dark:text-gray-400">
-                  {toUSD
-                    ? `$${formatNumber(
-                        toUSD(sumValues(burnData?.operatorFee ?? {}, burnData?.actionFee ?? {}) ?? {}),
-                        { maximumFractionDigits: 2 },
-                      )}`
-                    : '-'}
+                  {toUSD ? `$${formatNumber(toUSD(sellFees ?? {}), { maximumFractionDigits: 2 })}` : '-'}
                 </p>
               </SkeletonWrapper>
             </div>
@@ -269,11 +257,15 @@ const Simulator = () => {
           </div>
         </div>
         <ShenYieldChart
-          toUSD={toUSD}
           buyDate={buyDate}
           sellDate={sellDate}
           initialHoldings={initialADAHoldings}
-          finalHoldings={finalADAHoldings ?? 0}
+          finalHoldings={finalADAHoldings}
+          buyPrice={buyAdaPrice ?? 0}
+          sellPrice={sellAdaPrice ?? 0}
+          buyFees={buyFees.ADA ?? 0}
+          sellFees={(sellFees.ADA ?? 0) + (data?.to ? data.to({ SHEN: sellFees.SHEN ?? 0 }, 'ADA') : 0)}
+          stakingRewards={stakingRewards.credits}
         />
       </div>
       <Toast
