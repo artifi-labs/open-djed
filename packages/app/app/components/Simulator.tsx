@@ -46,7 +46,16 @@ const Simulator = () => {
   )
   const feesShare = data?.to({ SHEN: (shenAmount ?? 0) * ((Math.random() * (3 - 2) + 2) / 100) }, 'ADA')
 
-  const valueAtBuy = (toUSD ? toUSD(mintData?.totalCost ?? {}) : 0) * (buyAdaPrice ?? 0)
+  const initialADAHoldings =
+    (mintData?.toReceive.ADA ?? 0) + (data?.to ? data?.to({ SHEN: mintData?.toReceive.SHEN ?? 0 }, 'ADA') : 0)
+  console.log('initial holdings: ', initialADAHoldings)
+  const finalADAHoldings =
+    (burnData?.toReceive.ADA ?? 0) +
+    stakingRewards.totalCreditedRewards +
+    stakingRewards.totalPendingRewards +
+    (feesShare ?? 0)
+  console.log('final holdings: ', finalADAHoldings)
+  const valueAtBuy = (toUSD ? toUSD({ ADA: initialADAHoldings }) : 0) * (buyAdaPrice ?? 0)
   const valueAtSell = (toUSD ? toUSD(burnData?.toReceive ?? {}) : 0) * (sellAdaPrice ?? 0)
   const adaPnL = valueAtSell - valueAtBuy
   const adaPnLPercentage = valueAtBuy > 0 ? (adaPnL / valueAtBuy) * 100 : 0
@@ -259,8 +268,13 @@ const Simulator = () => {
             </div>
           </div>
         </div>
-        <ShenYieldChart toUSD={toUSD} buyDate={buyDate} sellDate={sellDate} initialHoldings={100} totalPnLUSD={totalPnL} totalPnLADA={totalPnL} />
-
+        <ShenYieldChart
+          toUSD={toUSD}
+          buyDate={buyDate}
+          sellDate={sellDate}
+          initialHoldings={initialADAHoldings}
+          finalHoldings={finalADAHoldings ?? 0}
+        />
       </div>
       <Toast
         message={toastProps.message}
