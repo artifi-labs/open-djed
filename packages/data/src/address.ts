@@ -1,5 +1,5 @@
 import { Data, credentialToAddress, getAddressDetails } from '@lucid-evolution/lucid'
-import type { Network } from '@reverse-djed/registry'
+import type { Network } from '@open-djed/registry'
 
 // TODO: Support none-"regular" address formats (without stake credential, script addresses, etc).
 export const AddressSchema = Data.Object({

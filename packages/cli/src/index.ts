@@ -6,12 +6,12 @@ import {
   createBurnDjedOrder,
   createMintShenOrder,
   cancelOrderByOwner,
-} from '@reverse-djed/txs'
-import { registryByNetwork } from '@reverse-djed/registry'
-import { Blockfrost } from '@reverse-djed/blockfrost'
+} from '@open-djed/txs'
+import { registryByNetwork } from '@open-djed/registry'
+import { Blockfrost } from '@open-djed/blockfrost'
 import { env } from './env'
-import { parseOutRef } from '@reverse-djed/txs'
-import { OracleDatum, OrderDatum, PoolDatum } from '@reverse-djed/data'
+import { parseOutRef } from '@open-djed/txs'
+import { OracleDatum, OrderDatum, PoolDatum } from '@open-djed/data'
 import {
   djedADABurnRate,
   djedADAMintRate,
@@ -21,8 +21,8 @@ import {
   reserveRatio,
   shenADABurnRate,
   shenADAMintRate,
-} from '@reverse-djed/math'
-import { processMintDjedOrder } from '@reverse-djed/txs/src/process-mint-djed-order'
+} from '@open-djed/math'
+import { processMintDjedOrder } from '@open-djed/txs/src/process-mint-djed-order'
 
 console.log(
   `Initializing Lucid with Blockfrost for network "${env.NETWORK}" using project id "${env.BLOCKFROST_PROJECT_ID.slice(8)}...".`,

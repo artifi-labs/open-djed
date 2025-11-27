@@ -1,5 +1,6 @@
 import { useLoaderData } from 'react-router'
 import type { LoaderData } from '~/types/loader'
+import { useTranslation, Trans } from 'react-i18next'
 
 export function meta() {
   const { network } = useLoaderData<LoaderData>()
@@ -15,68 +16,64 @@ export function meta() {
 }
 
 export default function PrivacyPage() {
+  const { t } = useTranslation()
+
+  const month = t('months.june')
+  const day = 3
+  const year = 2025
+  const effectiveDate = `${month} ${day}, ${year}`
+
   return (
     <div className="flex flex-col gap-10 justify-center items-center w-full p-8">
       <div className="flex flex-col text-center">
-        <h1 className="text-4xl font-bold">Privacy Policy</h1>
-        <p className="text-sm text-muted-foreground mt-1">Effective Date: June 3, 2025</p>
+        <h1 className="text-4xl font-bold">{t('privacy.title')}</h1>
+        <p className="text-sm text-muted-foreground mt-1">
+          {t('privacy.effectiveDate', { date: effectiveDate })}
+        </p>
       </div>
 
       <div className="w-full max-w-4xl flex flex-col gap-6 text-base leading-relaxed">
-        <p>
-          Artifex Labs is committed to privacy and transparency. This Privacy Policy outlines what data we
-          collect and how it is used.
-        </p>
+        <p>{t('privacy.intro')}</p>
 
         <section>
-          <h2 className="text-xl font-semibold mb-2">1. Data Collection</h2>
+          <h2 className="text-xl font-semibold mb-2">{t('privacy.sections.dataCollection')}</h2>
           <p>
-            We do <strong>not</strong> collect any personal data.
+            <Trans i18nKey="privacy.paragraphs.noPersonalData" components={{ strong: <strong /> }} />
           </p>
         </section>
 
         <section>
-          <h3 className="text-lg font-medium mb-1">Wallets</h3>
-          <p>
-            When users interact with the app using their Cardano wallet, we interact only with the wallet
-            interface via the CIP-30 standard. We do not receive or store your private keys. We reserve the
-            right to store your addresses and transactions for analytical purposes to allow us to learn from
-            your usage of the app and to improve it based on this information.
-          </p>
+          <h3 className="text-lg font-medium mb-1">{t('privacy.sections.wallets')}</h3>
+          <p>{t('privacy.paragraphs.wallet')}</p>
         </section>
 
         <section>
-          <h2 className="text-xl font-semibold mb-2">2. Cookies</h2>
+          <h2 className="text-xl font-semibold mb-2">{t('privacy.sections.cookies')}</h2>
           <p>
-            We use cookies <strong>only</strong> to store user preferences, such as:
+            <Trans i18nKey="privacy.paragraphs.cookies" components={{ strong: <strong /> }} />
           </p>
           <ul className="list-disc list-inside space-y-1">
-            <li>Light/dark theme selection</li>
-            <li>Network choice (e.g., mainnet or preprod)</li>
+            <li>{t('privacy.list.theme')}</li>
+            <li>{t('privacy.list.network')}</li>
           </ul>
           <p>
-            These cookies are <strong>not used for tracking</strong> and do <strong>not</strong> store any
-            personally identifiable information.
+            <Trans i18nKey="privacy.paragraphs.cookiesDetails" components={{ strong: <strong /> }} />
           </p>
         </section>
 
         <section>
-          <h2 className="text-xl font-semibold mb-2">3. Analytics and Telemetry</h2>
+          <h2 className="text-xl font-semibold mb-2">{t('privacy.sections.analytics')}</h2>
+          <p>{t('privacy.paragraphs.analytics1')}</p>
           <p>
-            We use PostHog to collect limited analytics and application telemetry. This helps us understand
-            how the app is used and identify bugs or performance issues.
+            <Trans i18nKey="privacy.paragraphs.analytics2" components={{ strong: <strong /> }} />
           </p>
-          <p>
-            Data collected by PostHog does <strong>not</strong> include personally identifiable information.
-            We do <strong>not</strong> store wallet addresses, names, emails, or any user credentials.
-          </p>
-          <p>All analytics are used strictly for the purpose of improving the application experience.</p>
+          <p>{t('privacy.paragraphs.analytics3')}</p>
         </section>
 
         <section>
-          <h2 className="text-xl font-semibold mb-2">4. Open Source</h2>
+          <h2 className="text-xl font-semibold mb-2">{t('privacy.sections.openSource')}</h2>
           <p>
-            This application is open source and licensed under the{' '}
+            {t('privacy.paragraphs.openSource')}{' '}
             <a
               href="https://www.gnu.org/licenses/gpl-3.0.html"
               target="_blank"
@@ -88,35 +85,32 @@ export default function PrivacyPage() {
             .
           </p>
           <p>
-            Source code:{' '}
+            {t('privacy.paragraphs.sourceCode')}{' '}
             <a
-              href="https://github.com/artifex-labs/reverse-djed"
+              href="https://github.com/artifi-labs/open-djed"
               target="_blank"
               rel="noopener noreferrer"
               className="underline text-primary"
             >
-              github.com/artifex-labs/reverse-djed
+              github.com/artifi-labs/open-djed
             </a>
           </p>
         </section>
 
         <section>
-          <h2 className="text-xl font-semibold mb-2">5. No Authentication</h2>
-          <p>
-            The application does not use or require any user accounts, logins, or email registration. Access
-            is anonymous.
-          </p>
+          <h2 className="text-xl font-semibold mb-2">{t('privacy.sections.authentication')}</h2>
+          <p>{t('privacy.paragraphs.authentication')}</p>
         </section>
 
         <section>
-          <h2 className="text-xl font-semibold mb-2">6. Updates to This Policy</h2>
-          <p>We may revise this policy over time. Updates will be posted here with a new effective date.</p>
+          <h2 className="text-xl font-semibold mb-2">{t('privacy.sections.policy')}</h2>
+          <p> {t('privacy.paragraphs.policy')}</p>
         </section>
 
         <section>
-          <h2 className="text-xl font-semibold mb-2">7. Contact</h2>
+          <h2 className="text-xl font-semibold mb-2">{t('privacy.sections.contact')}</h2>
           <p>
-            If you have questions about this Privacy Policy, contact us at:{' '}
+            {t('privacy.paragraphs.contact')}{' '}
             <a
               href="https://discord.gg/MhYP7w8n8p"
               target="_blank"

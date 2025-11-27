@@ -1,8 +1,12 @@
 {
-  "name": "@reverse-djed/registry",
+  "name": "@open-djed/registry",
   "version": "0.0.1",
   "main": "src/index.ts",
   "scripts": {},
   "type": "module",
-  "dependencies": {}
+  "dependencies": {
+    "@open-djed/math": "workspace:*",
+    "@lucid-evolution/lucid": "^0.4.29",
+    "zod": "^3.24.3"
+  }
 }

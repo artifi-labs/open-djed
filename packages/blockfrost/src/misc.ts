@@ -28,7 +28,7 @@ export const getUTxOsByAddressWithUnit = (config: BlockfrostConfig, address: str
     headers: {
       ...(config.projectId ? { project_id: config.projectId } : {}),
       'Content-Type': 'application/json',
-      'User-Agent': 'reverse-djed',
+      'User-Agent': 'open-djed',
     },
   }).then(async (res) => UTxOsByAddressWithUnitSchema.parse(await res.json()))
 
@@ -41,6 +41,6 @@ export const getDatumCBORByHash = (config: BlockfrostConfig, hash: string) =>
     headers: {
       ...(config.projectId ? { project_id: config.projectId } : {}),
       'Content-Type': 'application/json',
-      'User-Agent': 'reverse-djed',
+      'User-Agent': 'open-djed',
     },
   }).then(async (res) => CBORSchema.parse(await res.json()).cbor)

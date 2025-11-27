@@ -4,6 +4,7 @@ import type { LoaderData } from '~/types/loader'
 import { useLoaderData } from 'react-router'
 import Modal from '~/components/Modal'
 import { useEffect, useState } from 'react'
+import { useTranslation, Trans } from 'react-i18next'
 
 export function meta() {
   const { network } = useLoaderData<LoaderData>()
@@ -23,6 +24,7 @@ export function meta() {
 }
 
 export default function Home() {
+  const { t } = useTranslation()
   const [hideInfoModal, setHideInfoModal] = useState(false)
   const [openModal, setOpenModal] = useState(false)
 
@@ -50,10 +52,10 @@ export default function Home() {
       <div className="flex flex-col justify-center items-center gap-4">
         <div className="flex flex-row justify-center items-center gap-2 flex-wrap">
           <h1 className="text-5xl font-bold text-center">OPEN DJED</h1>
-          <p className="text-lg text-primary">stablecoin</p>
+          <p className="text-lg text-primary">{t('coin.stablecoin')}</p>
         </div>
         <span onClick={() => setOpenModal(true)} className="text-sm text-primary underline cursor-pointer">
-          What is Open DJED?
+          {t('home.whatIsOpenDjed')}
         </span>
       </div>
       <div className="w-full max-w-5xl flex flex-col rounded-md p-4 md:p-6 items-center gap-6">
@@ -68,52 +70,46 @@ export default function Home() {
       <Modal isOpen={openModal} onClose={() => setOpenModal(false)} title={`Welcome to Open DJED!`}>
         <div className="space-y-4 mt-4 text-lg leading-relaxed p-4">
           <p>
-            <strong>Open DJED</strong> is a transparent, community-driven web application for interacting with
-            the DJED algorithmic stablecoin protocol on <strong>Cardano</strong>—built without the barriers of
-            proprietary code.
+            <Trans i18nKey="home.openDjedDescription" components={{ strong: <strong /> }} />
           </p>
 
           <p>
-            Developed by <strong>Artifex Labs</strong>, Open DJED is the result of a deep reverse-engineering
-            effort of the original DJED application. We've recreated the user interface and interaction logic
-            while maintaining full protocol compatibility—then made everything open source for the entire
-            Cardano ecosystem to explore, audit, and improve.
+            <Trans i18nKey="home.openDjedDevelopment" components={{ strong: <strong /> }} />
           </p>
 
           <div className="space-y-2">
             <p className="font-semibold">
               <i className="fas fa-magnifying-glass text-primary mr-2"></i>
-              Why Open DJED?
+              {t('home.whyOpenDjed')}
             </p>
             <ul className="list-disc list-inside pl-2 space-y-1">
               <li>
                 <i className="fas fa-brain text-primary mr-2"></i>
-                <strong>Protocol-compatible</strong> – Same overcollateralized logic that powers DJED.
+                <Trans i18nKey="home.openDjedBenefits" components={{ strong: <strong /> }} />
               </li>
               <li>
                 <i className="fas fa-wrench text-primary mr-2"></i>
-                <strong>Fully open source</strong> – All code is auditable, forkable, and community-owned.
+                <Trans i18nKey="home.openDjedFeatures" components={{ strong: <strong /> }} />
               </li>
               <li>
                 <i className="fas fa-seedling text-primary mr-2"></i>
-                <strong>Community-first</strong> – Built for and by the Cardano community.
+                <Trans i18nKey="home.openDjedCommunity" components={{ strong: <strong /> }} />
               </li>
               <li>
                 <i className="fas fa-signal text-primary mr-2"></i>
-                <strong>Enhanced reliability</strong> – Alternative access during COTI app downtime or issues.
+                <Trans i18nKey="home.openDjedAccessibility" components={{ strong: <strong /> }} />
               </li>
               <li>
                 <i className="fas fa-earth-americas text-primary mr-2"></i>
-                <strong>Global accessibility</strong> – Available to users worldwide without geographic
-                restrictions.
+                <Trans i18nKey="home.openDjedGlobal" components={{ strong: <strong /> }} />
               </li>
               <li>
                 <i className="fas fa-receipt text-primary mr-2"></i>
-                <strong>Transparent fees</strong> – Follows COTI's fee structure transparently, no surcharges.
+                <Trans i18nKey="home.openDjedFees" components={{ strong: <strong /> }} />
               </li>
               <li>
                 <i className="fas fa-coins text-primary mr-2"></i>
-                <strong>Lower network fees</strong> – Optimized contracts reduce fees by ~0.1 ADA.
+                <Trans i18nKey="home.openDjedOptimizations" components={{ strong: <strong /> }} />
               </li>
             </ul>
           </div>
@@ -121,27 +117,19 @@ export default function Home() {
           <div>
             <p className="font-semibold">
               <i className="fas fa-compass text-primary mr-2"></i>
-              Our Mission
+              {t('home.ourMission')}
             </p>
             <div className="space-y-4">
               <p>
-                We built Open DJED to address critical accessibility challenges with the original COTI DJED
-                application. Recurring downtime, system issues, and geographic restrictions created barriers
-                for legitimate users seeking to interact with the DJED protocol. Open DJED provides an
-                alternative interface that eliminates these obstacles while maintaining full protocol
-                compatibility.
+                <Trans i18nKey="home.openDjedMission" components={{ strong: <strong /> }} />
               </p>
-
               <p>
-                <strong>Artifex Labs</strong> builds open-source, permissionless tools for the Cardano
-                ecosystem. Open DJED is our first major release—and we're only just getting started!
+                <Trans i18nKey="home.openDjedVision" components={{ strong: <strong /> }} />
               </p>
             </div>
           </div>
 
-          <p className="font-bold">
-            Join us in reshaping DeFi on Cardano—openly, transparently, and together.
-          </p>
+          <p className="font-bold">{t('home.joinUs')}</p>
 
           <div className="flex justify-end items-center mt-4">
             <input
@@ -152,7 +140,7 @@ export default function Home() {
               onChange={handleCheckboxChange}
             />
             <label htmlFor="hideInfoModal" className="text-sm">
-              Don’t show this again
+              {t('home.dontShowAgain')}
             </label>
           </div>
         </div>

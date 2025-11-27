@@ -1,4 +1,4 @@
-import type { JSX } from "react"
+import type { JSX } from 'react'
 
 interface FooterIconProps {
   label: string
@@ -9,26 +9,18 @@ interface FooterIconProps {
 }
 
 const sizeClasses = {
-  sm: "w-[16px] h-[16px] text-[16px]",
-  md: "w-[20px] h-[20px] text-[20px]",
-  lg: "w-[28px] h-[28px] text-[28px]",
+  sm: 'w-[16px] h-[16px] text-[16px]',
+  md: 'w-[20px] h-[20px] text-[20px]',
+  lg: 'w-[28px] h-[28px] text-[28px]',
 }
 
-const FooterIcon = ({
-  element,
-  lightIcon,
-  darkIcon,
-  label,
-  size = 'md',
-}: FooterIconProps) => {
+const FooterIcon = ({ element, lightIcon, darkIcon, label, size = 'md' }: FooterIconProps) => {
   const sizeClass = sizeClasses[size]
 
   return (
     <>
       {element ? (
-        <span className={`${sizeClass} inline-flex items-center justify-center`}>
-          {element}
-        </span>
+        <span className={`${sizeClass} inline-flex items-center justify-center`}>{element}</span>
       ) : darkIcon ? (
         <>
           <img

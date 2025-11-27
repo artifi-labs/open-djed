@@ -1,5 +1,5 @@
 import type { UTxO } from '@lucid-evolution/lucid'
-import { Rational, type OperatorFeeConfig, type RationalFields } from '@reverse-djed/math'
+import { Rational, type OperatorFeeConfig, type RationalFields } from '@open-djed/math'
 
 export type Registry = {
   operatorPKH: string

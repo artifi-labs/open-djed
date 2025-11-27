@@ -42,7 +42,10 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
           >
             <div className="border-b border-light-text dark:border-dark-text pb-2 sticky top-0 z-10 flex items-center justify-between">
               <h2 className="text-xl font-semibold">{title}</h2>
-              <button onClick={onClose} className="text-2xl font-semibold transition cursor-pointer hover:text-primary-hover">
+              <button
+                onClick={onClose}
+                className="text-2xl font-semibold transition cursor-pointer hover:text-primary-hover"
+              >
                 &times;
               </button>
             </div>

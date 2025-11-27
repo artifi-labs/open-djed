@@ -1,4 +1,5 @@
 import { useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useLocalStorage } from 'usehooks-ts'
 import { DEFAULT_SHOW_BALANCE, formatNumber } from '~/utils'
 
@@ -24,12 +25,13 @@ export const AmountInput = ({
   disabled = false,
   unit = 'ADA',
 }: AmountInputProps) => {
-  const showActionBalance = useLocalStorage<boolean | null>('showBalance', DEFAULT_SHOW_BALANCE)
+  const [showBalance] = useLocalStorage<boolean | null>('showBalance', DEFAULT_SHOW_BALANCE)
+  const { t } = useTranslation()
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const raw = e.target.value
     const parsed = parseFloat(raw)
-    if (!isNaN(parsed)) {
+    if (!isNaN(parsed) && parsed >= 0 && parsed <= 999_999_999) {
       onChange(roundToDecimals(parsed))
     } else if (raw === '') {
       onChange(0)
@@ -69,14 +71,14 @@ export const AmountInput = ({
             min={min}
             max={max}
             onChange={handleInputChange}
-            placeholder="Enter amount"
+            placeholder={t('input.amount')}
           />{' '}
-          {isOverMax && <div className="text-red-500 text-sm mt-1">Amount exceeds available balance</div>}
         </div>
         <span className="absolute right-4 top-1/2 transform -translate-y-1/2 text-sm text-gray-500">
           {unit}
         </span>
       </div>
+      {isOverMax && <div className="text-red-500 text-sm mt-1">{t('input.amount_exceeds_balance')}</div>}
 
       <div className="flex justify-between items-center text-xs text-gray-500">
         <div className="flex gap-2 text-sm">
@@ -85,7 +87,7 @@ export const AmountInput = ({
             onClick={() => handleSet('min')}
             disabled={disabled}
           >
-            Min
+            {t('input.min')}
           </button>
           <span>|</span>
           <button
@@ -93,7 +95,7 @@ export const AmountInput = ({
             onClick={() => handleSet('half')}
             disabled={disabled}
           >
-            Half
+            {t('input.half')}
           </button>
           <span>|</span>
           <button
@@ -101,12 +103,12 @@ export const AmountInput = ({
             onClick={() => handleSet('max')}
             disabled={disabled}
           >
-            Max
+            {t('input.max')}
           </button>
         </div>
         <div className="flex flex-row justify-center items-center gap-2">
-          Maximum:
-          {showActionBalance ? (
+          {t('input.max')}:
+          {showBalance ? (
             <span>{formatNumber(roundToDecimals(max))}</span>
           ) : (
             <span className="inline-block w-20 h-1 dark:bg-gray-300 bg-gray-500 rounded-md blur-sm" />

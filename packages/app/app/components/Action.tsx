@@ -3,15 +3,20 @@ import { useWallet } from '~/context/WalletContext'
 import Button from '~/components/Button'
 import { useApiClient } from '~/context/ApiClientContext'
 import { useProtocolData } from '~/hooks/useProtocolData'
-import { registryByNetwork } from '@reverse-djed/registry'
+import { registryByNetwork } from '@open-djed/registry'
 import { AmountInput } from '~/components/AmountInput'
-import type { ActionType, TokenType } from '@reverse-djed/api'
+import type { ActionType, TokenType } from '@open-djed/api'
 import { useEnv } from '~/context/EnvContext'
 import Toast from './Toast'
-import { LoadingCircle } from './LoadingCircle'
 import { formatNumber, formatValue, type Value } from '~/utils'
-import { Rational } from '@reverse-djed/math'
-import { AppError } from '@reverse-djed/api/src/errors'
+import { Rational } from '@open-djed/math'
+import { AppError } from '@open-djed/api/src/errors'
+import Tooltip from './Tooltip'
+import { SkeletonWrapper } from './SkeletonWrapper'
+import { useTranslation } from 'react-i18next'
+import { useActionLabels } from '~/hooks/useLabels'
+import { signAndSubmitTx } from '~/lib/signAndSubmitTx'
+import { getWalletData } from '~/lib/getWalletData'
 
 type ActionProps = {
   action: ActionType
@@ -21,6 +26,7 @@ type ActionProps = {
 }
 
 export const Action = ({ action, token, onActionStart, onActionComplete }: ActionProps) => {
+  const { t } = useTranslation()
   const [amount, setAmount] = useState<number>(0)
   const [toastProps, setToastProps] = useState<{ message: string; type: 'success' | 'error'; show: boolean }>(
     {
@@ -37,6 +43,8 @@ export const Action = ({ action, token, onActionStart, onActionComplete }: Actio
   const protocolData = data?.protocolData
   const actionData = data?.tokenActionData(token, action, amount)
 
+  const actionLabels = useActionLabels()
+
   if (error) return <div className="text-red-500 font-bold">Error: {error.message}</div>
 
   const handleActionClick = async () => {
@@ -46,9 +54,7 @@ export const Action = ({ action, token, onActionStart, onActionComplete }: Actio
     onActionStart()
 
     try {
-      const utxos = await wallet.utxos()
-      if (!utxos) throw new Error('No UTXOs found')
-      const address = await wallet.getChangeAddress()
+      const { address, utxos } = await getWalletData(wallet)
 
       const response = await client.api[':token'][':action'][':amount']['tx'].$post({
         param: { token, action, amount: amount.toString() },
@@ -61,18 +67,7 @@ export const Action = ({ action, token, onActionStart, onActionComplete }: Actio
       }
 
       const txCbor = await response.text()
-
-      console.log('Unsigned transaction CBOR: ', txCbor)
-      const signature = await wallet.signTx(txCbor)
-      console.log('Signature: ', signature)
-      const tx = Transaction.from_cbor_hex(txCbor)
-      const body = tx.body()
-      const witnessSet = tx.witness_set()
-      witnessSet.add_all_witnesses(TransactionWitnessSet.from_cbor_hex(signature))
-      const signedTxCbor = Transaction.new(body, witnessSet, true).to_cbor_hex()
-      console.log('Signed transaction CBOR: ', signedTxCbor)
-      const txHash = await wallet.submitTx(signedTxCbor)
-      console.log('Transaction hash:', txHash)
+      const txHash = await signAndSubmitTx(wallet, txCbor, Transaction, TransactionWitnessSet)
       setToastProps({ message: `Transaction submitted: ${txHash}`, type: 'success', show: true })
 
       onActionComplete()
@@ -118,262 +113,167 @@ export const Action = ({ action, token, onActionStart, onActionComplete }: Actio
       <div className="flex flex-col gap-2 mb-6">
         <div className="flex justify-between">
           <div className="flex flex-row space-x-4">
-            <p className="font-medium">Base cost</p>
-            <div className="tooltip">
-              <div className="tooltip-content">
-                <div className="bg-white dark:bg-black rounded-lg p-2 opacity-95">
-                  The base value to pay without fees.
-                </div>
-              </div>
-              <i className="fa-solid fa-circle-info pt-1"></i>
-            </div>
+            <p className="font-medium">{t('action.baseCost')}</p>
+            <Tooltip text={t('action.tooltip.baseCost')} />
           </div>
-          <div className="flex flex-col items-end">
+          <SkeletonWrapper isPending={isPending}>
             <p className="text-lg flex justify-center items-center">
-              <p className="text-lg flex justify-center items-center">
-                {isPending ? <LoadingCircle /> : formatValue(actionData?.baseCost ?? {})}
-              </p>
+              {formatValue(actionData?.baseCost ?? {})}
             </p>
             <p className="text-xs text-gray-700 dark:text-gray-400">
-              {isPending ? (
-                <LoadingCircle />
-              ) : toUSD ? (
-                `$${formatNumber(toUSD(actionData?.baseCost ?? {}), { maximumFractionDigits: 2 })}`
-              ) : (
-                '-'
-              )}
+              {toUSD
+                ? `$${formatNumber(toUSD(actionData?.baseCost ?? {}), { maximumFractionDigits: 2 })}`
+                : '-'}
             </p>
-          </div>
+          </SkeletonWrapper>
         </div>
         <div className="flex justify-between">
           <div className="flex flex-row space-x-4">
-            <p className="font-medium">{action} fee</p>
-            <div className="tooltip">
-              <div className="tooltip-content">
-                <div className="bg-white dark:bg-black rounded-lg p-2 opacity-95">
-                  Fee paid to the pool and distributed to SHEN holders when they burn tokens. Calculated as{' '}
-                  {actionData?.actionFeePercentage ?? '-'}% of the base cost.
-                </div>
-              </div>
-              <i className="fa-solid fa-circle-info pt-1"></i>
-            </div>
+            <p className="font-medium">{t('action.actionFee', { action: actionLabels[action] })}</p>
+            <Tooltip
+              text={t('action.tooltip.actionFee', {
+                percentage: actionData?.actionFeePercentage ?? '-',
+              })}
+            />
           </div>
-          <div className="flex flex-col items-end">
+          <SkeletonWrapper isPending={isPending}>
             <p className="text-lg flex justify-center items-center">
-              <p className="text-lg flex justify-center items-center">
-                {isPending ? <LoadingCircle /> : formatValue(actionData?.actionFee ?? {})}
-              </p>
+              {formatValue(actionData?.actionFee ?? {})}
             </p>
             <p className="text-xs text-gray-700 dark:text-gray-400">
-              {isPending ? (
-                <LoadingCircle />
-              ) : toUSD ? (
-                `$${formatNumber(toUSD(actionData?.actionFee ?? {}), { maximumFractionDigits: 2 })}`
-              ) : (
-                '-'
-              )}
+              {toUSD
+                ? `$${formatNumber(toUSD(actionData?.actionFee ?? {}), { maximumFractionDigits: 2 })}`
+                : '-'}
             </p>
-          </div>
+          </SkeletonWrapper>
         </div>
         <div className="flex justify-between">
           <div className="flex flex-row space-x-4">
-            <p className="font-medium">Operator fee</p>
-            <div className="tooltip">
-              <div className="tooltip-content">
-                <div className="bg-white dark:bg-black rounded-lg p-2 opacity-95">
-                  Fee paid to the COTI treasury for order processing. Calculated as{' '}
-                  {registry.operatorFeeConfig.percentage.toNumber() * 100}% of the sum of base cost
-                  {actionData ? ` (${formatValue(actionData?.baseCost)})` : ''} and action fee
-                  {actionData ? ` (${formatValue(actionData?.actionFee)})` : ''}, with a minimum of{' '}
-                  {new Rational({
-                    numerator: registry.operatorFeeConfig.min,
-                    denominator: 1_000_000n,
-                  }).toNumber()}{' '}
-                  ADA and maximum of {Number(registry.operatorFeeConfig.max) * 1e-6} ADA.
-                </div>
-              </div>
-              <i className="fa-solid fa-circle-info pt-1"></i>
-            </div>
+            <p className="font-medium">{t('action.OperatorFee')}</p>
+            <Tooltip
+              text={t('action.tooltip.operatorFee', {
+                percentage: registry.operatorFeeConfig.percentage.toNumber() * 100,
+                base: actionData ? formatValue(actionData?.baseCost) : '-',
+                fee: actionData ? formatValue(actionData?.actionFee) : '-',
+                min: new Rational({
+                  numerator: registry.operatorFeeConfig.min,
+                  denominator: 1_000_000n,
+                }).toNumber(),
+                max: Number(registry.operatorFeeConfig.max) * 1e-6,
+              })}
+            />
           </div>
-          <div className="flex flex-col items-end">
+          <SkeletonWrapper isPending={isPending}>
             <p className="text-lg flex justify-center items-center">
-              <p className="text-lg flex justify-center items-center">
-                {isPending ? <LoadingCircle /> : formatValue(actionData?.operatorFee ?? {})}
-              </p>
+              {formatValue(actionData?.operatorFee ?? {})}
             </p>
             <p className="text-xs text-gray-700 dark:text-gray-400">
-              {isPending ? (
-                <LoadingCircle />
-              ) : toUSD ? (
-                `$${formatNumber(toUSD(actionData?.operatorFee ?? {}), { maximumFractionDigits: 2 })}`
-              ) : (
-                '-'
-              )}
+              {toUSD
+                ? `$${formatNumber(toUSD(actionData?.operatorFee ?? {}), { maximumFractionDigits: 2 })}`
+                : '-'}
             </p>
-          </div>
+          </SkeletonWrapper>
         </div>
         <div className="my-2 w-full px-10">
           <hr className="light-action-line border-light-action-line dark:border-dark-action-line" />
         </div>
         <div className="flex justify-between">
           <div className="flex flex-row space-x-4">
-            <p className="font-medium">Total cost</p>
-            <div className="tooltip">
-              <div className="tooltip-content">
-                <div className="bg-white dark:bg-black rounded-lg p-2 opacity-95">
-                  The sum of the base cost{actionData ? ` (${formatValue(actionData?.baseCost)})` : ''},
-                  action fee{actionData ? ` (${formatValue(actionData?.actionFee)})` : ''} and operator fee
-                  {actionData ? ` (${formatValue(actionData.operatorFee)})` : ''}.
-                </div>
-              </div>
-              <i className="fa-solid fa-circle-info pt-1"></i>
-            </div>
+            <p className="font-medium">{t('action.totalCost')}</p>
+            <Tooltip
+              text={t('action.tooltip.totalCost', {
+                base: actionData ? formatValue(actionData?.baseCost) : '-',
+                fee: actionData ? formatValue(actionData?.actionFee) : '-',
+                operator: actionData ? formatValue(actionData?.operatorFee) : '-',
+              })}
+            />
           </div>
-          <div className="flex flex-col items-end">
+          <SkeletonWrapper isPending={isPending}>
             <p className="text-lg flex justify-center items-center">
-              <p className="text-lg flex justify-center items-center">
-                {isPending ? <LoadingCircle /> : formatValue(actionData?.totalCost ?? {})}
-              </p>
+              {formatValue(actionData?.totalCost ?? {})}
             </p>
             <p className="text-xs text-gray-700 dark:text-gray-400">
-              {isPending ? (
-                <LoadingCircle />
-              ) : toUSD ? (
-                `$${formatNumber(toUSD(actionData?.totalCost ?? {}), { maximumFractionDigits: 2 })}`
-              ) : (
-                '-'
-              )}
+              {toUSD
+                ? `$${formatNumber(toUSD(actionData?.totalCost ?? {}), { maximumFractionDigits: 2 })}`
+                : '-'}
             </p>
-          </div>
+          </SkeletonWrapper>
         </div>
         <div className="flex justify-between">
           <div className="flex flex-row space-x-4">
-            <p className="font-medium">Refundable deposit</p>
-            <div className="tooltip">
-              <div className="tooltip-content">
-                <div className="bg-white dark:bg-black rounded-lg p-2 opacity-95">
-                  Amount of ADA a user must send in order to create a order. This value is refunded when the
-                  order is processed or cancelled.
-                </div>
-              </div>
-              <i className="fa-solid fa-circle-info pt-1"></i>
-            </div>
+            <p className="font-medium">{t('action.refundable')}</p>
+            <Tooltip text={t('action.tooltip.refundable')} />
           </div>
-          <div className="flex flex-col items-end">
+          <SkeletonWrapper isPending={isPending}>
             <p className="text-lg flex justify-center items-center">
-              <p className="text-lg flex justify-center items-center">
-                {isPending ? <LoadingCircle /> : formatValue(protocolData?.refundableDeposit ?? {})}
-              </p>
+              {formatValue(protocolData?.refundableDeposit ?? {})}
             </p>
             <p className="text-xs text-gray-700 dark:text-gray-400">
-              {isPending ? (
-                <LoadingCircle />
-              ) : toUSD ? (
-                `$${formatNumber(toUSD(protocolData?.refundableDeposit ?? {}), { maximumFractionDigits: 2 })}`
-              ) : (
-                '-'
-              )}
+              {toUSD
+                ? `$${formatNumber(toUSD(protocolData?.refundableDeposit ?? {}), { maximumFractionDigits: 2 })}`
+                : '-'}
             </p>
-          </div>
+          </SkeletonWrapper>
         </div>
         <div className="my-2 w-full px-10">
           <hr className="light-action-line border-light-action-line dark:border-dark-action-line" />
         </div>
         <div className="flex justify-between">
           <div className="flex flex-row space-x-4">
-            <p className="font-medium">You will send</p>
-            <div className="tooltip">
-              <div className="tooltip-content">
-                <div className="bg-white dark:bg-black rounded-lg p-2 opacity-95">
-                  Sum of total cost {actionData ? `(${formatValue(actionData.totalCost)})` : ''} and
-                  refundable deposit{protocolData ? ` (${formatValue(protocolData.refundableDeposit)})` : ''}.
-                </div>
-              </div>
-              <i className="fa-solid fa-circle-info pt-1"></i>
-            </div>
+            <p className="font-medium">{t('action.youSend')}</p>
+            <Tooltip
+              text={t('action.tooltip.youSend', {
+                total: actionData ? formatValue(actionData.totalCost) : '-',
+                refundable: protocolData ? formatValue(protocolData.refundableDeposit) : '-',
+              })}
+            />
           </div>
-          <div className="flex flex-col items-end">
+          <SkeletonWrapper isPending={isPending}>
             <p className="text-lg flex justify-center items-center">
-              <p className="text-lg flex justify-center items-center">
-                {isPending ? <LoadingCircle /> : formatValue(actionData?.toSend ?? {})}
-              </p>
+              {formatValue(actionData?.toSend ?? {})}
             </p>
             <p className="text-xs text-gray-700 dark:text-gray-400">
-              {isPending ? (
-                <LoadingCircle />
-              ) : toUSD ? (
-                `$${formatNumber(toUSD(actionData?.toSend ?? {}), { maximumFractionDigits: 2 })}`
-              ) : (
-                '-'
-              )}
+              {toUSD
+                ? `$${formatNumber(toUSD(actionData?.toSend ?? {}), { maximumFractionDigits: 2 })}`
+                : '-'}
             </p>
-          </div>
+          </SkeletonWrapper>
         </div>
         <div className="flex justify-between">
           <div className="flex flex-row space-x-4">
-            <p className="font-medium">You will receive</p>
-            <div className="tooltip">
-              <div className="tooltip-content">
-                <div className="bg-white dark:bg-black rounded-lg p-2 opacity-95">
-                  Sum of the desired amount and the refundable deposit.
-                </div>
-              </div>
-              <i className="fa-solid fa-circle-info pt-1"></i>
-            </div>
+            <p className="font-medium">{t('action.youReceive')}</p>
+            <Tooltip text={t('action.tooltip.youReceive')} />
           </div>
-          <div className="flex flex-col items-end">
+          <SkeletonWrapper isPending={isPending}>
             <p className="text-lg flex justify-center items-center">
-              <p className="text-lg flex justify-center items-center">
-                {isPending ? (
-                  <LoadingCircle />
-                ) : (
-                  `${action === 'Burn' ? '~' : ''}${formatValue(actionData?.toReceive ?? {})}`
-                )}
-              </p>
+              {`${action === 'Burn' ? '~' : ''}${formatValue(actionData?.toReceive ?? {})}`}
             </p>
             <p className="text-xs text-gray-700 dark:text-gray-400">
-              {isPending ? (
-                <LoadingCircle />
-              ) : toUSD ? (
-                `${action === 'Burn' ? '~' : ''}$${formatNumber(toUSD(actionData?.toReceive ?? {}), { maximumFractionDigits: 2 })}`
-              ) : (
-                '-'
-              )}
+              {toUSD
+                ? `${action === 'Burn' ? '~' : ''}$${formatNumber(toUSD(actionData?.toReceive ?? {}), { maximumFractionDigits: 2 })}`
+                : '-'}
             </p>
-          </div>
+          </SkeletonWrapper>
         </div>
         <div className="flex justify-between">
           <div className="flex flex-row space-x-4">
-            <p className="font-medium">Price</p>
-            <div className="tooltip">
-              <div className="tooltip-content">
-                <div className="bg-white dark:bg-black rounded-lg p-2 opacity-95">
-                  Final price (in ADA per {token}) after fees.
-                </div>
-              </div>
-              <i className="fa-solid fa-circle-info pt-1"></i>
-            </div>
+            <p className="font-medium">{t('action.price')}</p>
+            <Tooltip
+              text={t('action.tooltip.price', {
+                token: token,
+              })}
+            />
           </div>
-          <div className="flex flex-col items-end">
+          <SkeletonWrapper isPending={isPending}>
             <p className="text-lg flex justify-center items-center">
-              <p className="text-lg flex justify-center items-center">
-                {isPending ? (
-                  <LoadingCircle />
-                ) : (
-                  `${action === 'Burn' ? '~' : ''}${actionData && Number.isFinite(actionData.price.ADA) ? formatValue(actionData.price) : '0 ADA'}/${token}`
-                )}
-              </p>
+              {`${action === 'Burn' ? '~' : ''}${actionData && Number.isFinite(actionData.price.ADA) ? formatValue(actionData.price) : '0 ADA'}/${token}`}
             </p>
             <p className="text-xs text-gray-700 dark:text-gray-400">
-              {isPending ? (
-                <LoadingCircle />
-              ) : toUSD ? (
-                `${action === 'Burn' ? '~' : ''}$${actionData && Number.isFinite(actionData.price.ADA) ? formatNumber(toUSD(actionData?.price ?? {}), { maximumFractionDigits: 3 }) : '0'}`
-              ) : (
-                '-'
-              )}
+              {toUSD
+                ? `${action === 'Burn' ? '~' : ''}$${actionData && Number.isFinite(actionData.price.ADA) ? formatNumber(toUSD(actionData?.price ?? {}), { maximumFractionDigits: 3 }) : '0'}`
+                : '-'}
             </p>
-          </div>
+          </SkeletonWrapper>
         </div>
       </div>
 
@@ -399,7 +299,7 @@ export const Action = ({ action, token, onActionStart, onActionComplete }: Actio
             amount > balance
           }
         >
-          {action.replace(/^\w/, (c) => c.toUpperCase())}
+          {actionLabels[action]}
         </Button>
       </div>
       <Toast

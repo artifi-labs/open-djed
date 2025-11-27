@@ -9,15 +9,27 @@ import { FiEye, FiEyeOff, FiMenu, FiX } from 'react-icons/fi'
 import Sidebar from './Sidebar'
 import { useLocalStorage } from 'usehooks-ts'
 import { DEFAULT_SHOW_BALANCE } from '~/utils'
+import Tooltip from './Tooltip'
+import { useTranslation } from 'react-i18next'
+import Toast from './Toast'
+import Orders from './Orders'
 
 const SUPPORTED_WALLET_IDS = ['eternl', 'lace', 'vespr', 'begin', 'gerowallet']
 
 export const Header = () => {
+  const { t } = useTranslation()
   const [isWalletSidebarOpen, setIsWalletSidebarOpen] = useState(false)
   const { network, config } = useEnv()
   const { wallet, wallets, connect, detectWallets, disconnect } = useWallet()
   const [menuOpen, setMenuOpen] = useState(false)
   const [showBalance, setShowBalance] = useLocalStorage<boolean | null>('showBalance', DEFAULT_SHOW_BALANCE)
+  const [toastProps, setToastProps] = useState<{ message: string; type: 'success' | 'error'; show: boolean }>(
+    {
+      message: '',
+      type: 'success',
+      show: false,
+    },
+  )
 
   // Navigation links data
   const navLinks = [
@@ -59,11 +71,11 @@ export const Header = () => {
 
   const walletButtonText = wallet
     ? wallet.balance.handle
-      ? `$${wallet.balance.handle}`
+      ? `${wallet.balance.handle}`
       : wallet.address
         ? `${wallet.address.slice(0, 5)}...${wallet.address.slice(-6)}`
-        : 'Loading address...'
-    : 'Connect wallet'
+        : `${t('header.address.loading')}...`
+    : t('header.wallet.connect')
 
   return (
     <>
@@ -109,7 +121,7 @@ export const Header = () => {
           </div>
 
           {/* Menu toggle - Mobile only */}
-          <div className="flex flec-row space-x-4 lg:hidden text-primary">
+          <div className="flex flex-row space-x-4 lg:hidden text-primary">
             <ThemeToggle />
             <button
               onClick={toggleMenu}
@@ -173,7 +185,7 @@ export const Header = () => {
           <div className="flex flex-col justify-start h-full px-4 py-4" onClick={(e) => e.stopPropagation()}>
             <div className="flex flex-col gap-6">
               <div className="flex flex-col justify-start items-start gap-4 w-full border-b border-gray-300 pb-6">
-                <h1 className="font-bold">Wallet Details:</h1>
+                <h1 className="font-bold">{t('wallet.details')}:</h1>
                 <div className="flex flex-row justify-center items-center gap-6 w-full">
                   <span className="rounded-full w-10 h-10 overflow-hidden">
                     <img src={wallet.icon} alt="Wallet Icon" className="w-full h-full object-cover" />
@@ -181,36 +193,34 @@ export const Header = () => {
                   <p>
                     {wallet.address
                       ? wallet.address.slice(0, 10) + '...' + wallet.address.slice(-10)
-                      : 'No address detected'}
+                      : t('header.address.not.detected')}
                   </p>
-                  <div className="tooltip tooltip-left">
-                    <div className="tooltip-content">
-                      <div className="bg-white dark:bg-black rounded-lg p-2 opacity-95">
-                        Disconnect your wallet.
-                      </div>
-                    </div>
-                    <span className="cursor-pointer" onClick={disconnect}>
-                      <i className="fa-solid fa-plug-circle-xmark w-full"></i>
-                    </span>
-                  </div>
+                  <Tooltip
+                    text={t('wallet.disconnect')}
+                    tooltipDirection="left"
+                    children={
+                      <span className="cursor-pointer" onClick={disconnect}>
+                        <i className="fa-solid fa-plug-circle-xmark w-full"></i>
+                      </span>
+                    }
+                  />
                 </div>
               </div>
               <div
-                className="flex flex-col justify-start items-start gap-4 w-full pb-6"
+                className="flex flex-col justify-start items-start gap-4 w-full pb-6 border-b border-gray-300"
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="flex flex-row justify-between w-full">
-                  <h1 className="font-bold">Available Balance:</h1>
-                  <div className="tooltip tooltip-left">
-                    <div className="tooltip-content">
-                      <div className="bg-white dark:bg-black rounded-lg p-2 opacity-95">
-                        {showBalance ? 'Hide' : 'Show'} your current balance
-                      </div>
-                    </div>
-                    <span className="cursor-pointer" onClick={() => setShowBalance(!showBalance)}>
-                      {showBalance ? <FiEyeOff /> : <FiEye />}
-                    </span>
-                  </div>
+                  <h1 className="font-bold">{t('header.available.balance')}:</h1>
+                  <Tooltip
+                    text={`${showBalance ? t('common.hide') : t('common.show')} ${t('wallet.balance')}`}
+                    tooltipDirection="left"
+                    children={
+                      <span className="cursor-pointer" onClick={() => setShowBalance(!showBalance)}>
+                        {showBalance ? <FiEyeOff /> : <FiEye />}
+                      </span>
+                    }
+                  />
                 </div>
                 <div className="flex flex-row justify-between items-center gap-6 w-full font-bold">
                   <span className="rounded-full w-10 h-10 overflow-hidden">
@@ -252,15 +262,23 @@ export const Header = () => {
                   </p>
                 </div>
               </div>
+              <div
+                className="flex flex-col justify-start items-start gap-4 w-full pb-6"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex flex-col justify-start items-start gap-4 w-full">
+                  <Orders wallet={wallet} setToastProps={setToastProps} />
+                </div>
+              </div>
             </div>
           </div>
         ) : (
           <div className="flex flex-col justify-start h-full px-4 py-4">
             <div>
               {wallets.length === 0 ? (
-                <p className="font-semibold text-red-500">No wallets detected.</p>
+                <p className="font-semibold text-red-500">{t('wallet.not.detected')}.</p>
               ) : (
-                <p className="text-xl py-4 pl-5 font-semibold">Choose your wallet:</p>
+                <p className="text-xl py-4 pl-5 font-semibold">{t('wallet.choose')}:</p>
               )}
             </div>
             {wallets
@@ -284,6 +302,12 @@ export const Header = () => {
           </div>
         )}
       </Sidebar>
+      <Toast
+        message={toastProps.message}
+        show={toastProps.show}
+        onClose={() => setToastProps({ ...toastProps, show: false })}
+        type={toastProps.type}
+      />
     </>
   )
 }

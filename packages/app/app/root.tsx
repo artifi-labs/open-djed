@@ -1,4 +1,5 @@
 import './app.css'
+import 'i18n'
 import '@fortawesome/fontawesome-free/css/all.min.css'
 import { Links, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData } from 'react-router'
 import { links as fontLinks } from './lib/loader'
@@ -18,7 +19,7 @@ export default function App() {
   const { apiUrl, network, config, initialIsDark, posthog } = useLoaderData<LoaderData>()
 
   return (
-    <html lang="en" className={initialIsDark === 'dark' ? 'dark' : initialIsDark === 'light' ? 'light' : ''}>
+    <html className={initialIsDark || ''}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -37,9 +38,14 @@ export default function App() {
                   var systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
                   var isDark = (theme === 'dark') || (!theme && systemDark);
 
-                  document.documentElement.classList.toggle('dark', isDark);
-                  document.documentElement.classList.toggle('light', !isDark);
-                } catch (e) {}
+                  var html = document.documentElement;
+                  // Remove any existing classes first
+                  html.classList.remove('dark', 'light');
+                  // Add the correct class
+                  html.classList.add(isDark ? 'dark' : 'light');
+                } catch (e) {
+                  console.warn('Theme script error:', e);
+                }
              })();
            `,
           }}

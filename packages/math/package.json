@@ -1,8 +1,14 @@
 {
-  "name": "@reverse-djed/math",
+  "name": "@open-djed/math",
   "version": "0.0.1",
   "main": "src/index.ts",
   "scripts": {},
   "type": "module",
-  "dependencies": {}
+  "dependencies": {
+    "@open-djed/data": "workspace:*",
+    "@open-djed/registry": "workspace:*"
+  },
+  "devDependencies": {
+    "vitest": "^4.0.1"
+  }
 }
