@@ -10,7 +10,7 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({ size = 'xs' }) => {
   const { isDarkMode, toggleTheme } = useTheme()
 
   return (
-    <Button name="theme-switch" onClick={toggleTheme} size={size} className="text-white transition-colors flex justify-center">
+    <Button id="theme-switch" onClick={toggleTheme} size={size} className="text-white transition-colors flex justify-center">
       {isDarkMode ? <FiSun className="w-5 h-6" /> : <FiMoon className="w-5 h-6" />}
     </Button>
   )
