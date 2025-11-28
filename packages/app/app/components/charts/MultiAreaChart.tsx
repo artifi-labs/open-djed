@@ -2,6 +2,7 @@
 import { AreaChart, Area, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
 
 interface AreaSeries {
+  name?: string
   dataKey: string
   strokeColor?: string
   fillColor?: string
@@ -16,7 +17,6 @@ interface TooltipPayloadEntry {
   name: string
   payload: Record<string, unknown>
 }
-
 interface CustomTooltipProps {
   active?: boolean
   payload?: TooltipPayloadEntry[]
@@ -55,17 +55,17 @@ const CustomTooltip = ({
       <div className="border-primary bg-light-foreground dark:bg-dark-foreground flex w-[250px] flex-col gap-[4px] rounded-[4px] border p-[8px]">
         <div className="flex flex-row">
           <p className="flex-1 text-sm capitalize">{xKey}</p>
-          <p className="text-sm ">{label}</p>
+          <p className="text-sm ">{label ? new Date(label).toLocaleDateString() : ''}</p>
         </div>
         {payload.map((entry: TooltipPayloadEntry, index: number) => (
           <div key={index} className="flex w-full items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="h-2 w-2 rounded-full" style={{ backgroundColor: entry.stroke }} />
-              <p className="text-sm ">{entry.dataKey}</p>
+              <p className="text-sm ">{entry.name}</p>
             </div>
             <p className="text-sm">
               {tooltipFormatter
-                ? tooltipFormatter(entry.value, entry.dataKey, entry.payload)
+                ? tooltipFormatter(entry.value, entry.name, entry.payload)
                 : tickFormatter
                   ? tickFormatter(entry.value)
                   : entry.value}
@@ -88,7 +88,7 @@ export function MultiAreaChart({
   xKey,
   yDomain,
   yTicks,
-  interval = 2,
+  interval = 1,
   areas,
   tickFormatter,
   tooltipFormatter,
@@ -98,19 +98,27 @@ export function MultiAreaChart({
       {/* Title and Legend Row */}
       <div className="flex flex-col items-start justify-between gap-4 lg:items-start xl:flex-row">
         <h3 className="text-primary flex-1 text-lg font-medium xl:mr-8 xl:flex-none">{title}</h3>
-        <div className="flex flex-wrap items-center justify-center gap-2">
-          {areas.map((area: AreaSeries, index: number) => (
-            <div key={index} className="flex min-w-0 items-center gap-1">
-              <div className="h-3 w-3 shrink-0 rounded-full" style={{ backgroundColor: area.strokeColor }} />
-              <span className="text-secondary truncate text-sm font-medium">{area.dataKey}</span>
-            </div>
-          ))}
+  
+        {/*Chart Labels*/}
+        <div style={{ paddingLeft: margin.left, paddingRight: margin.right }}>
+          {/* Legend */}
+          <div className="flex flex-wrap items-center gap-2">
+            {areas.map((area, idx) => (
+              <div key={idx} className="flex items-center gap-1">
+                <div
+                  className="h-3 w-3 rounded-full"
+                  style={{ backgroundColor: area.strokeColor }}
+                />
+                <span>{area.name || area.dataKey}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
       {/* Chart Container */}
       <ResponsiveContainer width={width} height={height}>
-        <AreaChart data={data} margin={margin}>
+        <AreaChart data={data} margin={margin} >
           <defs>
             {areas.map((area, idx) => (
               <linearGradient id={`grad-${idx}`} key={idx} x1="0" y1="0" x2="0" y2="1">
@@ -128,6 +136,7 @@ export function MultiAreaChart({
             axisLine={false}
             tickLine={false}
             tick={{ dy: 12, fontSize: 12, fontFamily: 'Poppins', fill: '#D0D0D0', fontWeight: 400 }}
+            tickFormatter={(value) => new Date(value).toLocaleDateString()}
           />
 
           <YAxis
@@ -140,7 +149,7 @@ export function MultiAreaChart({
             tickLine={false}
             tick={{ fontSize: 12, fontFamily: 'Poppins', fill: '#D0D0D0', fontWeight: 400 }}
           />
-
+        
           <Tooltip
             content={
               <CustomTooltip xKey={xKey} tickFormatter={tickFormatter} tooltipFormatter={tooltipFormatter} />
@@ -150,6 +159,7 @@ export function MultiAreaChart({
           {areas.map((area, index) => (
             <Area
               key={index}
+              name={area.name || area.dataKey}
               type="linear"
               dataKey={area.dataKey}
               stroke={area.strokeColor}
