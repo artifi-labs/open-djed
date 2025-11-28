@@ -4,6 +4,7 @@ node_modules
 .npmrc
 .env
 .env.*
+!.env.example
 .editorconfig
 .wrangler
 build

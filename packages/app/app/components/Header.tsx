@@ -114,7 +114,7 @@ export const Header = () => {
                 label: key,
               }))}
             />
-            <ThemeToggle />
+            <ThemeToggle data-cy="theme-toggle-desktop" />
             <Button onClick={() => setIsWalletSidebarOpen(true)} className="w-48">
               {walletButtonText}
             </Button>
@@ -122,7 +122,7 @@ export const Header = () => {
 
           {/* Menu toggle - Mobile only */}
           <div className="flex flex-row space-x-4 lg:hidden text-primary">
-            <ThemeToggle />
+            <ThemeToggle data-cy="theme-toggle-mobile" />
             <button
               onClick={toggleMenu}
               className="focus:outline-none p-2 hover:bg-gray-100 dark:hover:bg-primary/30 rounded-md transition-colors"

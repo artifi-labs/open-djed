@@ -4,6 +4,7 @@ import Tooltip from '../Tooltip'
 import { useTranslation } from 'react-i18next'
 
 interface FooterLink {
+  id: string
   label: string
   href: string
   tooltip: string
@@ -19,12 +20,14 @@ const Footer = () => {
 
   const footerLinks: FooterLink[] = [
     {
+      id: 'discord-link',
       label: 'Discord',
       href: 'https://discord.gg/MhYP7w8n8p',
       tooltip: t('footer.tooltips.discord'),
       lightIcon: '/logos/discord-logo.png',
     },
     {
+      id: 'twitter-link',
       label: 'Twitter',
       href: 'https://x.com/artifi_labs',
       tooltip: t('footer.tooltips.twitter'),
@@ -32,6 +35,7 @@ const Footer = () => {
       darkIcon: '/logos/x-logo.svg',
     },
     {
+      id: 'github-link',
       label: 'Github',
       href: 'https://github.com/artifi-labs/open-djed',
       tooltip: t('footer.tooltips.github'),
@@ -39,24 +43,28 @@ const Footer = () => {
       darkIcon: '/logos/github-white.svg',
     },
     {
+      id: 'djed-link',
       label: 'djed.xyz',
       href: 'https://djed.xyz',
       tooltip: t('footer.tooltips.djed'),
       lightIcon: '/logos/djed.svg',
     },
     {
+      id: 'status-link',
       label: t('footer.links.status'),
       href: 'https://status.artifi.finance/',
       tooltip: t('footer.tooltips.status'),
       element: <i className="fas fa-heartbeat text-red-500"></i>,
     },
     {
+      id: 'terms-link',
       label: t('footer.links.terms'),
       href: '/terms',
       tooltip: t('footer.tooltips.terms'),
       element: <i className="fas fa-file-contract text-primary-500"></i>,
     },
     {
+      id: 'privacy-link',
       label: t('footer.links.privacy'),
       href: '/privacy',
       tooltip: t('footer.tooltips.privacy'),
@@ -74,12 +82,13 @@ const Footer = () => {
       </div>
 
       <div className="flex flex-col md:flex-row gap-6 items-center">
-        {footerLinks.map(({ label, href, tooltip, element, lightIcon, darkIcon }) => (
+        {footerLinks.map(({ id, label, href, tooltip, element, lightIcon, darkIcon }) => (
           <div key={label}>
             <Tooltip
               text={tooltip}
               children={
                 <a
+                  id={id}
                   href={href}
                   target={href.startsWith('http') ? '_blank' : undefined}
                   rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}

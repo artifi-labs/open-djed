@@ -29,7 +29,7 @@ describe('Privacy Test', () => {
 
   it('should redirect to the correct URL', () => {
     privacy.content().contains('GNU General Public License v3.0').should('have.attr', 'href', 'https://www.gnu.org/licenses/gpl-3.0.html')
-    privacy.content().contains('github.com/artifex-labs/reverse-djed').should('have.attr', 'href', 'https://github.com/artifex-labs/reverse-djed')
+    privacy.content().contains('github.com/artifi-labs/open-djed').should('have.attr', 'href', 'https://github.com/artifi-labs/open-djed')
     privacy.content().contains('Discord').should('have.attr', 'href', 'https://discord.gg/MhYP7w8n8p')
   })
 })

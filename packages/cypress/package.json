@@ -1,5 +1,5 @@
 {
-  "name": "@reverse-djed/cypress",
+  "name": "@open-djed/cypress",
   "private": true,
   "type": "module",
   "scripts": {
@@ -15,7 +15,8 @@
     "*.{ts,js,mjs}": "eslint --cache"
   },
   "dependencies": {
-    "cypress": "^14.4.1",
+    "cypress": "^15.7.0",
+    "cypress-localstorage-commands": "^2.2.8",
     "dotenv": "^16.5.0",
     "install": "^0.13.0",
     "typescript": "^5.8.3"

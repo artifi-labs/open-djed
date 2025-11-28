@@ -4,13 +4,13 @@ import Button from './Button'
 
 type ThemeToggleProps = {
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'full'
-}
+} & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'onClick'>;
 
-export const ThemeToggle: React.FC<ThemeToggleProps> = ({ size = 'xs' }) => {
+export const ThemeToggle: React.FC<ThemeToggleProps> = ({ size = 'xs' , ...props}) => {
   const { isDarkMode, toggleTheme } = useTheme()
 
   return (
-    <Button id="theme-switch" onClick={toggleTheme} size={size} className="text-white transition-colors flex justify-center">
+    <Button onClick={toggleTheme} size={size} className="text-white transition-colors flex justify-center" {...props}>
       {isDarkMode ? <FiSun className="w-5 h-6" /> : <FiMoon className="w-5 h-6" />}
     </Button>
   )
