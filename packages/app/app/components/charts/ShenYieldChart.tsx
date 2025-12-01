@@ -3,8 +3,7 @@
 import React, { useMemo } from 'react'
 import { MultiAreaChart } from './MultiAreaChart'
 import type { CreditEntry } from '~/lib/staking'
-import { aggregateByBucket, type AggregationConfig, type DataRow} from '~/utils/timeseries';
-
+import { aggregateByBucket, type AggregationConfig, type DataRow } from '~/utils/timeseries'
 
 type ShenYieldChartProps = {
   buyDate: string
@@ -29,18 +28,13 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
   sellFees,
   stakingRewards,
 }) => {
-
   const aggregations: AggregationConfig = {
-    ADA: ["avg"],
-    usdValue: ["avg"],
+    ADA: ['avg'],
+    usdValue: ['avg'],
   }
 
-  const {
-    results,
-    yDomain,
-    interval: dynamicInterval,
-  } = useMemo(() => {
-    if (!buyDate || !sellDate) return { data: [], yDomain: [0, 100] as [number, number], interval: 3 }
+  const { results, yDomain } = useMemo(() => {
+    if (!buyDate || !sellDate) return { data: [], yDomain: [0, 100] as [number, number] }
 
     const dayInMs = 24 * 60 * 60 * 1000
     const startDate = new Date(buyDate)
@@ -55,32 +49,25 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
 
     // dynamicaly define x-axys format
     let newInterval: number
-    let dateFormat: Intl.DateTimeFormatOptions
 
     if (totalDays <= 60) {
       //2 months
       newInterval = 7 * dayInMs
-      dateFormat = { month: '2-digit', day: '2-digit' }
     } else if (totalDays <= 365) {
       //1 year
       newInterval = 30 * dayInMs
-      dateFormat = { month: '2-digit', day: '2-digit' }
     } else if (totalDays <= 730) {
       //2 years
       newInterval = 60 * dayInMs
-      dateFormat = { month: '2-digit', day: '2-digit', year: '2-digit' }
     } else if (totalDays < 3653) {
       // 10 years
       newInterval = 365 * dayInMs
-      dateFormat = { year: 'numeric' }
     } else {
       // over 10 years
       newInterval = 730 * dayInMs
-      dateFormat = { year: 'numeric' }
     }
 
     const data: DataRow[] = []
-  
 
     // create a record with staking rewards date and value for easy lookup
     const rewardsMap = stakingRewards.reduce(
@@ -94,7 +81,6 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
 
     let currentHoldings = initialHoldings
     const adaValuesForYAxys: number[] = []
-
 
     for (let i = 0; i < totalDays; i++) {
       const d = new Date(startDate.getTime() + i * dayInMs).toISOString()
@@ -118,16 +104,16 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
       adaValuesForYAxys.push(holdingsForDay)
     }
 
-    const results = aggregateByBucket(data, newInterval , new Date(data[0].date), aggregations)
+    const results = aggregateByBucket(data, newInterval, new Date(data[0].date), aggregations)
 
-    results[0] = ({
-      date: startDate.toISOString(),
+    results.unshift({
+      date: new Date(startDate.getTime() + 1).toISOString(),
       ADA_avg: initialHoldings + buyFees,
       usdValue_avg: (initialHoldings + buyFees) * buyPrice,
     } as unknown as DataRow)
 
-    results[results.length - 1] = ({
-      date: endDate.toISOString(),
+    results.push({
+      date: new Date(endDate.getTime() - 1).toISOString(),
       ADA_avg: finalHoldings - sellFees,
       usdValue_avg: finalHoldings * sellPrice,
     } as unknown as DataRow)
@@ -138,7 +124,7 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
     // ensure currect y-axys
     const finalYDomain: [number, number] = minY < maxY ? [minY, maxY] : [0, finalHoldings + 10]
 
-    return { results, yDomain: finalYDomain, interval: newInterval }
+    return { results, yDomain: finalYDomain }
   }, [
     buyDate,
     sellDate,
@@ -166,7 +152,6 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
 
   // format the tooltip to show the ADA holdings
   const tooltipFormatter = (value: number, name: string, payload: Record<string, unknown>) => {
-    console.log(payload)
     if (name.toLowerCase() === 'ada') {
       const usd = (payload[`usdValue_${aggregations.usdValue[0]}`] as number) ?? 0
       return `₳${value.toFixed(4)} ($${usd.toFixed(2)})`

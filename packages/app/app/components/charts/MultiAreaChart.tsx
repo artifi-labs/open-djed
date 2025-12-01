@@ -98,17 +98,14 @@ export function MultiAreaChart({
       {/* Title and Legend Row */}
       <div className="flex flex-col items-start justify-between gap-4 lg:items-start xl:flex-row">
         <h3 className="text-primary flex-1 text-lg font-medium xl:mr-8 xl:flex-none">{title}</h3>
-  
+
         {/*Chart Labels*/}
         <div style={{ paddingLeft: margin.left, paddingRight: margin.right }}>
           {/* Legend */}
           <div className="flex flex-wrap items-center gap-2">
             {areas.map((area, idx) => (
               <div key={idx} className="flex items-center gap-1">
-                <div
-                  className="h-3 w-3 rounded-full"
-                  style={{ backgroundColor: area.strokeColor }}
-                />
+                <div className="h-3 w-3 rounded-full" style={{ backgroundColor: area.strokeColor }} />
                 <span>{area.name || area.dataKey}</span>
               </div>
             ))}
@@ -118,7 +115,7 @@ export function MultiAreaChart({
 
       {/* Chart Container */}
       <ResponsiveContainer width={width} height={height}>
-        <AreaChart data={data} margin={margin} >
+        <AreaChart data={data} margin={margin}>
           <defs>
             {areas.map((area, idx) => (
               <linearGradient id={`grad-${idx}`} key={idx} x1="0" y1="0" x2="0" y2="1">
@@ -149,7 +146,7 @@ export function MultiAreaChart({
             tickLine={false}
             tick={{ fontSize: 12, fontFamily: 'Poppins', fill: '#D0D0D0', fontWeight: 400 }}
           />
-        
+
           <Tooltip
             content={
               <CustomTooltip xKey={xKey} tickFormatter={tickFormatter} tooltipFormatter={tooltipFormatter} />
