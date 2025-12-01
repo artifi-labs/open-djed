@@ -34,7 +34,7 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
   }
 
   const { results, yDomain } = useMemo(() => {
-    if (!buyDate || !sellDate) return { data: [], yDomain: [0, 100] as [number, number] }
+    if (!buyDate || !sellDate) return { results: [], yDomain: [0, 100] as [number, number] }
 
     const dayInMs = 24 * 60 * 60 * 1000
     const startDate = new Date(buyDate)
@@ -118,6 +118,26 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
       usdValue_avg: finalHoldings * sellPrice,
     } as unknown as DataRow)
 
+    if (results.length > 1) {
+      // First element - rename to buy_fees to show in red
+      results[0].ADA_avg_buy_fees = results[0].ADA_avg
+      delete results[0].ADA_avg
+
+      // Second element - duplicate keys for transition
+      results[1].ADA_avg_buy_fees = results[1].ADA_avg
+      // Keep results[1].ADA_avg as well
+
+      // Second-to-last element - duplicate keys for transition
+      const secondLastIndex = results.length - 2
+      results[secondLastIndex].ADA_avg_sell_fees = results[secondLastIndex].ADA_avg
+      // Keep results[secondLastIndex].ADA_avg as well
+
+      // Last element - rename to sell_fees to show in red
+      const lastIndex = results.length - 1
+      results[lastIndex].ADA_avg_sell_fees = results[lastIndex].ADA_avg
+      delete results[lastIndex].ADA_avg
+    }
+
     const minY = Math.floor(initialHoldings * 0.95)
     const maxY = Math.ceil(Math.max(finalHoldings * 1.05, finalHoldings + 1))
 
@@ -137,23 +157,46 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
     stakingRewards,
   ])
 
+  console.log('Results: ', JSON.stringify(results, null, 2))
+
   const areas = [
+    {
+      dataKey: 'ADA_avg_buy_fees',
+      name: 'Fees',
+      tooltipLabel: 'ADA (prior to fees)',
+      strokeColor: '#fb2b2b',
+      fillColor: '#fb2b2b',
+      fillOpacity: 0.8,
+      hideOnDuplicate: true,
+      tag: 'remove_duplicate_label_on_tooltip',
+    },
     {
       dataKey: 'ADA_avg',
       name: 'ADA',
       strokeColor: '#897ECB',
       fillColor: '#897ECB',
       fillOpacity: 0.8,
+      tag: 'remove_duplicate_label_on_tooltip',
+    },
+    {
+      dataKey: 'ADA_avg_sell_fees',
+      name: 'Fees',
+      tooltipLabel: 'ADA (after fees)',
+      strokeColor: '#fb2b2b',
+      fillColor: '#fb2b2b',
+      fillOpacity: 0.8,
+      hideOnDuplicate: true,
+      tag: 'remove_duplicate_label_on_tooltip',
     },
   ]
 
   // format y-axis ticks as ADA units
   const yTickFormatter = (value: number) => `₳${value.toFixed(0)}`
 
-  // format the tooltip to show the ADA holdings
+  // formats tooltip to always show ADA holdings and equivalent USD value
   const tooltipFormatter = (value: number, name: string, payload: Record<string, unknown>) => {
-    if (name.toLowerCase() === 'ada') {
-      const usd = (payload[`usdValue_${aggregations.usdValue[0]}`] as number) ?? 0
+    const usd = (payload[`usdValue_${aggregations.usdValue[0]}`] as number) ?? 0
+    if (name.toLowerCase().includes('ada') || name.toLowerCase().includes('fees')) {
       return `₳${value.toFixed(4)} ($${usd.toFixed(2)})`
     }
 

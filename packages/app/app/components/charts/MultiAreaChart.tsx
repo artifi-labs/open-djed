@@ -7,6 +7,9 @@ interface AreaSeries {
   strokeColor?: string
   fillColor?: string
   fillOpacity?: number
+  hideOnDuplicate?: boolean
+  tag?: string
+  tooltipLabel?: string
 }
 
 interface TooltipPayloadEntry {
@@ -24,6 +27,7 @@ interface CustomTooltipProps {
   xKey: string
   tickFormatter?: (value: number) => string
   tooltipFormatter?: (value: number, dataKey: string, payload: Record<string, unknown>) => string
+  areas: AreaSeries[]
 }
 
 type MultiAreaChartProps = {
@@ -47,21 +51,45 @@ const CustomTooltip = ({
   payload,
   label,
   xKey,
+  areas,
   tickFormatter,
   tooltipFormatter,
 }: CustomTooltipProps) => {
   if (active && payload && payload.length) {
+    // filter payload based on hideOnDuplicate flag and tag,
+    // avoinding showing multiple labels on tooltip
+    const filteredPayload = payload.filter((entry: TooltipPayloadEntry) => {
+      if (payload.length === 1) return true
+
+      const areaConfig = areas.find((area) => area.dataKey === entry.dataKey)
+
+      if (!areaConfig?.tag) return true
+
+      const sameTagEntries = payload.filter((p) => {
+        const pConfig = areas.find((area) => area.dataKey === p.dataKey)
+        return pConfig?.tag === areaConfig.tag
+      })
+
+      if (sameTagEntries.length > 1 && areaConfig.hideOnDuplicate) {
+        return false
+      }
+
+      return true
+    })
+
     return (
-      <div className="border-primary bg-light-foreground dark:bg-dark-foreground flex w-[250px] flex-col gap-[4px] rounded-[4px] border p-[8px]">
+      <div className="border-primary bg-light-foreground dark:bg-dark-foreground flex w-fit flex-col gap-[4px] rounded-[4px] border p-[8px]">
         <div className="flex flex-row">
           <p className="flex-1 text-sm capitalize">{xKey}</p>
           <p className="text-sm ">{label ? new Date(label).toLocaleDateString() : ''}</p>
         </div>
-        {payload.map((entry: TooltipPayloadEntry, index: number) => (
-          <div key={index} className="flex w-full items-center justify-between">
+        {filteredPayload.map((entry: TooltipPayloadEntry, index: number) => (
+          <div key={index} className="flex w-full items-center justify-between gap-8">
             <div className="flex items-center gap-2">
               <div className="h-2 w-2 rounded-full" style={{ backgroundColor: entry.stroke }} />
-              <p className="text-sm ">{entry.name}</p>
+              <p className="text-sm ">
+                {areas.find((area) => area.dataKey === entry.dataKey)?.tooltipLabel || entry.name}
+              </p>
             </div>
             <p className="text-sm">
               {tooltipFormatter
@@ -103,12 +131,17 @@ export function MultiAreaChart({
         <div style={{ paddingLeft: margin.left, paddingRight: margin.right }}>
           {/* Legend */}
           <div className="flex flex-wrap items-center gap-2">
-            {areas.map((area, idx) => (
-              <div key={idx} className="flex items-center gap-1">
-                <div className="h-3 w-3 rounded-full" style={{ backgroundColor: area.strokeColor }} />
-                <span>{area.name || area.dataKey}</span>
-              </div>
-            ))}
+            {/* new map to filter out areas with the same name
+             this is need because we are using 3 areas, but 2 of them represent fees
+            therefore we only need two labels */}
+            {[...new Map(areas.map((area) => [area.name || area.dataKey, area])).values()].map(
+              (area, idx) => (
+                <div key={idx} className="flex items-center gap-1">
+                  <div className="h-3 w-3 rounded-full" style={{ backgroundColor: area.strokeColor }} />
+                  <span>{area.name || area.dataKey}</span>
+                </div>
+              ),
+            )}
           </div>
         </div>
       </div>
@@ -149,7 +182,12 @@ export function MultiAreaChart({
 
           <Tooltip
             content={
-              <CustomTooltip xKey={xKey} tickFormatter={tickFormatter} tooltipFormatter={tooltipFormatter} />
+              <CustomTooltip
+                xKey={xKey}
+                tickFormatter={tickFormatter}
+                tooltipFormatter={tooltipFormatter}
+                areas={areas}
+              />
             }
           />
 
