@@ -78,7 +78,9 @@ const Simulator = () => {
     if (val === '') {
       setter(undefined)
     } else if (/^\d*\.?\d*$/.test(val) && !val.endsWith('.')) {
-      setter(Number(val))
+      const num = Number(val)
+      if (num < 0) return
+      setter(num)
     }
   }
 
@@ -120,7 +122,12 @@ const Simulator = () => {
                 id="buy-date-input"
                 type="datetime-local"
                 value={buyDate}
-                onChange={setBuyDate}
+                onChange={(value) => {
+                  setBuyDate(value)
+                  if (sellDate && new Date(sellDate) < new Date(value)) {
+                    setSellDate(value)
+                  }
+                }}
                 className="lg:w-[324px]"
               />
             </div>
@@ -133,7 +140,17 @@ const Simulator = () => {
                 id="sell-date-input"
                 type="datetime-local"
                 value={sellDate}
-                onChange={setSellDate}
+                onChange={(value) => {
+                  if (buyDate && new Date(value) < new Date(buyDate)) {
+                    setToastProps({
+                      message: "You can't set a sell date smaller than the buy date.",
+                      type: 'error',
+                      show: true,
+                    })
+                    return
+                  }
+                  setSellDate(value)
+                }}
                 className="lg:w-[324px]"
               />
             </div>

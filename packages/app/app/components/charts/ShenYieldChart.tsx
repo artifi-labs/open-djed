@@ -138,8 +138,8 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
       delete results[lastIndex].ADA_avg
     }
 
-    const minY = Math.floor(initialHoldings * 0.95)
-    const maxY = Math.ceil(Math.max(finalHoldings * 1.05, finalHoldings + 1))
+    const minY = Math.floor(initialHoldings * 0.8)
+    const maxY = Math.ceil(Math.max(finalHoldings * 1.2, finalHoldings + 1))
 
     // ensure currect y-axys
     const finalYDomain: [number, number] = minY < maxY ? [minY, maxY] : [0, finalHoldings + 10]
@@ -156,8 +156,6 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
     sellFees,
     stakingRewards,
   ])
-
-  console.log('Results: ', JSON.stringify(results, null, 2))
 
   const areas = [
     {
