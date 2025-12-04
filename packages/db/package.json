@@ -7,9 +7,10 @@
     "generate": "prisma generate"
   },
   "dependencies": {
-    "@prisma/client": "latest"
-  },
-  "devDependencies": {
-    "prisma": "latest"
+    "@prisma/adapter-pg": "^7.1.0",
+    "@prisma/client": "^7.1.0",
+    "@types/node": "^24.10.1",
+    "dotenv": "^17.2.3",
+    "prisma": "^7.1.0"
   }
 }
