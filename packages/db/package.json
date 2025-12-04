@@ -1,6 +1,6 @@
 {
   "name": "@open-djed/db",
-  "module": "src/index.ts",
+  "main": "src/index.ts",
   "type": "module",
   "scripts": {
     "migrate": "prisma migrate dev",
