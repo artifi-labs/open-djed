@@ -1,0 +1,15 @@
+{
+  "name": "@open-djed/db",
+  "module": "src/index.ts",
+  "type": "module",
+  "scripts": {
+    "migrate": "prisma migrate dev",
+    "generate": "prisma generate"
+  },
+  "dependencies": {
+    "@prisma/client": "latest"
+  },
+  "devDependencies": {
+    "prisma": "latest"
+  }
+}
