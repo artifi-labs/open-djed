@@ -18,8 +18,21 @@ enum Actions {
   Burn
 }
 
+enum Token {
+  DJED
+  SHEN
+  BOTH
+}
+
 model Order {
-  id      String  @id @default(uuid())
-  address String
-  action  Actions
+  id Int @id @default(autoincrement())
+  address String // user address
+  tx_hash String @unique // hash of tx
+  action  Actions 
+  token Token
+  orderDate DateTime @default(now())
+  paid BigInt // ADA value paid for this action
+  fees BigInt 
+  received BigInt // token value received
+  status String // Created -> still to be consumed; Completed -> already consumed
 }
