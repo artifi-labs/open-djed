@@ -43,7 +43,6 @@ import {
   ValidationError,
 } from './errors'
 import JSONbig from 'json-bigint'
-import { getOrdersByAddress, registerNewOrder } from '@open-djed/db'
 
 //NOTE: We only need this cache for transactions, not for other requests. Using this for `protocol-data` sligltly increases the response time.
 const requestCache = new TTLCache<string, { value: Response; expiry: number }>({ ttl: 10_000 })
@@ -292,14 +291,6 @@ const app = new Hono()
               ? () => createMintShenOrder(config)
               : () => createBurnShenOrder(config),
         )
-
-        try {
-          const order = await registerNewOrder({ address, action: param.action })
-          console.log('New Order: ', order)
-        } catch {
-          throw new AppError('Failed to register order')
-        }
-
         const txCbor = tx.toCBOR()
         console.log('Tx CBOR: ', txCbor)
         const txHash = tx.toHash()
@@ -363,12 +354,7 @@ const app = new Hono()
       }
 
       try {
-        const allOrders = await getOrderUTxOs()
-        const dbOrders = await getOrdersByAddress({
-          address:
-            'addr_test1qzy9jzphm3pknz5e6u7pa0s5xar4dn08nspydtjjflru87s5xyhrd2373846fpj8afgathxnd9sgaqwnt4tmrw5qs0lscp0lkd',
-        })
-        console.log('Registered orders: ', dbOrders)
+        const allPendingOrders = await getOrderUTxOs()
 
         const usedAddressesKeys = json.usedAddresses.map((addr) => {
           try {
@@ -380,7 +366,7 @@ const app = new Hono()
           }
         })
 
-        const filteredOrders = allOrders.filter((order) =>
+        const filteredPendingOrders = allPendingOrders.filter((order) =>
           usedAddressesKeys.some(
             (key) =>
               order.orderDatum.address.paymentKeyHash[0] === key.paymentKeyHash &&
@@ -388,9 +374,9 @@ const app = new Hono()
           ),
         )
 
-        console.log('Order:', filteredOrders)
+        console.log('Order:', filteredPendingOrders)
 
-        return new Response(JSONbig.stringify({ orders: filteredOrders }), {
+        return new Response(JSONbig.stringify({ orders: filteredPendingOrders }), {
           headers: { 'Content-Type': 'application/json' },
         })
       } catch (err) {
