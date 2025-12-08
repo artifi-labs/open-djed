@@ -124,11 +124,17 @@
     "packages/db": {
       "name": "@open-djed/db",
       "dependencies": {
+        "@lucid-evolution/lucid": "^0.4.27",
+        "@open-djed/blockfrost": "workspace:*",
+        "@open-djed/data": "workspace:*",
+        "@open-djed/registry": "workspace:*",
         "@prisma/adapter-pg": "^7.1.0",
         "@prisma/client": "^7.1.0",
+        "@t3-oss/env-core": "^0.12.0",
         "@types/node": "^24.10.1",
         "dotenv": "^17.2.3",
         "prisma": "^7.1.0",
+        "zod": "^3.25.28",
       },
     },
     "packages/math": {

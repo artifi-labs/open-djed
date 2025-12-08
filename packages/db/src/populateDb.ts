@@ -4,12 +4,14 @@ import { Data } from '@lucid-evolution/lucid'
 import { registryByNetwork } from '@open-djed/registry'
 import type { Actions, Token } from '../generated/prisma/enums'
 import { prisma } from '../lib/prisma'
-import type { Transaction, UTxO } from './types'
+import type { Transaction, TransactionData, UTxO } from './types'
+import { env } from '../lib/env'
 
-const blockfrostUrl = process.env.BLOCKFROST_URL || ''
-const blockfrostId = process.env.BLOCKFROST_PROJECT_ID || ''
+const blockfrostUrl = env.BLOCKFROST_URL
+const blockfrostId = env.BLOCKFROST_PROJECT_ID
 const blockfrost = new Blockfrost(blockfrostUrl, blockfrostId)
-const registry = registryByNetwork['Preprod']
+const network = env.NETWORK
+const registry = registryByNetwork[network]
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
@@ -52,17 +54,21 @@ function parseOrderDatum(d: OrderDatum) {
 export const populateDbWithHistoricOrders = async () => {
   const everyOrderTx: Transaction[] = []
   let txPage = 1
+  console.log('Ints going in')
   while (true) {
+    console.log('Im in: ', txPage)
     const pageResult: Transaction[] = await fetch(
       `${blockfrostUrl}/addresses/${registry.orderAddress}/transactions?page=${txPage}`,
       { headers: { project_id: blockfrostId } },
     ).then((res) => res.json())
-
+    console.log('Page Result: ', pageResult)
     if (!Array.isArray(pageResult) || pageResult.length === 0) break
 
     everyOrderTx.push(...pageResult)
     txPage++
   }
+
+  console.log('everyOrderTx: ', everyOrderTx.length)
 
   const everyOrderUTxO: UTxO[] = await Promise.all(
     everyOrderTx.map(async (order) => {
@@ -74,6 +80,8 @@ export const populateDbWithHistoricOrders = async () => {
     }),
   )
 
+  console.log('everyOrderUTxO: ', everyOrderUTxO.length)
+
   const orderUTxOsWithUnit = everyOrderUTxO.flatMap((utxo) =>
     utxo.outputs
       .filter((output) => output.amount.some((amt) => amt.unit === registry.orderAssetId))
@@ -83,24 +91,30 @@ export const populateDbWithHistoricOrders = async () => {
       })),
   )
 
-  const orderUTxOWithDatum = []
+  console.log('orderUTxOsWithUnit: ', orderUTxOsWithUnit.length)
+
+  const orderUTxOWithDatumAndBlock = []
 
   for (const utxo of orderUTxOsWithUnit) {
-    await sleep(50)
+    await sleep(50) // to avoid being rate-limited
 
     const rawDatum = utxo.data_hash ? await blockfrost.getDatum(utxo.data_hash) : undefined
-
     if (!rawDatum) throw new Error(`Couldn't get order datum.`)
 
-    orderUTxOWithDatum.push({
+    const tx = await fetch(`${blockfrostUrl}/txs/${utxo.tx_hash}`, {
+      headers: { project_id: blockfrostId },
+    }).then((res) => res.json() as Promise<TransactionData>)
+
+    orderUTxOWithDatumAndBlock.push({
       ...utxo,
       orderDatum: Data.from(rawDatum, OrderDatum),
+      block_hash: tx.block,
     })
   }
 
   const ordersToInsert = []
 
-  for (const utxo of orderUTxOWithDatum) {
+  for (const utxo of orderUTxOWithDatumAndBlock) {
     const d: OrderDatum = utxo.orderDatum
 
     const { action, token, paid, received } = parseOrderDatum(d)
@@ -112,6 +126,7 @@ export const populateDbWithHistoricOrders = async () => {
     ordersToInsert.push({
       address: utxo.address,
       tx_hash: utxo.tx_hash,
+      block: utxo.block_hash,
       action,
       token,
       paid,
@@ -122,25 +137,14 @@ export const populateDbWithHistoricOrders = async () => {
     })
   }
 
-  const existing = await prisma.order.findMany({
-    where: {
-      tx_hash: {
-        in: ordersToInsert.map((r) => r.tx_hash),
-      },
-    },
-    select: { tx_hash: true },
-  })
+  console.log('To Insert: ', ordersToInsert[0])
 
-  const existingHashes = new Set(existing.map((e) => e.tx_hash))
+  // await prisma.order.createMany({
+  //   data: ordersToInsert,
+  //   skipDuplicates: true,
+  // })
 
-  const finalRows = ordersToInsert.filter((r) => !existingHashes.has(r.tx_hash))
-
-  if (finalRows.length > 0) {
-    await prisma.order.createMany({
-      data: finalRows,
-      skipDuplicates: true,
-    })
-  }
-
-  console.log(`Historic orders sync complete. Inserted ${finalRows.length} orders`)
+  // console.log(`Historic orders sync complete. Inserted ${ordersToInsert.length} orders`)
 }
+
+await populateDbWithHistoricOrders()
