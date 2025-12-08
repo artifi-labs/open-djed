@@ -37,3 +37,8 @@ model Order {
   received  BigInt? // token value received
   status    String? // Created -> still to be consumed; Completed -> already consumed
 }
+
+model Block {
+  id        Int      @id @default(autoincrement())
+  latest_block String @unique // hash of the latest block synced with db
+}

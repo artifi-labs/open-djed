@@ -4,7 +4,7 @@ import { Data } from '@lucid-evolution/lucid'
 import { registryByNetwork } from '@open-djed/registry'
 import type { Actions, Token } from '../generated/prisma/enums'
 import { prisma } from '../lib/prisma'
-import type { Transaction, TransactionData, UTxO } from './types'
+import type { Block, Transaction, TransactionData, UTxO } from './types'
 import { env } from '../lib/env'
 
 const blockfrostUrl = env.BLOCKFROST_URL
@@ -54,21 +54,16 @@ function parseOrderDatum(d: OrderDatum) {
 export const populateDbWithHistoricOrders = async () => {
   const everyOrderTx: Transaction[] = []
   let txPage = 1
-  console.log('Ints going in')
   while (true) {
-    console.log('Im in: ', txPage)
     const pageResult: Transaction[] = await fetch(
       `${blockfrostUrl}/addresses/${registry.orderAddress}/transactions?page=${txPage}`,
       { headers: { project_id: blockfrostId } },
     ).then((res) => res.json())
-    console.log('Page Result: ', pageResult)
     if (!Array.isArray(pageResult) || pageResult.length === 0) break
 
     everyOrderTx.push(...pageResult)
     txPage++
   }
-
-  console.log('everyOrderTx: ', everyOrderTx.length)
 
   const everyOrderUTxO: UTxO[] = await Promise.all(
     everyOrderTx.map(async (order) => {
@@ -80,8 +75,6 @@ export const populateDbWithHistoricOrders = async () => {
     }),
   )
 
-  console.log('everyOrderUTxO: ', everyOrderUTxO.length)
-
   const orderUTxOsWithUnit = everyOrderUTxO.flatMap((utxo) =>
     utxo.outputs
       .filter((output) => output.amount.some((amt) => amt.unit === registry.orderAssetId))
@@ -90,8 +83,6 @@ export const populateDbWithHistoricOrders = async () => {
         tx_hash: utxo.hash,
       })),
   )
-
-  console.log('orderUTxOsWithUnit: ', orderUTxOsWithUnit.length)
 
   const orderUTxOWithDatumAndBlock = []
 
@@ -139,12 +130,22 @@ export const populateDbWithHistoricOrders = async () => {
 
   console.log('To Insert: ', ordersToInsert[0])
 
-  // await prisma.order.createMany({
-  //   data: ordersToInsert,
-  //   skipDuplicates: true,
-  // })
+  await prisma.order.createMany({
+    data: ordersToInsert,
+    skipDuplicates: true,
+  })
 
-  // console.log(`Historic orders sync complete. Inserted ${ordersToInsert.length} orders`)
+  console.log(`Historic orders sync complete. Inserted ${ordersToInsert.length} orders`)
+
+  const latestBlock = await fetch(`${blockfrostUrl}/blocks/latest`, {
+    headers: { project_id: blockfrostId },
+  }).then((res) => res.json() as Promise<Block>)
+
+  await prisma.block.create({
+    data: { latest_block: latestBlock.hash },
+  })
+
+  console.log('Latest block: ', latestBlock)
 }
 
 await populateDbWithHistoricOrders()
