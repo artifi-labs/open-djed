@@ -271,7 +271,8 @@ async function syncNewOrders() {
   return latestSyncedBlock
 }
 
-async function updateOrders() {
+export async function updateOrders() {
+  const start = Date.now()
   console.log('=== Starting Order Update Process ===')
 
   try {
@@ -279,6 +280,8 @@ async function updateOrders() {
     await syncNewOrders()
 
     console.log('\n=== Order Update Complete ===')
+    const end = Date.now() - start
+    console.log('Time sec:', (end / 1000).toFixed(2))
   } catch (error) {
     console.error('Error during order update:', error)
     throw error
@@ -286,5 +289,3 @@ async function updateOrders() {
     await prisma.$disconnect()
   }
 }
-
-await updateOrders()
