@@ -115,7 +115,7 @@ export const populateDbWithHistoricOrders = async () => {
     const fees = totalAmountPaid - paid
 
     return {
-      address: utxo.address,
+      address: d.address,
       tx_hash: utxo.tx_hash,
       block: utxo.block_hash,
       action,
