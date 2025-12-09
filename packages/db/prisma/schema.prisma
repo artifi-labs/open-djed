@@ -26,7 +26,7 @@ enum Token {
 
 model Order {
   id        Int      @id @default(autoincrement())
-  address   String // user address
+  address   Json     // user address, stores paymentKeyHash and stakeKeyHash
   tx_hash   String   @unique // hash of tx
   block     String?
   action    Actions

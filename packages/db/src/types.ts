@@ -44,8 +44,13 @@ export type OrderUTxOWithDatum = Output & {
   block_hash: string
 }
 
+export type AddressDatum = {
+  paymentKeyHash: string[]
+  stakeKeyHash: string[][][]
+}
+
 export type Order = {
-  address: string
+  address: AddressDatum
   tx_hash: string
   block: string
   action: Actions
@@ -109,4 +114,9 @@ export type Block = {
   previous_block: string | null
   next_block: string | null
   confirmations: number
+}
+
+export type AddressKey = {
+  paymentKeyHash: string
+  stakeKeyHash: string
 }
