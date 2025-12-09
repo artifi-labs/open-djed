@@ -1,13 +1,20 @@
-
 import { OrderDatum } from '@open-djed/data'
 import { Data } from '@lucid-evolution/lucid'
 import { prisma } from '../lib/prisma'
 import type { Transaction, UTxO } from './types'
-import { fetchWithRetry, processBatch, parseOrderDatum, registry, blockfrost, blockfrostId, blockfrostUrl } from './utils'
+import {
+  fetchWithRetry,
+  processBatch,
+  parseOrderDatum,
+  registry,
+  blockfrost,
+  blockfrostId,
+  blockfrostUrl,
+} from './utils'
 
 export const populateDbWithHistoricOrders = async () => {
   const start = Date.now()
-  
+
   console.log('Fetching all transaction...')
   const everyOrderTx: Transaction[] = []
   let txPage = 1
@@ -15,11 +22,11 @@ export const populateDbWithHistoricOrders = async () => {
     try {
       const pageResult: Transaction[] = await fetchWithRetry(
         `${blockfrostUrl}/addresses/${registry.orderAddress}/transactions?page=${txPage}&count=100`,
-        { headers: { project_id: blockfrostId } }
+        { headers: { project_id: blockfrostId } },
       )
-      
+
       if (!Array.isArray(pageResult) || pageResult.length === 0) break
-      
+
       everyOrderTx.push(...pageResult)
       txPage++
     } catch (error) {
@@ -39,17 +46,16 @@ export const populateDbWithHistoricOrders = async () => {
     everyOrderTx,
     async (order) => {
       try {
-        return await fetchWithRetry(
-          `${blockfrostUrl}/txs/${order.tx_hash}/utxos`,
-          { headers: { project_id: blockfrostId } }
-        )
+        return await fetchWithRetry(`${blockfrostUrl}/txs/${order.tx_hash}/utxos`, {
+          headers: { project_id: blockfrostId },
+        })
       } catch (error) {
         console.error(`Error fetching UTxO for tx ${order.tx_hash}:`, error)
         throw error
       }
     },
     10,
-    40 // 40ms wait
+    40, // 40ms wait
   )
 
   const orderUTxOsWithUnit = everyOrderUTxO.flatMap((utxo) =>
@@ -73,16 +79,13 @@ export const populateDbWithHistoricOrders = async () => {
     async (utxo, idx) => {
       try {
         const [rawDatum, tx] = await Promise.all([
-          utxo.data_hash 
-            ? blockfrost.getDatum(utxo.data_hash).catch(err => {
+          utxo.data_hash
+            ? blockfrost.getDatum(utxo.data_hash).catch((err) => {
                 console.error(`Error fetching datum for ${utxo.data_hash}:`, err)
                 throw err
               })
             : Promise.resolve(undefined),
-          fetchWithRetry(
-            `${blockfrostUrl}/txs/${utxo.tx_hash}`,
-            { headers: { project_id: blockfrostId } }
-          )
+          fetchWithRetry(`${blockfrostUrl}/txs/${utxo.tx_hash}`, { headers: { project_id: blockfrostId } }),
         ])
 
         if (!rawDatum) {
@@ -100,7 +103,7 @@ export const populateDbWithHistoricOrders = async () => {
       }
     },
     5,
-    300
+    300,
   )
 
   console.log('Processing order data...')
@@ -133,17 +136,16 @@ export const populateDbWithHistoricOrders = async () => {
   console.log(`Historic orders sync complete. Inserted ${ordersToInsert.length} orders`)
 
   // Fetch and store latest block
-  const latestBlock = await fetchWithRetry(
-    `${blockfrostUrl}/blocks/latest`,
-    { headers: { project_id: blockfrostId } }
-  )
+  const latestBlock = await fetchWithRetry(`${blockfrostUrl}/blocks/latest`, {
+    headers: { project_id: blockfrostId },
+  })
   await prisma.block.create({
     data: { latest_block: latestBlock.hash },
   })
   console.log('Latest block:', latestBlock.hash)
 
   const end = Date.now() - start
-  console.log("Time sec:", (end / 1000).toFixed(2))
+  console.log('Time sec:', (end / 1000).toFixed(2))
 }
 
 await populateDbWithHistoricOrders()

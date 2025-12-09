@@ -1,3 +1,6 @@
+import type { OrderDatum } from '@open-djed/data'
+import type { Actions, Token } from '../generated/prisma/enums'
+
 export type Transaction = {
   tx_hash: string
   tx_index: number
@@ -31,6 +34,27 @@ export type Output = {
   output_index: number
   reference_script_hash: string | null
   consumed_by_tx?: string
+}
+
+export type OrderUTxO = Output & { tx_hash: string }
+
+export type OrderUTxOWithDatum = Output & {
+  tx_hash: string
+  orderDatum: OrderDatum
+  block_hash: string
+}
+
+export type Order = {
+  address: string
+  tx_hash: string
+  block: string
+  action: Actions
+  token: Token
+  paid: bigint
+  fees: bigint
+  received: bigint
+  orderDate: Date
+  status: string
 }
 
 export type UTxO = {
