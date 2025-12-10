@@ -4,15 +4,32 @@ import { env } from '../lib/env'
 import { Blockfrost } from '@open-djed/blockfrost'
 import { registryByNetwork } from '@open-djed/registry'
 
-export const blockfrostUrl = env.BLOCKFROST_URL
-export const blockfrostId = env.BLOCKFROST_PROJECT_ID
+const blockfrostUrl = env.BLOCKFROST_URL
+const blockfrostId = env.BLOCKFROST_PROJECT_ID
 export const blockfrost = new Blockfrost(blockfrostUrl, blockfrostId)
 const network = env.NETWORK
 export const registry = registryByNetwork[network]
 
 export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
-// fetch from API and retry if it fails
+export function blockfrostFetch(path: string, init?: RequestInit) {
+  return fetchWithRetry(`${blockfrostUrl}${path}`, {
+    ...init,
+    headers: {
+      project_id: blockfrostId,
+      ...(init?.headers ?? {}),
+    },
+  })
+}
+
+/**
+ * fetch from API and retry if it fails
+ * @param url API endpoint
+ * @param options request options
+ * @param retries how many retries
+ * @param delayMs milliseconds to delay before next
+ * @returns
+ */
 export async function fetchWithRetry<T = unknown>(
   url: string,
   options: RequestInit,
@@ -48,9 +65,16 @@ export async function fetchWithRetry<T = unknown>(
   throw new Error('All retry attempts failed')
 }
 
-// from an array, create a batch to proccess concurrently
-// bigger batch = faster, but riskier bc of rate limit
-// define wait period between batch processing
+/**
+ * from an array, create a batch to proccess concurrently
+ * bigger batch = faster, but riskier bc of rate limit
+ * define wait period between batch processing
+ * @param items array of items to process
+ * @param processor function that processes the items
+ * @param batchSize size of the batches to be processed at a time
+ * @param delayMs milliseconds to delay before next
+ * @returns
+ */
 export async function processBatch<T, R>(
   items: T[],
   processor: (item: T, index: number) => Promise<R>,
@@ -72,6 +96,11 @@ export async function processBatch<T, R>(
   return results
 }
 
+/**
+ * parses an Order datum and returns normalized values
+ * @param d a decoded Order datum
+ * @returns
+ */
 export function parseOrderDatum(d: OrderDatum) {
   const entries = Object.entries(d.actionFields)
 

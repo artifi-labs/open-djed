@@ -39,6 +39,7 @@ model Order {
 }
 
 model Block {
-  id        Int      @id @default(autoincrement())
-  latest_block String @unique // hash of the latest block synced with db
+  id           Int      @id @default(autoincrement())
+  latestBlock  String   @unique // hash of the latest block synced
+  updatedAt    DateTime @updatedAt @db.Timestamptz(6)
 }
