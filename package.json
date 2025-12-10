@@ -10,6 +10,8 @@
     "test": "vitest run"
   },
   "devDependencies": {
+    "@storybook/react": "^10.1.4",
+    "@storybook/react-vite": "^10.1.4",
     "@types/bun": "latest",
     "@typescript-eslint/parser": "^8.32.1",
     "eslint": "^9.27.0",

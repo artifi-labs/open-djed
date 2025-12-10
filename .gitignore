@@ -12,3 +12,4 @@ build
 .dev.vars*
 log
 dist
+*.log
