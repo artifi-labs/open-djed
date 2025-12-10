@@ -2,20 +2,14 @@ import { Data } from '@lucid-evolution/lucid'
 import { OrderDatum } from '@open-djed/data'
 import { prisma } from '../lib/prisma'
 import type { Block, UTxO, TransactionData, OrderUTxO, OrderUTxOWithDatum, Order } from './types'
-import {
-  blockfrostUrl,
-  blockfrostId,
-  registry,
-  blockfrost,
-  fetchWithRetry,
-  processBatch,
-  parseOrderDatum,
-  sleep,
-} from './utils'
+import { registry, blockfrost, processBatch, parseOrderDatum, sleep, blockfrostFetch } from './utils'
 
-// search the database for orders that have status 'Created', meaning that the order is yet to be fulfilled
-// having every unfulfilled order, query blockfrost to check if the corresponding UTxO has been spent
-// if the UTxO was consumed then the order was fulfilled and the order can be update to status 'Completed'
+/**
+ * search the database for orders that have status 'Created', meaning that the order is yet to be fulfilled
+ * having every unfulfilled order, query blockfrost to check if the corresponding UTxO has been spent
+ * if the UTxO was consumed then the order was fulfilled and the order can be update to status 'Completed'
+ * @returns
+ */
 async function updatePendingOrders() {
   console.log('=== Updating Pending Orders ===')
 
@@ -33,9 +27,7 @@ async function updatePendingOrders() {
     pendingOrders,
     async (order) => {
       try {
-        const utxo: UTxO = await fetchWithRetry(`${blockfrostUrl}/txs/${order.tx_hash}/utxos`, {
-          headers: { project_id: blockfrostId },
-        })
+        const utxo = (await blockfrostFetch(`/txs/${order.tx_hash}/utxos`)) as UTxO
 
         const orderUTxOWithUnit = utxo.outputs.find(
           (output) =>
@@ -73,14 +65,18 @@ async function updatePendingOrders() {
   }
 }
 
+/**
+ * fetches new blocks from Blockfrost starting after the latest synced block
+ * @param latestBlockHash hash of the latest synced block
+ * @returns every block created after the latest synced block
+ */
 async function fetchNewBlocks(latestBlockHash: string): Promise<Block[]> {
   const blocks: Block[] = []
   let page = 1
   while (true) {
-    const pageResult: Block[] = await fetchWithRetry(
-      `${blockfrostUrl}/blocks/${latestBlockHash}/next?page=${page}&count=100`,
-      { headers: { project_id: blockfrostId } },
-    )
+    const pageResult = (await blockfrostFetch(
+      `/blocks/${latestBlockHash}/next?page=${page}&count=100`,
+    )) as Block[]
 
     if (!Array.isArray(pageResult) || pageResult.length === 0) break
 
@@ -93,14 +89,16 @@ async function fetchNewBlocks(latestBlockHash: string): Promise<Block[]> {
   return blocks
 }
 
-// get every transaction present in a given set of blocks
+/**
+ * get every transaction present in a given set of blocks
+ * @param blockHashes array of block hashes
+ * @returns array with the transaction hashes of every transaction present in the blocks
+ */
 async function fetchTransactionsFromBlocks(blockHashes: string[]): Promise<string[]> {
   const blockTxs = await processBatch(
     blockHashes,
     async (hash) => {
-      const txs: string[] = await fetchWithRetry(`${blockfrostUrl}/blocks/${hash}/txs`, {
-        headers: { project_id: blockfrostId },
-      })
+      const txs = (await blockfrostFetch(`/blocks/${hash}/txs`)) as string[]
       return txs
     },
     10,
@@ -111,16 +109,18 @@ async function fetchTransactionsFromBlocks(blockHashes: string[]): Promise<strin
   return allTxs
 }
 
-// get the UTxOs of a set of transactions
-// filter the UTxOs to check if any references the DjedOrderTicket
-// any UTxO that references the DjedOrderTicket, represents a new order UTxO
+/**
+ * get the UTxOs of a set of transactions
+ * filter the UTxOs to check if any references the DjedOrderTicket
+ * any UTxO that references the DjedOrderTicket, represents a new order UTxO
+ * @param txHashes array with transaction hashes
+ * @returns array with the Order UTxOs
+ */
 async function fetchOrderUTxOs(txHashes: string[]) {
   const allUTxOs = await processBatch(
     txHashes,
     async (tx) => {
-      const utxo: UTxO = await fetchWithRetry(`${blockfrostUrl}/txs/${tx}/utxos`, {
-        headers: { project_id: blockfrostId },
-      })
+      const utxo = (await blockfrostFetch(`/txs/${tx}/utxos`)) as UTxO
       return utxo
     },
     10,
@@ -135,7 +135,11 @@ async function fetchOrderUTxOs(txHashes: string[]) {
   return orderUTxOs
 }
 
-// decodes the datum of each order UTxO and retrieves the hash of the block where the transaction was included
+/**
+ * decodes the datum of each order UTxO and retrieves the hash of the block where the transaction was included
+ * @param orderUTxOs array with Order UTxOs
+ * @returns array of Order UTxOs, with decoded datum
+ */
 async function enrichUTxOsWithData(orderUTxOs: OrderUTxO[]) {
   return await processBatch(
     orderUTxOs,
@@ -143,9 +147,7 @@ async function enrichUTxOsWithData(orderUTxOs: OrderUTxO[]) {
       try {
         const [rawDatum, tx] = await Promise.all([
           utxo.data_hash ? blockfrost.getDatum(utxo.data_hash) : Promise.resolve(undefined),
-          fetchWithRetry(`${blockfrostUrl}/txs/${utxo.tx_hash}`, {
-            headers: { project_id: blockfrostId },
-          }) as Promise<TransactionData>,
+          blockfrostFetch(`/txs/${utxo.tx_hash}`) as Promise<TransactionData>,
         ])
 
         if (!rawDatum) {
@@ -167,7 +169,11 @@ async function enrichUTxOsWithData(orderUTxOs: OrderUTxO[]) {
   )
 }
 
-// process the order UTxOs to the suitable Order type to insert in the database
+/**
+ * process the order UTxOs to the suitable Order type to insert in the database
+ * @param utxos array of Order UTxOs, with decoded datum
+ * @returns array of Order objects to be inserted in the database
+ */
 function processOrdersToInsert(utxos: OrderUTxOWithDatum[]) {
   return utxos.map((utxo) => {
     const d: OrderDatum = utxo.orderDatum
@@ -192,9 +198,33 @@ function processOrdersToInsert(utxos: OrderUTxOWithDatum[]) {
   })
 }
 
-// sync the database with the newly created orders
-// check every new block, after the last sync, and get every new transaction
-// check the UTxOs of the new transactions to check if any new order was created
+/**
+ * update the latest block in the database
+ * @param latestSyncedBlock latest synced block
+ * @param newBlocks array of new blocks
+ * @returns latest synced block
+ */
+async function updateLatestBlock(latestSyncedBlock: { id: number }, newBlocks: Block[]) {
+  if (newBlocks.length === 0) return latestSyncedBlock
+
+  const latestBlock = newBlocks[newBlocks.length - 1]
+  if (latestBlock) {
+    await prisma.block.update({
+      where: { id: latestSyncedBlock.id },
+      data: { latestBlock: latestBlock.hash },
+    })
+    console.log(`New latest block: ${latestBlock.hash}`)
+  }
+
+  return latestSyncedBlock
+}
+
+/**
+ * sync the database with the newly created orders
+ * check every new block, after the last sync, and get every new transaction
+ * check the UTxOs of the new transactions to check if any new order was created
+ * @returns
+ */
 async function syncNewOrders() {
   console.log('=== Syncing New Orders ===')
 
@@ -203,9 +233,9 @@ async function syncNewOrders() {
     console.log('No synced block found. Run populateDbWithHistoricOrders first')
     return null
   }
-  console.log('Latest synced block:', latestSyncedBlock.latest_block)
+  console.log('Latest synced block:', latestSyncedBlock.latestBlock)
 
-  const newBlocks = await fetchNewBlocks(latestSyncedBlock.latest_block)
+  const newBlocks = await fetchNewBlocks(latestSyncedBlock.latestBlock)
   if (newBlocks.length === 0) {
     console.log('No new blocks to process')
     return latestSyncedBlock
@@ -215,44 +245,20 @@ async function syncNewOrders() {
   const transactions = await fetchTransactionsFromBlocks(blockHashes)
   if (transactions.length === 0) {
     console.log('No new transactions since last sync')
-    // sync db to last queried block
-    const latestBlock = newBlocks[newBlocks.length - 1]
-    if (latestBlock) {
-      await prisma.block.update({
-        where: { id: latestSyncedBlock.id },
-        data: { latest_block: latestBlock.hash },
-      })
-    }
-    return latestSyncedBlock
+    return updateLatestBlock(latestSyncedBlock, newBlocks)
   }
 
   const orderUTxOs = await fetchOrderUTxOs(transactions)
   if (orderUTxOs.length === 0) {
     console.log('No order UTxOs in new blocks')
-    // sync db to last queried block
-    const latestBlock = newBlocks[newBlocks.length - 1]
-    if (latestBlock) {
-      await prisma.block.update({
-        where: { id: latestSyncedBlock.id },
-        data: { latest_block: latestBlock.hash },
-      })
-    }
-    return latestSyncedBlock
+    return updateLatestBlock(latestSyncedBlock, newBlocks)
   }
 
   const orderUTxOsWithData: OrderUTxOWithDatum[] = await enrichUTxOsWithData(orderUTxOs)
   const ordersToInsert: Order[] = processOrdersToInsert(orderUTxOsWithData)
   if (ordersToInsert.length === 0) {
     console.log('No orders to insert')
-    // sync db to last queried block
-    const latestBlock = newBlocks[newBlocks.length - 1]
-    if (latestBlock) {
-      await prisma.block.update({
-        where: { id: latestSyncedBlock.id },
-        data: { latest_block: latestBlock.hash },
-      })
-    }
-    return latestSyncedBlock
+    return updateLatestBlock(latestSyncedBlock, newBlocks)
   }
 
   await prisma.order.createMany({
@@ -266,7 +272,7 @@ async function syncNewOrders() {
   if (latestBlock) {
     await prisma.block.update({
       where: { id: latestSyncedBlock.id },
-      data: { latest_block: latestBlock.hash },
+      data: { latestBlock: latestBlock.hash },
     })
     console.log(`New latest block: ${latestBlock.hash}`)
   }

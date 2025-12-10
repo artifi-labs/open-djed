@@ -24,7 +24,8 @@ CREATE TABLE "Order" (
 -- CreateTable
 CREATE TABLE "Block" (
     "id" SERIAL NOT NULL,
-    "latest_block" TEXT NOT NULL,
+    "latestBlock" TEXT NOT NULL,
+    "updatedAt" TIMESTAMPTZ(6) NOT NULL,
 
     CONSTRAINT "Block_pkey" PRIMARY KEY ("id")
 );
@@ -33,4 +34,4 @@ CREATE TABLE "Block" (
 CREATE UNIQUE INDEX "Order_tx_hash_key" ON "Order"("tx_hash");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Block_latest_block_key" ON "Block"("latest_block");
+CREATE UNIQUE INDEX "Block_latestBlock_key" ON "Block"("latestBlock");

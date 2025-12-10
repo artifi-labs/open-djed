@@ -1,16 +1,8 @@
 import { OrderDatum } from '@open-djed/data'
 import { Data } from '@lucid-evolution/lucid'
 import { prisma } from '../lib/prisma'
-import type { Transaction, UTxO } from './types'
-import {
-  fetchWithRetry,
-  processBatch,
-  parseOrderDatum,
-  registry,
-  blockfrost,
-  blockfrostId,
-  blockfrostUrl,
-} from './utils'
+import type { Block, Transaction, UTxO } from './types'
+import { processBatch, parseOrderDatum, registry, blockfrost, blockfrostFetch } from './utils'
 
 export const populateDbWithHistoricOrders = async () => {
   const start = Date.now()
@@ -20,10 +12,9 @@ export const populateDbWithHistoricOrders = async () => {
   let txPage = 1
   while (true) {
     try {
-      const pageResult: Transaction[] = await fetchWithRetry(
-        `${blockfrostUrl}/addresses/${registry.orderAddress}/transactions?page=${txPage}&count=100`,
-        { headers: { project_id: blockfrostId } },
-      )
+      const pageResult = (await blockfrostFetch(
+        `/addresses/${registry.orderAddress}/transactions?page=${txPage}&count=100`,
+      )) as Transaction[]
 
       if (!Array.isArray(pageResult) || pageResult.length === 0) break
 
@@ -46,9 +37,7 @@ export const populateDbWithHistoricOrders = async () => {
     everyOrderTx,
     async (order) => {
       try {
-        return await fetchWithRetry(`${blockfrostUrl}/txs/${order.tx_hash}/utxos`, {
-          headers: { project_id: blockfrostId },
-        })
+        return (await blockfrostFetch(`/txs/${order.tx_hash}/utxos`)) as UTxO
       } catch (error) {
         console.error(`Error fetching UTxO for tx ${order.tx_hash}:`, error)
         throw error
@@ -85,7 +74,7 @@ export const populateDbWithHistoricOrders = async () => {
                 throw err
               })
             : Promise.resolve(undefined),
-          fetchWithRetry(`${blockfrostUrl}/txs/${utxo.tx_hash}`, { headers: { project_id: blockfrostId } }),
+          blockfrostFetch(`/txs/${utxo.tx_hash}`),
         ])
 
         if (!rawDatum) {
@@ -136,11 +125,9 @@ export const populateDbWithHistoricOrders = async () => {
   console.log(`Historic orders sync complete. Inserted ${ordersToInsert.length} orders`)
 
   // Fetch and store latest block
-  const latestBlock = await fetchWithRetry(`${blockfrostUrl}/blocks/latest`, {
-    headers: { project_id: blockfrostId },
-  })
+  const latestBlock = (await blockfrostFetch(`/blocks/latest`)) as Block
   await prisma.block.create({
-    data: { latest_block: latestBlock.hash },
+    data: { latestBlock: latestBlock.hash },
   })
   console.log('Latest block:', latestBlock.hash)
 
