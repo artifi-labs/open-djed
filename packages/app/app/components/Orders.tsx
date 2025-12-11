@@ -44,8 +44,25 @@ export default function Orders({
     }
   }
 
+  const fetchHistoricalOrders = async () => {
+    if (!wallet) return
+    const usedAddress = await wallet.getUsedAddresses()
+    if (!usedAddress) throw new Error('Failed to get used address')
+
+    try {
+      const res = await client.api['historical-orders'].$post({ json: { usedAddresses: usedAddress } })
+      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`)
+      const data = await res.text()
+      const parsed = JSONbig.parse(data)
+      console.log('User historical orders: ', parsed.orders)
+    } catch (err) {
+      console.error('Error fetching orders:', err)
+    }
+  }
+
   useEffect(() => {
     fetchOrders().catch((e) => console.error(e))
+    fetchHistoricalOrders().catch((e) => console.error(e))
   }, [wallet])
 
   const handleCancelOrder = async (orderTx: string, outIndex: number) => {
