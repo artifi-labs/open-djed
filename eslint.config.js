@@ -1,22 +1,26 @@
+import { defineConfig, globalIgnores } from 'eslint/config'
 import eslint from '@eslint/js'
 import tseslint from 'typescript-eslint'
 import prettierConfig from 'eslint-config-prettier'
-import tsparser from '@typescript-eslint/parser'
 
-export default [
+export default defineConfig([
+  globalIgnores([
+    '**/.next/**',
+    '**/dist/**',
+    '**/build/**',
+    '**/out/**',
+    '**/*.d.ts',
+    '**/*.config.js',
+    '**/*.js',
+    '**/node_modules/**',
+    '**/.wrangler/**',
+    '**/.open-next/**',
+  ]),
   eslint.configs.recommended,
   ...tseslint.configs.strict,
   prettierConfig,
   {
     files: ['**/*.ts', '**/*.tsx'],
-    ignores: [
-      '**/*.d.ts',
-      '**/*.config.js',
-      '!**/eslint.config.js',
-      '**/.react-router/**',
-      '**/.vite/**/*',
-      '**/*.js',
-    ],
     rules: {
       'no-unused-vars': 'off',
       '@typescript-eslint/no-unused-vars': ['error'],
@@ -33,22 +37,9 @@ export default [
       'prefer-const': 'error',
     },
     languageOptions: {
-      parser: tsparser,
       parserOptions: {
-        project: './tsconfig.json',
-        tsconfigRootDir: import.meta.dirname,
+        project: globalThis.process.cwd().match(/packages\/.+/) ? '../../tsconfig.json' : 'tsconfig.json',
       },
     },
   },
-].map((config) => ({
-  ...config,
-  ignores: [
-    ...(config.ignores || []),
-    '**/*.d.ts',
-    '**/*.config.js',
-    '!**/eslint.config.js',
-    '**/.react-router/**',
-    '**/.vite/**/*',
-    '**/*.js',
-  ],
-}))
+])

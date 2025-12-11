@@ -1,0 +1,76 @@
+@import 'tailwindcss';
+@plugin "daisyui" {
+  themes: false;
+  include: tooltip;
+  logs: false;
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans:
+    'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'Noto Color Emoji';
+
+  --color-light-bg: #fffefe;
+  --color-light-text: #121212;
+  --color-light-foreground: #fffefe;
+  --color-light-disabled: #c5c5c5;
+  --color-light-navbar: #ffffff;
+  --color-light-footer: #ffffff;
+  --color-light-action-line: #305a87;
+
+  --color-dark-bg: #0b1a23;
+  --color-dark-text: #ffffff;
+  --color-dark-foreground: #000d1c;
+  --color-dark-disabled: #717171;
+  --color-dark-navbar: #000d1c;
+  --color-dark-footer: #000d1c;
+  --color-dark-action-line: #305a87;
+
+  --color-primary: #4885c7;
+  --color-primary-hover: #305a87;
+}
+
+html,
+body {
+  height: 100%;
+
+  @apply text-light-text dark:text-dark-text;
+
+  @media (prefers-color-scheme: dark) {
+    color-scheme: dark;
+  }
+}
+
+/* In your global CSS file (e.g., styles.css or tailwind.css) */
+.no-spinner::-webkit-outer-spin-button,
+.no-spinner::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.no-spinner {
+  -moz-appearance: textfield; /* Firefox */
+}
+
+.infinite-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-repeat: no-repeat;
+  background-size: 100% auto;
+  background-position: center top;
+  z-index: -1;
+  transition: background-image 0.2s ease-in-out;
+}
+
+.infinite-background {
+  background-image: url('/background/background-light.svg');
+}
+
+.dark .infinite-background {
+  background-image: url('/background/background-dark.svg');
+}
