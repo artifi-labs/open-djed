@@ -1,5 +1,6 @@
 import { Actions } from '../components/Actions'
 import { useLoaderData } from 'react-router'
+import Simulator from '~/components/Simulator'
 import type { LoaderData } from '~/types/loader'
 
 export function meta() {
@@ -20,5 +21,10 @@ export function meta() {
 }
 
 export default function ShenPage() {
-  return <Actions token="SHEN" />
+  return (
+    <div className="flex flex-col w-full justify-center items-center">
+      <Actions token="SHEN" />
+      <Simulator tokenName={'SHEN'} currentAdaValue={0.47} />
+    </div>
+  )
 }
