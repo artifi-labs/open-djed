@@ -1,8 +1,8 @@
-'use client'
+"use client"
 
-import { I18nextProvider } from 'react-i18next'
-import i18n from '../../i18n'
-import { useEffect, useState } from 'react'
+import { I18nextProvider } from "react-i18next"
+import i18n from "../../i18n"
+import { useEffect, useState } from "react"
 
 export function I18nProvider({ children }: { children: React.ReactNode }) {
   const [isInitialized, setIsInitialized] = useState(false)
@@ -11,13 +11,13 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
     if (i18n.isInitialized) {
       setIsInitialized(true)
     } else {
-      i18n.on('initialized', () => {
+      i18n.on("initialized", () => {
         setIsInitialized(true)
       })
     }
 
     return () => {
-      i18n.off('initialized')
+      i18n.off("initialized")
     }
   }, [])
 

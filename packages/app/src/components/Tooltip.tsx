@@ -1,6 +1,6 @@
 interface TooltipProps {
   text: string
-  tooltipDirection?: 'top' | 'bottom' | 'left' | 'right'
+  tooltipDirection?: "top" | "bottom" | "left" | "right"
   style?: React.CSSProperties
   tooltipModalClass?: string
   children?: React.ReactNode
@@ -8,7 +8,7 @@ interface TooltipProps {
 
 const Tooltip = ({
   text,
-  tooltipDirection = 'top',
+  tooltipDirection = "top",
   style,
   tooltipModalClass: tooltipModalClass,
   children,
@@ -19,7 +19,9 @@ const Tooltip = ({
   return (
     <div className={tooltipClass} style={style}>
       <div className={tooltipModalStyle}>
-        <div className="bg-white dark:bg-black rounded-lg p-2 opacity-95">{text}</div>
+        <div className="rounded-lg bg-white p-2 opacity-95 dark:bg-black">
+          {text}
+        </div>
       </div>
       {children ?? <i className="fa-solid fa-circle-info" />}
     </div>

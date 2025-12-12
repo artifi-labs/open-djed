@@ -1,4 +1,4 @@
-import { Skeleton } from './Skeleton'
+import { Skeleton } from "./Skeleton"
 
 type SkeletonWrapper = {
   isPending: boolean
@@ -6,7 +6,7 @@ type SkeletonWrapper = {
 }
 
 export const SkeletonWrapper = ({ isPending, children }: SkeletonWrapper) => (
-  <div className={`flex flex-col items-end ${isPending ? 'gap-2' : ''}`}>
+  <div className={`flex flex-col items-end ${isPending ? "gap-2" : ""}`}>
     {isPending ? (
       <>
         <Skeleton width="w-36" />

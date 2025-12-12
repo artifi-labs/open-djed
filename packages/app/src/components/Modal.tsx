@@ -1,5 +1,5 @@
-import React, { type ReactNode } from 'react'
-import { AnimatePresence, motion, type Variants } from 'framer-motion'
+import React, { type ReactNode } from "react"
+import { AnimatePresence, motion, type Variants } from "framer-motion"
 
 type ModalProps = {
   isOpen: boolean
@@ -16,7 +16,11 @@ const backdropVariants: Variants = {
 
 const modalVariants: Variants = {
   hidden: { opacity: 0, scale: 0.95 },
-  visible: { opacity: 1, scale: 1, transition: { type: 'spring', damping: 20, stiffness: 300 } },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: { type: "spring", damping: 20, stiffness: 300 },
+  },
   exit: { opacity: 0, scale: 0.95, transition: { duration: 0.2 } },
 }
 
@@ -25,7 +29,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          className="fixed inset-0 bg-opacity-60 backdrop-blur-sm flex justify-center items-center z-50 px-2"
+          className="bg-opacity-60 fixed inset-0 z-50 flex items-center justify-center px-2 backdrop-blur-sm"
           variants={backdropVariants}
           initial="hidden"
           animate="visible"
@@ -33,18 +37,18 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
           onClick={onClose}
         >
           <motion.div
-            className="bg-light-foreground dark:bg-dark-foreground min-w-xs rounded-lg p-4 max-w-full max-h-full sm:max-w-[800px] sm:max-h-[85vh] overflow-auto flex flex-col"
+            className="bg-light-foreground dark:bg-dark-foreground flex max-h-full max-w-full min-w-xs flex-col overflow-auto rounded-lg p-4 sm:max-h-[85vh] sm:max-w-[800px]"
             variants={modalVariants}
             initial="hidden"
             animate="visible"
             exit="exit"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="border-b border-light-text dark:border-dark-text pb-2 sticky top-0 z-10 flex items-center justify-between">
+            <div className="border-light-text dark:border-dark-text sticky top-0 z-10 flex items-center justify-between border-b pb-2">
               <h2 className="text-xl font-semibold">{title}</h2>
               <button
                 onClick={onClose}
-                className="text-2xl font-semibold transition cursor-pointer hover:text-primary-hover"
+                className="hover:text-primary-hover cursor-pointer text-2xl font-semibold transition"
               >
                 &times;
               </button>

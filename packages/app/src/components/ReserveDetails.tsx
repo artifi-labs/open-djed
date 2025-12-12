@@ -1,39 +1,40 @@
-import { useProtocolData } from '@/hooks/useProtocolData'
-import { formatNumber, formatValue, type Value } from '@/lib/utils'
-import { Skeleton } from './Skeleton'
-import { SkeletonWrapper } from './SkeletonWrapper'
-import { ReserveRatioGraph } from './ReserveRatioGraph'
-import { maxReserveRatio, minReserveRatio } from '@open-djed/math'
-import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useProtocolData } from "@/hooks/useProtocolData"
+import { formatNumber, formatValue, type Value } from "@/lib/utils"
+import { Skeleton } from "./Skeleton"
+import { SkeletonWrapper } from "./SkeletonWrapper"
+import { ReserveRatioGraph } from "./ReserveRatioGraph"
+import { maxReserveRatio, minReserveRatio } from "@open-djed/math"
+import { useState } from "react"
+import { useTranslation } from "react-i18next"
 
 export function ReserveDetails() {
   const { t } = useTranslation()
   const { isPending, error, data } = useProtocolData()
   const [showGraph, setShowGraph] = useState(true)
-  if (error) return <div className="text-red-500 font-bold">ERROR: {error.message}</div>
-  const toUSD = data ? (value: Value) => data.to(value, 'DJED') : undefined
+  if (error)
+    return <div className="font-bold text-red-500">ERROR: {error.message}</div>
+  const toUSD = data ? (value: Value) => data.to(value, "DJED") : undefined
   const currentRatio = data?.protocolData.reserve.ratio ?? 0
 
   return (
-    <div className="bg-light-foreground dark:bg-dark-foreground shadow-md rounded-xl p-2 md:p-4 w-full max-w-lg">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-bold">{t('reserveDetails.title')}</h2>
-        <div className="flex items-center space-x-2 bg-primary dark:bg-primary rounded-full p-1 relative">
+    <div className="bg-light-foreground dark:bg-dark-foreground w-full max-w-lg rounded-xl p-2 shadow-md md:p-4">
+      <div className="mb-6 flex items-center justify-between">
+        <h2 className="text-xl font-bold">{t("reserveDetails.title")}</h2>
+        <div className="bg-primary dark:bg-primary relative flex items-center space-x-2 rounded-full p-1">
           <div
-            className={`absolute h-8 w-8 bg-white dark:bg-black rounded-full transition-all duration-300 ease-in-out ${
-              showGraph ? 'translate-x-10' : 'translate-x-0'
+            className={`absolute h-8 w-8 rounded-full bg-white transition-all duration-300 ease-in-out dark:bg-black ${
+              showGraph ? "translate-x-10" : "translate-x-0"
             }`}
           />
           <button
             onClick={() => setShowGraph(false)}
-            className={`p-2 rounded-full z-10 transition-all duration-300 cursor-pointer transform ${!showGraph ? 'text-gray-800 dark:text-white scale-105' : 'text-gray-600 dark:text-gray-400 hover:scale-105'}`}
+            className={`z-10 transform cursor-pointer rounded-full p-2 transition-all duration-300 ${!showGraph ? "scale-105 text-gray-800 dark:text-white" : "text-gray-600 hover:scale-105 dark:text-gray-400"}`}
           >
             <i className="fa-solid fa-table"></i>
           </button>
           <button
             onClick={() => setShowGraph(true)}
-            className={`p-2 rounded-full z-10 transition-all duration-300 cursor-pointer transform ${showGraph ? 'text-gray-800 dark:text-white scale-105' : 'text-gray-600 dark:text-gray-400 hover:scale-105'}`}
+            className={`z-10 transform cursor-pointer rounded-full p-2 transition-all duration-300 ${showGraph ? "scale-105 text-gray-800 dark:text-white" : "text-gray-600 hover:scale-105 dark:text-gray-400"}`}
           >
             <i className="fa-solid fa-chart-simple"></i>
           </button>
@@ -41,7 +42,7 @@ export function ReserveDetails() {
       </div>
 
       <div className="flex flex-col gap-2">
-        <p className="font-medium">{t('reserveDetails.reserveRatio')}</p>
+        <p className="font-medium">{t("reserveDetails.reserveRatio")}</p>
         {isPending ? (
           <Skeleton width="w-full" height="h-3" />
         ) : showGraph ? (
@@ -53,30 +54,41 @@ export function ReserveDetails() {
         ) : (
           <div>
             <div className="flex flex-row justify-between">
-              <p className="text-gray-600 dark:text-gray-400">{t('reserveDetails.currentRatio')}:</p>
-              <p className="text-lg">{formatNumber(currentRatio * 100, { maximumFractionDigits: 2 })} %</p>
+              <p className="text-gray-600 dark:text-gray-400">
+                {t("reserveDetails.currentRatio")}:
+              </p>
+              <p className="text-lg">
+                {formatNumber(currentRatio * 100, { maximumFractionDigits: 2 })}{" "}
+                %
+              </p>
             </div>
             <div className="flex flex-row justify-between">
-              <p className="text-gray-600 dark:text-gray-400">{t('reserveDetails.minRatio')}:</p>
+              <p className="text-gray-600 dark:text-gray-400">
+                {t("reserveDetails.minRatio")}:
+              </p>
               <p className="text-lg">{minReserveRatio.toNumber() * 100} %</p>
             </div>
             <div className="flex flex-row justify-between">
-              <p className="text-gray-600 dark:text-gray-400">{t('reserveDetails.maxRatio')}:</p>
+              <p className="text-gray-600 dark:text-gray-400">
+                {t("reserveDetails.maxRatio")}:
+              </p>
               <p className="text-lg">{maxReserveRatio.toNumber() * 100} %</p>
             </div>
           </div>
         )}
 
         <div className="flex flex-row justify-between">
-          <p className="font-medium">{t('reserveDetails.ReserveValue')}</p>
+          <p className="font-medium">{t("reserveDetails.ReserveValue")}</p>
           <SkeletonWrapper isPending={isPending}>
-            <p className="text-lg">{data ? formatValue(data.protocolData.reserve.amount) : '-'}</p>
+            <p className="text-lg">
+              {data ? formatValue(data.protocolData.reserve.amount) : "-"}
+            </p>
             <p className="text-xs text-gray-700 dark:text-gray-400">
               {toUSD
                 ? data
                   ? `$${formatNumber(toUSD(data.protocolData.reserve.amount), { maximumFractionDigits: 2 })}`
-                  : '-'
-                : '-'}
+                  : "-"
+                : "-"}
             </p>
           </SkeletonWrapper>
         </div>

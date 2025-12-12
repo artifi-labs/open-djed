@@ -1,10 +1,10 @@
-'use client'
+"use client"
 
-import { useState } from 'react'
-import { Action } from './Action'
-import type { TokenType } from '@open-djed/api'
-import { useTranslation } from 'react-i18next'
-import { ACTIONS } from '@/lib/constants'
+import { useState } from "react"
+import { Action } from "./Action"
+import type { TokenType } from "@open-djed/api"
+import { useTranslation } from "react-i18next"
+import { ACTIONS } from "@/lib/constants"
 
 type ActionsProps = {
   token: TokenType
@@ -24,14 +24,14 @@ export const Actions = ({ token }: ActionsProps) => {
   }
 
   return (
-    <div className="w-full flex flex-col items-center py-8">
-      <div className="flex flex-col gap-6 w-full px-4">
-        <div className="text-center text-xl font-bold mb-4 flex flex-col items-center">
+    <div className="flex w-full flex-col items-center py-8">
+      <div className="flex w-full flex-col gap-6 px-4">
+        <div className="mb-4 flex flex-col items-center text-center text-xl font-bold">
           <span className="text-5xl">{token}</span>
-          <span>{t('actions.title')}</span>
+          <span>{t("actions.title")}</span>
         </div>
 
-        <div className="flex flex-wrap justify-center gap-6 w-full max-w-5xl mx-auto">
+        <div className="mx-auto flex w-full max-w-5xl flex-wrap justify-center gap-6">
           {ACTIONS.map((action) => (
             <div key={action} className="w-full md:flex-1">
               {/*<Action
@@ -47,7 +47,9 @@ export const Actions = ({ token }: ActionsProps) => {
 
         {/* Loading state or other statuses */}
         {isActionPending && (
-          <div className="mt-4 text-center text-lg">{t('actions.processingAction')}...</div>
+          <div className="mt-4 text-center text-lg">
+            {t("actions.processingAction")}...
+          </div>
         )}
       </div>
     </div>

@@ -1,15 +1,15 @@
-import { useEffect } from 'react'
+import { useEffect } from "react"
 
 const Toast = ({
   message,
   show,
   onClose,
-  type = 'success',
+  type = "success",
 }: {
   message: string
   show: boolean
   onClose: () => void
-  type?: 'success' | 'error'
+  type?: "success" | "error"
 }) => {
   useEffect(() => {
     if (show) {
@@ -25,14 +25,13 @@ const Toast = ({
 
   return (
     <div
-      className={`
-      fixed bottom-5 right-5 px-5 py-3 rounded shadow-lg z-50 
-      flex items-center gap-3 text-white
-      ${type === 'success' ? 'bg-green-500' : 'bg-red-500'}
-    `}
+      className={`fixed right-5 bottom-5 z-50 flex items-center gap-3 rounded px-5 py-3 text-white shadow-lg ${type === "success" ? "bg-green-500" : "bg-red-500"} `}
     >
       <span className="text-sm">{message}</span>
-      <button onClick={onClose} className="text-white hover:text-gray-200 text-lg font-bold">
+      <button
+        onClick={onClose}
+        className="text-lg font-bold text-white hover:text-gray-200"
+      >
         ×
       </button>
     </div>

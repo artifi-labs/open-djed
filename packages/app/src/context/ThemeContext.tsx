@@ -1,10 +1,18 @@
-import { createContext, useContext, useState, useEffect, type ReactNode } from 'react'
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  type ReactNode,
+} from "react"
 
-function setThemeCookie(theme: 'dark' | 'light') {
-  const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+function setThemeCookie(theme: "dark" | "light") {
+  const isLocalhost =
+    window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1"
   let cookie = `theme=${theme}; Path=/; Max-Age=${60 * 60 * 24 * 365}`
   if (!isLocalhost) {
-    cookie += '; Domain=.artifex.finance'
+    cookie += "; Domain=.artifex.finance"
   }
   document.cookie = cookie
 }
@@ -30,16 +38,17 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const theme =
-      document.cookie.match(/(?:^|; )theme=(dark|light)(?:;|$)/)?.[1] ?? localStorage.getItem('theme')
+      document.cookie.match(/(?:^|; )theme=(dark|light)(?:;|$)/)?.[1] ??
+      localStorage.getItem("theme")
 
-    const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-    const shouldUseDark = theme === 'dark' || (!theme && systemDark)
+    const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+    const shouldUseDark = theme === "dark" || (!theme && systemDark)
 
     setIsDarkMode(shouldUseDark)
 
     const html = document.documentElement
-    html.classList.remove('dark', 'light')
-    html.classList.add(shouldUseDark ? 'dark' : 'light')
+    html.classList.remove("dark", "light")
+    html.classList.add(shouldUseDark ? "dark" : "light")
 
     setIsHydrated(true)
   }, [])
@@ -48,11 +57,11 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     if (!isHydrated) return
 
     const html = document.documentElement
-    html.classList.remove('dark', 'light')
-    html.classList.add(isDarkMode ? 'dark' : 'light')
+    html.classList.remove("dark", "light")
+    html.classList.add(isDarkMode ? "dark" : "light")
 
-    localStorage.setItem('theme', isDarkMode ? 'dark' : 'light')
-    setThemeCookie(isDarkMode ? 'dark' : 'light')
+    localStorage.setItem("theme", isDarkMode ? "dark" : "light")
+    setThemeCookie(isDarkMode ? "dark" : "light")
   }, [isDarkMode, isHydrated])
 
   const toggleTheme = () => {
@@ -61,7 +70,11 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   if (!isHydrated) return null
 
-  return <ThemeContext.Provider value={{ isDarkMode, toggleTheme }}>{children}</ThemeContext.Provider>
+  return (
+    <ThemeContext.Provider value={{ isDarkMode, toggleTheme }}>
+      {children}
+    </ThemeContext.Provider>
+  )
 }
 
 export const useTheme = () => useContext(ThemeContext)

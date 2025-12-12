@@ -1,12 +1,18 @@
-'use client'
+"use client"
 
-import { createContext, useCallback, useContext, useEffect, useState } from 'react'
-import { decode } from 'cbor2'
-import { z } from 'zod'
-import { useLocalStorage } from 'usehooks-ts'
-import { type Cardano } from '@lucid-evolution/lucid'
-import { registryByNetwork } from '@open-djed/registry'
-import { useEnv } from './EnvContext'
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react"
+import { decode } from "cbor2"
+import { z } from "zod"
+import { useLocalStorage } from "usehooks-ts"
+import { type Cardano } from "@lucid-evolution/lucid"
+import { registryByNetwork } from "@open-djed/registry"
+import { useEnv } from "./EnvContext"
 
 export type WalletMetadata = {
   id: string
@@ -39,19 +45,19 @@ type WalletContextType = {
   disconnect: () => void
 }
 const hexToAscii = (hex: string) => {
-  const clean = hex.replace(/[^0-9A-Fa-f]/g, '')
-  if (clean.length % 2) throw new Error('Hex string requires even length')
+  const clean = hex.replace(/[^0-9A-Fa-f]/g, "")
+  if (clean.length % 2) throw new Error("Hex string requires even length")
 
   return (
     clean
       .match(/../g)
       ?.map((pair) => String.fromCharCode(parseInt(pair, 16)))
-      .join('') || ''
+      .join("") || ""
   )
 }
 export function getCardanoFromWindowObject(): Cardano | null {
-  if (typeof window === 'undefined') {
-    throw new Error('Cardano wallet not found in window object')
+  if (typeof window === "undefined") {
+    throw new Error("Cardano wallet not found in window object")
   }
   return window.cardano
 }
@@ -60,19 +66,21 @@ const WalletContext = createContext<WalletContextType | null>(null)
 
 export const useWallet = () => {
   const ctx = useContext(WalletContext)
-  if (!ctx) throw new Error('WalletContext not found')
+  if (!ctx) throw new Error("WalletContext not found")
   return ctx
 }
 
 const uint8ArrayToHexString = (uint8Array: Uint8Array) =>
   Array.from(uint8Array)
-    .map((byte) => byte.toString(16).padStart(2, '0'))
-    .join('')
+    .map((byte) => byte.toString(16).padStart(2, "0"))
+    .join("")
 
 export function WalletProvider({ children }: { children: React.ReactNode }) {
   const [wallet, setWallet] = useState<Wallet | null>(null)
   const [wallets, setWallets] = useState<WalletMetadata[]>([])
-  const [connectedWalletId, setConnectedWalletId] = useLocalStorage<string | null>('connectedWalletId', null)
+  const [connectedWalletId, setConnectedWalletId] = useLocalStorage<
+    string | null
+  >("connectedWalletId", null)
   const { network } = useEnv()
 
   const connect = useCallback(
@@ -82,12 +90,13 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
         if (!cardano) return
 
         let api = await cardano[id].enable()
-        let balanceStr: string = ''
+        let balanceStr: string = ""
 
         try {
           balanceStr = await api.getBalance()
         } catch (err: unknown) {
-          if (typeof err !== 'object' || err === null || !('code' in err)) throw err
+          if (typeof err !== "object" || err === null || !("code" in err))
+            throw err
 
           if (err?.code === -4) {
             api = await cardano[id].enable()
@@ -105,23 +114,33 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
               z.number(),
               z.map(
                 z.instanceof(Uint8Array).transform(uint8ArrayToHexString),
-                z.map(z.instanceof(Uint8Array).transform(uint8ArrayToHexString), z.number()),
+                z.map(
+                  z.instanceof(Uint8Array).transform(uint8ArrayToHexString),
+                  z.number(),
+                ),
               ),
             ]),
           ])
           .transform((b) => {
-            if (typeof b === 'number') return { ADA: b / 1e6, DJED: 0, SHEN: 0 }
+            if (typeof b === "number") return { ADA: b / 1e6, DJED: 0, SHEN: 0 }
             const policyId = registryByNetwork[network].djedAssetId.slice(0, 56)
-            const djedTokenName = registryByNetwork[network].djedAssetId.slice(56)
-            const shenTokenName = registryByNetwork[network].shenAssetId.slice(56)
-            const adaHandlePolicyId = 'f0ff48bbb7bbe9d59a40f1ce90e9e9d0ff5002ec48f232b49ca0fb9a'
-            const hexHandle = [...(b[1].get(adaHandlePolicyId)?.keys() ?? [])][0]
+            const djedTokenName =
+              registryByNetwork[network].djedAssetId.slice(56)
+            const shenTokenName =
+              registryByNetwork[network].shenAssetId.slice(56)
+            const adaHandlePolicyId =
+              "f0ff48bbb7bbe9d59a40f1ce90e9e9d0ff5002ec48f232b49ca0fb9a"
+            const hexHandle = [
+              ...(b[1].get(adaHandlePolicyId)?.keys() ?? []),
+            ][0]
 
             return {
               ADA: b[0] / 1e6,
               DJED: (b[1].get(policyId)?.get(djedTokenName) ?? 0) / 1e6,
               SHEN: (b[1].get(policyId)?.get(shenTokenName) ?? 0) / 1e6,
-              handle: hexHandle ? hexToAscii(hexHandle.replace(/^000de140/, '')) : undefined,
+              handle: hexHandle
+                ? hexToAscii(hexHandle.replace(/^000de140/, ""))
+                : undefined,
             }
           })
           .parse(decodedBalance)
@@ -158,12 +177,12 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
         try {
           await connect(connectedWalletId)
         } catch (err) {
-          console.error('Failed to reconnect wallet:', err)
+          console.error("Failed to reconnect wallet:", err)
         }
       }
     })().catch((err) => {
       // This is just to satisfy the linter. Actual errors are caught inside already.
-      console.error('Failed to reconnect wallet:', err)
+      console.error("Failed to reconnect wallet:", err)
     })
   }, [connect, connectedWalletId])
 
@@ -188,7 +207,9 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <WalletContext.Provider value={{ wallet, wallets, connect, detectWallets, disconnect }}>
+    <WalletContext.Provider
+      value={{ wallet, wallets, connect, detectWallets, disconnect }}
+    >
       {children}
     </WalletContext.Provider>
   )
