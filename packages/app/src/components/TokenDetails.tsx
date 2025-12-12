@@ -40,10 +40,10 @@ const TokenDetailsRow = ({
 export const TokenDetails = ({ token, route }: TokenDetailsProps) => {
   const { t } = useTranslation()
   const { isPending, error, data } = useProtocolData()
-  if (error) return <div className="text-red-500 font-bold">ERROR: {error.message}</div>
   const toUSD = data ? (value: Value) => data.to(value, 'DJED') : undefined
-
   const actionLabels = useActionLabels()
+
+  if (error) return <div className="text-red-500 font-bold">ERROR: {error.message}</div>
 
   return (
     <div className="bg-light-foreground dark:bg-dark-foreground shadow-md rounded-xl p-4 md:p-6 w-full mx-auto overflow-x-auto">

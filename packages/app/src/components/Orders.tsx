@@ -46,7 +46,7 @@ export default function Orders({
 
   useEffect(() => {
     fetchOrders().catch((e) => console.error(e))
-  }, [wallet])
+  }, [wallet, fetchOrders])
 
   const handleCancelOrder = async (orderTx: string, outIndex: number) => {
     const { Transaction, TransactionWitnessSet } = await import('@dcspark/cardano-multiplatform-lib-browser')

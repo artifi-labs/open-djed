@@ -85,20 +85,17 @@ const Footer = () => {
       <div className="flex flex-col md:flex-row gap-6 items-center">
         {footerLinks.map(({ label, href, tooltip, element, lightIcon, darkIcon }) => (
           <div key={label}>
-            <Tooltip
-              text={tooltip}
-              children={
-                <a
-                  href={href}
-                  target={href.startsWith('http') ? '_blank' : undefined}
-                  rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                  className="hover:text-primary focus:outline-none transition-colors flex items-center gap-1"
-                >
-                  <FooterIcon element={element} lightIcon={lightIcon} darkIcon={darkIcon} label={label} />
-                  <span>{label}</span>
-                </a>
-              }
-            />
+            <Tooltip text={tooltip}>
+              <a
+                href={href}
+                target={href.startsWith('http') ? '_blank' : undefined}
+                rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                className="hover:text-primary focus:outline-none transition-colors flex items-center gap-1"
+              >
+                <FooterIcon element={element} lightIcon={lightIcon} darkIcon={darkIcon} label={label} />
+                <span>{label}</span>
+              </a>{' '}
+            </Tooltip>
           </div>
         ))}
       </div>

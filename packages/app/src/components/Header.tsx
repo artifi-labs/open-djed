@@ -53,7 +53,7 @@ export const Header = () => {
 
   useEffect(() => {
     if (isWalletSidebarOpen && !wallet) detectWallets()
-  }, [isWalletSidebarOpen])
+  }, [isWalletSidebarOpen, wallet, detectWallets])
 
   const toggleMenu = () => setMenuOpen((prev) => !prev)
 
@@ -203,15 +203,11 @@ export const Header = () => {
                       ? wallet.address.slice(0, 10) + '...' + wallet.address.slice(-10)
                       : t('header.address.not.detected')}
                   </p>
-                  <Tooltip
-                    text={t('wallet.disconnect')}
-                    tooltipDirection="left"
-                    children={
-                      <span className="cursor-pointer" onClick={disconnect}>
-                        <i className="fa-solid fa-plug-circle-xmark w-full"></i>
-                      </span>
-                    }
-                  />
+                  <Tooltip text={t('wallet.disconnect')} tooltipDirection="left">
+                    <span className="cursor-pointer" onClick={disconnect}>
+                      <i className="fa-solid fa-plug-circle-xmark w-full"></i>
+                    </span>
+                  </Tooltip>
                 </div>
               </div>
               <div
@@ -223,12 +219,11 @@ export const Header = () => {
                   <Tooltip
                     text={`${showBalance ? t('common.hide') : t('common.show')} ${t('wallet.balance')}`}
                     tooltipDirection="left"
-                    children={
-                      <span className="cursor-pointer" onClick={() => setShowBalance(!showBalance)}>
-                        {showBalance ? <FiEyeOff /> : <FiEye />}
-                      </span>
-                    }
-                  />
+                  >
+                    <span className="cursor-pointer" onClick={() => setShowBalance(!showBalance)}>
+                      {showBalance ? <FiEyeOff /> : <FiEye />}
+                    </span>
+                  </Tooltip>
                 </div>
                 <div className="flex flex-row justify-between items-center gap-6 w-full font-bold">
                   <span className="rounded-full w-10 h-10 overflow-hidden">

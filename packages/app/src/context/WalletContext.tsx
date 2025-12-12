@@ -90,7 +90,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
       // This is just to satisfy the linter. Actual errors are caught inside already.
       console.error('Failed to reconnect wallet:', err)
     })
-  }, [])
+  })
 
   const detectWallets = () => {
     if (typeof window === 'undefined') return
