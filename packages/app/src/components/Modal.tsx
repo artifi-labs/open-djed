@@ -1,5 +1,5 @@
 import React, { type ReactNode } from 'react'
-import { AnimatePresence, motion, Variants } from 'framer-motion'
+import { AnimatePresence, motion, type Variants } from 'framer-motion'
 
 type ModalProps = {
   isOpen: boolean
