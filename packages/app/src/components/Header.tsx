@@ -270,7 +270,7 @@ export const Header = () => {
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="flex flex-col justify-start items-start gap-4 w-full">
-                  {/* <Orders wallet={wallet} setToastProps={setToastProps} /> */}
+                  <Orders wallet={wallet} setToastProps={setToastProps} />
                 </div>
               </div>
             </div>

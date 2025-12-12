@@ -3,40 +3,38 @@
   "name": "open-djed-app",
   "main": ".open-next/worker.js",
   "compatibility_date": "2025-12-12",
-  "compatibility_flags": [
-    "nodejs_compat"
-  ],
+  "compatibility_flags": ["nodejs_compat"],
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS",
   },
   "observability": {
     "logs": {
-      "enabled": true
-    }
+      "enabled": true,
+    },
   },
   "routes": [
     {
       "pattern": "djed.artifi.finance",
-      "custom_domain": true
+      "custom_domain": true,
     },
     {
       "pattern": "djed.artifex.finance",
-      "custom_domain": true
-    }
+      "custom_domain": true,
+    },
   ],
   "env": {
     "preprod": {
       "routes": [
         {
           "pattern": "preprod.djed.artifi.finance",
-          "custom_domain": true
+          "custom_domain": true,
         },
         {
           "pattern": "preprod.djed.artifex.finance",
-          "custom_domain": true
-        }
-      ]
-    }
-  }
+          "custom_domain": true,
+        },
+      ],
+    },
+  },
 }

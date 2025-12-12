@@ -1,5 +1,5 @@
-@import 'tailwindcss';
-@import './utilities.css';
+@import "tailwindcss";
+@import "./utilities.css";
 
 @plugin "daisyui" {
   themes: false;
@@ -8,7 +8,6 @@
 } /* TODO: Delete This  */
 
 @theme {
-
   /* DELETE THIS BLOCK START */
   --color-light-bg: #fffefe;
   --color-light-text: #121212;
@@ -29,7 +28,6 @@
   --color-primary: #4885c7;
   --color-primary-hover: #305a87;
   /* END */
-
 
   /*Font Size*/
   --text-xxs: 10px;
@@ -250,7 +248,12 @@
     var(--Gradients-Gradient2-Lilac500, #897ecb) 100%
   );
 
-  --color-border-footer-gradient: linear-gradient(90deg, var(--Background-BackgroundPrimary, #0D1822) 0%, var(--Border-BorderSecondary, #404B55) 50%, var(--Background-BackgroundPrimary, #0D1822) 100%);
+  --color-border-footer-gradient: linear-gradient(
+    90deg,
+    var(--Background-BackgroundPrimary, #0d1822) 0%,
+    var(--Border-BorderSecondary, #404b55) 50%,
+    var(--Background-BackgroundPrimary, #0d1822) 100%
+  );
 
   --color-no-color-hover: var(--color-primary-100-8);
   --color-no-color-focused: var(--color-primary-100-12);
@@ -391,7 +394,7 @@
   height: 100vh;
   z-index: -1;
   overflow: hidden;
-  background-image: url('/background/background-dark.svg');
+  background-image: url("/background/background-dark.svg");
   background-size: cover;
   background-position: center;
 }
