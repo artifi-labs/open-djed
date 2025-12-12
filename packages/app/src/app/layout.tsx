@@ -76,7 +76,7 @@ export async function generateMetadata(): Promise<Metadata> {
       icon: '/favicon.ico',
       shortcut: '/favicon.ico',
     },
-    manifest: '/manifest.json',
+    //manifest: '/manifest.json',
   }
 }
 

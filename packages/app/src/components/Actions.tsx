@@ -34,13 +34,13 @@ export const Actions = ({ token }: ActionsProps) => {
         <div className="flex flex-wrap justify-center gap-6 w-full max-w-5xl mx-auto">
           {ACTIONS.map((action) => (
             <div key={action} className="w-full md:flex-1">
-              <Action
+              {/*<Action
                 key={action}
                 action={action}
                 token={token}
                 onActionStart={handleActionStart}
                 onActionComplete={handleActionComplete}
-              />
+              />*/}
             </div>
           ))}
         </div>
