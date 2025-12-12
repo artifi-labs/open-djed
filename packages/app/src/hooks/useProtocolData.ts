@@ -22,6 +22,12 @@ import { useQuery } from '@tanstack/react-query'
 export function useProtocolData() {
   const client = useApiClient()
   const { network } = useEnv()
+
+  const registry = registryByNetwork[network]
+  if(!registry) {
+    throw new Error(`No registry found for network: ${network}`)
+  }
+
   return useQuery({
     queryKey: ['protocol-data'],
     queryFn: () =>
