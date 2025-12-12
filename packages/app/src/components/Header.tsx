@@ -16,6 +16,7 @@ import Toast from './Toast'
 import Orders from './Orders'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import Image from 'next/image'
 
 const SUPPORTED_WALLET_IDS = ['eternl', 'lace', 'vespr', 'begin', 'gerowallet']
 
@@ -90,7 +91,7 @@ export const Header = () => {
           <div className="flex-1">
             <Link href="/">
               <div className="flex flex-row text-xl items-center">
-                <img src="/logos/djed.svg" alt="Open DJED" />
+                <Image width={100} height={100} src="/logos/djed.svg" alt="Open DJED" />
                 Open DJED
               </div>
             </Link>
@@ -189,7 +190,13 @@ export const Header = () => {
                 <h1 className="font-bold">{t('wallet.details')}:</h1>
                 <div className="flex flex-row justify-center items-center gap-6 w-full">
                   <span className="rounded-full w-10 h-10 overflow-hidden">
-                    <img src={wallet.icon} alt="Wallet Icon" className="w-full h-full object-cover" />
+                    <Image
+                      width={100}
+                      height={100}
+                      src={wallet.icon}
+                      alt="Wallet Icon"
+                      className="w-full h-full object-cover"
+                    />
                   </span>
                   <p>
                     {wallet.address
@@ -225,7 +232,7 @@ export const Header = () => {
                 </div>
                 <div className="flex flex-row justify-between items-center gap-6 w-full font-bold">
                   <span className="rounded-full w-10 h-10 overflow-hidden">
-                    <img src="/logos/cardano-ada-logo.svg" alt="ADA logo" />
+                    <Image width={100} height={100} src="/logos/cardano-ada-logo.svg" alt="ADA logo" />
                   </span>
                   <p>
                     {showBalance ? (
@@ -238,7 +245,7 @@ export const Header = () => {
                 </div>
                 <div className="flex flex-row justify-between items-center gap-6 w-full font-bold">
                   <span className="rounded-full w-10 h-10 overflow-hidden">
-                    <img src="/logos/djed.svg" alt="Djed logo" />
+                    <Image width={100} height={100} src="/logos/djed.svg" alt="Djed logo" />
                   </span>
                   <p>
                     {showBalance ? (
@@ -251,7 +258,7 @@ export const Header = () => {
                 </div>
                 <div className="flex flex-row justify-between items-center gap-6 w-full font-bold">
                   <span className="rounded-full w-10 h-10 overflow-hidden">
-                    <img src="/logos/shen-logo.png" alt="Shen logo" />
+                    <Image width={100} height={100} src="/logos/shen-logo.png" alt="Shen logo" />
                   </span>
                   <p>
                     {showBalance ? (
@@ -294,7 +301,13 @@ export const Header = () => {
                   }}
                 >
                   <div className="flex flex-row justify-start items-center">
-                    <img src={icon} alt={`${name} icon`} className="w-12 h-12 mr-3" />
+                    <Image
+                      width={100}
+                      height={100}
+                      src={icon}
+                      alt={`${name} icon`}
+                      className="w-12 h-12 mr-3"
+                    />
                     <span className="text-lg">{name.replace(/^\w/, (c) => c.toUpperCase())}</span>
                   </div>
                   <i className="fa-solid fa-chevron-right"></i>

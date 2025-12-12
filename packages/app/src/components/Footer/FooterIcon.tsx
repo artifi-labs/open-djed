@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import type { JSX } from 'react'
 
 interface FooterIconProps {
@@ -23,20 +24,26 @@ const FooterIcon = ({ element, lightIcon, darkIcon, label, size = 'md' }: Footer
         <span className={`${sizeClass} inline-flex items-center justify-center`}>{element}</span>
       ) : darkIcon ? (
         <>
-          <img
-            src={lightIcon}
+          <Image
+            width={100}
+            height={100}
+            src={lightIcon || ''}
             alt={`${label} icon`}
             className={`${sizeClass} inline-block dark:hidden transition-all duration-200 ease-in-out`}
           />
-          <img
+          <Image
+            width={100}
+            height={100}
             src={darkIcon}
             alt={`${label} icon`}
             className={`${sizeClass} hidden dark:inline-block transition-all duration-200 ease-in-out`}
           />
         </>
       ) : (
-        <img
-          src={lightIcon}
+        <Image
+          width={100}
+          height={100}
+          src={lightIcon || ''}
           alt={`${label} icon`}
           className={`${sizeClass} inline-block transition-all duration-200 ease-in-out`}
         />

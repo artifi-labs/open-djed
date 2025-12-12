@@ -4,6 +4,7 @@ import { type JSX } from 'react'
 import FooterIcon from './FooterIcon'
 import Tooltip from '../Tooltip'
 import { useTranslation } from 'react-i18next'
+import Image from 'next/image'
 
 interface FooterLink {
   label: string
@@ -70,7 +71,13 @@ const Footer = () => {
     <footer className="flex flex-col md:flex-row gap-8 p-8 justify-between bg-light-footer dark:bg-dark-footer border-t border-light-foreground dark:border-primary/30 w-full text-center max-h-fit transition-all duration-200 ease-in-out">
       <div className="flex flex-col md:flex-row gap-6 items-center">
         <a href="https://artifi.finance/">
-          <img src="/logos/artifi-logo.png" alt="Artifi Labs Logo" className="w-[50px]" />
+          <Image
+            width={50}
+            height={50}
+            src="/logos/artifi-logo.png"
+            alt="Artifi Labs Logo"
+            className="w-[50px]"
+          />
         </a>
         <p className="pt-1">{t('footer.rightsReserved', { year: currentYear })}</p>
       </div>
