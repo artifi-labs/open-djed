@@ -81,7 +81,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const env = await getLoaderData()
+  const env = getLoaderData()
 
   return (
     <html lang="en" className={inter.variable}>

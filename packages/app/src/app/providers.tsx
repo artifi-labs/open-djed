@@ -13,7 +13,7 @@ export interface ProvidersProps {
   apiUrl: string
   network: 'Preprod' | 'Mainnet'
   config: Record<string, string>
-  posthog: string
+  posthog?: string
 }
 
 export const Providers = ({ children, apiUrl, network, config, posthog }: ProvidersProps) => {
