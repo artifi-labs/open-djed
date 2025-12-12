@@ -6,6 +6,16 @@ import Image from "next/image"
 import Icon, { IconName } from "./new-components/Icon"
 import ButtonIcon from "./new-components/ButtonIcon"
 import React from "react"
+import { useViewport } from "@/hooks/useViewport"
+import {
+  DISCORD_URL,
+  DJED_URL,
+  GITHUB_URL,
+  LINKEDIN_URL,
+  STATUS_URL,
+  TWITTER_URL,
+  WEBSITE_URL,
+} from "@/lib/constants"
 
 type FooterItem = {
   label: string
@@ -24,24 +34,30 @@ type SocialIconProps = {
 
 const Logo = () => {
   return (
-    <Image
-      src="/logos/artifilabs-logo.svg"
-      alt="Artifi Logo"
-      width={98}
-      height={22}
-    />
+    <Link href={WEBSITE_URL} target="_blank" rel="noopener noreferrer">
+      <Image
+        src="/logos/artifilabs-logo.svg"
+        alt="Artifi Logo"
+        width={98}
+        height={22}
+      />
+    </Link>
   )
 }
 
 const SocialIcons: React.FC<SocialIconProps> = ({ items }) => {
   return (
     <>
-      {items.map((item, index) => (
+      {items.map((item) => (
         <ButtonIcon
-          key={index}
+          id={`social-icon-${item.icon}`}
+          key={item.icon}
           variant="outlined"
           size="small"
           icon={item.icon}
+          onClick={() =>
+            window.open(item.href, "_blank", "noopener,noreferrer")
+          }
         />
       ))}
     </>
@@ -50,19 +66,20 @@ const SocialIcons: React.FC<SocialIconProps> = ({ items }) => {
 
 const Footer = () => {
   const { t } = useTranslation()
+  const { isMobile, isDesktop } = useViewport()
 
   const footerItems: FooterItem[] = [
     {
       label: "Privacy Policy",
-      href: "https://discord.gg/MhYP7w8n8p",
+      href: "/privacy",
     },
     {
       label: "Terms & Conditions",
-      href: "https://discord.gg/MhYP7w8n8p",
+      href: "/terms",
     },
     {
       label: "DJED",
-      href: "https://discord.gg/MhYP7w8n8p",
+      href: DJED_URL,
       icon: "External",
     },
   ]
@@ -70,34 +87,43 @@ const Footer = () => {
   const socialIcons: SocialIcon[] = [
     {
       icon: "Checkmark",
-      href: "#",
-    },
-    {
-      icon: "Discord",
-      href: "#",
+      href: STATUS_URL,
     },
     {
       icon: "Github",
-      href: "#",
+      href: GITHUB_URL,
+    },
+    {
+      icon: "Discord",
+      href: DISCORD_URL,
     },
     {
       icon: "Twitter",
-      href: "#",
+      href: TWITTER_URL,
+    },
+    {
+      icon: "Linkedin",
+      href: LINKEDIN_URL,
     },
   ]
 
   const MobileFooter = () => {
     return (
       <footer className="px-page-margin flex flex-col gap-24 pt-20 pb-12">
-        <div className="flex flex-row justify-between">
+        <div className="flex flex-row justify-between px-8">
           <Logo />
           <div className="flex gap-10">
             <SocialIcons items={socialIcons} />
           </div>
         </div>
         <div className="flex flex-row items-center justify-between">
-          {footerItems.map((item, index) => (
-            <Link key={index} href={item.href} className="p-6">
+          {footerItems.map((item) => (
+            <Link
+              key={item.label}
+              id={`footer-item-${item.label.toLowerCase()}`}
+              href={item.href}
+              className="p-6"
+            >
               <div className="flex flex-row gap-4">
                 <p className="text-xs font-medium">{item.label}</p>
                 {item.icon && <Icon name={item.icon} size={16} />}
@@ -120,8 +146,8 @@ const Footer = () => {
         <div className="flex flex-row justify-between">
           <Logo />
           <div className="flex flex-row items-center gap-40">
-            {footerItems.map((item, index) => (
-              <Link key={index} href={item.href} className="p-6">
+            {footerItems.map((item) => (
+              <Link key={item.label} href={item.href} className="p-6">
                 <div className="flex flex-row gap-4">
                   <p className="text-xs font-medium">{item.label}</p>
                   {item.icon && <Icon name={item.icon} size={16} />}
@@ -144,7 +170,14 @@ const Footer = () => {
     )
   }
 
-  return <DesktopFooter />
+  if (!isMobile && !isDesktop) return null
+
+  return (
+    <>
+      {isMobile && <MobileFooter />}
+      {isDesktop && <DesktopFooter />}
+    </>
+  )
 }
 
 export default Footer
