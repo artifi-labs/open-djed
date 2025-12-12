@@ -386,6 +386,13 @@
   }
 }
 
+
+@media (max-width: 1024px) {
+  :root {
+    --spacing-page-margin: 16px;
+  }
+}
+
 .infinite-background {
   position: fixed;
   top: 0;
