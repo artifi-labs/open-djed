@@ -28,25 +28,26 @@ export default function Orders({
 
   const client = useApiClient()
 
-  const fetchOrders = async () => {
-    if (!wallet) return
-    const usedAddress = await wallet.getUsedAddresses()
-    if (!usedAddress) throw new Error('Failed to get used address')
-
-    try {
-      const res = await client.api.orders.$post({ json: { usedAddresses: usedAddress } })
-      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`)
-      const data = await res.text()
-      const parsed = JSONbig.parse(data)
-      setOrders(parsed.orders)
-    } catch (err) {
-      console.error('Error fetching orders:', err)
-    }
-  }
-
   useEffect(() => {
-    fetchOrders().catch((e) => console.error(e))
-  }, [wallet, fetchOrders])
+    if (!wallet) return
+
+    const fetchOrders = async () => {
+      const usedAddress = await wallet.getUsedAddresses()
+      if (!usedAddress) throw new Error('Failed to get used address')
+
+      try {
+        const res = await client.api.orders.$post({ json: { usedAddresses: usedAddress } })
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`)
+        const data = await res.text()
+        const parsed = JSONbig.parse(data)
+        setOrders(parsed.orders)
+      } catch (err) {
+        console.error('Error fetching orders:', err)
+      }
+    }
+
+    fetchOrders().catch(console.error)
+  }, [wallet, client])
 
   const handleCancelOrder = async (orderTx: string, outIndex: number) => {
     const { Transaction, TransactionWitnessSet } = await import('@dcspark/cardano-multiplatform-lib-browser')
