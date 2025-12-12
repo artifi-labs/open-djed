@@ -54,3 +54,5 @@ next-env.d.ts
 .vscode
 
 .next
+
+cloudflare-env.d.ts
