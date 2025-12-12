@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next'
 import Toast from './Toast'
 import Orders from './Orders'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation' // Add this import
+import { usePathname } from 'next/navigation'
 
 const SUPPORTED_WALLET_IDS = ['eternl', 'lace', 'vespr', 'begin', 'gerowallet']
 

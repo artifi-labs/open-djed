@@ -1,47 +1,114 @@
-# OpenNext Starter
+# Open DJED — Frontend Application
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+This package contains the Open DJED web application (React + React Router) used to interact with the Open DJED protocol.
 
-## Getting Started
+Below you'll find a short overview of the technologies used, how to install and run the app using Bun, and how to extract and manage translations.
 
-Read the documentation at https://opennext.js.org/cloudflare.
+## Technologies
 
-## Develop
+- Framework: React
+- Routing: Next.js
+- Bundler / dev server: Turbopack
+- Cloud runtime: Cloudflare Workers (wrangler)
+- Internationalization: i18next + react-i18next
+- Translation extraction: i18next-parser
+- Language files: JSON under `/locales/`
 
-Run the Next.js development server:
+## Prerequisites
 
-```bash
-npm run dev
-# or similar package manager command
-```
+- [Bun](https://bun.sh) — used to install dependencies and run scripts in this repo. Or other Node.js package managers like npm or yarn, but Bun is recommended for best performance.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Install (using Bun)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-## Preview
-
-Preview the application locally on the Cloudflare runtime:
-
-```bash
-npm run preview
-# or similar package manager command
-```
-
-## Deploy
-
-Deploy the application to Cloudflare:
+From the repo root (where the top-level `package.json` lives), run:
 
 ```bash
-npm run deploy
-# or similar package manager command
+bun install
 ```
 
-## Learn More
+This will install dependencies for the workspace packages (including `packages/app`).
 
-To learn more about Next.js, take a look at the following resources:
+## Running the app in development
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Change into the app package and run the dev script:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+cd packages/app
+bun run dev
+```
+
+This runs the `next dev --turbopack` script defined in `packages/app/package.json` and starts the Turbopack-based dev server.
+
+If you prefer to run from the repo root you can also execute the same script via Bun's workspace script runner:
+
+```bash
+bun -w run --filter @open-djed/app dev
+```
+
+## Type checking and Cloudflare typegen
+
+To run the type generation and TypeScript build defined by the package:
+
+```bash
+cd packages/app
+bun run typecheck
+```
+
+This runs Cloudflare type generation, React Router typegen, and TypeScript build checks.
+
+## Translations (i18n)
+
+This app uses `i18next` and `react-i18next` for internationalization. Translation strings are extracted using `i18next-parser`.
+
+### Extract strings (generate/update locale files)
+
+From the app package directory run:
+
+```bash
+cd packages/app
+bun run i18n:extract
+```
+
+The `i18n:extract` script uses `bunx i18next-parser` (configured by `i18next-parser.config.js` in this package). Extraction scans the source files for translation keys and updates JSON files under `packages/app/locales/` (for example `locales/en/` and `locales/pt/`).
+
+After running the extractor, review and update the generated translations as needed, then commit the locale files.
+
+### Language detection and caching
+
+- The application uses the browser's preferred language (via the i18next browser language detector) to select the initial language. The detected language is cached in`localStorage` under the key `i18nextLng` so subsequent loads can read the cached value quickly.
+
+### Editing translations
+
+- Locale files live in `packages/app/locales/<lang>/` as JSON files per namespace.
+- Edit those JSON files directly.
+
+## Local storage
+
+| Key          | Storage                         | Purpose                                              | Notes                                                                                                                                                                                                        |
+| ------------ | ------------------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `i18nextLng` | `localStorage`                  | Cached user language (selected or detected)          | Set by `i18next-browser-languagedetector`.                                                                                                                                                                   |
+| `theme`      | `localStorage` + cookie `theme` | Cached user theme preference (`'dark'` or `'light'`) | Theme is persisted in `localStorage` under `theme` and also written to a cookie named `theme` (in production the cookie is set for `.artifex.finance`). The app also respects system `prefers-color-scheme`. |
+
+## TODO
+
+- [ ] Deploy Mainnet test app per PR.
+- [ ] Add translations to the app.
+- [ ] Show user's pending orders.
+- [ ] Allow cancelling orders.
+- [ ] Support ADA amount inputs, alongside the DJED/SHEN amount inputs (requested by Dan).
+- [ ] Add ADA and USD amounts for all fields on the app (primary display in big letters, secondary display in small letters f.e.).
+- [ ] Improve aesthetic of app.
+  - [ ] Missing eye candy.
+  - [ ] Use better font.
+- [ ] Add reserve ratio graphic.
+- [ ] Improve mobile responsiveness.
+- [ ] Fix small underestimation in "You will receive" field.
+- [ ] Fix underestimation in "Available" field.
+- [ ] Support minting both, burning both actions.
+- [ ] Cover all error/edge-cases and give user good information.
+- [ ] Apply correct `ErrorBoundary` usage in React Router.
+- [ ] Build custom 404 page.
+- [ ] Add first load modal informing user of what Open DJED is and how it relates to COTI's DJED app.
+- [ ] Add "What's new?" modal informing users of what we've added since they last visited the app.
+- [ ] Add API and app version to footer of app.
+- [ ] Add tooltips to home page.
