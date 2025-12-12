@@ -118,6 +118,7 @@
       "version": "0.0.1",
       "dependencies": {
         "@lucid-evolution/lucid": "^0.4.27",
+        "@open-djed/registry": "workspace:*",
       },
     },
     "packages/math": {
