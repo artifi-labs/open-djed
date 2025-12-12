@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { Wallet } from '~/context/WalletContext'
+import type { Wallet } from '@/context/WalletContext'
 
 export async function signAndSubmitTx(
   wallet: Wallet,

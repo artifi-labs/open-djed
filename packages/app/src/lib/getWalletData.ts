@@ -1,4 +1,4 @@
-import type { Wallet } from '~/context/WalletContext'
+import type { Wallet } from '@/context/WalletContext'
 
 export async function getWalletData(wallet: Wallet) {
   const utxos = await wallet.utxos()

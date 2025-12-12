@@ -1,5 +1,5 @@
 import React, { type ReactNode } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, motion, Variants } from 'framer-motion'
 
 type ModalProps = {
   isOpen: boolean
@@ -8,13 +8,13 @@ type ModalProps = {
   children: ReactNode
 }
 
-const backdropVariants = {
+const backdropVariants: Variants = {
   hidden: { opacity: 0 },
   visible: { opacity: 1 },
   exit: { opacity: 0 },
 }
 
-const modalVariants = {
+const modalVariants: Variants = {
   hidden: { opacity: 0, scale: 0.95 },
   visible: { opacity: 1, scale: 1, transition: { type: 'spring', damping: 20, stiffness: 300 } },
   exit: { opacity: 0, scale: 0.95, transition: { duration: 0.2 } },
