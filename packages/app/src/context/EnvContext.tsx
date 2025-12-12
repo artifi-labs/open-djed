@@ -6,7 +6,7 @@ export type Env = {
   apiUrl: string
   network: 'Preprod' | 'Mainnet'
   config: Record<string, string>
-  posthog: string
+  // posthog: string
 }
 
 const EnvContext = createContext<Env | undefined>(undefined)
