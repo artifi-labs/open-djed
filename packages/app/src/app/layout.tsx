@@ -5,6 +5,7 @@ import { getLoaderData } from "@/lib/loader"
 import { Providers } from "./providers"
 import { Header } from "@/components/Header"
 import Footer from "@/components/Footer"
+import { Navbar } from "@/components/new-components/Navbar"
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -36,7 +37,7 @@ export default function RootLayout({
           config={env.config}
           posthog={env.posthog}
         >
-          <Header />
+          <Navbar />
           <main className="flex w-full flex-1 flex-col items-center px-4 sm:px-8 md:px-16 lg:px-32 xl:px-[160px]">
             <div className="infinite-background"></div>
             {children}
