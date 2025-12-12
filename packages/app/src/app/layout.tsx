@@ -4,7 +4,7 @@ import { Poppins } from "next/font/google"
 import { getLoaderData } from "@/lib/loader"
 import { Providers } from "./providers"
 import { Header } from "@/components/Header"
-import Footer from "@/components/Footer/Footer"
+import Footer from "@/components/Footer"
 
 const poppins = Poppins({
   subsets: ["latin"],
