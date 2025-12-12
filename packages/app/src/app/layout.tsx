@@ -15,8 +15,8 @@ const inter = Inter({
   fallback: ['sans-serif'],
 })
 
-export async function generateMetadata(): Promise<Metadata> {
-  const { network } = await getLoaderData()
+export function generateMetadata(): Metadata {
+  const { network } = getLoaderData()
 
   const canonical = `https://${network === 'Preprod' ? 'preprod.' : ''}djed.artifex.finance`
 
@@ -80,7 +80,7 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   const env = getLoaderData()
 
   return (

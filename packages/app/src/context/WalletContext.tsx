@@ -1,12 +1,14 @@
-import { createContext, useContext, useEffect, useState } from 'react'
-import { decode } from 'cbor2'
-import { useEnv } from './EnvContext'
-import { z } from 'zod'
-import { registryByNetwork } from '@open-djed/registry'
-import { useLocalStorage } from 'usehooks-ts'
-import Toast from '@/components/Toast'
+'use client'
 
-type WalletMetadata = {
+import { createContext, useCallback, useContext, useEffect, useState } from 'react'
+import { decode } from 'cbor2'
+import { z } from 'zod'
+import { useLocalStorage } from 'usehooks-ts'
+import { type Cardano } from '@lucid-evolution/lucid'
+import { registryByNetwork } from '@open-djed/registry'
+import { useEnv } from './EnvContext'
+
+export type WalletMetadata = {
   id: string
   name: string
   icon: string
@@ -26,6 +28,7 @@ export type Wallet = {
     handle?: string
   }
   icon: string
+  name: string
 }
 
 type WalletContextType = {
@@ -46,6 +49,13 @@ const hexToAscii = (hex: string) => {
       .join('') || ''
   )
 }
+export function getCardanoFromWindowObject(): Cardano | null {
+  if (typeof window === 'undefined') {
+    throw new Error('Cardano wallet not found in window object')
+  }
+  return window.cardano
+}
+
 const WalletContext = createContext<WalletContextType | null>(null)
 
 export const useWallet = () => {
@@ -53,11 +63,6 @@ export const useWallet = () => {
   if (!ctx) throw new Error('WalletContext not found')
   return ctx
 }
-
-const networkIds = {
-  Preprod: 0,
-  Mainnet: 1,
-} as const
 
 const uint8ArrayToHexString = (uint8Array: Uint8Array) =>
   Array.from(uint8Array)
@@ -68,14 +73,84 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
   const [wallet, setWallet] = useState<Wallet | null>(null)
   const [wallets, setWallets] = useState<WalletMetadata[]>([])
   const [connectedWalletId, setConnectedWalletId] = useLocalStorage<string | null>('connectedWalletId', null)
-  const [toastProps, setToastProps] = useState<{ message: string; type: 'success' | 'error'; show: boolean }>(
-    {
-      message: '',
-      type: 'success',
-      show: false,
-    },
-  )
   const { network } = useEnv()
+
+  const connect = useCallback(
+    async (id: string) => {
+      try {
+        const cardano = getCardanoFromWindowObject()
+        if (!cardano) return
+
+        let api = await cardano[id].enable()
+        let balanceStr: string = ''
+
+        try {
+          balanceStr = await api.getBalance()
+        } catch (err: unknown) {
+          if (typeof err !== 'object' || err === null || !('code' in err)) throw err
+
+          if (err?.code === -4) {
+            api = await cardano[id].enable()
+            balanceStr = await api.getBalance()
+          } else {
+            throw err
+          }
+        }
+
+        const decodedBalance = decode(balanceStr)
+        const parsedBalance = z
+          .union([
+            z.number(),
+            z.tuple([
+              z.number(),
+              z.map(
+                z.instanceof(Uint8Array).transform(uint8ArrayToHexString),
+                z.map(z.instanceof(Uint8Array).transform(uint8ArrayToHexString), z.number()),
+              ),
+            ]),
+          ])
+          .transform((b) => {
+            if (typeof b === 'number') return { ADA: b / 1e6, DJED: 0, SHEN: 0 }
+            const policyId = registryByNetwork[network].djedAssetId.slice(0, 56)
+            const djedTokenName = registryByNetwork[network].djedAssetId.slice(56)
+            const shenTokenName = registryByNetwork[network].shenAssetId.slice(56)
+            const adaHandlePolicyId = 'f0ff48bbb7bbe9d59a40f1ce90e9e9d0ff5002ec48f232b49ca0fb9a'
+            const hexHandle = [...(b[1].get(adaHandlePolicyId)?.keys() ?? [])][0]
+
+            return {
+              ADA: b[0] / 1e6,
+              DJED: (b[1].get(policyId)?.get(djedTokenName) ?? 0) / 1e6,
+              SHEN: (b[1].get(policyId)?.get(shenTokenName) ?? 0) / 1e6,
+              handle: hexHandle ? hexToAscii(hexHandle.replace(/^000de140/, '')) : undefined,
+            }
+          })
+          .parse(decodedBalance)
+        setConnectedWalletId(id)
+        const getChangeAddress = async () => {
+          const address = await api.getChangeAddress()
+          return address
+        }
+        const getUsedAddresses = async () => {
+          const oldAddresses = await api.getUsedAddresses()
+          return oldAddresses
+        }
+        setWallet({
+          name: cardano[id].name,
+          icon: cardano[id].icon,
+          balance: parsedBalance,
+          address: await getChangeAddress(),
+          utxos: () => api.getUtxos(),
+          signTx: (txCbor: string) => api.signTx(txCbor, false),
+          submitTx: api.submitTx,
+          getChangeAddress,
+          getUsedAddresses,
+        })
+      } catch (err) {
+        console.error(`Failed to enable ${id}`, err)
+      }
+    },
+    [setConnectedWalletId, setWallet],
+  )
 
   useEffect(() => {
     ;(async () => {
@@ -90,88 +165,22 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
       // This is just to satisfy the linter. Actual errors are caught inside already.
       console.error('Failed to reconnect wallet:', err)
     })
-  })
+  }, [connect, connectedWalletId])
 
-  const detectWallets = () => {
-    if (typeof window === 'undefined') return
+  const detectWallets = useCallback(() => {
+    const cardano = getCardanoFromWindowObject()
+    if (!cardano) return
 
-    const detected = Object.keys(window.cardano || {})
-      .filter((id) => window.cardano[id].icon)
-      .map((id) => {
-        const prov = window.cardano[id]
-        return {
-          id,
-          name: prov.name,
-          icon: prov.icon,
-        }
-      })
+    const detected = Object.keys(cardano)
+      .filter((id) => cardano[id].icon)
+      .map((id) => ({
+        id,
+        name: cardano[id].name,
+        icon: cardano[id].icon,
+      }))
 
     setWallets(detected)
-  }
-
-  const connect = async (id: string) => {
-    try {
-      const api = await window.cardano[id].enable()
-
-      if ((await api.getNetworkId()) !== networkIds[network]) {
-        setToastProps({ message: `Please connect to a ${network} wallet`, type: 'error', show: true })
-        return
-      }
-
-      const balanceStr = await api.getBalance()
-      const decodedBalance = decode(balanceStr)
-      const parsedBalance = z
-        .union([
-          z.number(),
-          z.tuple([
-            z.number(),
-            z.map(
-              z.instanceof(Uint8Array).transform(uint8ArrayToHexString),
-              z.map(z.instanceof(Uint8Array).transform(uint8ArrayToHexString), z.number()),
-            ),
-          ]),
-        ])
-        .transform((b) => {
-          if (typeof b === 'number') return { ADA: b / 1e6, DJED: 0, SHEN: 0 }
-          const policyId = registryByNetwork[network].djedAssetId.slice(0, 56)
-          const djedTokenName = registryByNetwork[network].djedAssetId.slice(56)
-          const shenTokenName = registryByNetwork[network].shenAssetId.slice(56)
-          const adaHandlePolicyId = 'f0ff48bbb7bbe9d59a40f1ce90e9e9d0ff5002ec48f232b49ca0fb9a'
-          const hexHandle = [...(b[1].get(adaHandlePolicyId)?.keys() ?? [])][0]
-
-          return {
-            ADA: b[0] / 1e6,
-            DJED: (b[1].get(policyId)?.get(djedTokenName) ?? 0) / 1e6,
-            SHEN: (b[1].get(policyId)?.get(shenTokenName) ?? 0) / 1e6,
-            handle: hexHandle ? hexToAscii(hexHandle.replace(/^000de140/, '')) : undefined,
-          }
-        })
-        .parse(decodedBalance)
-      setConnectedWalletId(id)
-      const getChangeAddress = async () => {
-        const address = await api.getChangeAddress()
-        return address
-      }
-      const getUsedAddresses = async () => {
-        const oldAddresses = await api.getUsedAddresses()
-        return oldAddresses
-      }
-      setWallet({
-        icon: window.cardano[id].icon,
-        balance: parsedBalance,
-        address: await getChangeAddress().then(async (a) =>
-          (await import('@dcspark/cardano-multiplatform-lib-browser')).Address.from_hex(a).to_bech32(),
-        ),
-        utxos: () => api.getUtxos(),
-        signTx: (txCbor: string) => api.signTx(txCbor, false),
-        submitTx: api.submitTx,
-        getChangeAddress,
-        getUsedAddresses,
-      })
-    } catch (err) {
-      console.error(`Failed to enable ${id}`, err)
-    }
-  }
+  }, [setWallets])
 
   const disconnect = () => {
     setWallet(null)
@@ -181,12 +190,6 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
   return (
     <WalletContext.Provider value={{ wallet, wallets, connect, detectWallets, disconnect }}>
       {children}
-      <Toast
-        message={toastProps.message}
-        show={toastProps.show}
-        onClose={() => setToastProps({ ...toastProps, show: false })}
-        type={toastProps.type}
-      />
     </WalletContext.Provider>
   )
 }
