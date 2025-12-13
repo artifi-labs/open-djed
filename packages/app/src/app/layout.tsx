@@ -6,6 +6,7 @@ import { Providers } from "./providers"
 import { Header } from "@/components/Header"
 import Footer from "@/components/Footer"
 import { Navbar } from "@/components/new-components/Navbar"
+import Background from "@/components/new-components/Background"
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -26,11 +27,12 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${poppins.variable} bg-light-bg dark:bg-dark-bg text-light-text dark:text-dark-text`}
+      className={`${poppins.variable} bg-[#101e2b]`}
     >
       <body
         className={`${poppins.className} relative flex min-h-screen flex-col antialiased`}
       >
+        <Background />
         <Providers
           apiUrl={env.apiUrl}
           network={env.network}
@@ -39,7 +41,6 @@ export default function RootLayout({
         >
           <Navbar />
           <main className="flex w-full flex-1 flex-col items-center px-4 sm:px-8 md:px-16 lg:px-32 xl:px-[160px]">
-            <div className="infinite-background"></div>
             {children}
           </main>
           <Footer />
