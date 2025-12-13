@@ -32,10 +32,13 @@ const NavigationItems: React.FC<NavigationItemsProps> = ({
   items,
   className,
 }) => {
-  const baseClassName = clsx("flex items-center gap-24", className)
+  const baseClassName = clsx(
+    "hidden desktop:flex items-center gap-24",
+    className,
+  )
 
   return (
-    <nav className={baseClassName}>
+    <nav className={baseClassName} aria-label="Main navigation">
       {items.map((item) => (
         <Link
           key={item.href}
@@ -90,44 +93,44 @@ export const Navbar: React.FC<NavbarProps> = ({ walletConnected }) => {
   ]
 
   return (
-    <header className="px-navbar-margin flex max-w-[1440px] flex-row items-center justify-between py-18">
-      <div className="desktop:w-[271px]">
-        <Logo />
-      </div>
-
-      {/* Navigation Items */}
-      <div className="desktop:block hidden">
-        <NavigationItems items={navLinks} />
-      </div>
-
-      {/* Right Side */}
-      <div className="desktop:gap-12 flex items-center gap-10">
-        {/* Desktop items */}
-        <div className="desktop:flex hidden items-center gap-12">
-          <NetworkBadge network="Mainnet" />
-          <ButtonIcon
-            variant="outlined"
-            icon="Settings"
-            size="medium"
-            onClick={() => alert("Settings")}
-          />
+    <header className="w-full">
+      <div className="px-navbar-margin mx-auto flex w-full max-w-[1440px] flex-row items-center justify-between py-18">
+        <div className="desktop:w-[271px]">
+          <Logo />
         </div>
 
-        {/* Wallet button */}
-        <Button
-          text="Connect Wallet"
-          variant="accent"
-          size="medium"
-          onClick={() => alert("Wallet")}
-        />
+        {/* Navigation Items */}
+        <NavigationItems items={navLinks} />
 
-        {/* Menu button */}
-        <button
-          className="desktop:hidden cursor-pointer"
-          onClick={() => alert("Menu")}
-        >
-          <Icon name="Menu" size={32} />
-        </button>
+        {/* Right Side */}
+        <div className="desktop:gap-12 flex items-center gap-10">
+          {/* Desktop items */}
+          <div className="desktop:flex hidden items-center gap-12">
+            <NetworkBadge network="Mainnet" />
+            <ButtonIcon
+              variant="outlined"
+              icon="Settings"
+              size="medium"
+              onClick={() => alert("Settings")}
+            />
+          </div>
+
+          {/* Wallet button */}
+          <Button
+            text="Connect Wallet"
+            variant="accent"
+            size="medium"
+            onClick={() => alert("Wallet")}
+          />
+
+          {/* Menu button */}
+          <button
+            className="desktop:hidden cursor-pointer"
+            onClick={() => alert("Menu")}
+          >
+            <Icon name="Menu" size={32} />
+          </button>
+        </div>
       </div>
     </header>
   )

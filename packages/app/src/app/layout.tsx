@@ -29,7 +29,7 @@ export default function RootLayout({
       className={`${poppins.variable} bg-light-bg dark:bg-dark-bg text-light-text dark:text-dark-text`}
     >
       <body
-        className={`${poppins.className} flex min-h-screen flex-col antialiased`}
+        className={`${poppins.className} relative flex min-h-screen flex-col antialiased`}
       >
         <Providers
           apiUrl={env.apiUrl}
