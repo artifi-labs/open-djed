@@ -40,7 +40,7 @@ const Button: React.FC<ButtonProps> = ({
   const disabledClasses = "disabled:cursor-not-allowed"
 
   const baseClasses = clsx(
-    "inline-flex items-center justify-center gap-8 rounded-full focus:outline-none focus:ring-none cursor-pointer",
+    "inline-flex items-center justify-center gap-8 rounded-full focus:outline-none focus:ring-none cursor-pointer transition-all",
     "font-medium",
     disabledClasses,
   )

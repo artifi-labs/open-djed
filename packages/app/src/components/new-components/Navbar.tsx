@@ -13,6 +13,7 @@ import { useWalletSidebar } from "@/context/SidebarContext"
 import Wallet, { WalletName } from "./Wallet"
 import Sidebar from "./modals/Sidebar"
 import Divider from "./Divider"
+import { shortenString } from "@/lib/utils"
 
 export type NavbarProps = {
   walletConnected?: boolean
@@ -103,8 +104,7 @@ export const Navbar: React.FC<NavbarProps> = ({ walletConnected }) => {
   const getWalletButtonText = () => {
     if (!wallet) return "Connect wallet"
     if (wallet.balance.handle) return `$${wallet.balance.handle}`
-    if (wallet.address)
-      return `${wallet.address.slice(0, 5)}...${wallet.address.slice(-6)}`
+    if (wallet.address) return `${shortenString(wallet.address)}`
     return "Loading address..."
   }
   const walletButtonText = getWalletButtonText()

@@ -243,7 +243,7 @@
   --color-standalone-text-disabled: var(--color-neutral-500);
 
   --color-skrim: var(--color-neutral-925);
-  --color-link: var(--color-lilac-500);
+  --color-link: var(--color-supportive-2-700);
 
   --color-error-primary: var(--color-red-700);
   --color-on-error-primary: var(--color-red-25);
@@ -322,8 +322,8 @@
 
   --color-border-gradient: linear-gradient(
     180deg,
-    var(--color-supportive-3-800, #084149) 0%,
-    var(--color-primary-300, #707880) 100%
+    var(--color-primary-300, #707880) 0%,
+    var(--color-supportive-3-800, #084149) 100%
   );
 
   --color-gradient-angular-1: linear-gradient(
