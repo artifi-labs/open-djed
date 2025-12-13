@@ -8,7 +8,13 @@ export type WalletProps = {
   className?: string
 } & React.HTMLAttributes<HTMLDivElement>
 
-export type WalletName = "ETERNL" | "LACE" | "VESPR" | "BEGIN" | "GEROWALLET"
+export type WalletName =
+  | "ETERNL"
+  | "LACE"
+  | "VESPR"
+  | "BEGIN"
+  | "GEROWALLET"
+  | "PLACEHOLDER"
 
 const Wallet: React.FC<WalletProps> = ({
   name,

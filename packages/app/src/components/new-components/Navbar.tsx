@@ -1,13 +1,18 @@
 "use client"
 
 import Link from "next/link"
-import React from "react"
+import React, { useState } from "react"
 import { useTranslation } from "react-i18next"
 import Button from "./Button"
 import ButtonIcon from "./ButtonIcon"
 import Image from "next/image"
 import clsx from "clsx"
 import Icon from "./Icon"
+import { useWallet } from "@/context/WalletContext"
+import { useWalletSidebar } from "@/context/SidebarContext"
+import Wallet, { WalletName } from "./Wallet"
+import Sidebar from "./modals/Sidebar"
+import Divider from "./Divider"
 
 export type NavbarProps = {
   walletConnected?: boolean
@@ -82,15 +87,30 @@ const NetworkBadge: React.FC<NetworkBadgeProps> = ({ network, className }) => {
   )
 }
 
+const navLinks: { label: string; href: string }[] = [
+  { label: "Dashboard", href: "/" },
+  { label: "Analytics", href: "/analytics" },
+  { label: "YIELD Simulator", href: "/yield-simulator" },
+  { label: "Orders", href: "/orders" },
+]
+
 export const Navbar: React.FC<NavbarProps> = ({ walletConnected }) => {
   const { t } = useTranslation()
+  const { wallet } = useWallet()
+  const { openWalletSidebar } = useWalletSidebar()
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false)
 
-  const navLinks: { label: string; href: string }[] = [
-    { label: "Dashboard", href: "/" },
-    { label: "Analytics", href: "/analytics" },
-    { label: "YIELD Simulator", href: "/yield-simulator" },
-    { label: "Orders", href: "/orders" },
-  ]
+  const getWalletButtonText = () => {
+    if (!wallet) return "Connect wallet"
+    if (wallet.balance.handle) return `$${wallet.balance.handle}`
+    if (wallet.address)
+      return `${wallet.address.slice(0, 5)}...${wallet.address.slice(-6)}`
+    return "Loading address..."
+  }
+  const walletButtonText = getWalletButtonText()
+  const walletIcon = wallet && (
+    <Wallet name={wallet.name.toUpperCase() as WalletName} size={22} />
+  )
 
   return (
     <header className="w-full">
@@ -117,19 +137,38 @@ export const Navbar: React.FC<NavbarProps> = ({ walletConnected }) => {
 
           {/* Wallet button */}
           <Button
-            text="Connect Wallet"
-            variant="accent"
+            text={walletButtonText}
+            variant={wallet ? "secondary" : "accent"}
             size="medium"
-            onClick={() => alert("Wallet")}
+            onClick={() => openWalletSidebar()}
+            wallet={walletIcon}
           />
 
           {/* Menu button */}
-          <button
+          <ButtonIcon
             className="desktop:hidden cursor-pointer"
-            onClick={() => alert("Menu")}
+            onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
+            icon={"Menu"}
+          />
+
+          <Sidebar
+            title="Menu"
+            isOpen={isMobileSidebarOpen}
+            onClose={() => setIsMobileSidebarOpen(false)}
           >
-            <Icon name="Menu" size={32} />
-          </button>
+            <nav className="flex flex-col gap-6" aria-label="Main navigation">
+              {navLinks.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="desktop:text-md p-6 font-medium"
+                  onClick={() => setIsMobileSidebarOpen(false)}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
+          </Sidebar>
         </div>
       </div>
     </header>
