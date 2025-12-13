@@ -69,3 +69,7 @@
 @utility bg-border-footer-gradient {
   background: var(--color-border-footer-gradient);
 }
+
+@utility bg-gradient-badge {
+  background: var(--color-gradient-badge);
+}

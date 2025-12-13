@@ -15,6 +15,8 @@ export type IconName =
   | "Github"
   | "Legal"
   | "Linkedin"
+  | "Menu"
+  | "Settings"
   | "Twitter"
 
 const Icon: React.FC<IconProps> = ({

@@ -81,10 +81,10 @@ const ButtonIcon: React.FC<ButtonIconProps> = ({
   }
 
   const buttonClasses = clsx(
-    className,
     baseClasses,
     variantClasses[variant],
     sizeClasses[size],
+    className,
   )
 
   const handleClick: React.MouseEventHandler<HTMLButtonElement> = (e) => {

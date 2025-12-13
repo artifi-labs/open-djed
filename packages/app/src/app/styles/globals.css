@@ -337,6 +337,24 @@
     var(--color-supportive-1-500, #2cc399) 91.17%
   );
 
+  --color-gradient-badge: var(
+    --Gradient-Angular-1,
+    linear-gradient(
+      327deg,
+      var(--Gradients-Gradient1-supportiveColor2_500, #0287d0) 1%,
+      var(--Gradients-Gradient1-supportiveColor3_500, #15a2b7) 71.62%,
+      var(--Gradients-Gradient1-supportiveColor1_500, #2cc399) 118.71%
+    )
+  );
+
+  --color-no-color-text-hover: var(--color-primary-100);
+  --color-no-color-text-focused: var(--color-primary-150);
+  --color-no-color-text-pressed: var(--color-primary-150);
+
+  --color-no-color-hover: var(--color-lilac-925);
+  --color-no-color-focused: var(--color-lilac-900);
+  --color-no-color-pressed: var(--color-lilac-900);
+
   /* Spacing */
   --spacing-2: 2px;
   --spacing-4: 4px;
@@ -447,6 +465,10 @@
   :root {
     --spacing-page-margin: 16px;
   }
+}
+
+body {
+  @apply text-primary font-normal;
 }
 
 .infinite-background {
