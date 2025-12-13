@@ -9,15 +9,38 @@ export type IconProps = {
 } & React.HTMLAttributes<HTMLDivElement>
 
 export type IconName =
+  | "Arrow-Left"
+  | "Arrow-Right"
+  | "Ascending"
   | "Checkmark"
+  | "Chevron-down"
+  | "Chevron-up"
+  | "Chevron-right"
+  | "Chevron-left"
+  | "Close"
+  | "Copy"
+  | "Descending"
+  | "Disconnect"
   | "Discord"
+  | "Error"
+  | "Export"
   | "External"
   | "Github"
+  | "Hide"
+  | "Information"
   | "Legal"
   | "Linkedin"
+  | "Lock"
+  | "Money"
   | "Menu"
+  | "Placeholder"
   | "Settings"
+  | "Sort"
+  | "Swap-Horizontal"
+  | "Swap-Vertical"
   | "Twitter"
+  | "Vector"
+  | "Wallet"
 
 const Icon: React.FC<IconProps> = ({
   name,
@@ -26,7 +49,7 @@ const Icon: React.FC<IconProps> = ({
   ...props
 }) => {
   const altText = `${name}-icon`
-  const basePath = "/components/icons/"
+  const basePath = "/icons/"
   const srcFile = `${basePath}/${name}.svg`
 
   return (

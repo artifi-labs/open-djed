@@ -7,6 +7,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { EnvProvider } from "@/context/EnvContext"
 import { WalletProvider } from "@/context/WalletContext"
 import { I18nProvider } from "@/context/I18nProvider"
+import { SidebarProvider } from "@/context/SidebarContext"
 
 export interface ProvidersProps {
   children: React.ReactNode
@@ -28,13 +29,15 @@ export const Providers = ({
   return (
     <EnvProvider env={{ apiUrl, network, config, posthog }}>
       <WalletProvider>
-        <ThemeProvider>
-          <ClientProvider apiUrl={apiUrl}>
-            <QueryClientProvider client={queryClient}>
-              <I18nProvider>{children}</I18nProvider>
-            </QueryClientProvider>
-          </ClientProvider>
-        </ThemeProvider>
+        <SidebarProvider>
+          <ThemeProvider>
+            <ClientProvider apiUrl={apiUrl}>
+              <QueryClientProvider client={queryClient}>
+                <I18nProvider>{children}</I18nProvider>
+              </QueryClientProvider>
+            </ClientProvider>
+          </ThemeProvider>
+        </SidebarProvider>
       </WalletProvider>
     </EnvProvider>
   )
