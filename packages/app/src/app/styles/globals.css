@@ -435,7 +435,7 @@
   --radius-button: 99999px;
 
   /* Breakpoints */
-  --breakpoint-desktop: 1024px;
+  --breakpoint-desktop: 1440px;
 }
 
 @layer base {

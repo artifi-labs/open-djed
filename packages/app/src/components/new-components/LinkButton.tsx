@@ -14,7 +14,6 @@ const LinkButton: React.FC<LinkButtonProps> = ({
   target = "_blank",
   ...props
 }) => {
-
   const isExternal = href.startsWith("https")
 
   return (

@@ -18,7 +18,7 @@ const ErrorPage = ({
 }: ErrorPageProps) => {
   return (
     <div className="m-auto flex flex-col items-center justify-center text-center">
-      <div className="gap-12 flex flex-col items-center justify-center desktop:gap-[36px]">
+      <div className="desktop:gap-[36px] flex flex-col items-center justify-center gap-12">
         <Image
           src={`/errors/${statusCode}.svg`}
           width={346}
