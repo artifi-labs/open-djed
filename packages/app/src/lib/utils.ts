@@ -144,3 +144,25 @@ export const shortenString = (text: string, start = 6, end = 4): string => {
   if (text.length <= start + end) return text
   return `${text.slice(0, start)}...${text.slice(-end)}`
 }
+
+/**
+ * Sanitizes numeric input for financial values.
+ *
+ * Rules:
+ * - Converts commas (`,`) to dots (`.`)
+ * - Allows only digits (`0–9`) and a single dot (`.`)
+ * - Removes any extra dots after the first one
+ *
+ * @param {string} value - Raw input value from the user
+ * @returns {string} A sanitized numeric string
+ *
+ * @example
+ * sanitizeNumberInput("1,5")   // "1.5"
+ * sanitizeNumberInput("1.2.3") // "1.23"
+ * sanitizeNumberInput(",5")    // ".5"
+ * sanitizeNumberInput("1a,2b") // "1.2"
+ */
+export const sanitizeNumberInput = (v: string) =>
+  v.replace(/,/g, ".")
+   .replace(/[^0-9.]/g, "")
+   .replace(/(\..*)\./g, "$1")

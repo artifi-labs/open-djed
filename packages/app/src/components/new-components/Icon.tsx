@@ -11,7 +11,9 @@ export type IconProps = {
 export type IconName =
   | "Arrow-Left"
   | "Arrow-Right"
+  | "Arrows"
   | "Ascending"
+  | "Burn"
   | "Checkmark"
   | "Chevron-down"
   | "Chevron-up"
@@ -33,6 +35,8 @@ export type IconName =
   | "Lock"
   | "Money"
   | "Menu"
+  | "Minus"
+  | "Mint"
   | "Placeholder"
   | "Settings"
   | "Sort"
