@@ -3,7 +3,7 @@
 import { useTranslation } from "react-i18next"
 import Link from "next/link"
 import Image from "next/image"
-import Icon, { IconName } from "./new-components/Icon"
+import Icon, { type IconName } from "./new-components/Icon"
 import ButtonIcon from "./new-components/ButtonIcon"
 import React from "react"
 import { useViewport } from "@/hooks/useViewport"

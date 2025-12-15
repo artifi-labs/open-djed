@@ -1,17 +1,23 @@
-import { Data, Lucid, getAddressDetails, slotToUnixTime, type UTxO } from '@lucid-evolution/lucid'
-import { program } from 'commander'
+import {
+  Data,
+  Lucid,
+  getAddressDetails,
+  slotToUnixTime,
+  type UTxO,
+} from "@lucid-evolution/lucid"
+import { program } from "commander"
 import {
   createMintDjedOrder,
   createBurnShenOrder,
   createBurnDjedOrder,
   createMintShenOrder,
   cancelOrderByOwner,
-} from '@open-djed/txs'
-import { registryByNetwork } from '@open-djed/registry'
-import { Blockfrost } from '@open-djed/blockfrost'
-import { env } from './env'
-import { parseOutRef } from '@open-djed/txs'
-import { OracleDatum, OrderDatum, PoolDatum } from '@open-djed/data'
+} from "@open-djed/txs"
+import { registryByNetwork } from "@open-djed/registry"
+import { Blockfrost } from "@open-djed/blockfrost"
+import { env } from "./env"
+import { parseOutRef } from "@open-djed/txs"
+import { OracleDatum, OrderDatum, PoolDatum } from "@open-djed/data"
 import {
   djedADABurnRate,
   djedADAMintRate,
@@ -21,8 +27,8 @@ import {
   reserveRatio,
   shenADABurnRate,
   shenADAMintRate,
-} from '@open-djed/math'
-import { processMintDjedOrder } from '@open-djed/txs/src/process-mint-djed-order'
+} from "@open-djed/math"
+import { processMintDjedOrder } from "@open-djed/txs/src/process-mint-djed-order"
 
 console.log(
   `Initializing Lucid with Blockfrost for network "${env.NETWORK}" using project id "${env.BLOCKFROST_PROJECT_ID.slice(8)}...".`,
@@ -31,7 +37,7 @@ console.log(
 const blockfrost = new Blockfrost(env.BLOCKFROST_URL, env.BLOCKFROST_PROJECT_ID)
 
 const lucid = await Lucid(blockfrost, env.NETWORK)
-console.log('Finished initializing Lucid.')
+console.log("Finished initializing Lucid.")
 const registry = registryByNetwork[env.NETWORK]
 
 if (env.SEED) {
@@ -40,18 +46,25 @@ if (env.SEED) {
   lucid.selectWallet.fromAddress(env.ADDRESS, await lucid.utxosAt(env.ADDRESS))
 }
 
-const rawPoolUTxO = (await lucid.utxosAtWithUnit(registry.poolAddress, registry.poolAssetId))[0]
+const rawPoolUTxO = (
+  await lucid.utxosAtWithUnit(registry.poolAddress, registry.poolAssetId)
+)[0]
 if (!rawPoolUTxO) throw new Error(`Couldn't find pool utxo.`)
 const poolDatumHex = Data.to(await lucid.datumOf(rawPoolUTxO))
 const poolUTxO = {
   ...rawPoolUTxO,
   poolDatum: Data.from(poolDatumHex, PoolDatum),
 }
-const rawOracleUTxO = (await lucid.utxosAtWithUnit(registry.oracleAddress, registry.oracleAssetId))[0]
+const rawOracleUTxO = (
+  await lucid.utxosAtWithUnit(registry.oracleAddress, registry.oracleAssetId)
+)[0]
 if (!rawOracleUTxO) throw new Error(`Couldn't find oracle utxo.`)
 const oracleUTxO = {
   ...rawOracleUTxO,
-  oracleDatum: Data.from(Data.to(await lucid.datumOf(rawOracleUTxO)), OracleDatum),
+  oracleDatum: Data.from(
+    Data.to(await lucid.datumOf(rawOracleUTxO)),
+    OracleDatum,
+  ),
 }
 
 const now = slotToUnixTime(env.NETWORK, await blockfrost.getLatestBlockSlot())
@@ -59,10 +72,10 @@ const now = slotToUnixTime(env.NETWORK, await blockfrost.getLatestBlockSlot())
 const { orderMintingPolicyRefUTxO, orderSpendingValidatorRefUTxO } = registry
 
 program
-  .command('create-mint-djed-order')
-  .argument('<amount>', 'Amount of DJED to mint')
-  .option('--sign', 'Sign the transaction')
-  .option('--submit', 'Submit the transaction')
+  .command("create-mint-djed-order")
+  .argument("<amount>", "Amount of DJED to mint")
+  .option("--sign", "Sign the transaction")
+  .option("--submit", "Submit the transaction")
   .action(async (amount, options) => {
     const tx = createMintDjedOrder({
       lucid,
@@ -75,22 +88,24 @@ program
       now,
     })
     const balancedTx = await tx.complete({ localUPLCEval: false })
-    const signedTx = await (options.sign ? balancedTx.sign.withWallet() : balancedTx).complete()
-    console.log('Transaction CBOR')
+    const signedTx = await (
+      options.sign ? balancedTx.sign.withWallet() : balancedTx
+    ).complete()
+    console.log("Transaction CBOR")
     console.log(signedTx.toCBOR())
-    console.log('Transaction hash')
+    console.log("Transaction hash")
     console.log(signedTx.toHash())
     if (options.submit) {
       await signedTx.submit()
-      console.log('Transaction submitted')
+      console.log("Transaction submitted")
     }
   })
 
 program
-  .command('create-burn-djed-order')
-  .argument('<amount>', 'Amount of DJED to mint')
-  .option('--sign', 'Sign the transaction')
-  .option('--submit', 'Submit the transaction')
+  .command("create-burn-djed-order")
+  .argument("<amount>", "Amount of DJED to mint")
+  .option("--sign", "Sign the transaction")
+  .option("--submit", "Submit the transaction")
   .action(async (amount, options) => {
     const tx = createBurnDjedOrder({
       lucid,
@@ -103,22 +118,24 @@ program
       now,
     })
     const balancedTx = await tx.complete({ localUPLCEval: false })
-    const signedTx = await (options.sign ? balancedTx.sign.withWallet() : balancedTx).complete()
-    console.log('Transaction CBOR')
+    const signedTx = await (
+      options.sign ? balancedTx.sign.withWallet() : balancedTx
+    ).complete()
+    console.log("Transaction CBOR")
     console.log(signedTx.toCBOR())
-    console.log('Transaction hash')
+    console.log("Transaction hash")
     console.log(signedTx.toHash())
     if (options.submit) {
       await signedTx.submit()
-      console.log('Transaction submitted')
+      console.log("Transaction submitted")
     }
   })
 
 program
-  .command('create-mint-shen-order')
-  .argument('<amount>', 'Amount of SHEN to mint')
-  .option('--sign', 'Sign the transaction')
-  .option('--submit', 'Submit the transaction')
+  .command("create-mint-shen-order")
+  .argument("<amount>", "Amount of SHEN to mint")
+  .option("--sign", "Sign the transaction")
+  .option("--submit", "Submit the transaction")
   .action(async (amount, options) => {
     const tx = createMintShenOrder({
       lucid,
@@ -131,22 +148,24 @@ program
       now,
     })
     const balancedTx = await tx.complete({ localUPLCEval: false })
-    const signedTx = await (options.sign ? balancedTx.sign.withWallet() : balancedTx).complete()
-    console.log('Transaction CBOR')
+    const signedTx = await (
+      options.sign ? balancedTx.sign.withWallet() : balancedTx
+    ).complete()
+    console.log("Transaction CBOR")
     console.log(signedTx.toCBOR())
-    console.log('Transaction hash')
+    console.log("Transaction hash")
     console.log(signedTx.toHash())
     if (options.submit) {
       await signedTx.submit()
-      console.log('Transaction submitted')
+      console.log("Transaction submitted")
     }
   })
 
 program
-  .command('create-burn-shen-order')
-  .argument('<amount>', 'Amount of DJED to mint')
-  .option('--sign', 'Sign the transaction')
-  .option('--submit', 'Submit the transaction')
+  .command("create-burn-shen-order")
+  .argument("<amount>", "Amount of DJED to mint")
+  .option("--sign", "Sign the transaction")
+  .option("--submit", "Submit the transaction")
   .action(async (amount, options) => {
     const tx = createBurnShenOrder({
       lucid,
@@ -159,30 +178,36 @@ program
       now,
     })
     const balancedTx = await tx.complete({ localUPLCEval: false })
-    const signedTx = await (options.sign ? balancedTx.sign.withWallet() : balancedTx).complete()
-    console.log('Transaction CBOR')
+    const signedTx = await (
+      options.sign ? balancedTx.sign.withWallet() : balancedTx
+    ).complete()
+    console.log("Transaction CBOR")
     console.log(signedTx.toCBOR())
-    console.log('Transaction hash')
+    console.log("Transaction hash")
     console.log(signedTx.toHash())
     if (options.submit) {
       await signedTx.submit()
-      console.log('Transaction submitted')
+      console.log("Transaction submitted")
     }
   })
 
 program
-  .command('cancel-order')
-  .argument('<out-ref>', 'The output reference of the order')
-  .option('--sign', 'Sign the transaction')
-  .option('--submit', 'Submit the transaction')
+  .command("cancel-order")
+  .argument("<out-ref>", "The output reference of the order")
+  .option("--sign", "Sign the transaction")
+  .option("--submit", "Submit the transaction")
   .action(async (outRef, options) => {
     const rawOrderUTxO = (await lucid.utxosByOutRef([parseOutRef(outRef)]))[0]
-    if (!rawOrderUTxO) throw new Error(`Couldn't find order utxo for outRef: ${outRef}`)
+    if (!rawOrderUTxO)
+      throw new Error(`Couldn't find order utxo for outRef: ${outRef}`)
     if (!Object.keys(rawOrderUTxO.assets).includes(registry.orderAssetId))
       throw new Error(`Utxo for outRef ${outRef} isn't order utxo.`)
     const orderUTxO = {
       ...rawOrderUTxO,
-      orderDatum: Data.from(Data.to(await lucid.datumOf(rawOrderUTxO)), OrderDatum),
+      orderDatum: Data.from(
+        Data.to(await lucid.datumOf(rawOrderUTxO)),
+        OrderDatum,
+      ),
     }
     const tx = cancelOrderByOwner({
       network: env.NETWORK,
@@ -193,30 +218,36 @@ program
       orderSpendingValidatorRefUTxO,
     })
     const balancedTx = await tx.complete({ localUPLCEval: false })
-    const signedTx = await (options.sign ? balancedTx.sign.withWallet() : balancedTx).complete()
-    console.log('Transaction CBOR')
+    const signedTx = await (
+      options.sign ? balancedTx.sign.withWallet() : balancedTx
+    ).complete()
+    console.log("Transaction CBOR")
     console.log(signedTx.toCBOR())
-    console.log('Transaction hash')
+    console.log("Transaction hash")
     console.log(signedTx.toHash())
     if (options.submit) {
       await signedTx.submit()
-      console.log('Transaction submitted')
+      console.log("Transaction submitted")
     }
   })
 
 program
-  .command('process-mint-djed-order')
-  .argument('<out-ref>', 'The output reference of the order')
-  .option('--sign', 'Sign the transaction')
-  .option('--submit', 'Submit the transaction')
+  .command("process-mint-djed-order")
+  .argument("<out-ref>", "The output reference of the order")
+  .option("--sign", "Sign the transaction")
+  .option("--submit", "Submit the transaction")
   .action(async (outRef, options) => {
     const rawOrderUTxO = (await lucid.utxosByOutRef([parseOutRef(outRef)]))[0]
-    if (!rawOrderUTxO) throw new Error(`Couldn't find order utxo for outRef: ${outRef}`)
+    if (!rawOrderUTxO)
+      throw new Error(`Couldn't find order utxo for outRef: ${outRef}`)
     if (!Object.keys(rawOrderUTxO.assets).includes(registry.orderAssetId))
       throw new Error(`Utxo for outRef ${outRef} isn't order utxo.`)
     const orderUTxO = {
       ...rawOrderUTxO,
-      orderDatum: Data.from(Data.to(await lucid.datumOf(rawOrderUTxO)), OrderDatum),
+      orderDatum: Data.from(
+        Data.to(await lucid.datumOf(rawOrderUTxO)),
+        OrderDatum,
+      ),
     }
     const tx = processMintDjedOrder({
       network: env.NETWORK,
@@ -232,18 +263,20 @@ program
       rewardAddress: registry.rewardAddress,
     })
     const balancedTx = await tx.complete({ localUPLCEval: false })
-    const signedTx = await (options.sign ? balancedTx.sign.withWallet() : balancedTx).complete()
-    console.log('Transaction CBOR')
+    const signedTx = await (
+      options.sign ? balancedTx.sign.withWallet() : balancedTx
+    ).complete()
+    console.log("Transaction CBOR")
     console.log(signedTx.toCBOR())
-    console.log('Transaction hash')
+    console.log("Transaction hash")
     console.log(signedTx.toHash())
     if (options.submit) {
       await signedTx.submit()
-      console.log('Transaction submitted')
+      console.log("Transaction submitted")
     }
   })
 
-program.command('protocol-data').action(async () => {
+program.command("protocol-data").action(async () => {
   const oracleUtxo = await lucid.utxoByUnit(registry.oracleAssetId)
   const oracleInlineDatum = oracleUtxo.datum
   if (!oracleInlineDatum) throw new Error("Couldn't get oracle inline datum.")
@@ -255,21 +288,53 @@ program.command('protocol-data').action(async () => {
     JSON.stringify(
       {
         djed: {
-          buyPrice: djedADAMintRate(oracleDatum, registry.MintDJEDFeePercentage).toNumber(),
-          sellPrice: djedADABurnRate(oracleDatum, registry.BurnDJEDFeePercentage).toNumber(),
+          buyPrice: djedADAMintRate(
+            oracleDatum,
+            registry.MintDJEDFeePercentage,
+          ).toNumber(),
+          sellPrice: djedADABurnRate(
+            oracleDatum,
+            registry.BurnDJEDFeePercentage,
+          ).toNumber(),
           circulatingSupply: Number(poolDatum.djedInCirculation) / 1e6,
           mintableAmount:
-            Number(maxMintableDJED(poolDatum, oracleDatum, registry.MintDJEDFeePercentage)) / 1e6,
+            Number(
+              maxMintableDJED(
+                poolDatum,
+                oracleDatum,
+                registry.MintDJEDFeePercentage,
+              ),
+            ) / 1e6,
           burnableAmount: Number.POSITIVE_INFINITY,
         },
         shen: {
-          buyPrice: shenADAMintRate(poolDatum, oracleDatum, registry.MintSHENFeePercentage).toNumber(),
-          sellPrice: shenADABurnRate(poolDatum, oracleDatum, registry.BurnSHENFeePercentage).toNumber(),
+          buyPrice: shenADAMintRate(
+            poolDatum,
+            oracleDatum,
+            registry.MintSHENFeePercentage,
+          ).toNumber(),
+          sellPrice: shenADABurnRate(
+            poolDatum,
+            oracleDatum,
+            registry.BurnSHENFeePercentage,
+          ).toNumber(),
           circulatingSupply: Number(poolDatum.shenInCirculation) / 1e6,
           mintableAmount:
-            Number(maxMintableSHEN(poolDatum, oracleDatum, registry.MintSHENFeePercentage)) / 1e6,
+            Number(
+              maxMintableSHEN(
+                poolDatum,
+                oracleDatum,
+                registry.MintSHENFeePercentage,
+              ),
+            ) / 1e6,
           burnableAmount:
-            Number(maxBurnableSHEN(poolDatum, oracleDatum, registry.BurnSHENFeePercentage)) / 1e6,
+            Number(
+              maxBurnableSHEN(
+                poolDatum,
+                oracleDatum,
+                registry.BurnSHENFeePercentage,
+              ),
+            ) / 1e6,
         },
         reserve: {
           amount: Number(poolDatum.adaInReserve) / 1e6,
@@ -282,15 +347,23 @@ program.command('protocol-data').action(async () => {
   )
 })
 
-program.command('orders').action(async () => {
-  const orderUtxos = await lucid.utxosAtWithUnit(registry.orderAddress, registry.orderAssetId)
+program.command("orders").action(async () => {
+  const orderUtxos = await lucid.utxosAtWithUnit(
+    registry.orderAddress,
+    registry.orderAssetId,
+  )
   type OrderUTxO = UTxO & { orderDatum: OrderDatum }
   const orderUtxosWithDatum: OrderUTxO[] = await Promise.all(
     orderUtxos.map(async (o) => {
       try {
-        return { ...o, orderDatum: Data.from(Data.to(await lucid.datumOf(o)), OrderDatum) }
+        return {
+          ...o,
+          orderDatum: Data.from(Data.to(await lucid.datumOf(o)), OrderDatum),
+        }
       } catch (e) {
-        console.warn(`Couldn't decode datum for order utxo ${o.txHash}#${o.outputIndex} with error ${e}`)
+        console.warn(
+          `Couldn't decode datum for order utxo ${o.txHash}#${o.outputIndex} with error ${e}`,
+        )
         return undefined
       }
     }),
@@ -298,8 +371,10 @@ program.command('orders').action(async () => {
   const addressDetails = getAddressDetails(await lucid.wallet().address())
   const myOrderUtxos = orderUtxosWithDatum.filter(
     (o) =>
-      o.orderDatum.address.paymentKeyHash[0] === addressDetails.paymentCredential?.hash &&
-      o.orderDatum.address.stakeKeyHash[0][0][0] === addressDetails.stakeCredential?.hash,
+      o.orderDatum.address.paymentKeyHash[0] ===
+        addressDetails.paymentCredential?.hash &&
+      o.orderDatum.address.stakeKeyHash[0][0][0] ===
+        addressDetails.stakeCredential?.hash,
   )
   // TODO: Need to query Blockfrost for previous orders in order to capture those that have been fulfilled or cancelled.
   console.log(
@@ -308,15 +383,27 @@ program.command('orders').action(async () => {
         // TODO: Need to query Blockfrost for datetime instead of setting `date` to `null` here.
         date: null,
         txHash: o.txHash,
-        status: 'Pending',
-        ...('MintDJED' in o.orderDatum.actionFields
-          ? { action: 'Mint', amount: `${o.orderDatum.actionFields.MintDJED.djedAmount} DJED` }
-          : 'BurnDJED' in o.orderDatum.actionFields
-            ? { action: 'Burn', amount: `${o.orderDatum.actionFields.BurnDJED.djedAmount} DJED` }
-            : 'MintSHEN' in o.orderDatum.actionFields
-              ? { action: 'Mint', amount: `${o.orderDatum.actionFields.MintSHEN.shenAmount} SHEN` }
-              : 'BurnSHEN' in o.orderDatum.actionFields
-                ? { action: 'Burn', amount: `${o.orderDatum.actionFields.BurnSHEN.shenAmount} SHEN` }
+        status: "Pending",
+        ...("MintDJED" in o.orderDatum.actionFields
+          ? {
+              action: "Mint",
+              amount: `${o.orderDatum.actionFields.MintDJED.djedAmount} DJED`,
+            }
+          : "BurnDJED" in o.orderDatum.actionFields
+            ? {
+                action: "Burn",
+                amount: `${o.orderDatum.actionFields.BurnDJED.djedAmount} DJED`,
+              }
+            : "MintSHEN" in o.orderDatum.actionFields
+              ? {
+                  action: "Mint",
+                  amount: `${o.orderDatum.actionFields.MintSHEN.shenAmount} SHEN`,
+                }
+              : "BurnSHEN" in o.orderDatum.actionFields
+                ? {
+                    action: "Burn",
+                    amount: `${o.orderDatum.actionFields.BurnSHEN.shenAmount} SHEN`,
+                  }
                 : {}),
       })),
       undefined,

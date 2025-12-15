@@ -1,8 +1,18 @@
-import { operatorFee, shenADABurnRate } from '@open-djed/math'
-import { Data, fromUnit, type LucidEvolution, type UTxO } from '@lucid-evolution/lucid'
-import { type Registry } from '@open-djed/registry'
-import { OrderDatum, OrderMintRedeemer, PoolDatum, fromBech32 } from '@open-djed/data'
-import type { OracleUTxO, PoolUTxO } from './types'
+import { operatorFee, shenADABurnRate } from "@open-djed/math"
+import {
+  Data,
+  fromUnit,
+  type LucidEvolution,
+  type UTxO,
+} from "@lucid-evolution/lucid"
+import { type Registry } from "@open-djed/registry"
+import {
+  OrderDatum,
+  OrderMintRedeemer,
+  PoolDatum,
+  fromBech32,
+} from "@open-djed/data"
+import type { OracleUTxO, PoolUTxO } from "./types"
 
 export const createBurnShenOrder = ({
   lucid,
@@ -33,7 +43,7 @@ export const createBurnShenOrder = ({
     .pay.ToContract(
       registry.orderAddress,
       {
-        kind: 'inline',
+        kind: "inline",
         value: Data.to(
           {
             actionFields: {
@@ -42,9 +52,11 @@ export const createBurnShenOrder = ({
               },
             },
             address: fromBech32(address),
-            adaUSDExchangeRate: oracleUTxO.oracleDatum.oracleFields.adaUSDExchangeRate,
+            adaUSDExchangeRate:
+              oracleUTxO.oracleDatum.oracleFields.adaUSDExchangeRate,
             creationDate: BigInt(ttl),
-            orderStateTokenMintingPolicyId: fromUnit(registry.orderAssetId).policyId,
+            orderStateTokenMintingPolicyId: fromUnit(registry.orderAssetId)
+              .policyId,
           },
           OrderDatum,
         ),
@@ -54,9 +66,11 @@ export const createBurnShenOrder = ({
         lovelace:
           poolUTxO.poolDatum.minADA +
           operatorFee(
-            shenADABurnRate(poolUTxO.poolDatum, oracleUTxO.oracleDatum, registry.BurnSHENFeePercentage).mul(
-              amount,
-            ),
+            shenADABurnRate(
+              poolUTxO.poolDatum,
+              oracleUTxO.oracleDatum,
+              registry.BurnSHENFeePercentage,
+            ).mul(amount),
             registry.operatorFeeConfig,
           ),
         [registry.shenAssetId]: amount,
@@ -68,5 +82,9 @@ export const createBurnShenOrder = ({
       },
       OrderMintRedeemer,
     )
-    .pay.ToAddressWithData(address, { kind: 'asHash', value: Data.to(poolUTxO.poolDatum, PoolDatum) }, {})
+    .pay.ToAddressWithData(
+      address,
+      { kind: "asHash", value: Data.to(poolUTxO.poolDatum, PoolDatum) },
+      {},
+    )
 }

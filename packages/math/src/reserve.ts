@@ -1,13 +1,24 @@
-import type { PoolDatum } from '@open-djed/data'
-import { Rational, type RationalFields } from './rational'
-import { djedADARate, shenADARate, type PartialOracleDatum, type PartialPoolDatum } from './rate'
-import { maxBigInt } from './bigint'
+import type { PoolDatum } from "@open-djed/data"
+import { Rational, type RationalFields } from "./rational"
+import {
+  djedADARate,
+  shenADARate,
+  type PartialOracleDatum,
+  type PartialPoolDatum,
+} from "./rate"
+import { maxBigInt } from "./bigint"
 
-export const adaInReserve = ({ adaInReserve }: Pick<PoolDatum, 'adaInReserve'>): Rational =>
-  new Rational(adaInReserve)
+export const adaInReserve = ({
+  adaInReserve,
+}: Pick<PoolDatum, "adaInReserve">): Rational => new Rational(adaInReserve)
 
-export const reserveRatio = (poolDatum: PartialPoolDatum, oracleDatum: PartialOracleDatum): Rational =>
-  adaInReserve(poolDatum).div(djedADARate(oracleDatum).mul(poolDatum.djedInCirculation))
+export const reserveRatio = (
+  poolDatum: PartialPoolDatum,
+  oracleDatum: PartialOracleDatum,
+): Rational =>
+  adaInReserve(poolDatum).div(
+    djedADARate(oracleDatum).mul(poolDatum.djedInCirculation),
+  )
 
 // FIXME: Put this in registryByNetwork.
 // Ratio of ADA in reserve to DJED in circulation over which SHEN is no longer mintable.
@@ -30,8 +41,16 @@ export const maxMintableDJED = (
 ): bigint =>
   maxBigInt(
     adaInReserve(poolDatum)
-      .sub(minReserveRatio.mul(poolDatum.djedInCirculation).mul(djedADARate(oracleDatum)))
-      .div(djedADARate(oracleDatum).mul(minReserveRatio.sub(1n).sub(mintDjedFeePercentage)))
+      .sub(
+        minReserveRatio
+          .mul(poolDatum.djedInCirculation)
+          .mul(djedADARate(oracleDatum)),
+      )
+      .div(
+        djedADARate(oracleDatum).mul(
+          minReserveRatio.sub(1n).sub(mintDjedFeePercentage),
+        ),
+      )
       .toBigInt(),
     0n,
   )
@@ -60,7 +79,11 @@ export const maxBurnableSHEN = (
 ): bigint =>
   maxBigInt(
     adaInReserve(poolDatum)
-      .sub(minReserveRatio.mul(poolDatum.djedInCirculation).mul(djedADARate(oracleDatum)))
+      .sub(
+        minReserveRatio
+          .mul(poolDatum.djedInCirculation)
+          .mul(djedADARate(oracleDatum)),
+      )
       .div(shenADARate(poolDatum, oracleDatum))
       .div(Rational.ONE.sub(burnSHENFeePercentage))
       .toBigInt(),

@@ -1,7 +1,16 @@
-import { Constr, Data, type LucidEvolution, type UTxO } from '@lucid-evolution/lucid'
-import { type Network, type Registry } from '@open-djed/registry'
-import { CancelOrderSpendRedeemer, OrderBurnRedeemer, toBech32 } from '@open-djed/data'
-import type { OrderUTxO } from './types'
+import {
+  Constr,
+  Data,
+  type LucidEvolution,
+  type UTxO,
+} from "@lucid-evolution/lucid"
+import { type Network, type Registry } from "@open-djed/registry"
+import {
+  CancelOrderSpendRedeemer,
+  OrderBurnRedeemer,
+  toBech32,
+} from "@open-djed/data"
+import type { OrderUTxO } from "./types"
 
 export const cancelOrderByOwner = ({
   lucid,
@@ -28,12 +37,15 @@ export const cancelOrderByOwner = ({
     .pay.ToAddressWithData(
       address,
       {
-        kind: 'inline',
+        kind: "inline",
         // NOTE: This is temporary. Need to figure out the actual format of this datum.
         value: Data.to(
           new Constr(0, [
             new Constr(11, []),
-            new Constr(0, [new Constr(0, [orderUTxO.txHash]), BigInt(orderUTxO.outputIndex)]),
+            new Constr(0, [
+              new Constr(0, [orderUTxO.txHash]),
+              BigInt(orderUTxO.outputIndex),
+            ]),
           ]),
         ),
       },

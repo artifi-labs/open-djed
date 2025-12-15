@@ -1,5 +1,10 @@
-import { Constr, Data, type LucidEvolution, type UTxO } from '@lucid-evolution/lucid'
-import { type Network, type Registry } from '@open-djed/registry'
+import {
+  Constr,
+  Data,
+  type LucidEvolution,
+  type UTxO,
+} from "@lucid-evolution/lucid"
+import { type Network, type Registry } from "@open-djed/registry"
 import {
   OrderBurnRedeemer,
   PoolDatum,
@@ -7,8 +12,8 @@ import {
   ProcessOrderSpendPoolRedeemer,
   WithdrawRedeemer,
   toBech32,
-} from '@open-djed/data'
-import type { OrderUTxO, PoolUTxO } from './types'
+} from "@open-djed/data"
+import type { OrderUTxO, PoolUTxO } from "./types"
 
 export const processMintDjedOrder = ({
   lucid,
@@ -35,7 +40,7 @@ export const processMintDjedOrder = ({
   network: Network
   now: number
 }) => {
-  if (!('MintDJED' in orderUTxO.orderDatum.actionFields)) {
+  if (!("MintDJED" in orderUTxO.orderDatum.actionFields)) {
     throw new Error()
   }
   const ttl = now + 3 * 60 * 1000 // 3 minutes
@@ -53,14 +58,16 @@ export const processMintDjedOrder = ({
     .pay.ToContract(
       registry.poolAddress,
       {
-        kind: 'asHash',
+        kind: "asHash",
         value: Data.to(
           {
             ...poolUTxO.poolDatum,
             adaInReserve:
-              poolUTxO.poolDatum.adaInReserve + orderUTxO.orderDatum.actionFields.MintDJED.adaAmount,
+              poolUTxO.poolDatum.adaInReserve +
+              orderUTxO.orderDatum.actionFields.MintDJED.adaAmount,
             djedInCirculation:
-              poolUTxO.poolDatum.djedInCirculation + orderUTxO.orderDatum.actionFields.MintDJED.djedAmount,
+              poolUTxO.poolDatum.djedInCirculation +
+              orderUTxO.orderDatum.actionFields.MintDJED.djedAmount,
             lastOrder: [
               {
                 order: {
@@ -79,7 +86,9 @@ export const processMintDjedOrder = ({
         [registry.djedAssetId]:
           (poolUTxO.assets[registry.djedAssetId] ?? 0n) -
           orderUTxO.orderDatum.actionFields.MintDJED.djedAmount,
-        lovelace: (poolUTxO.assets.lovelace ?? 0n) + orderUTxO.orderDatum.actionFields.MintDJED.adaAmount,
+        lovelace:
+          (poolUTxO.assets.lovelace ?? 0n) +
+          orderUTxO.orderDatum.actionFields.MintDJED.adaAmount,
       },
     )
     .collectFrom([orderUTxO], ProcessOrderSpendOrderRedeemer)
@@ -87,7 +96,7 @@ export const processMintDjedOrder = ({
     .pay.ToAddressWithData(
       toBech32(orderUTxO.orderDatum.address, network),
       {
-        kind: 'inline',
+        kind: "inline",
         // NOTE: This is temporary. Need to figure out the actual format of this datum.
         value: Data.to(
           new Constr(0, [
@@ -95,23 +104,30 @@ export const processMintDjedOrder = ({
               orderUTxO.orderDatum.actionFields.MintDJED.adaAmount,
               orderUTxO.orderDatum.actionFields.MintDJED.djedAmount,
             ]),
-            new Constr(0, [new Constr(0, [orderUTxO.txHash]), BigInt(orderUTxO.outputIndex)]),
+            new Constr(0, [
+              new Constr(0, [orderUTxO.txHash]),
+              BigInt(orderUTxO.outputIndex),
+            ]),
           ]),
         ),
       },
       {
         lovelace: poolUTxO.poolDatum.minADA,
-        [registry.djedAssetId]: orderUTxO.orderDatum.actionFields.MintDJED.djedAmount,
+        [registry.djedAssetId]:
+          orderUTxO.orderDatum.actionFields.MintDJED.djedAmount,
       },
     )
     .pay.ToAddressWithData(
       registry.treasuryAddress,
       {
-        kind: 'inline',
+        kind: "inline",
         value: Data.to(
           new Constr(0, [
             [
-              new Constr(0, [new Constr(0, [orderUTxO.txHash]), orderUTxO.orderDatum.creationDate]),
+              new Constr(0, [
+                new Constr(0, [orderUTxO.txHash]),
+                orderUTxO.orderDatum.creationDate,
+              ]),
               BigInt(now + 10 * 60 * 1000),
             ],
           ]),

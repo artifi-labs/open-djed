@@ -1,4 +1,4 @@
-import { absBigInt } from './bigint'
+import { absBigInt } from "./bigint"
 
 export type RationalFields = {
   numerator: bigint
@@ -20,12 +20,16 @@ export const add = (a: RationalFields, b: RationalFields): RationalFields => ({
   denominator: a.denominator * b.denominator,
 })
 
-export const negate = ({ numerator, denominator }: RationalFields): RationalFields => ({
+export const negate = ({
+  numerator,
+  denominator,
+}: RationalFields): RationalFields => ({
   numerator: -numerator,
   denominator,
 })
 
-export const sub = (a: RationalFields, b: RationalFields): RationalFields => add(a, negate(b))
+export const sub = (a: RationalFields, b: RationalFields): RationalFields =>
+  add(a, negate(b))
 
 export const fromBigInt = (n: bigint): RationalFields => ({
   numerator: n,
@@ -41,7 +45,8 @@ export const ceil = (r: RationalFields): RationalFields => {
   })
 }
 
-export const toBigInt = (r: RationalFields): bigint => r.numerator / r.denominator
+export const toBigInt = (r: RationalFields): bigint =>
+  r.numerator / r.denominator
 
 const gcd = (a: bigint, b: bigint): bigint => {
   a = absBigInt(a)
@@ -82,7 +87,7 @@ export class Rational implements RationalFields {
   static ONE = new Rational(1n)
 
   constructor(r: RationalFields | bigint) {
-    if (typeof r === 'bigint') {
+    if (typeof r === "bigint") {
       this.numerator = r
       this.denominator = 1n
       return
@@ -91,16 +96,16 @@ export class Rational implements RationalFields {
     this.denominator = r.denominator
   }
   mul(b: RationalFields | bigint): Rational {
-    return new Rational(mul(this, typeof b === 'bigint' ? fromBigInt(b) : b))
+    return new Rational(mul(this, typeof b === "bigint" ? fromBigInt(b) : b))
   }
   div(b: RationalFields | bigint): Rational {
-    return new Rational(div(this, typeof b === 'bigint' ? fromBigInt(b) : b))
+    return new Rational(div(this, typeof b === "bigint" ? fromBigInt(b) : b))
   }
   add(b: RationalFields | bigint): Rational {
-    return new Rational(add(this, typeof b === 'bigint' ? fromBigInt(b) : b))
+    return new Rational(add(this, typeof b === "bigint" ? fromBigInt(b) : b))
   }
   sub(b: RationalFields | bigint): Rational {
-    return new Rational(sub(this, typeof b === 'bigint' ? fromBigInt(b) : b))
+    return new Rational(sub(this, typeof b === "bigint" ? fromBigInt(b) : b))
   }
   ceil(): Rational {
     return new Rational(ceil(this))
