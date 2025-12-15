@@ -1,10 +1,17 @@
 import * as React from "react"
 import Wallet, { type WalletName } from "../Wallet"
-import { capitalizeLower, shortenString } from "@/lib/utils"
+import {
+  capitalizeLower,
+  formatNumber,
+  shortenString,
+  type Value,
+} from "@/lib/utils"
 import Icon from "../Icon"
 import { useClipboard } from "@/hooks/useClipboard"
 import ButtonIcon from "../ButtonIcon"
 import Tooltip from "../Tooltip"
+import { useEnv } from "@/context/EnvContext"
+import { useProtocolData } from "@/hooks/useProtocolData"
 
 type WalletDetailProps = {
   name: WalletName
@@ -25,9 +32,31 @@ const WalletDetail: React.FC<WalletDetailProps> = ({
   balance,
 }) => {
   const { copy, copied } = useClipboard()
+  const { data } = useProtocolData()
+  const { network } = useEnv()
 
-  console.log("Value: ", balance)
-  const totalBalance = "12,485.34" // TODO dynamically define wallet total balance
+  const adaUSD = React.useMemo(() => {
+    if (!data || network === "Preprod") return 0
+
+    const value = { ADA: balance.ADA } as Value
+    return data.to(value, "DJED")
+  }, [data, balance.ADA])
+
+  const djedUSD = React.useMemo(() => {
+    if (!data || network === "Preprod") return 0
+
+    const value = { DJED: balance.DJED } as Value
+    return data.to(value, "DJED")
+  }, [data, balance.DJED])
+
+  const shenUSD = React.useMemo(() => {
+    if (!data || network === "Preprod") return 0
+
+    const value = { SHEN: balance.SHEN } as Value
+    return data.to(value, "DJED")
+  }, [data, balance.SHEN])
+
+  const totalBalance = adaUSD + djedUSD + shenUSD
 
   const handleCopy = () => {
     copy(address)
@@ -35,12 +64,12 @@ const WalletDetail: React.FC<WalletDetailProps> = ({
 
   return (
     <div className="bg-surface-secondary border-gradient border-color-gradient flex w-full flex-row items-center justify-between gap-8 rounded-full p-12">
-      <div className="text-primary flex flex-row items-center justify-between gap-8">
+      <div className="flex flex-row items-center justify-between gap-8">
         <Wallet name={name} size={30} />
         <div className="flex w-38.75 flex-col justify-start">
-          <span className="text-sm font-normal">{capitalizeLower(name)}</span>
+          <span className="text-sm">{capitalizeLower(name)}</span>
           <div className="flex flex-row items-center gap-6">
-            <span className="text-tertiary text-sm font-normal">
+            <span className="text-tertiary text-sm">
               {shortenString(address)}
             </span>
             <Tooltip
@@ -57,7 +86,18 @@ const WalletDetail: React.FC<WalletDetailProps> = ({
           </div>
         </div>
       </div>
-      <span className="text-md font-semibold">${totalBalance}</span>
+      {network !== "Preprod" ? (
+        <span className="text-md font-semibold">
+          ${formatNumber(totalBalance, { maximumFractionDigits: 2 })}
+        </span>
+      ) : (
+        <Tooltip
+          tooltipDirection="bottom"
+          text="In Preprod, tokens have no value."
+        >
+          <span className="text-md font-semibold">$--</span>
+        </Tooltip>
+      )}
       <ButtonIcon
         icon="Disconnect"
         variant="secondary"

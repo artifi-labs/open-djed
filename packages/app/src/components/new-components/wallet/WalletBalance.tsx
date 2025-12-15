@@ -26,13 +26,9 @@ const WalletBalance: React.FC<WalletBalanceProps> = ({ token, amount }) => {
       <div className="flex w-full flex-row items-center justify-between">
         <div className="flex flex-row items-center gap-8">
           <Coin name={token} size="medium" checked={false} />
-          <span className="text-primary text-xs leading-4 font-normal">
-            {token}
-          </span>
+          <span className="text-xs">{token}</span>
         </div>
-        <span className="text-primary text-xs leading-4 font-normal">
-          12.00
-        </span>
+        <span className="text-xs">12.00</span>
       </div>
       <div className="flex w-full flex-row items-center justify-between">
         {network === "Preprod" ? (
@@ -40,16 +36,14 @@ const WalletBalance: React.FC<WalletBalanceProps> = ({ token, amount }) => {
             text={"In Preprod, tokens have no value."}
             tooltipDirection="right"
           >
-            <span className="text-primary text-xs leading-4 font-normal">
-              --
-            </span>
+            <span className="text-xs">--</span>
           </Tooltip>
         ) : (
-          <span className="text-primary text-xs leading-4 font-normal">
+          <span className="text-xs">
             ${formatNumber(amountUSD, { maximumFractionDigits: 2 })}
           </span>
         )}
-        <span className="text-primary text-xs leading-4 font-semibold">
+        <span className="text-xs font-semibold">
           {formatNumber(amount, { maximumFractionDigits: 2 })}
         </span>
       </div>
