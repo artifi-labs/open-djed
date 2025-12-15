@@ -21,6 +21,7 @@ const LinkButton: React.FC<LinkButtonProps> = ({
       href={href}
       target={isExternal ? target : undefined}
       rel={isExternal ? "noopener noreferrer" : undefined}
+      className="flex items-center"
     >
       <Button {...props}>{buttonContent}</Button>
     </Link>

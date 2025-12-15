@@ -40,7 +40,7 @@ export default function RootLayout({
           posthog={env.posthog}
         >
           <Navbar />
-          <main className="flex w-full flex-1 flex-col items-center px-4 sm:px-8 md:px-16 lg:px-32 xl:px-[160px]">
+          <main className="px-page-margin flex w-full flex-1 flex-col items-center">
             {children}
           </main>
           <Footer />
