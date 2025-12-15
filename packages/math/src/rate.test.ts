@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest'
+import { expect, test } from "vitest"
 import {
   shenADAMintRate,
   adaSHENRate,
@@ -8,9 +8,9 @@ import {
   djedADAMintRate,
   djedADABurnRate,
   adaDJEDRate,
-} from './rate'
+} from "./rate"
 
-test('adaSHENRate', () => {
+test("adaSHENRate", () => {
   expect(
     adaSHENRate(
       {
@@ -33,7 +33,7 @@ test('adaSHENRate', () => {
   })
 })
 
-test('shenADARate', () => {
+test("shenADARate", () => {
   expect(
     shenADARate(
       {
@@ -56,7 +56,7 @@ test('shenADARate', () => {
   })
 })
 
-test('shenADAMintRate 1', () => {
+test("shenADAMintRate 1", () => {
   expect(
     shenADAMintRate(
       {
@@ -83,7 +83,7 @@ test('shenADAMintRate 1', () => {
   })
 })
 
-test('shenADAMintRate 2', () => {
+test("shenADAMintRate 2", () => {
   expect(
     shenADAMintRate(
       {
@@ -110,7 +110,7 @@ test('shenADAMintRate 2', () => {
   })
 })
 
-test('shenADABurnRate', () => {
+test("shenADABurnRate", () => {
   expect(
     shenADABurnRate(
       {
@@ -137,7 +137,7 @@ test('shenADABurnRate', () => {
   })
 })
 
-test('adaDJEDRate', () => {
+test("adaDJEDRate", () => {
   expect(
     adaDJEDRate({
       oracleFields: {
@@ -153,7 +153,7 @@ test('adaDJEDRate', () => {
   })
 })
 
-test('djedADARate', () => {
+test("djedADARate", () => {
   expect(
     djedADARate({
       oracleFields: {
@@ -169,7 +169,7 @@ test('djedADARate', () => {
   })
 })
 
-test('djedADAMintRate', () => {
+test("djedADAMintRate", () => {
   expect(
     djedADAMintRate(
       {
@@ -191,7 +191,7 @@ test('djedADAMintRate', () => {
   })
 })
 
-test('djedADABurnRate', () => {
+test("djedADABurnRate", () => {
   expect(
     djedADABurnRate(
       {

@@ -15,7 +15,7 @@ export default function WalletSidebar({
 }: {
   wallet: Wallet | null
   wallets: WalletMetadata[]
-  connect: (id: string) => Promise<void>
+  connect: (id: string) => void
   disconnect: () => void
   isOpen: boolean
   onClose: () => void

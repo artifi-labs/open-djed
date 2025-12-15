@@ -1,5 +1,5 @@
-import { maxBigInt, minBigInt } from './bigint'
-import type { Rational, RationalFields } from './rational'
+import { maxBigInt, minBigInt } from "./bigint"
+import type { Rational, RationalFields } from "./rational"
 
 export type OperatorFeeConfig = {
   min: bigint
@@ -7,5 +7,11 @@ export type OperatorFeeConfig = {
   percentage: Rational
 }
 
-export const operatorFee = (adaAmount: bigint | RationalFields, config: OperatorFeeConfig): bigint =>
-  maxBigInt(config.min, minBigInt(config.percentage.mul(adaAmount).ceil().toBigInt(), config.max))
+export const operatorFee = (
+  adaAmount: bigint | RationalFields,
+  config: OperatorFeeConfig,
+): bigint =>
+  maxBigInt(
+    config.min,
+    minBigInt(config.percentage.mul(adaAmount).ceil().toBigInt(), config.max),
+  )

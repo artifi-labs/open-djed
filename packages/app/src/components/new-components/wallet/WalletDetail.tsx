@@ -1,16 +1,9 @@
 import * as React from "react"
-import Wallet, { WalletName } from "../Wallet"
-import {
-  capitalizeLower,
-  shortenString,
-  type Value,
-  valueToDJED,
-} from "@/lib/utils"
+import Wallet, { type WalletName } from "../Wallet"
+import { capitalizeLower, shortenString } from "@/lib/utils"
 import Icon from "../Icon"
 import { useClipboard } from "@/hooks/useClipboard"
 import ButtonIcon from "../ButtonIcon"
-import { useProtocolData } from "@/hooks/useProtocolData"
-import { useApiClient } from "@/context/ApiClientContext"
 import Tooltip from "../Tooltip"
 
 type WalletDetailProps = {
@@ -50,12 +43,17 @@ const WalletDetail: React.FC<WalletDetailProps> = ({
             <span className="text-tertiary text-sm font-normal">
               {shortenString(address)}
             </span>
-            <Tooltip tooltipDirection='bottom' text={copied ? "Copied address!" : "Copy address"}><Icon
-              name="Copy"
-              color="text-tertiary"
-              onClick={handleCopy}
-              className="cursor-pointer"
-            /></Tooltip>
+            <Tooltip
+              tooltipDirection="bottom"
+              text={copied ? "Copied address!" : "Copy address"}
+            >
+              <Icon
+                name="Copy"
+                color="text-tertiary"
+                onClick={handleCopy}
+                className="cursor-pointer"
+              />
+            </Tooltip>
           </div>
         </div>
       </div>

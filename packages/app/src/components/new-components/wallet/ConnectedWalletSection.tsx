@@ -1,11 +1,10 @@
 import * as React from "react"
 import { type Wallet } from "@/context/WalletContext"
 import Button from "../Button"
-import Icon from "../Icon"
 import Link from "next/link"
 import { useWalletSidebar } from "@/context/SidebarContext"
 import WalletDetail from "./WalletDetail"
-import { WalletName } from "../Wallet"
+import type { WalletName } from "../Wallet"
 
 interface ConnectedWalletSectionProps {
   wallet: Wallet

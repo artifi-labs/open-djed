@@ -1,4 +1,4 @@
-import type { OutRef } from '@lucid-evolution/lucid'
+import type { OutRef } from "@lucid-evolution/lucid"
 
 export const parseOutRef = (outRefStr: string): OutRef => {
   const txOutRef = outRefStr.match(
@@ -8,8 +8,13 @@ export const parseOutRef = (outRefStr: string): OutRef => {
   )
 
   if (!txOutRef?.groups?.txHash || !txOutRef.groups.index) {
-    throw new Error(`Expected a txOutRef in <tx-hash><separator><index> format, got: "${outRefStr}"`)
+    throw new Error(
+      `Expected a txOutRef in <tx-hash><separator><index> format, got: "${outRefStr}"`,
+    )
   }
 
-  return { txHash: txOutRef.groups.txHash, outputIndex: Number(txOutRef.groups.index) }
+  return {
+    txHash: txOutRef.groups.txHash,
+    outputIndex: Number(txOutRef.groups.index),
+  }
 }
