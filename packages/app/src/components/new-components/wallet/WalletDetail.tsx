@@ -11,6 +11,7 @@ import { useClipboard } from "@/hooks/useClipboard"
 import ButtonIcon from "../ButtonIcon"
 import { useProtocolData } from "@/hooks/useProtocolData"
 import { useApiClient } from "@/context/ApiClientContext"
+import Tooltip from "../Tooltip"
 
 type WalletDetailProps = {
   name: WalletName
@@ -32,19 +33,11 @@ const WalletDetail: React.FC<WalletDetailProps> = ({
 }) => {
   const { copy, copied } = useClipboard()
 
-  // const api = useApiClient()
-  // const { isPending, error, data } = useProtocolData()
-  // const toUSD = data ? (value: Value) => data.to(value, "DJED") : undefined
-  // const currentAdaValue = toUSD ? toUSD({ ADA: 1 }) : 0
-
-  // const adaValue = toUSD ? toUSD({ ADA: balance.ADA }) : 0
-  // console.log("Value: ", adaValue)
-
+  console.log("Value: ", balance)
   const totalBalance = "12,485.34" // TODO dynamically define wallet total balance
 
   const handleCopy = () => {
     copy(address)
-    // TODO add tooltip indicating if the address was copied or not
   }
 
   return (
@@ -57,12 +50,12 @@ const WalletDetail: React.FC<WalletDetailProps> = ({
             <span className="text-tertiary text-sm font-normal">
               {shortenString(address)}
             </span>
-            <Icon
+            <Tooltip tooltipDirection='bottom' text={copied ? "Copied address!" : "Copy address"}><Icon
               name="Copy"
               color="text-tertiary"
               onClick={handleCopy}
               className="cursor-pointer"
-            />
+            /></Tooltip>
           </div>
         </div>
       </div>

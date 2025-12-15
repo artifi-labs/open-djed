@@ -26,7 +26,7 @@ const SelectWalletSection: React.FC<SelectWalletSectionProps> = ({
   onClick,
 }) => {
   return (
-    <div className="flex h-full flex-col gap-[24px]">
+    <div className="flex h-full flex-col gap-24">
       <div className="flex flex-1 flex-col overflow-y-auto py-3">
         {wallets?.map((wallet, index) => (
           <button
