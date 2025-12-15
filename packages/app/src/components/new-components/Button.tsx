@@ -13,7 +13,7 @@ type ButtonVariant =
   | "destructive"
 type ButtonSize = "small" | "medium" | "large"
 
-type ButtonProps = {
+export type ButtonProps = {
   variant?: ButtonVariant
   size?: ButtonSize
   disabled?: boolean

@@ -34,7 +34,12 @@ type SocialIconProps = {
 
 const Logo = () => {
   return (
-    <Link href={WEBSITE_URL} target="_blank" rel="noopener noreferrer">
+    <Link
+      href={WEBSITE_URL}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="w-[214px]"
+    >
       <Image
         src="/logos/artifilabs-logo.svg"
         alt="Artifi Logo"
@@ -142,29 +147,31 @@ const Footer = () => {
 
   const DesktopFooter = () => {
     return (
-      <footer className="px-navbar-margin pb-navbar-margin flex flex-col gap-24 pt-36">
-        <div className="flex flex-row justify-between">
-          <Logo />
-          <div className="flex flex-row items-center gap-40">
-            {footerItems.map((item) => (
-              <Link key={item.label} href={item.href} className="p-6">
-                <div className="flex flex-row gap-4">
-                  <p className="text-xs font-medium">{item.label}</p>
-                  {item.icon && <Icon name={item.icon} size={16} />}
-                </div>
-              </Link>
-            ))}
+      <footer className="w-full">
+        <div className="px-navbar-margin pb-navbar-margin mx-auto flex max-w-[1440px] flex-col gap-24 pt-36">
+          <div className="flex flex-row justify-between">
+            <Logo />
+            <div className="flex flex-row items-center gap-40">
+              {footerItems.map((item) => (
+                <Link key={item.label} href={item.href} className="p-6">
+                  <div className="flex flex-row gap-4">
+                    <p className="text-xs font-medium">{item.label}</p>
+                    {item.icon && <Icon name={item.icon} size={16} />}
+                  </div>
+                </Link>
+              ))}
+            </div>
+            <div className="flex gap-16">
+              <SocialIcons items={socialIcons} />
+            </div>
           </div>
-          <div className="flex gap-16">
-            <SocialIcons items={socialIcons} />
+          <div className="bg-border-footer-gradient h-[1px]" />
+          <div className="flex flex-row justify-center gap-4">
+            <Icon name="Legal" size={16} />
+            <p className="text-xs font-medium">
+              2025 Artifi. All rights are reserved
+            </p>
           </div>
-        </div>
-        <div className="bg-border-footer-gradient h-[1px]" />
-        <div className="flex flex-row justify-center gap-4">
-          <Icon name="Legal" size={16} />
-          <p className="text-xs font-medium">
-            2025 Artifi. All rights are reserved
-          </p>
         </div>
       </footer>
     )
