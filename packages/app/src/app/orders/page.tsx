@@ -621,7 +621,7 @@ export default function OrderPage() {
 
   if (!wallet) {
     return (
-      <div className="bg-surface-card flex min-h-screen w-full flex-col items-center justify-center gap-6">
+      <div className="bg-surface-card border-border-primary border rounded-8 flex min-h-screen w-full flex-col items-center justify-center gap-6 mb-36 ">
         <span className="text-lg font-semibold">No orders to display yet.</span>
 
         <span className="mb-24 text-center text-sm text-nowrap">
