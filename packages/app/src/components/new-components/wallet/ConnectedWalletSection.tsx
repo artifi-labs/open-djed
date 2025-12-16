@@ -7,6 +7,7 @@ import WalletDetail from "./WalletDetail"
 import type { WalletName } from "../Wallet"
 import WalletBalance from "./WalletBalance"
 import Divider from "../Divider"
+import OrdersWalletSection from "./OrdersWalletSection"
 
 interface ConnectedWalletSectionProps {
   wallet: Wallet
@@ -41,8 +42,9 @@ const ConnectedWalletSection: React.FC<ConnectedWalletSectionProps> = ({
             text="Mint & Burn Now"
           />
         </Link>
-        <Divider />
       </div>
+      <Divider className="w-full" />
+      <OrdersWalletSection wallet={wallet} />
     </div>
   )
 }
