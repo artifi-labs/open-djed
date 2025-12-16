@@ -1,10 +1,13 @@
 "use client"
 import Actions from "@/components/new-components/Actions"
 import LinkButton from "@/components/new-components/LinkButton"
+import { useWallet } from "@/context/WalletContext"
 
 export default function DashboardPage() {
+  const { wallet } = useWallet()
+
   return (
-    <div className="mx-auto w-full max-w-[1120px] desktop:pt-32 desktop:pb-64 pt-16 pb-16">
+    <div className="desktop:pt-32 desktop:pb-64 mx-auto w-full max-w-[1120px] pt-16 pb-16">
       {/* Header */}
       <div className="desktop:flex-row flex flex-col justify-between">
         <div className="flex items-center gap-6">
@@ -23,12 +26,9 @@ export default function DashboardPage() {
       <div className="desktop:grid-cols-2 desktop:gap-24 desktop:pt-32 grid grid-cols-1 gap-16 pt-16">
         <Actions
           defaultActionType="mint"
-          hasWalletConnected={false}
+          hasWalletConnected={wallet !== null}
         />
-        <Actions
-          defaultActionType="mint"
-          hasWalletConnected={true}
-        />
+        <Actions defaultActionType="mint" hasWalletConnected={false} />
       </div>
     </div>
   )

@@ -45,23 +45,26 @@ const Tab: React.FC<TabProps> = ({
     full: "rounded-button",
   }
 
-  const variantClasses: Record<Variant, { className: string; active: string }> = {
-    primary: {
-      className: "bg-surface-primary hover:bg-surface-primary-hover focus:bg-surface-primary-focused active:bg-brand-primary",
-      active: "bg-brand-primary",
-    },
-    secondary: {
-      className: "text-primary bg-surface-secondary hover:bg-surface-secondary-hover active:bg-brand-primary active:text-on-brand-primary focus:bg-surface-secondary-focused",
-      active: "bg-brand-primary text-on-brand-primary ",
-    },
-    outlined: {
-      className: clsx(
-        "border-color-secondary border-color-gradient-hover border-color-gradient-active border-color-gradient-active border-color-disabled-disabled",
-        "bg-transparent text-primary active:text-on-brand-primary active:bg-brand-primary",
-      ),
-      active: "text-on-brand-primary bg-brand-primary",
+  const variantClasses: Record<Variant, { className: string; active: string }> =
+    {
+      primary: {
+        className:
+          "bg-surface-primary hover:bg-surface-primary-hover focus:bg-surface-primary-focused active:bg-brand-primary",
+        active: "bg-brand-primary",
+      },
+      secondary: {
+        className:
+          "text-primary bg-surface-secondary hover:bg-surface-secondary-hover active:bg-brand-primary active:text-on-brand-primary focus:bg-surface-secondary-focused",
+        active: "bg-brand-primary text-on-brand-primary ",
+      },
+      outlined: {
+        className: clsx(
+          "border-color-secondary border-color-gradient-hover border-color-gradient-active border-color-gradient-active border-color-disabled-disabled",
+          "bg-transparent text-primary active:text-on-brand-primary active:bg-brand-primary",
+        ),
+        active: "text-on-brand-primary bg-brand-primary",
+      },
     }
-  }
 
   const sizeClasses: Record<Size, string> = {
     large: "px-24 py-16 text-md",
@@ -86,11 +89,7 @@ const Tab: React.FC<TabProps> = ({
   )
 
   return (
-    <button 
-      className={buttonClasses} 
-      disabled={disabled}
-      {...props}
-    >
+    <button className={buttonClasses} disabled={disabled} {...props}>
       {leadingIcon && <Icon name={leadingIcon} size={iconSize[size]} />}
       {coin && <Coin name={coin} size={size} />}
       <span>{text}</span>

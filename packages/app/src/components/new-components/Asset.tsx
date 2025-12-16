@@ -12,15 +12,17 @@ const sizeMap: Record<Size, string> = {
 }
 
 export type AssetProps = {
+  coins: IconCoinName[]
   coin: IconCoinName
   checked: boolean
   size?: Size
   hasLeadingIcon?: boolean
 }
 
-const Asset: React.FC<AssetProps> = ({ 
-  coin, 
-  checked, 
+const Asset: React.FC<AssetProps> = ({
+  coins,
+  coin,
+  checked,
   size = "large",
   hasLeadingIcon = true,
 }) => {
@@ -38,7 +40,6 @@ const Asset: React.FC<AssetProps> = ({
           icon="Arrows"
         />
       )}
-
     </div>
   )
 }

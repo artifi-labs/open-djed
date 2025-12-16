@@ -2,14 +2,14 @@ import * as React from "react"
 import clsx from "clsx"
 import Icon, { type IconName } from "./Icon"
 
-type CheckboxType = "Deselected" | "Selected" | "Indeterminate"
+export type CheckboxType = "Deselected" | "Selected" | "Indeterminate"
 
-type CheckboxProps = {
+export type CheckboxProps = {
   disabled?: boolean
   defaultType?: CheckboxType
   size?: number
   order?: CheckboxType[]
-  onChange?: (newState: CheckboxType) => void
+  onStateChange?: (newState: CheckboxType) => void
 } & React.HTMLAttributes<HTMLDivElement>
 
 /** Default order of checkbox states */
@@ -47,7 +47,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
   defaultType = "Deselected",
   size = 24,
   order = DEFAULT_CHECKBOX_ORDER,
-  onChange,
+  onStateChange,
   ...props
 }) => {
   const safeOrder = order.length > 0 ? order : DEFAULT_CHECKBOX_ORDER
@@ -70,12 +70,9 @@ const Checkbox: React.FC<CheckboxProps> = ({
 
   const handleToggle = () => {
     if (disabled) return
-
-    setCurrentType((prev) => {
-      const next = getNextType(prev, order)
-      onChange?.(next)
-      return next
-    })
+    const next = getNextType(currentType, safeOrder)
+    setCurrentType(next)
+    onStateChange?.(next)
   }
 
   const baseClasses =

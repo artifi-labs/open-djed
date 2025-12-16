@@ -42,7 +42,7 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
   amount,
   status = "default",
   disabled = false,
-  hasMaxAndHalfActions = false,
+  hasMaxAndHalfActions = true,
   inputDisabled = false,
 }) => {
   const [value, setValue] = React.useState("")

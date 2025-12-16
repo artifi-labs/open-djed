@@ -14,7 +14,6 @@ const BaseCard: React.FC<BaseCardProps> = ({
   children,
   ...props
 }) => {
-
   const baseCardClassNames = clsx(
     "border-gradient border-color-gradient flex w-full flex-1 flex-col rounded-card",
     backgroundColor,
@@ -23,10 +22,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
   )
 
   return (
-    <div
-      className={baseCardClassNames}
-      {...props}
-    >
+    <div className={baseCardClassNames} {...props}>
       {children}
     </div>
   )

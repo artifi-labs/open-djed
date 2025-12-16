@@ -22,7 +22,7 @@ import { getWalletData } from "@/lib/getWalletData"
 
 type ActionProps = {
   action: ActionType
-  bothSelectable: boolean,
+  bothSelectable: boolean
   token: TokenType
   onActionStart: () => void
   onActionComplete: () => void

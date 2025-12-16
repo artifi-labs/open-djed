@@ -22,9 +22,13 @@ const Tabs: React.FC<TabsProps> = ({
   activeItemIndex = 0,
   onTabChange,
 }) => {
-  const tabAggregatorBaseClasses = "flex flex-row p-2 border1 rounded-button bg-surface-primary w-fit"
+  const tabAggregatorBaseClasses =
+    "flex flex-row p-2 border1 rounded-button bg-surface-primary w-fit"
 
-  const tabAggregatorVariantClasses: Record<Type, { className?: string; radius: Radius; variant: Variant }> = {
+  const tabAggregatorVariantClasses: Record<
+    Type,
+    { className?: string; radius: Radius; variant: Variant }
+  > = {
     1: {
       radius: "full",
       variant: "primary",
@@ -40,10 +44,10 @@ const Tabs: React.FC<TabsProps> = ({
       variant: "outlined",
     },
   }
-  
+
   const tabAggregatorClasses = clsx(
     tabAggregatorBaseClasses,
-    tabAggregatorVariantClasses[type].className
+    tabAggregatorVariantClasses[type].className,
   )
 
   return (

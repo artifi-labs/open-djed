@@ -163,6 +163,7 @@ export const shortenString = (text: string, start = 6, end = 4): string => {
  * sanitizeNumberInput("1a,2b") // "1.2"
  */
 export const sanitizeNumberInput = (v: string) =>
-  v.replace(/,/g, ".")
-   .replace(/[^0-9.]/g, "")
-   .replace(/(\..*)\./g, "$1")
+  v
+    .replace(/,/g, ".")
+    .replace(/[^0-9.]/g, "")
+    .replace(/(\..*)\./g, "$1")

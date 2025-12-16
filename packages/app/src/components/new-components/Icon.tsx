@@ -43,6 +43,7 @@ export type IconName =
   | "Swap-Horizontal"
   | "Swap-Vertical"
   | "Twitter"
+  | "Unlink"
   | "Vector"
   | "Wallet"
 
