@@ -1,4 +1,4 @@
-import { IconCoinName } from "../Coin"
+import { Token } from "@/lib/tokens"
 
 export type Type = "pay" | "receive"
 
@@ -7,8 +7,8 @@ export type ActionType = "mint" | "burn"
 export const ACTION_CONFIG: Record<
   ActionType,
   {
-    pay: IconCoinName[]
-    receive: IconCoinName[]
+    pay: Token[]
+    receive: Token[]
     payHasLeadingIcon: boolean
     receiveHasLeadingIcon: boolean
     payShowDual: boolean

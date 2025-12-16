@@ -1,8 +1,10 @@
-import * as React from "react"
-import { IconCoinName } from "../Coin"
-import { ACTION_CONFIG, ActionType } from "./actionConfig"
+"use client"
 
-const convert = (amount: number, from: string, to: string): number => {
+import * as React from "react"
+import { ACTION_CONFIG, ActionType } from "./actionConfig"
+import { SUPPORTED_TOKENS, Token } from "@/lib/tokens"
+
+const convert = (amount: number, from: Token, to: Token): number => {
   if (from === "ADA" && to === "DJED") return amount * 2
   if (from === "ADA" && to === "SHEN") return amount * 1.5
   if (from === "DJED" && to === "ADA") return amount / 2
@@ -10,72 +12,56 @@ const convert = (amount: number, from: string, to: string): number => {
   return amount
 }
 
+const createInitialRecord = (): Record<Token, number> =>
+  SUPPORTED_TOKENS.reduce(
+    (acc, token) => {
+      acc[token] = 0
+      return acc
+    },
+    {} as Record<Token, number>,
+  )
+
 export function useMintBurnAction(actionType: ActionType) {
   const config = ACTION_CONFIG[actionType]
   const isMint = actionType === "mint"
 
   const [bothSelected, setBothSelected] = React.useState(false)
-  const [payValues, setPayValues] = React.useState<Record<string, string>>({})
+  const [payValues, setPayValues] = React.useState<Record<Token, number>>(
+    createInitialRecord(),
+  )
   const [receiveValues, setReceiveValues] = React.useState<
-    Record<string, string>
-  >({})
-  const [activePayToken, setActivePayToken] = React.useState<IconCoinName>(
+    Record<Token, number>
+  >(createInitialRecord())
+  const [activePayToken, setActivePayToken] = React.useState<Token>(
     config.pay[0],
   )
-  const [activeReceiveToken, setActiveReceiveToken] =
-    React.useState<IconCoinName>(config.receive[0])
-
-  const calculateTotalInADA = (
-    tokens: IconCoinName[],
-    values: Record<string, string>,
-  ) => {
-    return tokens.reduce((acc, token) => {
-      const v = parseFloat(values[token] || "0") || 0
-      return acc + convert(v, token, "ADA")
-    }, 0)
-  }
-
-  const distributeFromTotal = (
-    total: number,
-    targetTokens: IconCoinName[],
-    isDual: boolean,
-  ): Record<string, string> => {
-    const result: Record<string, string> = {}
-    if (isDual && targetTokens.length > 1) {
-      const split = total / targetTokens.length
-      targetTokens.forEach((token) => {
-        result[token] = convert(split, "ADA", token).toString()
-      })
-    } else {
-      const activeToken = isDual ? config.receive[0] : activePayToken
-      result[activeToken] = convert(total, "ADA", activeToken).toString()
-    }
-    return result
-  }
+  const [activeReceiveToken, setActiveReceiveToken] = React.useState<Token>(
+    config.receive[0],
+  )
 
   React.useEffect(() => {
     setBothSelected(false)
-    setPayValues({})
-    setReceiveValues({})
+    setPayValues(createInitialRecord())
+    setReceiveValues(createInitialRecord())
     setActivePayToken(config.pay[0])
     setActiveReceiveToken(config.receive[0])
   }, [actionType, config.pay, config.receive])
 
-  const recalcFromPay = (token: IconCoinName, value: number) => {
-    const nextPay = { ...payValues, [token]: value.toString() }
-    const nextReceive: Record<string, string> = {}
+  const recalcFromPay = (token: Token, value: number) => {
+    const nextPay = { ...payValues, [token]: value }
+    const nextReceive: Record<Token, number> = createInitialRecord()
 
     if (bothSelected && isMint && config.receive.length > 1) {
       const split = value / config.receive.length
       config.receive.forEach((rc) => {
-        nextReceive[rc] = convert(split, token, rc).toString()
+        nextReceive[rc] = convert(split, token, rc)
       })
     } else {
       nextReceive[activeReceiveToken] = convert(
         value,
         token,
         activeReceiveToken,
-      ).toString()
+      )
     }
 
     setActivePayToken(token)
@@ -83,20 +69,20 @@ export function useMintBurnAction(actionType: ActionType) {
     setReceiveValues(nextReceive)
   }
 
-  const recalcFromReceive = (token: IconCoinName, value: number) => {
-    const nextReceive = { ...receiveValues, [token]: value.toString() }
-    const nextPay: Record<string, string> = {}
+  const recalcFromReceive = (token: Token, value: number) => {
+    const nextReceive = { ...receiveValues, [token]: value }
+    const nextPay: Record<Token, number> = createInitialRecord()
 
     if (bothSelected && !isMint && config.pay.length > 1) {
       config.pay.forEach((pc) => {
         const total = config.receive.reduce((acc, rc) => {
-          const v = parseFloat(nextReceive[rc] || "0") || 0
+          const v = nextReceive[rc] || 0
           return acc + convert(v, rc, pc)
         }, 0)
-        nextPay[pc] = total.toString()
+        nextPay[pc] = total
       })
     } else {
-      nextPay[activePayToken] = convert(value, token, activePayToken).toString()
+      nextPay[activePayToken] = convert(value, token, activePayToken)
     }
 
     setActiveReceiveToken(token)
@@ -104,60 +90,36 @@ export function useMintBurnAction(actionType: ActionType) {
     setPayValues(nextPay)
   }
 
-  const onPayValueChange = (token: IconCoinName, value: string) => {
-    console.log("onPayValueChange", token, value)
-    const nextPay = { ...payValues, [token]: value }
-    const totalPay = calculateTotalInADA(config.pay, nextPay)
-    const nextReceive = distributeFromTotal(
-      totalPay,
-      config.receive,
-      bothSelected && isMint && config.receive.length > 1,
-    )
-
-    setPayValues(nextPay)
-    setReceiveValues(nextReceive)
+  const onPayValueChange = (token: Token, value: string) => {
+    recalcFromPay(token, parseFloat(value) || 0)
   }
 
-  const onReceiveValueChange = (token: IconCoinName, value: string) => {
-    console.log("onReceiveValueChange", token, value)
-    const nextReceive = { ...receiveValues, [token]: value }
-    const totalReceive = calculateTotalInADA(config.receive, nextReceive)
-    const nextPay = distributeFromTotal(
-      totalReceive,
-      config.pay,
-      bothSelected && !isMint && config.pay.length > 1,
-    )
-
-    setReceiveValues(nextReceive)
-    setPayValues(nextPay)
+  const onReceiveValueChange = (token: Token, value: string) => {
+    recalcFromReceive(token, parseFloat(value) || 0)
   }
 
-  const onPayTokenChange = (newToken: IconCoinName) => {
-    console.log("newToken", newToken)
-
-    let currentValue = parseFloat(payValues[newToken] || "0") || 0
-    if (!payValues[newToken]) {
-      const receiveValue =
-        parseFloat(receiveValues[activeReceiveToken] || "0") || 0
-      currentValue = convert(receiveValue, activeReceiveToken, newToken)
-    }
+  const onPayTokenChange = (newToken: Token) => {
+    const currentValue =
+      payValues[newToken] ||
+      convert(
+        receiveValues[activeReceiveToken] || 0,
+        activeReceiveToken,
+        newToken,
+      )
     recalcFromPay(newToken, currentValue)
   }
 
-  const onReceiveTokenChange = (newToken: IconCoinName) => {
-    console.log(newToken)
-    let currentValue = parseFloat(receiveValues[newToken] || "0") || 0
-    if (!receiveValues[newToken]) {
-      const payValue = parseFloat(payValues[activePayToken] || "0") || 0
-      currentValue = convert(payValue, activePayToken, newToken)
-    }
+  const onReceiveTokenChange = (newToken: Token) => {
+    const currentValue =
+      receiveValues[newToken] ||
+      convert(payValues[activePayToken] || 0, activePayToken, newToken)
     recalcFromReceive(newToken, currentValue)
   }
 
   const onBothSelectedChange = (selected: boolean) => {
     setBothSelected(selected)
-    setPayValues({})
-    setReceiveValues({})
+    setPayValues(createInitialRecord())
+    setReceiveValues(createInitialRecord())
   }
 
   const onButtonClick = () => {

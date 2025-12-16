@@ -3,17 +3,16 @@
 import * as React from "react"
 import Button from "../Button"
 import { capitalize } from "@/lib/utils"
-import { IconCoinName } from "../Coin"
 import { ActionType } from "./actionConfig"
 import InputAction from "./InputAction"
-import { on } from "node:cluster"
+import { Token } from "@/lib/tokens"
 
 export type ActionProps = {
   actionType: ActionType
   hasWalletConnected: boolean
   config: {
-    pay: IconCoinName[]
-    receive: IconCoinName[]
+    pay: Token[]
+    receive: Token[]
     payHasLeadingIcon: boolean
     receiveHasLeadingIcon: boolean
     payShowDual: boolean
@@ -21,16 +20,14 @@ export type ActionProps = {
   }
   bothSelected: boolean
   setBothSelected: (v: boolean) => void
-  payValues: Record<string, string>
-  receiveValues: Record<string, string>
-  activePayToken: IconCoinName
-  activeReceiveToken: IconCoinName
-  setActivePayToken: (t: IconCoinName) => void
-  setActiveReceiveToken: (t: IconCoinName) => void
-  onPayValueChange: (token: IconCoinName, value: string) => void
-  onReceiveValueChange: (token: IconCoinName, value: string) => void
-  onPayTokenChange: (token: IconCoinName) => void
-  onReceiveTokenChange: (token: IconCoinName) => void
+  payValues: Record<Token, number>
+  receiveValues: Record<Token, number>
+  activePayToken: Token
+  activeReceiveToken: Token
+  onPayValueChange: (token: Token, value: string) => void
+  onReceiveValueChange: (token: Token, value: string) => void
+  onPayTokenChange: (token: Token) => void
+  onReceiveTokenChange: (token: Token) => void
   onButtonClick?: () => void
 }
 
@@ -44,8 +41,6 @@ const Action: React.FC<ActionProps> = ({
   receiveValues,
   activePayToken,
   activeReceiveToken,
-  setActivePayToken,
-  setActiveReceiveToken,
   onPayValueChange,
   onReceiveValueChange,
   onPayTokenChange,

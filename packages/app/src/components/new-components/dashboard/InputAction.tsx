@@ -4,18 +4,18 @@ import * as React from "react"
 import Checkbox from "../Checkbox"
 import TransactionInput from "../TransactionInput"
 import ButtonIcon from "../ButtonIcon"
-import { IconCoinName } from "../Coin"
 import { useWallet } from "@/context/WalletContext"
+import { Token } from "@/lib/tokens"
 
 export type InputActionProps = {
   label: string
-  coins: IconCoinName[]
+  coins: Token[]
   hasLeadingIcon: boolean
   showDual: boolean
-  activeToken: IconCoinName
+  activeToken: Token
   values: Record<string, string>
-  onTokenChange: (t: IconCoinName) => void
-  onValueChange: (t: IconCoinName, v: string) => void
+  onTokenChange: (t: Token) => void
+  onValueChange: (t: Token, v: string) => void
   showCheckbox?: boolean
   checkboxLabel?: string
   checkboxChecked?: boolean
@@ -23,13 +23,13 @@ export type InputActionProps = {
 }
 
 const TransactionInputGroup: React.FC<{
-  coins: IconCoinName[]
-  activeToken: IconCoinName
-  values: Record<string, string>
+  coins: Token[]
+  activeToken: Token
+  values: Record<Token, string>
   hasLeadingIcon: boolean
   showDual: boolean
-  onTokenChange: (t: IconCoinName) => void
-  onValueChange: (t: IconCoinName, v: string) => void
+  onTokenChange: (t: Token) => void
+  onValueChange: (t: Token, v: string) => void
 }> = ({
   coins,
   activeToken,
@@ -42,7 +42,7 @@ const TransactionInputGroup: React.FC<{
   const { wallet } = useWallet()
   const walletConnected = wallet !== null
 
-  const renderInput = (coin: IconCoinName) => {
+  const renderInput = (coin: Token) => {
     const handleTokenChange = () => {
       const currentIndex = coins.indexOf(coin)
       const nextIndex = (currentIndex + 1) % coins.length
