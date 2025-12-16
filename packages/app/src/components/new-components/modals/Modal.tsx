@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react"
-import ButtonIcon from "../ButtonIcon"
+import Icon from "../Icon"
 
 type ModalProps = {
   title: string
@@ -21,13 +21,11 @@ export const Modal: React.FC<ModalProps> = ({
   className = "",
 }) => {
   const CloseBtn = closeButton || (
-    <ButtonIcon
-      size="tiny"
+    <Icon
+      name="Close"
+      aria-label="Close modal"
       onClick={onClose}
       id="close-modal-button"
-      variant="outlined"
-      aria-label="Close modal"
-      icon="Close"
     />
   )
 

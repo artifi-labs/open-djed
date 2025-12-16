@@ -2,7 +2,7 @@ import * as React from "react"
 import { type Wallet } from "@/context/WalletContext"
 import Button from "../Button"
 import Link from "next/link"
-import { useWalletSidebar } from "@/context/SidebarContext"
+import { useSidebar } from "@/context/SidebarContext"
 import WalletDetail from "./WalletDetail"
 import type { WalletName } from "../Wallet"
 import WalletBalance from "./WalletBalance"
@@ -18,7 +18,7 @@ const ConnectedWalletSection: React.FC<ConnectedWalletSectionProps> = ({
   wallet,
   disconnect,
 }) => {
-  const { closeWalletSidebar } = useWalletSidebar()
+  const { closeSidebar } = useSidebar()
 
   return (
     <div className="flex h-full w-full flex-col gap-5 overflow-hidden">
@@ -38,7 +38,7 @@ const ConnectedWalletSection: React.FC<ConnectedWalletSectionProps> = ({
           <Button
             className="w-full"
             variant="primary"
-            onClick={() => closeWalletSidebar()}
+            onClick={() => closeSidebar()}
             text="Mint & Burn Now"
           />
         </Link>

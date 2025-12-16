@@ -8,7 +8,7 @@ import ButtonIcon from "./ButtonIcon"
 import Image from "next/image"
 import clsx from "clsx"
 import { useWallet } from "@/context/WalletContext"
-import { useWalletSidebar } from "@/context/SidebarContext"
+import { useSidebar } from "@/context/SidebarContext"
 import Wallet, { type WalletName } from "./Wallet"
 import Sidebar from "./modals/Sidebar"
 import { shortenString } from "@/lib/utils"
@@ -85,7 +85,7 @@ const NetworkBadge: React.FC<NetworkBadgeProps> = ({ network, className }) => {
 export const Navbar = () => {
   const { t } = useTranslation()
   const { wallet } = useWallet()
-  const { openWalletSidebar } = useWalletSidebar()
+  const { openWalletSidebar, openSettingsSidebar } = useSidebar()
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false)
 
   const navLinks: { label: string; href: string }[] = [
@@ -124,7 +124,7 @@ export const Navbar = () => {
               variant="outlined"
               icon="Settings"
               size="medium"
-              onClick={() => alert("Settings")}
+              onClick={() => openSettingsSidebar()}
             />
           </div>
 
