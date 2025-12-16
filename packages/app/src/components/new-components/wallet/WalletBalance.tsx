@@ -2,6 +2,7 @@ import React from "react"
 import Coin from "../Coin"
 import { useProtocolData } from "@/hooks/useProtocolData"
 import { formatNumber, type Value } from "@/lib/utils"
+import { useEnv } from "@/context/EnvContext"
 
 type WalletBalanceProps = {
   token: "ADA" | "SHEN" | "DJED"
@@ -10,25 +11,17 @@ type WalletBalanceProps = {
 
 const WalletBalance: React.FC<WalletBalanceProps> = ({ token, amount }) => {
   const { data } = useProtocolData()
-  // const { network } = useEnv()
+  const { network } = useEnv()
 
   const amountUSD = React.useMemo(() => {
-    if (
-      !data
-      // || network === "Preprod"
-    )
-      return 0
+    if (!data || network === "Preprod") return 0
 
     const value = { [token]: amount } as Value
     return data.to(value, "DJED")
   }, [data, token, amount])
 
   const amountToken = React.useMemo(() => {
-    if (
-      !data
-      // || network === "Preprod"
-    )
-      return 0
+    if (!data || network === "Preprod") return 0
 
     const value = { [token]: 1 } as Value
     return data.to(value, "DJED")
@@ -45,23 +38,16 @@ const WalletBalance: React.FC<WalletBalanceProps> = ({ token, amount }) => {
           {formatNumber(amount, { maximumFractionDigits: 2 })}
         </span>
       </div>
-      <div className="flex w-full flex-row items-center justify-between">
-        {/* {network === "Preprod" ? (
-          <Tooltip
-            text={"In Preprod, tokens have no value."}
-            tooltipDirection="right"
-          >
-            <span className="text-xs text-tertiary">--</span>
-          </Tooltip>
-        ) : ( */}
-        <span className="text-tertiary text-[10px] md:text-xs">
-          ${formatNumber(amountToken, { maximumFractionDigits: 2 })}
-        </span>
-        {/* )} */}
-        <span className="text-xs font-semibold">
-          ${formatNumber(amountUSD, { maximumFractionDigits: 2 })}
-        </span>
-      </div>
+      {network !== "Preprod" && (
+        <div className="flex w-full flex-row items-center justify-between">
+          <span className="text-tertiary text-[10px] md:text-xs">
+            ${formatNumber(amountToken, { maximumFractionDigits: 2 })}
+          </span>
+          <span className="text-xs font-semibold">
+            ${formatNumber(amountUSD, { maximumFractionDigits: 2 })}
+          </span>
+        </div>
+      )}
     </div>
   )
 }
