@@ -2,7 +2,6 @@ import clsx from "clsx"
 import React from "react"
 import Coin, { type IconCoinName } from "./Coin"
 import ButtonIcon from "./ButtonIcon"
-import { on } from "node:cluster"
 
 type Size = "small" | "medium" | "large"
 
