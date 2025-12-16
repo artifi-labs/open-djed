@@ -28,17 +28,17 @@ export const Providers = ({
 
   return (
     <EnvProvider env={{ apiUrl, network, config, posthog }}>
-      <WalletProvider>
-        <SidebarProvider>
-          <ThemeProvider>
-            <ClientProvider apiUrl={apiUrl}>
-              <QueryClientProvider client={queryClient}>
+      <ClientProvider apiUrl={apiUrl}>
+        <QueryClientProvider client={queryClient}>
+          <WalletProvider>
+            <SidebarProvider>
+              <ThemeProvider>
                 <I18nProvider>{children}</I18nProvider>
-              </QueryClientProvider>
-            </ClientProvider>
-          </ThemeProvider>
-        </SidebarProvider>
-      </WalletProvider>
+              </ThemeProvider>
+            </SidebarProvider>
+          </WalletProvider>
+        </QueryClientProvider>
+      </ClientProvider>
     </EnvProvider>
   )
 }

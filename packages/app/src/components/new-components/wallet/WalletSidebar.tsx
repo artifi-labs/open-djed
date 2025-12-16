@@ -15,7 +15,7 @@ export default function WalletSidebar({
 }: {
   wallet: Wallet | null
   wallets: WalletMetadata[]
-  connect: (id: string) => Promise<void>
+  connect: (id: string) => void
   disconnect: () => void
   isOpen: boolean
   onClose: () => void
@@ -26,14 +26,13 @@ export default function WalletSidebar({
       isOpen={isOpen}
       onClose={onClose}
     >
-      <div></div>
-      {/*{wallet ? (
+      {wallet ? (
         <ConnectedWalletSection wallet={wallet} disconnect={disconnect} />
       ) : wallets.length <= 0 ? (
         <span>No wallets detected</span>
       ) : (
         <SelectWalletSection wallets={wallets} onClick={connect} />
-      )}*/}
+      )}
     </Sidebar>
   )
 }

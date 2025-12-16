@@ -157,7 +157,11 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
           name: cardano[id].name,
           icon: cardano[id].icon,
           balance: parsedBalance,
-          address: await getChangeAddress(),
+          address: await getChangeAddress().then(async (a) =>
+            (
+              await import("@dcspark/cardano-multiplatform-lib-browser")
+            ).Address.from_hex(a).to_bech32(),
+          ),
           utxos: () => api.getUtxos(),
           signTx: (txCbor: string) => api.signTx(txCbor, false),
           submitTx: api.submitTx,

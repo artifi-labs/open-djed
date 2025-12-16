@@ -1,4 +1,4 @@
-import { Data } from '@lucid-evolution/lucid'
+import { Data } from "@lucid-evolution/lucid"
 
 const OracleDatumSchema = Data.Object({
   _0: Data.Bytes(),

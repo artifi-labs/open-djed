@@ -7,16 +7,11 @@ import Button from "./Button"
 import ButtonIcon from "./ButtonIcon"
 import Image from "next/image"
 import clsx from "clsx"
-import Icon from "./Icon"
 import { useWallet } from "@/context/WalletContext"
 import { useWalletSidebar } from "@/context/SidebarContext"
-import Wallet, { WalletName } from "./Wallet"
+import Wallet, { type WalletName } from "./Wallet"
 import Sidebar from "./modals/Sidebar"
-import Divider from "./Divider"
-
-export type NavbarProps = {
-  walletConnected?: boolean
-}
+import { shortenString } from "@/lib/utils"
 
 type NavigationItem = {
   label: string
@@ -87,24 +82,22 @@ const NetworkBadge: React.FC<NetworkBadgeProps> = ({ network, className }) => {
   )
 }
 
-const navLinks: { label: string; href: string }[] = [
-  { label: "Dashboard", href: "/" },
-  { label: "Analytics", href: "/analytics" },
-  { label: "YIELD Simulator", href: "/yield-simulator" },
-  { label: "Orders", href: "/orders" },
-]
-
-export const Navbar: React.FC<NavbarProps> = ({ walletConnected }) => {
+export const Navbar = () => {
   const { t } = useTranslation()
   const { wallet } = useWallet()
   const { openWalletSidebar } = useWalletSidebar()
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false)
 
+  const navLinks: { label: string; href: string }[] = [
+    { label: "Dashboard", href: "/" },
+    { label: "Analytics", href: "/analytics" },
+    { label: "YIELD Simulator", href: "/yield-simulator" },
+    { label: "Orders", href: "/orders" },
+  ]
   const getWalletButtonText = () => {
     if (!wallet) return "Connect wallet"
     if (wallet.balance.handle) return `$${wallet.balance.handle}`
-    if (wallet.address)
-      return `${wallet.address.slice(0, 5)}...${wallet.address.slice(-6)}`
+    if (wallet.address) return `${shortenString(wallet.address)}`
     return "Loading address..."
   }
   const walletButtonText = getWalletButtonText()

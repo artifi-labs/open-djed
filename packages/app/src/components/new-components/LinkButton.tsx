@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { ButtonProps } from "./Button"
+import type { ButtonProps } from "./Button"
 import Button from "./Button"
 
 export type LinkButtonProps = {

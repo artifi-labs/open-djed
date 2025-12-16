@@ -140,7 +140,7 @@ export const capitalizeLower = (str: string = ""): string => {
  * Example:
  * shortenString("addr1q8xyz123tx3c") => "addr1q...tx3c"
  */
-export const shortenString = (text: string, start = 6, end = 4): string => {
+export const shortenString = (text: string, start = 4, end = 6): string => {
   if (text.length <= start + end) return text
   return `${text.slice(0, start)}...${text.slice(-end)}`
 }
