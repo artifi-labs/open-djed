@@ -13,6 +13,7 @@ import { useLocalStorage } from "usehooks-ts"
 import { type Cardano } from "@lucid-evolution/lucid"
 import { registryByNetwork } from "@open-djed/registry"
 import { useEnv } from "./EnvContext"
+import { useToast } from "./ToastContext"
 
 export type WalletMetadata = {
   id: string
@@ -76,6 +77,7 @@ const uint8ArrayToHexString = (uint8Array: Uint8Array) =>
     .join("")
 
 export function WalletProvider({ children }: { children: React.ReactNode }) {
+  const { showToast } = useToast()
   const [wallet, setWallet] = useState<Wallet | null>(null)
   const [wallets, setWallets] = useState<WalletMetadata[]>([])
   const [connectedWalletId, setConnectedWalletId] = useLocalStorage<
@@ -168,8 +170,16 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
           getChangeAddress,
           getUsedAddresses,
         })
+        showToast({
+          message: "Your wallet has been successfully connected.",
+          type: "success",
+        })
       } catch (err) {
         console.error(`Failed to enable ${id}`, err)
+        showToast({
+          message: "Failed to connect your wallet.",
+          type: "error",
+        })
       }
     },
     [setConnectedWalletId, setWallet],
@@ -208,6 +218,10 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
   const disconnect = () => {
     setWallet(null)
     setConnectedWalletId(null)
+    showToast({
+      message: "Your wallet has been disconnected.",
+      type: "error",
+    })
   }
 
   return (
