@@ -11,9 +11,7 @@ import ButtonIcon from "./ButtonIcon"
 import { useWallet } from "@/context/WalletContext"
 import { useWalletSidebar } from "@/context/SidebarContext"
 
-type Tokens = "ADA" | "DJED" | "SHEN"
 type ActionType = "mint" | "burn"
-
 type Type = "pay" | "receive"
 
 export type ActionProps = {
@@ -97,53 +95,59 @@ const TransactionInputGroup: React.FC<{
   const getInputValue = (val?: string) => val && val !== "0" ? val : ""
 
   if (!showDual) {
+    const handler = inputHandlers?.find(h => h.token === asset.coin)
     return (
       <TransactionInput
-        //key={coin} TODO
         placeholder="0"
         suffix={`$${tokenValue.toFixed(2)}`}
         asset={asset}
         inputDisabled={inputDisabled}
-        hasMaxAndHalfActions={wallet !== null}
-        amount={walletConnected ? wallet?.balance[asset.coin as keyof typeof wallet.balance]?.toString() ?? "0.00" : undefined}
-        value={getInputValue(inputHandlers?.[0]?.value)}
-        onValueChange={inputHandlers?.[0]?.onChange}
+        hasMaxAndHalfActions={walletConnected}
+        amount={walletConnected ? wallet?.balance[asset.coin as keyof typeof wallet.balance]?.toString() : undefined}
+        value={getInputValue(handler?.value)}
+        onValueChange={handler?.onChange}
+        onAssetClick={() => asset.onCoinChange?.(asset.coin)}
       />
     )
   }
+
   return (
     <div className="flex flex-row gap-2">
-      <TransactionInput
-        //key={coin} TODO
-        placeholder="0"
-        suffix={`$${tokenValue.toFixed(2)}`}
-        asset={{ ...asset, coin: asset.coins[0] }}
-        inputDisabled={inputDisabled}
-        hasMaxAndHalfActions={wallet !== null}
-        amount={walletConnected ? wallet?.balance[asset.coins[0] as keyof typeof wallet.balance]?.toString() ?? "0.00" : undefined}
-        value={getInputValue(inputHandlers?.[0]?.value)}
-        onValueChange={val => inputHandlers?.[0]?.onChange(val)}
-      />
+      {asset.coins.map((coin, idx) => {
+        const handler = inputHandlers?.find(h => h.token === coin)
+        return (
+          <TransactionInput
+            key={coin}
+            placeholder="0"
+            suffix={`$${tokenValue.toFixed(2)}`}
+            asset={{ ...asset, coin }}
+            inputDisabled={inputDisabled}
+            hasMaxAndHalfActions={walletConnected}
+            amount={walletConnected ? wallet?.balance[coin as keyof typeof wallet.balance]?.toString() : undefined}
+            value={getInputValue(handler?.value)}
+            onValueChange={val => handler?.onChange(val)}
+          />
+        )
+      })}
       <ButtonIcon icon="Unlink" size="medium" variant="onlyIcon" />
-      <TransactionInput
-        //key={coin} TODO
-        placeholder="0"
-        suffix={`$${tokenValue.toFixed(2)}`}
-        asset={{ ...asset, coin: asset.coins[1] }}
-        inputDisabled={inputDisabled}
-        hasMaxAndHalfActions={wallet !== null}
-        amount={walletConnected ? wallet?.balance[asset.coins[1] as keyof typeof wallet.balance]?.toString() ?? "0.00" : undefined}
-        value={getInputValue(inputHandlers?.[1]?.value)}
-        onValueChange={val => inputHandlers?.[1]?.onChange(val)}
-      />
     </div>
   )
 }
 
-const InputAction: React.FC<InputActionProps> = ({ label, asset, showCheckbox, checkboxLabel, checkboxChecked, showDualInput, onCheckboxChange, inputHandlers, inputDisabled, tokenValue }) => {
-  const handleCheckboxChange = (state: string) => {
-    onCheckboxChange?.(state === "Selected")
-  }
+const InputAction: React.FC<InputActionProps> = ({
+  label,
+  asset,
+  showCheckbox,
+  checkboxLabel,
+  checkboxChecked,
+  showDualInput,
+  onCheckboxChange,
+  inputHandlers,
+  inputDisabled,
+  tokenValue
+}) => {
+  const handleCheckboxChange = (state: string) => onCheckboxChange?.(state === "Selected")
+
   return (
     <div className="flex flex-col gap-12">
       <div className="flex flex-row justify-between">
@@ -160,6 +164,7 @@ const InputAction: React.FC<InputActionProps> = ({ label, asset, showCheckbox, c
           </div>
         )}
       </div>
+
       <TransactionInputGroup
         showDual={showDualInput ?? false}
         asset={asset}
@@ -175,7 +180,7 @@ const Action: React.FC<ActionProps> = ({ actionType, defaultBothSelectable = fal
   const { bothSelected, setBothSelected, payAsset, receiveAsset, payShowDual, receiveShowDual } = useActionState(actionType, defaultBothSelectable)
   const { wallet } = useWallet()
   const { openWalletSidebar } = useWalletSidebar()
-  
+
   const actionTypeText = capitalize(actionType)
   const checkboxLabel = `${capitalize(actionType)} both (DJED & SHEN)`
 
@@ -188,54 +193,77 @@ const Action: React.FC<ActionProps> = ({ actionType, defaultBothSelectable = fal
   const handleInputChange = (token: string, val: string, type: Type) => {
     const numVal = parseFloat(val) || 0
 
+    let newPayValues = { ...payValues }
+    let newReceiveValues = { ...receiveValues }
+    let newActivePayToken = activePayToken
+    let newActiveReceiveToken = activeReceiveToken
+
     if (type === "pay") {
-      setActivePayToken(token)
-      setPayValues(prev => ({ ...prev, [token]: val }))
+      newActivePayToken = token
+      newPayValues[token] = val
 
       if (bothSelected) {
-        const newReceive: Record<string, string> = {}
+        newReceiveValues = {}
         receiveAsset.coins.forEach(rc => {
-          newReceive[rc] = convert(numVal, token, rc).toString()
+          newReceiveValues[rc] = convert(numVal, token, rc).toString()
         })
-        setReceiveValues(newReceive)
       } else if (activeReceiveToken) {
-        const converted = convert(numVal, token, activeReceiveToken)
-        setReceiveValues(prev => ({ ...prev, [activeReceiveToken]: converted.toString() }))
+        newReceiveValues[activeReceiveToken] = convert(numVal, token, activeReceiveToken).toString()
       }
 
     } else {
-      setActiveReceiveToken(token)
-      setReceiveValues(prev => ({ ...prev, [token]: val }))
+      newActiveReceiveToken = token
+      newReceiveValues[token] = val
 
       if (bothSelected) {
-        const newPay: Record<string, string> = {}
+        newPayValues = {}
         payAsset.coins.forEach(pc => {
-          newPay[pc] = convert(numVal, token, pc).toString()
+          newPayValues[pc] = convert(numVal, token, pc).toString()
         })
-        setPayValues(newPay)
       } else if (activePayToken) {
-        const converted = convert(numVal, token, activePayToken)
-        setPayValues(prev => ({ ...prev, [activePayToken]: converted.toString() }))
+        newPayValues[activePayToken] = convert(numVal, token, activePayToken).toString()
       }
     }
+
+    setActivePayToken(newActivePayToken)
+    setActiveReceiveToken(newActiveReceiveToken)
+    setPayValues(newPayValues)
+    setReceiveValues(newReceiveValues)
+
+    console.log("Pay Map:", newPayValues)
+    console.log("Receive Map:", newReceiveValues)
+    console.log("Active Pay Token:", newActivePayToken)
+    console.log("Active Receive Token:", newActiveReceiveToken)
+    console.log("Both Selected:", bothSelected)
   }
 
   const handleBothSelectedChange = (selected:boolean)=>{
     setBothSelected(selected)
+
+    let newPayValues = { ...payValues }
+    let newReceiveValues = { ...receiveValues }
+
     if(selected){
       if(activePayToken){
         const val=parseFloat(payValues[activePayToken]||"0")||0
-        const newReceive: Record<string,string>={}
-        receiveAsset.coins.forEach(rc=>newReceive[rc]=convert(val,activePayToken,rc).toString())
-        setReceiveValues(newReceive)
+        newReceiveValues = {}
+        receiveAsset.coins.forEach(rc=>newReceiveValues[rc]=convert(val,activePayToken,rc).toString())
       }
       if(activeReceiveToken){
         const val=parseFloat(receiveValues[activeReceiveToken]||"0")||0
-        const newPay: Record<string,string>={}
-        payAsset.coins.forEach(pc=>newPay[pc]=convert(val,activeReceiveToken,pc).toString())
-        setPayValues(newPay)
+        newPayValues = {}
+        payAsset.coins.forEach(pc=>newPayValues[pc]=convert(val,activeReceiveToken,pc).toString())
       }
     }
+
+    setPayValues(newPayValues)
+    setReceiveValues(newReceiveValues)
+
+    console.log("Pay Map:", newPayValues)
+    console.log("Receive Map:", newReceiveValues)
+    console.log("Active Pay Token:", activePayToken)
+    console.log("Active Receive Token:", activeReceiveToken)
+    console.log("Both Selected:", selected)
   }
 
   const handleButtonClick = () => {
@@ -243,7 +271,6 @@ const Action: React.FC<ActionProps> = ({ actionType, defaultBothSelectable = fal
       openWalletSidebar()
       return
     }
-
     console.log("Pay Map:",payValues)
     console.log("Receive Map:",receiveValues)
     console.log("Active Pay Token:",activePayToken)
@@ -252,33 +279,87 @@ const Action: React.FC<ActionProps> = ({ actionType, defaultBothSelectable = fal
   }
 
   const generateInputHandlers = (asset: AssetProps, type:"pay"|"receive") => asset.coins.map(coin=>({
-    token:coin,
-    value:type==="receive"?receiveValues[coin]??"":payValues[coin]??"",
-    onChange:val=>handleInputChange(coin,val,type)
+    token: coin,
+    value: type==="receive"?receiveValues[coin]??"": payValues[coin]??"",
+    onChange: val => handleInputChange(coin,val,type)
   }))
+
+  const handleActiveReceiveTokenChange = (token: IconCoinName) => {
+    const oldToken = activeReceiveToken
+    setActiveReceiveToken(token)
+    
+    if (bothSelected) return
+    
+    const activePayValue = parseFloat(payValues[activePayToken] || "0") || 0
+    if (activePayValue > 0) {
+      const converted = convert(activePayValue, activePayToken, token)
+      setReceiveValues({ [token]: converted.toString() })
+
+      console.log("Pay Map:",payValues)
+      console.log("Receive Map:",receiveValues)
+      console.log("Active Pay Token:",activePayToken)
+      console.log("Active Receive Token:",activeReceiveToken)
+      console.log("Both Selected:",bothSelected)
+      return
+    }
+    
+    const oldReceiveValue = parseFloat(receiveValues[oldToken] || "0") || 0
+    if (oldReceiveValue > 0) {
+      const newPayValue = convert(oldReceiveValue, oldToken, activePayToken)
+      const newReceiveValue = convert(newPayValue, activePayToken, token)
+      setPayValues({ [activePayToken]: newPayValue.toString() })
+      setReceiveValues({ [token]: newReceiveValue.toString() })
+    }
+
+    console.log("Pay Map:",payValues)
+    console.log("Receive Map:",receiveValues)
+    console.log("Active Pay Token:",activePayToken)
+    console.log("Active Receive Token:",activeReceiveToken)
+    console.log("Both Selected:",bothSelected)
+    
+  }
+
+  const handleActivePayTokenChange = (token: IconCoinName) => {
+    const oldToken = activePayToken
+    setActivePayToken(token)
+    
+    if (bothSelected) return
+    
+    const activeReceiveValue = parseFloat(receiveValues[activeReceiveToken] || "0") || 0
+    if (activeReceiveValue > 0) {
+      const converted = convert(activeReceiveValue, activeReceiveToken, token)
+      setPayValues({ [token]: converted.toString() })
+      return
+    }
+    
+    const oldPayValue = parseFloat(payValues[oldToken] || "0") || 0
+    if (oldPayValue > 0) {
+      const newReceiveValue = convert(oldPayValue, oldToken, activeReceiveToken)
+      const newPayValue = convert(newReceiveValue, activeReceiveToken, token)
+      setReceiveValues({ [activeReceiveToken]: newReceiveValue.toString() })
+      setPayValues({ [token]: newPayValue.toString() })
+    }
+  }
 
   React.useEffect(() => {
     if (!hasWalletConnected) {
       setButtonText(`Connect Wallet to ${actionTypeText}`)
       return
     }
-
     const payEmpty = Object.values(payValues).every(v => !v || v === "0")
     const receiveEmpty = Object.values(receiveValues).every(v => !v || v === "0")
-
-    if (payEmpty || receiveEmpty) {
-      setButtonText(`Fill in the Amount to ${actionTypeText}`)
-    } else {
-      setButtonText(actionTypeText)
-    }
+    setButtonText(payEmpty || receiveEmpty ? `Fill in the Amount to ${actionTypeText}` : actionTypeText)
   }, [payValues, receiveValues, hasWalletConnected, actionTypeText])
-
 
   return (
     <div className="flex flex-col gap-24">
       <InputAction
         label="You Receive"
-        asset={receiveAsset}
+        asset={{ 
+          ...receiveAsset, 
+          coin: activeReceiveToken, 
+          onCoinChange: handleActiveReceiveTokenChange 
+        }}
         showCheckbox
         checkboxLabel={checkboxLabel}
         checkboxChecked={bothSelected}
@@ -288,7 +369,7 @@ const Action: React.FC<ActionProps> = ({ actionType, defaultBothSelectable = fal
       />
       <InputAction
         label="You Pay"
-        asset={payAsset}
+        asset={{ ...payAsset, coin: activePayToken, onCoinChange: handleActivePayTokenChange }}
         showDualInput={payShowDual}
         inputHandlers={generateInputHandlers(payAsset,"pay")}
       />

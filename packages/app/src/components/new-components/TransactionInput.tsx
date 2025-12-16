@@ -30,6 +30,7 @@ export type TransactionInputProps = {
   value?: string
   defaultValue?: string
   onValueChange?: (value: string) => void
+  onAssetClick?: () => void
 } & React.InputHTMLAttributes<HTMLInputElement>
 
 const TransactionInput: React.FC<TransactionInputProps> = ({
@@ -50,6 +51,7 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
   value,
   defaultValue = "",
   onValueChange,
+  onAssetClick,
   ...props
 }) => {
   const [internalValue, setInternalValue] = React.useState(defaultValue)
