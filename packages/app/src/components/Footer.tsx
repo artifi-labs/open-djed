@@ -35,7 +35,7 @@ type SocialIconProps = {
 const Logo = () => {
   return (
     <Link
-      href={WEBSITE_URL}  
+      href={WEBSITE_URL}
       target="_blank"
       rel="noopener noreferrer"
       className="w-53.5"
