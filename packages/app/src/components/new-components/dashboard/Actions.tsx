@@ -1,13 +1,11 @@
-// Actions.tsx
 "use client"
 
 import * as React from "react"
 import clsx from "clsx"
-import BaseCard from "./card/BaseCard"
-import Tabs, { TabItem } from "./Tabs"
-import Action, { Type } from "./dashboard/Action"
-import { IconCoinName } from "./Coin"
-import { AssetProps } from "./Asset"
+import BaseCard from "../card/BaseCard"
+import Tabs, { TabItem } from "../Tabs"
+import Action, { Type } from "./Action"
+import { IconCoinName } from "../Coin"
 
 type ActionType = "mint" | "burn"
 
@@ -61,7 +59,6 @@ const Actions: React.FC<ActionsProps> = ({
     React.useState<ActionType>(defaultActionType)
   const config = ACTION_CONFIG[selectedAction]
 
-  // Estado centralizado
   const [bothSelected, setBothSelected] = React.useState(false)
   const [payValues, setPayValues] = React.useState<Record<string, string>>({})
   const [receiveValues, setReceiveValues] = React.useState<
@@ -73,8 +70,15 @@ const Actions: React.FC<ActionsProps> = ({
   const [activeReceiveToken, setActiveReceiveToken] =
     React.useState<IconCoinName>(config.receive[0])
 
-  // Funções de atualização de estado
-  const handleInputChange = (token: string, val: string, type: Type) => {
+  React.useEffect(() => {
+    setBothSelected(false)
+    setPayValues({})
+    setReceiveValues({})
+    setActivePayToken(config.pay[0])
+    setActiveReceiveToken(config.receive[0])
+  }, [selectedAction, config.pay, config.receive])
+
+  const handleInputChange = (token: IconCoinName, val: string, type: Type) => {
     const numVal = parseFloat(val) || 0
     let newPayValues = { ...payValues }
     let newReceiveValues = { ...receiveValues }
@@ -85,10 +89,13 @@ const Actions: React.FC<ActionsProps> = ({
 
       if (bothSelected) {
         newReceiveValues = {}
-        config.receive.forEach(
-          (rc) =>
-            (newReceiveValues[rc] = convert(numVal, token, rc).toString()),
-        )
+        config.receive.forEach((rc) => {
+          const totalFromPays = config.pay.reduce((acc, payToken) => {
+            const payAmount = parseFloat(newPayValues[payToken] || "0") || 0
+            return acc + convert(payAmount, payToken, rc)
+          }, 0)
+          newReceiveValues[rc] = totalFromPays.toString()
+        })
       } else {
         newReceiveValues[activeReceiveToken] = convert(
           numVal,
@@ -102,9 +109,17 @@ const Actions: React.FC<ActionsProps> = ({
 
       if (bothSelected) {
         newPayValues = {}
-        config.pay.forEach(
-          (pc) => (newPayValues[pc] = convert(numVal, token, pc).toString()),
-        )
+        config.pay.forEach((pc) => {
+          const totalFromReceives = config.receive.reduce(
+            (acc, receiveToken) => {
+              const receiveAmount =
+                parseFloat(newReceiveValues[receiveToken] || "0") || 0
+              return acc + convert(receiveAmount, receiveToken, pc)
+            },
+            0,
+          )
+          newPayValues[pc] = totalFromReceives.toString()
+        })
       } else {
         newPayValues[activePayToken] = convert(
           numVal,
@@ -120,70 +135,48 @@ const Actions: React.FC<ActionsProps> = ({
 
   const handleBothSelectedChange = (selected: boolean) => {
     setBothSelected(selected)
-
-    if (selected) {
-      // Atualiza todos os valores com base nos ativos ativos
-      const payAmount = parseFloat(payValues[activePayToken] || "0") || 0
-      const receiveAmount =
-        parseFloat(receiveValues[activeReceiveToken] || "0") || 0
-
-      const newReceiveValues: Record<string, string> = {}
-      config.receive.forEach(
-        (rc) =>
-          (newReceiveValues[rc] = convert(
-            payAmount,
-            activePayToken,
-            rc,
-          ).toString()),
-      )
-      const newPayValues: Record<string, string> = {}
-      config.pay.forEach(
-        (pc) =>
-          (newPayValues[pc] = convert(
-            receiveAmount,
-            activeReceiveToken,
-            pc,
-          ).toString()),
-      )
-
-      setReceiveValues(newReceiveValues)
-      setPayValues(newPayValues)
-    }
+    setPayValues({})
+    setReceiveValues({})
   }
 
   const handleActivePayTokenChange = (token: IconCoinName) => {
-    const oldToken = activePayToken
+    console.log("Active pay token change:", token)
     setActivePayToken(token)
 
-    if (bothSelected) return
-
-    const oldValue = parseFloat(payValues[oldToken] || "0") || 0
-    if (oldValue > 0) {
-      const converted = convert(oldValue, oldToken, activeReceiveToken)
-      setReceiveValues({ [activeReceiveToken]: converted.toString() })
-    }
+    const converted = convert(
+      receiveValues[activeReceiveToken]
+        ? parseFloat(receiveValues[activeReceiveToken])
+        : 0,
+      activeReceiveToken,
+      token,
+    )
+    setPayValues({
+      ...payValues,
+      [token]: converted.toString(),
+    })
   }
 
   const handleActiveReceiveTokenChange = (token: IconCoinName) => {
-    const oldToken = activeReceiveToken
+    console.log("Active receive token change:", token)
     setActiveReceiveToken(token)
 
-    if (bothSelected) return
-
-    const oldValue = parseFloat(receiveValues[oldToken] || "0") || 0
-    if (oldValue > 0) {
-      const converted = convert(oldValue, oldToken, activePayToken)
-      setPayValues({ [activePayToken]: converted.toString() })
-    }
+    const converted = convert(
+      payValues[activePayToken] ? parseFloat(payValues[activePayToken]) : 0,
+      activePayToken,
+      token,
+    )
+    setReceiveValues({
+      ...receiveValues,
+      [token]: converted.toString(),
+    })
   }
 
-  // Gerar handlers para cada input
-  const generateInputHandlers = (coins: IconCoinName[], type: Type) =>
-    coins.map((coin) => ({
+  /*const generateInputHandlers = (coins: IconCoinName[], type: Type) =>
+    coins.map(coin => ({
       token: coin,
       value: type === "pay" ? payValues[coin] || "" : receiveValues[coin] || "",
-      onChange: (val: string) => handleInputChange(coin, val, type),
-    }))
+      onChange: (val: string) => handleInputChange(coin, val, type)
+    }))*/
 
   const descriptionText: Record<ActionType, string> = {
     mint: "Mint DJED, SHEN or both by depositing ADA into the protocol.",
@@ -230,6 +223,8 @@ const Actions: React.FC<ActionsProps> = ({
           onActiveReceiveTokenChange={handleActiveReceiveTokenChange}
           payCoins={config.pay}
           receiveCoins={config.receive}
+          payHasLeadingIcon={config.payHasLeadingIcon}
+          receiveHasLeadingIcon={config.receiveHasLeadingIcon}
         />
       </div>
     </BaseCard>

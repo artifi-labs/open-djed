@@ -1,5 +1,5 @@
 "use client"
-import Actions from "@/components/new-components/Actions"
+import Actions from "@/components/new-components/dashboard/Actions"
 import LinkButton from "@/components/new-components/LinkButton"
 import { useWallet } from "@/context/WalletContext"
 

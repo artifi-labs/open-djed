@@ -29,7 +29,9 @@ export const Asset: React.FC<AssetProps> = ({
   onCoinChange,
 }) => {
   const textSize = sizeMap[size]
-  const [internalCoin, setInternalCoin] = React.useState<IconCoinName>(coin ?? coins[0])
+  const [internalCoin, setInternalCoin] = React.useState<IconCoinName>(
+    coin ?? coins[0],
+  )
   const currentCoin = coin ?? internalCoin
 
   const handleClick = () => {
