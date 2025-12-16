@@ -2,8 +2,6 @@ import React from "react"
 import Coin from "../Coin"
 import { useProtocolData } from "@/hooks/useProtocolData"
 import { formatNumber, type Value } from "@/lib/utils"
-import { useEnv } from "@/context/EnvContext"
-import Tooltip from "../Tooltip"
 
 type WalletBalanceProps = {
   token: "ADA" | "SHEN" | "DJED"
@@ -12,7 +10,7 @@ type WalletBalanceProps = {
 
 const WalletBalance: React.FC<WalletBalanceProps> = ({ token, amount }) => {
   const { data } = useProtocolData()
-  const { network } = useEnv()
+  // const { network } = useEnv()
 
   const amountUSD = React.useMemo(() => {
     if (
@@ -37,8 +35,8 @@ const WalletBalance: React.FC<WalletBalanceProps> = ({ token, amount }) => {
   }, [data, token, amount])
 
   return (
-    <div className="rounded-8 bg-surface-secondary border-border-secondary flex w-full flex-col items-center gap-12 border px-8 py-12">
-      <div className="flex w-full flex-row items-center justify-between">
+    <div className="rounded-8 bg-surface-secondary border-border-secondary flex w-full min-w-fit flex-col items-center gap-12 border px-8 py-12">
+      <div className="flex w-full flex-row items-center justify-between gap-12">
         <div className="flex flex-row items-center gap-8">
           <Coin name={token} size="medium" checked={false} />
           <span className="text-xs">{token}</span>
@@ -56,7 +54,7 @@ const WalletBalance: React.FC<WalletBalanceProps> = ({ token, amount }) => {
             <span className="text-xs text-tertiary">--</span>
           </Tooltip>
         ) : ( */}
-        <span className="text-tertiary text-xs">
+        <span className="text-tertiary text-[10px] md:text-xs">
           ${formatNumber(amountToken, { maximumFractionDigits: 2 })}
         </span>
         {/* )} */}
