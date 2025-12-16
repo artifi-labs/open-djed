@@ -107,8 +107,8 @@ export const Navbar = () => {
 
   return (
     <header className="w-full">
-      <div className="px-navbar-margin mx-auto flex w-full max-w-[1440px] flex-row items-center justify-between py-18">
-        <div className="desktop:w-[271px]">
+      <div className="px-navbar-margin mx-auto flex w-full max-w-360 flex-row items-center justify-between py-18">
+        <div className="desktop:w-67.75">
           <Logo />
         </div>
 
