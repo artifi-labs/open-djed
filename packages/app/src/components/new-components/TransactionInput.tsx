@@ -27,7 +27,10 @@ export type TransactionInputProps = {
   disabled?: boolean
   hasMaxAndHalfActions?: boolean
   inputDisabled?: boolean
-}
+  value?: string
+  defaultValue?: string
+  onValueChange?: (value: string) => void
+} & React.InputHTMLAttributes<HTMLInputElement>
 
 const TransactionInput: React.FC<TransactionInputProps> = ({
   leadingIcon,
@@ -44,8 +47,19 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
   disabled = false,
   hasMaxAndHalfActions = true,
   inputDisabled = false,
+  value,
+  defaultValue = "",
+  onValueChange,
+  ...props
 }) => {
-  const [value, setValue] = React.useState("")
+  const [internalValue, setInternalValue] = React.useState(defaultValue)
+  const displayedValue = value !== undefined ? value : internalValue
+
+  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const sanitized = sanitizeNumberInput(e.target.value)
+    if (value === undefined) setInternalValue(sanitized)
+    onValueChange?.(sanitized)
+  }
 
   const baseClasses =
     "border-gradient-b rounded-b-4 flex w-full flex-col gap-12 p-12 bg-surface-primary"
@@ -86,10 +100,6 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
       : clsx(interactiveClasses, statusBorderClasses[status]),
   )
 
-  const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(sanitizeNumberInput(e.target.value))
-  }
-
   return (
     <div className={containerClasses} aria-disabled={disabled}>
       <div className={topRowClasses}>
@@ -103,8 +113,9 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
           placeholder={placeholder}
           className={inputClasses}
           disabled={disabled || inputDisabled}
-          value={value}
-          onChange={onInputChange}
+          value={displayedValue}
+          onChange={handleOnChange}
+          {...props}
         />
 
         {/* Tag */}
