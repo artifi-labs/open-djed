@@ -37,8 +37,8 @@ const WalletBalance: React.FC<WalletBalanceProps> = ({ token, amount }) => {
   }, [data, token, amount])
 
   return (
-    <div className="rounded-8 bg-surface-secondary border-border-secondary flex w-full flex-col items-center gap-12 border px-8 py-12">
-      <div className="flex w-full flex-row items-center justify-between">
+    <div className="rounded-8 bg-surface-secondary border-border-secondary flex w-full flex-col items-center gap-12 border px-8 py-12 min-w-fit">
+      <div className="flex w-full flex-row items-center justify-between gap-12">
         <div className="flex flex-row items-center gap-8">
           <Coin name={token} size="medium" checked={false} />
           <span className="text-xs">{token}</span>
