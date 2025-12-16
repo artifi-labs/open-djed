@@ -90,14 +90,7 @@ const WalletDetail: React.FC<WalletDetailProps> = ({
         <span className="text-md font-semibold">
           ${formatNumber(totalBalance, { maximumFractionDigits: 2 })}
         </span>
-      ) : (
-        <Tooltip
-          tooltipDirection="bottom"
-          text="In Preprod, tokens have no value."
-        >
-          <span className="text-md font-semibold">$--</span>
-        </Tooltip>
-      )}
+      ) : null}
       <ButtonIcon
         icon="Disconnect"
         variant="secondary"
