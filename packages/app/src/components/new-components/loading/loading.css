@@ -1,0 +1,17 @@
+.loading-icon {
+  background-image: url("/components/data-display/loading/Loading.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+
+  animation: rotate-loading 1s linear infinite;
+}
+
+@keyframes rotate-loading {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(-360deg);
+  }
+}
