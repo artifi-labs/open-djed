@@ -5,6 +5,8 @@ import Link from "next/link"
 import { useWalletSidebar } from "@/context/SidebarContext"
 import WalletDetail from "./WalletDetail"
 import type { WalletName } from "../Wallet"
+import WalletBalance from "./WalletBalance"
+import Divider from "../Divider"
 
 interface ConnectedWalletSectionProps {
   wallet: Wallet
@@ -26,6 +28,11 @@ const ConnectedWalletSection: React.FC<ConnectedWalletSectionProps> = ({
           address={wallet.address ? wallet.address : ""}
           onDisconnect={disconnect}
         />
+        <div className="flex w-full flex-row items-start justify-start gap-8 overflow-hidden">
+          <WalletBalance token="ADA" amount={wallet.balance.ADA} />
+          <WalletBalance token="DJED" amount={wallet.balance.DJED} />
+          <WalletBalance token="SHEN" amount={wallet.balance.SHEN} />
+        </div>
         <Link href={"/"}>
           <Button
             className="w-full"
@@ -34,6 +41,7 @@ const ConnectedWalletSection: React.FC<ConnectedWalletSectionProps> = ({
             text="Mint & Burn Now"
           />
         </Link>
+        <Divider />
       </div>
     </div>
   )
