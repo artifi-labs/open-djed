@@ -15,9 +15,24 @@ const WalletBalance: React.FC<WalletBalanceProps> = ({ token, amount }) => {
   const { network } = useEnv()
 
   const amountUSD = React.useMemo(() => {
-    if (!data || network === "Preprod") return 0
+    if (
+      !data
+      // || network === "Preprod"
+    )
+      return 0
 
     const value = { [token]: amount } as Value
+    return data.to(value, "DJED")
+  }, [data, token, amount])
+
+  const amountToken = React.useMemo(() => {
+    if (
+      !data
+      // || network === "Preprod"
+    )
+      return 0
+
+    const value = { [token]: 1 } as Value
     return data.to(value, "DJED")
   }, [data, token, amount])
 
@@ -28,23 +43,25 @@ const WalletBalance: React.FC<WalletBalanceProps> = ({ token, amount }) => {
           <Coin name={token} size="medium" checked={false} />
           <span className="text-xs">{token}</span>
         </div>
-        <span className="text-xs">12.00</span>
+        <span className="text-xs">
+          {formatNumber(amount, { maximumFractionDigits: 2 })}
+        </span>
       </div>
       <div className="flex w-full flex-row items-center justify-between">
-        {network === "Preprod" ? (
+        {/* {network === "Preprod" ? (
           <Tooltip
             text={"In Preprod, tokens have no value."}
             tooltipDirection="right"
           >
-            <span className="text-xs">--</span>
+            <span className="text-xs text-tertiary">--</span>
           </Tooltip>
-        ) : (
-          <span className="text-xs">
-            ${formatNumber(amountUSD, { maximumFractionDigits: 2 })}
-          </span>
-        )}
+        ) : ( */}
+        <span className="text-tertiary text-xs">
+          ${formatNumber(amountToken, { maximumFractionDigits: 2 })}
+        </span>
+        {/* )} */}
         <span className="text-xs font-semibold">
-          {formatNumber(amount, { maximumFractionDigits: 2 })}
+          ${formatNumber(amountUSD, { maximumFractionDigits: 2 })}
         </span>
       </div>
     </div>
