@@ -7,6 +7,7 @@ import WalletDetail from "./WalletDetail"
 import type { WalletName } from "../Wallet"
 import WalletBalance from "./WalletBalance"
 import Divider from "../Divider"
+import OrdersWalletSection from "./OrdersWalletSection"
 
 interface ConnectedWalletSectionProps {
   wallet: Wallet
@@ -20,7 +21,7 @@ const ConnectedWalletSection: React.FC<ConnectedWalletSectionProps> = ({
   const { closeWalletSidebar } = useWalletSidebar()
 
   return (
-    <div className="flex h-full w-full flex-col gap-5">
+    <div className="flex h-full w-full flex-col gap-5 overflow-hidden">
       <div className="flex shrink-0 flex-col gap-5">
         <WalletDetail
           balance={wallet.balance}
@@ -28,10 +29,10 @@ const ConnectedWalletSection: React.FC<ConnectedWalletSectionProps> = ({
           address={wallet.address ? wallet.address : ""}
           onDisconnect={disconnect}
         />
-        <div className="flex w-full flex-row items-start justify-start gap-8 overflow-hidden">
-          <WalletBalance token="ADA" amount={wallet.balance.ADA} />
+        <div className="flex w-full flex-row items-start justify-start gap-8 overflow-x-auto">
           <WalletBalance token="DJED" amount={wallet.balance.DJED} />
           <WalletBalance token="SHEN" amount={wallet.balance.SHEN} />
+          <WalletBalance token="ADA" amount={wallet.balance.ADA} />
         </div>
         <Link href={"/"}>
           <Button
@@ -41,8 +42,9 @@ const ConnectedWalletSection: React.FC<ConnectedWalletSectionProps> = ({
             text="Mint & Burn Now"
           />
         </Link>
-        <Divider />
       </div>
+      <Divider className="w-full" />
+      <OrdersWalletSection wallet={wallet} />
     </div>
   )
 }
