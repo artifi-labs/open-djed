@@ -32,7 +32,7 @@ const Actions: React.FC<ActionsProps> = ({ defaultActionType }) => {
       <div className="flex flex-col gap-24">
         <div className="flex flex-col gap-12">
           <Tabs
-            type={1}
+            type={"primary"}
             items={tabs}
             activeItemIndex={tabs.findIndex((t) => t.key === selectedAction)}
             onTabChange={(tab) => setSelectedAction(tab.key as ActionType)}
