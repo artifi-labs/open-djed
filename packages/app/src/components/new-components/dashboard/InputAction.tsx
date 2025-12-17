@@ -13,24 +13,30 @@ export type InputActionProps = {
   hasLeadingIcon: boolean
   showDual: boolean
   activeToken: Token
-  values: Record<string, string>
+  values: Record<Token, number>
   onTokenChange: (t: Token) => void
   onValueChange: (t: Token, v: string) => void
+  onHalfClick?: (t: Token) => void
+  onMaxClick?: (t: Token) => void
   showCheckbox?: boolean
   checkboxLabel?: string
   checkboxChecked?: boolean
   onCheckboxChange?: (v: boolean) => void
 }
 
-const TransactionInputGroup: React.FC<{
+export type TransactionInputGroupProps = {
   coins: Token[]
   activeToken: Token
-  values: Record<Token, string>
+  values: Record<Token, number>
   hasLeadingIcon: boolean
   showDual: boolean
   onTokenChange: (t: Token) => void
   onValueChange: (t: Token, v: string) => void
-}> = ({
+  onHalfClick?: (t: Token) => void
+  onMaxClick?: (t: Token) => void
+}
+
+const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
   coins,
   activeToken,
   values,
@@ -38,6 +44,8 @@ const TransactionInputGroup: React.FC<{
   showDual,
   onTokenChange,
   onValueChange,
+  onHalfClick,
+  onMaxClick,
 }) => {
   const { wallet } = useWallet()
   const walletConnected = wallet !== null
@@ -48,6 +56,9 @@ const TransactionInputGroup: React.FC<{
       const nextIndex = (currentIndex + 1) % coins.length
       onTokenChange(coins[nextIndex])
     }
+    const balanceStr = walletConnected
+      ? wallet?.balance[coin as keyof typeof wallet.balance]?.toString()
+      : undefined
     return (
       <TransactionInput
         key={coin}
@@ -60,14 +71,12 @@ const TransactionInputGroup: React.FC<{
           hasLeadingIcon,
           onCoinChange: handleTokenChange,
         }}
-        value={values[coin] && values[coin] !== "0" ? values[coin] : ""}
+        value={values[coin] ? values[coin].toString() : ""}
         onValueChange={(v) => onValueChange(coin, v)}
         hasMaxAndHalfActions={walletConnected}
-        amount={
-          walletConnected
-            ? wallet?.balance[coin as keyof typeof wallet.balance]?.toString()
-            : undefined
-        }
+        amount={balanceStr}
+        onHalfClick={onHalfClick ? () => onHalfClick(coin) : undefined}
+        onMaxClick={onMaxClick ? () => onMaxClick(coin) : undefined}
       />
     )
   }
@@ -99,6 +108,8 @@ const InputAction: React.FC<InputActionProps> = ({
   values,
   onTokenChange,
   onValueChange,
+  onHalfClick,
+  onMaxClick,
   showCheckbox,
   checkboxLabel,
   checkboxChecked,
@@ -132,6 +143,8 @@ const InputAction: React.FC<InputActionProps> = ({
         showDual={showDual}
         onTokenChange={onTokenChange}
         onValueChange={onValueChange}
+        onHalfClick={onHalfClick}
+        onMaxClick={onMaxClick}
       />
     </div>
   )

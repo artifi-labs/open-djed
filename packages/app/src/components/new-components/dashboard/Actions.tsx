@@ -62,6 +62,8 @@ const Actions: React.FC<ActionsProps> = ({
           onPayTokenChange={action.onPayTokenChange}
           onReceiveTokenChange={action.onReceiveTokenChange}
           onButtonClick={action.onButtonClick}
+          onHalfClick={action.onHalfClick}
+          onMaxClick={action.onMaxClick}
         />
       </div>
     </BaseCard>

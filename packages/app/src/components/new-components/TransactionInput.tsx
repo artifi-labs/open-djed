@@ -31,6 +31,8 @@ export type TransactionInputProps = {
   defaultValue?: string
   onValueChange?: (value: string) => void
   onAssetClick?: () => void
+  onHalfClick?: () => void
+  onMaxClick?: () => void
 } & React.InputHTMLAttributes<HTMLInputElement>
 
 const TransactionInput: React.FC<TransactionInputProps> = ({
@@ -52,6 +54,8 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
   defaultValue = "",
   onValueChange,
   onAssetClick,
+  onHalfClick,
+  onMaxClick,
   ...props
 }) => {
   const [internalValue, setInternalValue] = React.useState(defaultValue)
@@ -153,7 +157,7 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
       </div>
 
       <div className="text-primary flex w-full items-center justify-between text-xs">
-        {hasMaxAndHalfActions && (
+        {hasMaxAndHalfActions && amount &&(
           <div className="flex gap-8">
             {/* Half */}
             <Button
@@ -167,6 +171,7 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
                   ? "text-standalone-text-disabled"
                   : "hover:text-nocolor-text-hover",
               )}
+              onClick={onHalfClick}
             />
 
             {/* Divider */}
@@ -184,6 +189,7 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
                   ? "text-standalone-text-disabled"
                   : "hover:text-nocolor-text-hover",
               )}
+              onClick={onMaxClick}
             />
           </div>
         )}

@@ -24,10 +24,12 @@ export type ActionProps = {
   receiveValues: Record<Token, number>
   activePayToken: Token
   activeReceiveToken: Token
-  onPayValueChange: (token: Token, value: string) => void
-  onReceiveValueChange: (token: Token, value: string) => void
-  onPayTokenChange: (token: Token) => void
-  onReceiveTokenChange: (token: Token) => void
+  onPayValueChange: (t: Token, value: string) => void
+  onReceiveValueChange: (t: Token, value: string) => void
+  onPayTokenChange: (t: Token) => void
+  onReceiveTokenChange: (t: Token) => void
+  onHalfClick?: (t: Token) => void
+  onMaxClick?: (t: Token) => void
   onButtonClick?: () => void
 }
 
@@ -46,12 +48,14 @@ const Action: React.FC<ActionProps> = ({
   onPayTokenChange,
   onReceiveTokenChange,
   onButtonClick,
+  onHalfClick,
+  onMaxClick,
 }) => {
   const actionText = capitalize(actionType)
 
-  const payEmpty = Object.values(payValues).every((v) => !v || v === "0")
+  const payEmpty = Object.values(payValues).every((v) => !v || v === 0)
   const receiveEmpty = Object.values(receiveValues).every(
-    (v) => !v || v === "0",
+    (v) => !v || v === 0,
   )
 
   const buttonText = !hasWalletConnected
@@ -75,6 +79,8 @@ const Action: React.FC<ActionProps> = ({
         checkboxLabel={`${actionText} both (DJED & SHEN)`}
         checkboxChecked={bothSelected}
         onCheckboxChange={setBothSelected}
+        onHalfClick={onHalfClick}
+        onMaxClick={onMaxClick}
       />
 
       <InputAction
@@ -86,6 +92,8 @@ const Action: React.FC<ActionProps> = ({
         values={payValues}
         onTokenChange={onPayTokenChange}
         onValueChange={onPayValueChange}
+        onHalfClick={onHalfClick}
+        onMaxClick={onMaxClick}
       />
 
       <Button

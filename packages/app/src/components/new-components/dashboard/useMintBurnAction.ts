@@ -3,6 +3,7 @@
 import * as React from "react"
 import { ACTION_CONFIG, ActionType } from "./actionConfig"
 import { SUPPORTED_TOKENS, Token } from "@/lib/tokens"
+import { useWallet } from "@/context/WalletContext"
 
 const convert = (amount: number, from: Token, to: Token): number => {
   if (from === "ADA" && to === "DJED") return amount * 2
@@ -24,6 +25,7 @@ const createInitialRecord = (): Record<Token, number> =>
 export function useMintBurnAction(actionType: ActionType) {
   const config = ACTION_CONFIG[actionType]
   const isMint = actionType === "mint"
+  const {wallet} = useWallet()
 
   const [bothSelected, setBothSelected] = React.useState(false)
   const [payValues, setPayValues] = React.useState<Record<Token, number>>(
@@ -98,6 +100,27 @@ export function useMintBurnAction(actionType: ActionType) {
     recalcFromReceive(token, parseFloat(value) || 0)
   }
 
+  // Half/Max helpers for UI components
+  const onPayHalf = (token: Token, balanceStr?: string) => {
+    const bal = balanceStr ? parseFloat(balanceStr) || 0 : 0
+    onPayValueChange(token, (bal / 2).toString())
+  }
+
+  const onPayMax = (token: Token, balanceStr?: string) => {
+    const bal = balanceStr ? parseFloat(balanceStr) || 0 : 0
+    onPayValueChange(token, bal.toString())
+  }
+
+  const onReceiveHalf = (token: Token, balanceStr?: string) => {
+    const bal = balanceStr ? parseFloat(balanceStr) || 0 : 0
+    onReceiveValueChange(token, (bal / 2).toString())
+  }
+
+  const onReceiveMax = (token: Token, balanceStr?: string) => {
+    const bal = balanceStr ? parseFloat(balanceStr) || 0 : 0
+    onReceiveValueChange(token, bal.toString())
+  }
+
   const onPayTokenChange = (newToken: Token) => {
     const currentValue =
       payValues[newToken] ||
@@ -122,6 +145,22 @@ export function useMintBurnAction(actionType: ActionType) {
     setReceiveValues(createInitialRecord())
   }
 
+  const onHalfClick = (t: Token) => {
+    if (config.pay.includes(t)) {
+      onPayHalf(t, wallet?.balance[t as keyof typeof wallet.balance]?.toString())
+    } else if (config.receive.includes(t)) {
+      onReceiveHalf(t, wallet?.balance[t as keyof typeof wallet.balance]?.toString())
+    }
+  }
+  
+  const onMaxClick = (t: Token) => {
+    if (config.pay.includes(t)) {
+      onPayMax(t, wallet?.balance[t as keyof typeof wallet.balance]?.toString())
+    } else if (config.receive.includes(t)) {
+      onReceiveMax(t, wallet?.balance[t as keyof typeof wallet.balance]?.toString())
+    }
+  }
+
   const onButtonClick = () => {
     console.log("Button clicked for", actionType)
     console.log("Pay values:", payValues)
@@ -140,6 +179,12 @@ export function useMintBurnAction(actionType: ActionType) {
     onReceiveValueChange,
     onPayTokenChange,
     onReceiveTokenChange,
+    onPayHalf,
+    onPayMax,
+    onReceiveHalf,
+    onReceiveMax,
     onButtonClick,
+    onHalfClick,
+    onMaxClick,
   }
 }
