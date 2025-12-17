@@ -101,7 +101,13 @@ const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
 
             {/* LINK BUTTON */}
             {index === 0 && (
-              <ButtonIcon icon="Unlink" size="medium" variant="onlyIcon" onClick={onLinkClick} active={linkClicked} />
+              <ButtonIcon
+                icon="Unlink"
+                size="medium"
+                variant="onlyIcon"
+                onClick={onLinkClick}
+                active={linkClicked}
+              />
             )}
           </React.Fragment>
         )

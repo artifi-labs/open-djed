@@ -27,7 +27,7 @@ const createInitialRecord = (): Record<Token, number> =>
 export function useMintBurnAction(actionType: ActionType) {
   const config = ACTION_CONFIG[actionType]
   const isMint = actionType === "mint"
-  const {wallet} = useWallet()
+  const { wallet } = useWallet()
   const { openWalletSidebar } = useWalletSidebar()
 
   const [linkClicked, setLinkClicked] = React.useState(false)
@@ -175,17 +175,26 @@ export function useMintBurnAction(actionType: ActionType) {
 
   const onHalfClick = (t: Token) => {
     if (config.pay.includes(t)) {
-      onPayHalf(t, wallet?.balance[t as keyof typeof wallet.balance]?.toString())
+      onPayHalf(
+        t,
+        wallet?.balance[t as keyof typeof wallet.balance]?.toString(),
+      )
     } else if (config.receive.includes(t)) {
-      onReceiveHalf(t, wallet?.balance[t as keyof typeof wallet.balance]?.toString())
+      onReceiveHalf(
+        t,
+        wallet?.balance[t as keyof typeof wallet.balance]?.toString(),
+      )
     }
   }
-  
+
   const onMaxClick = (t: Token) => {
     if (config.pay.includes(t)) {
       onPayMax(t, wallet?.balance[t as keyof typeof wallet.balance]?.toString())
     } else if (config.receive.includes(t)) {
-      onReceiveMax(t, wallet?.balance[t as keyof typeof wallet.balance]?.toString())
+      onReceiveMax(
+        t,
+        wallet?.balance[t as keyof typeof wallet.balance]?.toString(),
+      )
     }
   }
 

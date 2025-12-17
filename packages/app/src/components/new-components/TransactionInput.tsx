@@ -157,7 +157,7 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
       </div>
 
       <div className="text-primary flex w-full items-center justify-between text-xs">
-        {hasMaxAndHalfActions && amount &&(
+        {hasMaxAndHalfActions && amount && (
           <div className="flex gap-8">
             {/* Half */}
             <Button

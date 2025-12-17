@@ -9,12 +9,9 @@ import { useMintBurnAction } from "./useMintBurnAction"
 
 export type ActionsProps = {
   defaultActionType: ActionType
-  hasWalletConnected: boolean
 }
 
-const Actions: React.FC<ActionsProps> = ({
-  defaultActionType,
-}) => {
+const Actions: React.FC<ActionsProps> = ({ defaultActionType }) => {
   const [selectedAction, setSelectedAction] =
     React.useState<ActionType>(defaultActionType)
 

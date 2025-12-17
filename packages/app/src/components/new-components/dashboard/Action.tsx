@@ -58,9 +58,7 @@ const Action: React.FC<ActionProps> = ({
   const actionText = capitalize(actionType)
 
   const payEmpty = Object.values(payValues).every((v) => !v || v === 0)
-  const receiveEmpty = Object.values(receiveValues).every(
-    (v) => !v || v === 0,
-  )
+  const receiveEmpty = Object.values(receiveValues).every((v) => !v || v === 0)
 
   const buttonText = !hasWalletConnected
     ? `Connect Wallet to ${actionText}`
@@ -68,42 +66,62 @@ const Action: React.FC<ActionProps> = ({
       ? `Fill in the Amount to ${actionText}`
       : actionText
 
+  const inputs = [
+    {
+      key: "pay",
+      label: "You Pay",
+      coins: config.pay,
+      hasLeadingIcon: !bothSelected && config.payHasLeadingIcon,
+      showDual: config.payShowDual && bothSelected,
+      showCheckbox: config.payShowDual,
+      activeToken: activePayToken,
+      values: payValues,
+      onTokenChange: onPayTokenChange,
+      onValueChange: onPayValueChange,
+      onHalfClick,
+      onMaxClick,
+      hasMaxAndHalfActions: true,
+    },
+    {
+      key: "receive",
+      label: "You Receive",
+      coins: config.receive,
+      hasLeadingIcon: !bothSelected && config.receiveHasLeadingIcon,
+      showDual: config.receiveShowDual && bothSelected,
+      showCheckbox: config.receiveShowDual,
+      activeToken: activeReceiveToken,
+      values: receiveValues,
+      onTokenChange: onReceiveTokenChange,
+      onValueChange: onReceiveValueChange,
+      hasMaxAndHalfActions: false,
+    },
+  ]
+
   return (
     <div className="flex flex-col gap-24">
-      {/* TODO: VER ISTO, deveriam ser iguais os inputs */}
-      <InputAction
-        label="You Pay"
-        coins={config.pay}
-        hasLeadingIcon={!bothSelected && config.payHasLeadingIcon}
-        showDual={config.payShowDual && bothSelected}
-        activeToken={activePayToken}
-        values={payValues}
-        onTokenChange={onPayTokenChange}
-        onValueChange={onPayValueChange}
-        onHalfClick={onHalfClick}
-        onMaxClick={onMaxClick}
-        linkClicked={linkClicked}
-        onLinkClick={onLinkClick}
-      />
+      {inputs.map((i) => (
+        <InputAction
+          key={i.key}
+          label={i.label}
+          coins={i.coins}
+          hasLeadingIcon={i.hasLeadingIcon}
+          showDual={i.showDual}
+          showCheckbox={i.showCheckbox}
+          checkboxLabel={`${actionText} both (DJED & SHEN)`}
+          checkboxChecked={bothSelected}
+          onCheckboxChange={setBothSelected}
+          activeToken={i.activeToken}
+          values={i.values}
+          onTokenChange={i.onTokenChange}
+          onValueChange={i.onValueChange}
+          onHalfClick={i.onHalfClick}
+          onMaxClick={i.onMaxClick}
+          linkClicked={linkClicked}
+          onLinkClick={onLinkClick}
+          hasMaxAndHalfActions={i.hasMaxAndHalfActions}
+        />
+      ))}
 
-      <InputAction
-        label="You Receive"
-        coins={config.receive}
-        hasLeadingIcon={!bothSelected && config.receiveHasLeadingIcon}
-        showDual={config.receiveShowDual && bothSelected}
-        activeToken={activeReceiveToken}
-        values={receiveValues}
-        onTokenChange={onReceiveTokenChange}
-        onValueChange={onReceiveValueChange}
-        showCheckbox
-        checkboxLabel={`${actionText} both (DJED & SHEN)`}
-        checkboxChecked={bothSelected}
-        onCheckboxChange={setBothSelected}
-        linkClicked={linkClicked}
-        onLinkClick={onLinkClick}
-        hasMaxAndHalfActions={false}
-      />
-     
       <Button
         variant="secondary"
         size="medium"

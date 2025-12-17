@@ -24,11 +24,7 @@ export default function DashboardPage() {
       </div>
       {/* Content */}
       <div className="desktop:grid-cols-2 desktop:gap-24 desktop:pt-32 grid grid-cols-1 gap-16 pt-16">
-        <Actions
-          defaultActionType="mint"
-          hasWalletConnected={wallet !== null}
-        />
-        <Actions defaultActionType="mint" hasWalletConnected={false} />
+        <Actions defaultActionType="mint" />
       </div>
     </div>
   )
