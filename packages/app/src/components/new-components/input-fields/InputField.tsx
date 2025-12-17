@@ -68,7 +68,7 @@ const InputField: FC<InputFieldProps> = ({
 
   const className = clsx(
     "w-[400px]",
-    "border-gradient border-color-gradient-focus rounded-input-dropdown items-center flex flex-row gap-8",
+    "border-border-primary border border-color-gradient-focus rounded-input-dropdown items-center flex flex-row gap-8 ",
     "bg-surface-primary hover:bg-surface-primary-hover focus-within:bg-surface-primary-focused active:bg-surface-primary-pressed",
     sizeClasses[size].className,
   )

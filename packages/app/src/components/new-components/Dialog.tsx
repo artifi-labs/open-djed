@@ -5,6 +5,7 @@ import Icon, { type IconName } from "./Icon"
 import clsx from "clsx"
 import Loading from "./loading/Loading"
 import Skrim from "./Skrim"
+import type { ButtonVariant } from "./Button"
 
 type Type = "Info" | "Warning" | "Error" | "Success" | "Loading"
 
@@ -20,6 +21,7 @@ type BaseDialogProps = {
 type DialogPropsWithPrimaryButton = {
   hasActions: true
   hasPrimaryButton: true
+  primaryButtonVariant?: ButtonVariant
   primaryButtonLabel: string
   onPrimaryButtonClick?: () => void
 }
@@ -27,6 +29,7 @@ type DialogPropsWithPrimaryButton = {
 type DialogPropsWithoutPrimaryButton = {
   hasActions: false
   hasPrimaryButton?: false
+  primaryButtonVariant?: never
   primaryButtonLabel?: never
   onPrimaryButtonClick?: never
 }
@@ -34,6 +37,7 @@ type DialogPropsWithoutPrimaryButton = {
 type DialogPropsWithSecondaryButton = {
   hasActions: true
   hasSecondaryButton: true
+  secondaryButtonVariant?: ButtonVariant
   secondaryButtonLabel: string
   onSecondaryButtonClick?: () => void
 }
@@ -41,6 +45,7 @@ type DialogPropsWithSecondaryButton = {
 type DialogPropsWithoutSecondaryButton = {
   hasActions: false
   hasSecondaryButton?: false
+  secondaryButtonVariant?: never
   secondaryButtonLabel?: never
   onSecondaryButtonClick?: never
 }
@@ -92,7 +97,9 @@ const Dialog: React.FC<DialogProps> = ({
   hasActions,
   hasIcon,
   hasPrimaryButton,
+  primaryButtonVariant = "primary",
   hasSecondaryButton,
+  secondaryButtonVariant = "secondary",
   primaryButtonLabel,
   secondaryButtonLabel,
   onPrimaryButtonClick,
@@ -100,7 +107,7 @@ const Dialog: React.FC<DialogProps> = ({
   hasSkrim = false,
 }) => {
   const dialogContent = (
-    <div className="bg-surface-modal rounded-card border-border-secondary desktop:w-[420px] relative z-1001 flex w-[343px] flex-col items-center justify-center gap-24 border p-32">
+    <div className="bg-surface-modal rounded-card border-border-secondary desktop:w-105 relative z-1001 flex w-85.75 flex-col items-center justify-center gap-24 border p-32">
       {/* Icon */}
       {hasIcon && <DialogIcon type={type} />}
 
@@ -115,7 +122,7 @@ const Dialog: React.FC<DialogProps> = ({
         <div className="desktop:flex-row flex w-full flex-col gap-12">
           {hasSecondaryButton && (
             <Button
-              variant="secondary"
+              variant={secondaryButtonVariant}
               size="large"
               text={secondaryButtonLabel}
               onClick={onSecondaryButtonClick}
@@ -124,7 +131,7 @@ const Dialog: React.FC<DialogProps> = ({
           )}
           {hasPrimaryButton && (
             <Button
-              variant="primary"
+              variant={primaryButtonVariant}
               size="large"
               text={primaryButtonLabel}
               onClick={onPrimaryButtonClick}
