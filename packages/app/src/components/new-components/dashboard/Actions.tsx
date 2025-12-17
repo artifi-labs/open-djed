@@ -12,14 +12,8 @@ export type ActionsProps = {
   hasWalletConnected: boolean
 }
 
-const descriptionText: Record<ActionType, string> = {
-  mint: "Mint DJED, SHEN or both by depositing ADA into the protocol.",
-  burn: "Burn DJED, SHEN or both to withdraw your ADA from the protocol.",
-}
-
 const Actions: React.FC<ActionsProps> = ({
   defaultActionType,
-  hasWalletConnected,
 }) => {
   const [selectedAction, setSelectedAction] =
     React.useState<ActionType>(defaultActionType)
@@ -30,6 +24,11 @@ const Actions: React.FC<ActionsProps> = ({
     { key: "mint", leadingIcon: "Mint", text: "Mint" },
     { key: "burn", leadingIcon: "Burn", text: "Burn" },
   ]
+
+  const descriptionText: Record<ActionType, string> = {
+    mint: "Mint DJED, SHEN or both by depositing ADA into the protocol.",
+    burn: "Burn DJED, SHEN or both to withdraw your ADA from the protocol.",
+  }
 
   return (
     <BaseCard className="p-24">
@@ -49,7 +48,7 @@ const Actions: React.FC<ActionsProps> = ({
 
         <Action
           actionType={selectedAction}
-          hasWalletConnected={hasWalletConnected}
+          hasWalletConnected={action.hasWalletConnected}
           config={action.config}
           bothSelected={action.bothSelected}
           setBothSelected={action.onBothSelectedChange}
@@ -64,6 +63,8 @@ const Actions: React.FC<ActionsProps> = ({
           onButtonClick={action.onButtonClick}
           onHalfClick={action.onHalfClick}
           onMaxClick={action.onMaxClick}
+          linkClicked={action.linkClicked}
+          onLinkClick={action.onLinkClick}
         />
       </div>
     </BaseCard>

@@ -22,6 +22,9 @@ export type InputActionProps = {
   checkboxLabel?: string
   checkboxChecked?: boolean
   onCheckboxChange?: (v: boolean) => void
+  linkClicked?: boolean
+  onLinkClick?: () => void
+  hasMaxAndHalfActions?: boolean
 }
 
 export type TransactionInputGroupProps = {
@@ -34,6 +37,9 @@ export type TransactionInputGroupProps = {
   onValueChange: (t: Token, v: string) => void
   onHalfClick?: (t: Token) => void
   onMaxClick?: (t: Token) => void
+  linkClicked?: boolean
+  onLinkClick?: () => void
+  hasMaxAndHalfActions?: boolean
 }
 
 const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
@@ -46,6 +52,9 @@ const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
   onValueChange,
   onHalfClick,
   onMaxClick,
+  linkClicked,
+  onLinkClick,
+  hasMaxAndHalfActions,
 }) => {
   const { wallet } = useWallet()
   const walletConnected = wallet !== null
@@ -73,10 +82,10 @@ const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
         }}
         value={values[coin] ? values[coin].toString() : ""}
         onValueChange={(v) => onValueChange(coin, v)}
-        hasMaxAndHalfActions={walletConnected}
         amount={balanceStr}
         onHalfClick={onHalfClick ? () => onHalfClick(coin) : undefined}
         onMaxClick={onMaxClick ? () => onMaxClick(coin) : undefined}
+        hasMaxAndHalfActions={hasMaxAndHalfActions}
       />
     )
   }
@@ -89,8 +98,10 @@ const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
         return (
           <React.Fragment key={coin}>
             {renderInput(coin)}
+
+            {/* LINK BUTTON */}
             {index === 0 && (
-              <ButtonIcon icon="Unlink" size="medium" variant="onlyIcon" />
+              <ButtonIcon icon="Unlink" size="medium" variant="onlyIcon" onClick={onLinkClick} active={linkClicked} />
             )}
           </React.Fragment>
         )
@@ -114,6 +125,9 @@ const InputAction: React.FC<InputActionProps> = ({
   checkboxLabel,
   checkboxChecked,
   onCheckboxChange,
+  linkClicked,
+  onLinkClick,
+  hasMaxAndHalfActions,
 }) => {
   return (
     <div className="flex flex-col gap-12">
@@ -145,6 +159,9 @@ const InputAction: React.FC<InputActionProps> = ({
         onValueChange={onValueChange}
         onHalfClick={onHalfClick}
         onMaxClick={onMaxClick}
+        linkClicked={linkClicked}
+        onLinkClick={onLinkClick}
+        hasMaxAndHalfActions={hasMaxAndHalfActions}
       />
     </div>
   )

@@ -31,6 +31,8 @@ export type ActionProps = {
   onHalfClick?: (t: Token) => void
   onMaxClick?: (t: Token) => void
   onButtonClick?: () => void
+  linkClicked?: boolean
+  onLinkClick?: () => void
 }
 
 const Action: React.FC<ActionProps> = ({
@@ -50,6 +52,8 @@ const Action: React.FC<ActionProps> = ({
   onButtonClick,
   onHalfClick,
   onMaxClick,
+  linkClicked,
+  onLinkClick,
 }) => {
   const actionText = capitalize(actionType)
 
@@ -66,6 +70,22 @@ const Action: React.FC<ActionProps> = ({
 
   return (
     <div className="flex flex-col gap-24">
+      {/* TODO: VER ISTO, deveriam ser iguais os inputs */}
+      <InputAction
+        label="You Pay"
+        coins={config.pay}
+        hasLeadingIcon={!bothSelected && config.payHasLeadingIcon}
+        showDual={config.payShowDual && bothSelected}
+        activeToken={activePayToken}
+        values={payValues}
+        onTokenChange={onPayTokenChange}
+        onValueChange={onPayValueChange}
+        onHalfClick={onHalfClick}
+        onMaxClick={onMaxClick}
+        linkClicked={linkClicked}
+        onLinkClick={onLinkClick}
+      />
+
       <InputAction
         label="You Receive"
         coins={config.receive}
@@ -79,23 +99,11 @@ const Action: React.FC<ActionProps> = ({
         checkboxLabel={`${actionText} both (DJED & SHEN)`}
         checkboxChecked={bothSelected}
         onCheckboxChange={setBothSelected}
-        onHalfClick={onHalfClick}
-        onMaxClick={onMaxClick}
+        linkClicked={linkClicked}
+        onLinkClick={onLinkClick}
+        hasMaxAndHalfActions={false}
       />
-
-      <InputAction
-        label="You Pay"
-        coins={config.pay}
-        hasLeadingIcon={!bothSelected && config.payHasLeadingIcon}
-        showDual={config.payShowDual && bothSelected}
-        activeToken={activePayToken}
-        values={payValues}
-        onTokenChange={onPayTokenChange}
-        onValueChange={onPayValueChange}
-        onHalfClick={onHalfClick}
-        onMaxClick={onMaxClick}
-      />
-
+     
       <Button
         variant="secondary"
         size="medium"

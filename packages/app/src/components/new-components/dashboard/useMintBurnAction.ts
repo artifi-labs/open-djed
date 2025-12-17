@@ -4,7 +4,9 @@ import * as React from "react"
 import { ACTION_CONFIG, ActionType } from "./actionConfig"
 import { SUPPORTED_TOKENS, Token } from "@/lib/tokens"
 import { useWallet } from "@/context/WalletContext"
+import { useWalletSidebar } from "@/context/SidebarContext"
 
+// TODO: Replace with real conversion logic
 const convert = (amount: number, from: Token, to: Token): number => {
   if (from === "ADA" && to === "DJED") return amount * 2
   if (from === "ADA" && to === "SHEN") return amount * 1.5
@@ -26,7 +28,9 @@ export function useMintBurnAction(actionType: ActionType) {
   const config = ACTION_CONFIG[actionType]
   const isMint = actionType === "mint"
   const {wallet} = useWallet()
+  const { openWalletSidebar } = useWalletSidebar()
 
+  const [linkClicked, setLinkClicked] = React.useState(false)
   const [bothSelected, setBothSelected] = React.useState(false)
   const [payValues, setPayValues] = React.useState<Record<Token, number>>(
     createInitialRecord(),
@@ -41,6 +45,8 @@ export function useMintBurnAction(actionType: ActionType) {
     config.receive[0],
   )
 
+  const hasWalletConnected = Boolean(wallet)
+
   React.useEffect(() => {
     setBothSelected(false)
     setPayValues(createInitialRecord())
@@ -49,15 +55,26 @@ export function useMintBurnAction(actionType: ActionType) {
     setActiveReceiveToken(config.receive[0])
   }, [actionType, config.pay, config.receive])
 
+  React.useEffect(() => {
+    setLinkClicked(false)
+  }, [actionType])
+
   const recalcFromPay = (token: Token, value: number) => {
     const nextPay = { ...payValues, [token]: value }
     const nextReceive: Record<Token, number> = createInitialRecord()
 
     if (bothSelected && isMint && config.receive.length > 1) {
-      const split = value / config.receive.length
-      config.receive.forEach((rc) => {
-        nextReceive[rc] = convert(split, token, rc)
-      })
+      if (linkClicked) {
+        const shared = convert(value, token, activeReceiveToken)
+        config.receive.forEach((rc) => {
+          nextReceive[rc] = shared
+        })
+      } else {
+        const split = value / config.receive.length
+        config.receive.forEach((rc) => {
+          nextReceive[rc] = convert(split, token, rc)
+        })
+      }
     } else {
       nextReceive[activeReceiveToken] = convert(
         value,
@@ -75,7 +92,18 @@ export function useMintBurnAction(actionType: ActionType) {
     const nextReceive = { ...receiveValues, [token]: value }
     const nextPay: Record<Token, number> = createInitialRecord()
 
-    if (bothSelected && !isMint && config.pay.length > 1) {
+    if (linkClicked && bothSelected && isMint && config.receive.length > 1) {
+      config.receive.forEach((rc) => {
+        nextReceive[rc] = value
+      })
+      config.pay.forEach((pc) => {
+        const total = config.receive.reduce((acc, rc) => {
+          const rcValue = nextReceive[rc] || 0
+          return acc + convert(rcValue, rc, pc)
+        }, 0)
+        nextPay[pc] = total
+      })
+    } else if (bothSelected && !isMint && config.pay.length > 1) {
       config.pay.forEach((pc) => {
         const total = config.receive.reduce((acc, rc) => {
           const v = nextReceive[rc] || 0
@@ -161,7 +189,17 @@ export function useMintBurnAction(actionType: ActionType) {
     }
   }
 
+  const onLinkClick = () => {
+    const newState = !linkClicked
+    setLinkClicked(newState)
+    console.log("Link clicked state is now", newState)
+  }
+
   const onButtonClick = () => {
+    if (!hasWalletConnected) {
+      openWalletSidebar()
+      return
+    }
     console.log("Button clicked for", actionType)
     console.log("Pay values:", payValues)
     console.log("Receive values:", receiveValues)
@@ -169,6 +207,7 @@ export function useMintBurnAction(actionType: ActionType) {
 
   return {
     config,
+    hasWalletConnected,
     bothSelected,
     onBothSelectedChange,
     payValues,
@@ -186,5 +225,7 @@ export function useMintBurnAction(actionType: ActionType) {
     onButtonClick,
     onHalfClick,
     onMaxClick,
+    linkClicked,
+    onLinkClick,
   }
 }
