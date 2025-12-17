@@ -621,7 +621,7 @@ export default function OrderPage() {
 
   if (!wallet) {
     return (
-      <div className="bg-surface-card border-border-primary border rounded-8 flex min-h-screen w-full flex-col items-center justify-center gap-6 mb-36 ">
+      <div className="bg-surface-card border-border-primary rounded-8 mb-36 flex min-h-screen w-full flex-col items-center justify-center gap-6 border">
         <span className="text-lg font-semibold">No orders to display yet.</span>
 
         <span className="mb-24 text-center text-sm text-nowrap">
@@ -632,7 +632,7 @@ export default function OrderPage() {
         <Button
           text="Connect wallet"
           variant="accent"
-          size="medium"
+          size="small"
           onClick={() => openWalletSidebar()}
         />
       </div>
@@ -640,28 +640,35 @@ export default function OrderPage() {
   }
 
   return (
-    <div className="flex w-full flex-col">
-      <div className="flex flex-row py-18">
-        {/* Search */}
-        <div className="flex items-center gap-8 px-10 py-8">
-          <SearchInput id="search-input" placeholder="Search" size="Small" />
+    <>
+      <div className="flex w-full flex-col">
+        <div className="flex flex-row py-18">
+          {/* Search */}
+          <div className="flex items-center gap-8 px-10 py-8">
+            <SearchInput id="search-input" placeholder="Search" size="Small" />
+          </div>
+
+          {/* Calendar */}
+          <div className="flex w-full items-center">
+            <ButtonIcon variant="secondary" size="small" icon="Calendar" />
+          </div>
+
+          {/* Filters */}
+          <div className="flex flex-row gap-8 px-14 py-6">
+            {STATUS_FILTERS.map((status) => (
+              <Chip
+                key={status}
+                text={status}
+                size="small"
+                variant="outlined"
+              />
+            ))}
+          </div>
         </div>
 
-        {/* Calendar */}
-        <div className="flex w-full items-center p-8">
-          <ButtonIcon variant="secondary" size="small" icon="Calendar" />
-        </div>
-
-        {/* Status chips */}
-        <div className="flex flex-row gap-8 px-14 py-6">
-          {STATUS_FILTERS.map((status) => (
-            <Chip key={status} text={status} size="small" variant="outlined" />
-          ))}
-        </div>
+        {/* Table */}
+        <OrderHistory data={orders} />
       </div>
-
-      {/* Table */}
-      <OrderHistory data={orders} />
-    </div>
+    </>
   )
 }

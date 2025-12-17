@@ -2,8 +2,8 @@
 
 import * as React from "react"
 import { useMemo } from "react"
-import Link from "next/link"
 import clsx from "clsx"
+import Link from "next/link"
 import { Skeleton } from "../Skeleton"
 import Table from "./table/Table"
 import Button from "./Button"
@@ -40,7 +40,6 @@ const headers: HeaderItem[] = [
   { column: "Paid", columnKey: "paid", size: "medium" },
   { column: "Received", columnKey: "received", size: "medium" },
   { column: "Status", columnKey: "status", size: "medium" },
-  { column: undefined, columnKey: "external", size: "small" },
   {
     column: undefined,
     columnKey: "export",
@@ -136,7 +135,7 @@ const ValueCell = ({
     }
     if (showAda) {
       return (
-        <div className="flex items-center gap-8 px-16 py-12">
+        <div className="flex items-center gap-2 px-16 py-12">
           <span>{adaValue}</span>
           <span>ADA</span>
         </div>
@@ -148,13 +147,17 @@ const ValueCell = ({
     }
     return (
       <div className="flex items-center gap-8 px-16 py-12">
-        <span>{adaValue}</span>
-        <span>DJED</span>
+        <div className="flex items-center gap-2">
+          <span>{adaValue}</span>
+          <span>DJED</span>
+        </div>
 
         <Divider orientation="vertical" />
 
-        <span>{adaValue}</span>
-        <span>SHEN</span>
+        <div className="flex items-center gap-2">
+          <span>{adaValue}</span>
+          <span>SHEN</span>
+        </div>
       </div>
     )
   }
@@ -163,7 +166,7 @@ const ValueCell = ({
     /* Single Token */
   }
   return (
-    <div className="flex items-center gap-8 px-16 py-12">
+    <div className="flex items-center gap-2 px-16 py-12">
       <span>{adaValue}</span>
       <span>ADA</span>
     </div>
@@ -228,36 +231,47 @@ const ExternalCell = ({
 }) => {
   const [isOpen, setIsOpen] = React.useState(false)
   const [isDialogOpen, setIsDialogOpen] = React.useState(false)
+
   const showCancel = status === "Processing"
+
   const handleToggle = (e: React.MouseEvent) => {
     e.stopPropagation()
     setIsOpen((prev) => !prev)
   }
 
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false)
+  }
+
   return (
-    <div className="flex justify-end gap-8 px-16 py-12">
+    <div className="flex justify-end gap-8 px-16 py-6">
       {showCancel && (
-        <div className="flex gap-8">
+        <>
           <Button
             text="Cancel"
             variant="secondary"
             size="small"
             onClick={() => setIsDialogOpen(true)}
           />
+
           {isDialogOpen && (
             <Dialog
               title="Confirm Cancellation"
               description="You’re about to cancel your order. Once canceled, the order will be removed and no longer processed."
               type="Info"
-              hasActions={true}
-              hasIcon={true}
-              hasPrimaryButton={true}
+              hasActions
+              hasIcon
+              hasPrimaryButton
+              primaryButtonVariant="destructive"
               primaryButtonLabel="Cancel Order"
-              hasSecondaryButton={true}
+              hasSecondaryButton
               secondaryButtonLabel="Dismiss"
+              hasSkrim={true}
+              onSecondaryButtonClick={handleCloseDialog}
+              onPrimaryButtonClick={() => {}} //TO DO: Implement cancellation logic
             />
           )}
-        </div>
+        </>
       )}
 
       <Link
@@ -276,8 +290,7 @@ const ExternalCell = ({
         })}
         onClick={handleToggle}
       />
-
-      {isOpen && <div className=""></div>}
+      {/* TO DO: Implement view Tx details */}
     </div>
   )
 }
