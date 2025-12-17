@@ -24,7 +24,10 @@ const createInitialRecord = (): Record<Token, number> =>
     {} as Record<Token, number>,
   )
 
-export function useMintBurnAction(actionType: ActionType) {
+export function useMintBurnAction(defaultActionType: ActionType) {
+  const [actionType, setActionType] =
+    React.useState<ActionType>(defaultActionType)
+
   const config = ACTION_CONFIG[actionType]
   const isMint = actionType === "mint"
   const { wallet } = useWallet()
@@ -58,6 +61,10 @@ export function useMintBurnAction(actionType: ActionType) {
   React.useEffect(() => {
     setLinkClicked(false)
   }, [actionType])
+
+  const onActionChange = (newActionType: ActionType) => {
+    setActionType(newActionType)
+  }
 
   const recalcFromPay = (token: Token, value: number) => {
     const nextPay = { ...payValues, [token]: value }
@@ -234,6 +241,8 @@ export function useMintBurnAction(actionType: ActionType) {
   }
 
   return {
+    actionType,
+    onActionChange,
     config,
     hasWalletConnected,
     bothSelected,

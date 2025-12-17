@@ -7,6 +7,7 @@ import {
   type PartialOracleDatum,
   type PartialPoolDatum,
 } from "@open-djed/math"
+import { Token } from "./tokens"
 
 export function formatNumber(
   value: number,
@@ -167,3 +168,7 @@ export const sanitizeNumberInput = (v: string) =>
     .replace(/,/g, ".")
     .replace(/[^0-9.]/g, "")
     .replace(/(\..*)\./g, "$1")
+
+export const formatToken = (v: number, token: Token) =>
+  `${v} ${capitalize(token)}`
+export const formatUSD = (v: number) => `$${v}`

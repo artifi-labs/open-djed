@@ -5,6 +5,8 @@ export type BaseCardProps = {
   padding?: string
   backgroundColor?: string
   children?: React.ReactNode
+  overlay?: boolean
+  overlayContent?: React.JSX.Element
 } & React.HTMLAttributes<HTMLDivElement>
 
 const BaseCard: React.FC<BaseCardProps> = ({
@@ -12,6 +14,8 @@ const BaseCard: React.FC<BaseCardProps> = ({
   backgroundColor = "bg-surface-card",
   className,
   children,
+  overlay = false,
+  overlayContent,
   ...props
 }) => {
   const baseCardClassNames = clsx(
@@ -23,7 +27,23 @@ const BaseCard: React.FC<BaseCardProps> = ({
 
   return (
     <div className={baseCardClassNames} {...props}>
-      {children}
+      {/* Card Content */}
+      <div
+        className={clsx(
+          "relative flex h-full flex-col",
+          overlay && "opacity-80 blur-[2px] transition-all duration-300",
+        )}
+      >
+        {children}
+      </div>
+
+      {/* Overlay content - Blur Effect */}
+      {overlay && (
+        <div className="absolute inset-0.5 z-20 flex items-center justify-center overflow-hidden rounded-2xl backdrop-blur-[3px]">
+          <div className="bg-card-blur absolute inset-0" />
+          <div className="relative z-10">{overlayContent}</div>
+        </div>
+      )}
     </div>
   )
 }

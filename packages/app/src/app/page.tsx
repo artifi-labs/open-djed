@@ -1,8 +1,14 @@
 "use client"
+
 import Actions from "@/components/new-components/dashboard/Actions"
+import TransactionSummary from "@/components/new-components/dashboard/TransactionSummary"
+import { useMintBurnAction } from "@/components/new-components/dashboard/useMintBurnAction"
 import LinkButton from "@/components/new-components/LinkButton"
+import React from "react"
 
 export default function DashboardPage() {
+  const action: ReturnType<typeof useMintBurnAction> = useMintBurnAction("mint")
+
   return (
     <div className="desktop:pt-32 desktop:pb-64 mx-auto w-full max-w-[1120px] pt-16 pb-16">
       {/* Header */}
@@ -21,7 +27,8 @@ export default function DashboardPage() {
       </div>
       {/* Content */}
       <div className="desktop:grid-cols-2 desktop:gap-24 desktop:pt-32 grid grid-cols-1 gap-16 pt-16">
-        <Actions defaultActionType="mint" />
+        <Actions action={action} onActionChange={action.onActionChange} />
+        <TransactionSummary action={action} />
       </div>
     </div>
   )
