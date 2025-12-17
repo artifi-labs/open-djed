@@ -6,11 +6,11 @@ import type { Wallet } from "@/context/WalletContext"
 import WalletOrder from "./WalletOrder"
 import Button from "../Button"
 import Link from "next/link"
-import { useWalletSidebar } from "@/context/SidebarContext"
+import { useSidebar } from "@/context/SidebarContext"
 import JSONBig from "json-bigint"
 
 export default function OrdersWalletSection({ wallet }: { wallet: Wallet }) {
-  const { closeWalletSidebar } = useWalletSidebar()
+  const { closeSidebar } = useSidebar()
   const [orders, setOrders] = useState<OrderUTxO[]>([])
 
   const client = useApiClient()
@@ -60,7 +60,7 @@ export default function OrdersWalletSection({ wallet }: { wallet: Wallet }) {
                   text={"All orders"}
                   className="w-full"
                   variant="secondary"
-                  onClick={() => closeWalletSidebar()}
+                  onClick={() => closeSidebar()}
                 />
               </Link>
             </>
@@ -79,7 +79,7 @@ export default function OrdersWalletSection({ wallet }: { wallet: Wallet }) {
                   text={"Mint & Burn Now"}
                   className="w-full"
                   variant="secondary"
-                  onClick={() => closeWalletSidebar()}
+                  onClick={() => closeSidebar()}
                 />
               </Link>
             </div>

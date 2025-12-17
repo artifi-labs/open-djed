@@ -6,6 +6,8 @@ import { clsx } from "clsx"
 
 type SidePanelProps = {
   title: string
+  logo?: boolean
+  headerAction?: React.ReactNode
   closeButton?: React.ReactNode
   isOpen: boolean
   onClose: () => void
@@ -15,6 +17,8 @@ type SidePanelProps = {
 
 export const Sidebar: React.FC<SidePanelProps> = ({
   title,
+  logo = false,
+  headerAction,
   closeButton,
   isOpen,
   onClose,
@@ -30,6 +34,8 @@ export const Sidebar: React.FC<SidePanelProps> = ({
   return (
     <Modal
       title={title}
+      logo={logo}
+      headerAction={headerAction}
       closeButton={closeButton}
       isOpen={isOpen}
       onClose={onClose}

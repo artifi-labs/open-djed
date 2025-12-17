@@ -8,3 +8,8 @@ export const GITHUB_URL = "https://github.com/artifi-labs"
 export const LINKEDIN_URL = "https://www.linkedin.com/company/artifi-finance/"
 export const TWITTER_URL = "https://x.com/artifi_labs"
 export const DJED_URL = "https://djed.xyz"
+
+export const SUPPORTED_LANGUAGES = [
+  { code: "en", label: "English" },
+  { code: "pt", label: "Português" },
+]
