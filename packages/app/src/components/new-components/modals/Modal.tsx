@@ -31,6 +31,7 @@ export const Modal: React.FC<ModalProps> = ({
       aria-label="Close modal"
       onClick={onClose}
       id="close-modal-button"
+      className="cursor-pointer"
     />
   )
 

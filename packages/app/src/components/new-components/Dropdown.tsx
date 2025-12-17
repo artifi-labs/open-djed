@@ -70,7 +70,7 @@ const Dropdown: React.FC<DropdownProps> = ({
   }
 
   const baseClasses = clsx(
-    "border border-border-primary bg-surface-primary",
+    "border-gradient border-color-gradient bg-surface-primary",
     "inline-flex w-full items-center justify-between rounded-full text-primary",
   )
 
@@ -137,7 +137,7 @@ const Dropdown: React.FC<DropdownProps> = ({
 
       {isOpen && (
         <div
-          className="absolute right-0 left-0 z-10 mt-2"
+          className="absolute right-0 left-0 z-10 mt-8"
           onClick={(e) => e.stopPropagation()}
         >
           <ContextualMenu items={menuItems} onClick={handleItemClick} />
