@@ -15,7 +15,7 @@ const TableRow: React.FC<TableRowProps> = ({ columns, hasBorder }) => {
   return (
     <tr
       className={clsx(
-        `hover:bg-background-primary-hover text-primary text-md`,
+        `hover:bg-background-primary-hover text-primary text-xs`,
         {
           "border-border-primary mx-2 border-b": hasBorder,
         },
