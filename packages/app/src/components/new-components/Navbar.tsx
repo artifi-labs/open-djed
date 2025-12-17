@@ -12,6 +12,7 @@ import { useSidebar } from "@/context/SidebarContext"
 import Wallet, { type WalletName } from "./Wallet"
 import Sidebar from "./modals/Sidebar"
 import { shortenString } from "@/lib/utils"
+import Logo from "./Logo"
 
 type NavigationItem = {
   label: string
@@ -49,19 +50,6 @@ const NavigationItems: React.FC<NavigationItemsProps> = ({
         </Link>
       ))}
     </nav>
-  )
-}
-
-const Logo = () => {
-  return (
-    <Link href="/">
-      <Image
-        src="/logos/opendjed-logo.svg"
-        alt="Open Djed Logo"
-        width={123}
-        height={28}
-      />
-    </Link>
   )
 }
 
@@ -146,6 +134,18 @@ export const Navbar = () => {
 
           <Sidebar
             title="Menu"
+            logo={true}
+            headerAction={
+              <ButtonIcon
+                variant="outlined"
+                icon="Settings"
+                size="medium"
+                onClick={() => {
+                  openSettingsSidebar()
+                  setIsMobileSidebarOpen(false)
+                }}
+              />
+            }
             isOpen={isMobileSidebarOpen}
             onClose={() => setIsMobileSidebarOpen(false)}
           >
