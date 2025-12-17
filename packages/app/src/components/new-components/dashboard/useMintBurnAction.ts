@@ -75,6 +75,25 @@ export function useMintBurnAction(actionType: ActionType) {
           nextReceive[rc] = convert(split, token, rc)
         })
       }
+    } else if (bothSelected && !isMint && config.pay.length > 1) {
+      if (linkClicked) {
+        config.pay.forEach((pc) => {
+          nextPay[pc] = value
+        })
+        config.receive.forEach((rc) => {
+          const total = config.pay.reduce((acc, pc) => {
+            const pcVal = nextPay[pc] || 0
+            return acc + convert(pcVal, pc, rc)
+          }, 0)
+          nextReceive[rc] = total
+        })
+      } else {
+        const total = config.pay.reduce((acc, pc) => {
+          const pcVal = nextPay[pc] || 0
+          return acc + convert(pcVal, pc, activeReceiveToken)
+        }, 0)
+        nextReceive[activeReceiveToken] = total
+      }
     } else {
       nextReceive[activeReceiveToken] = convert(
         value,

@@ -1,11 +1,8 @@
 "use client"
 import Actions from "@/components/new-components/dashboard/Actions"
 import LinkButton from "@/components/new-components/LinkButton"
-import { useWallet } from "@/context/WalletContext"
 
 export default function DashboardPage() {
-  const { wallet } = useWallet()
-
   return (
     <div className="desktop:pt-32 desktop:pb-64 mx-auto w-full max-w-[1120px] pt-16 pb-16">
       {/* Header */}

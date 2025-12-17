@@ -19,7 +19,7 @@ export type ActionProps = {
     receiveShowDual: boolean
   }
   bothSelected: boolean
-  setBothSelected: (v: boolean) => void
+  onBothSelectedChange: (v: boolean) => void
   payValues: Record<Token, number>
   receiveValues: Record<Token, number>
   activePayToken: Token
@@ -40,7 +40,7 @@ const Action: React.FC<ActionProps> = ({
   hasWalletConnected,
   config,
   bothSelected,
-  setBothSelected,
+  onBothSelectedChange,
   payValues,
   receiveValues,
   activePayToken,
@@ -109,7 +109,7 @@ const Action: React.FC<ActionProps> = ({
           showCheckbox={i.showCheckbox}
           checkboxLabel={`${actionText} both (DJED & SHEN)`}
           checkboxChecked={bothSelected}
-          onCheckboxChange={setBothSelected}
+          onCheckboxChange={onBothSelectedChange}
           activeToken={i.activeToken}
           values={i.values}
           onTokenChange={i.onTokenChange}

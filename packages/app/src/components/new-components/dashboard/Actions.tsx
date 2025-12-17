@@ -43,26 +43,7 @@ const Actions: React.FC<ActionsProps> = ({ defaultActionType }) => {
           </p>
         </div>
 
-        <Action
-          actionType={selectedAction}
-          hasWalletConnected={action.hasWalletConnected}
-          config={action.config}
-          bothSelected={action.bothSelected}
-          setBothSelected={action.onBothSelectedChange}
-          payValues={action.payValues}
-          receiveValues={action.receiveValues}
-          activePayToken={action.activePayToken}
-          activeReceiveToken={action.activeReceiveToken}
-          onPayValueChange={action.onPayValueChange}
-          onReceiveValueChange={action.onReceiveValueChange}
-          onPayTokenChange={action.onPayTokenChange}
-          onReceiveTokenChange={action.onReceiveTokenChange}
-          onButtonClick={action.onButtonClick}
-          onHalfClick={action.onHalfClick}
-          onMaxClick={action.onMaxClick}
-          linkClicked={action.linkClicked}
-          onLinkClick={action.onLinkClick}
-        />
+        <Action actionType={selectedAction} {...action} />
       </div>
     </BaseCard>
   )
