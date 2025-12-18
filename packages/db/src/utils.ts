@@ -1,8 +1,9 @@
-import type { OrderDatum } from '@open-djed/data'
 import type { Actions, Token } from '../generated/prisma/enums'
 import { env } from '../lib/env'
 import { Blockfrost } from '@open-djed/blockfrost'
 import { registryByNetwork } from '@open-djed/registry'
+import { credentialToAddress } from '@lucid-evolution/lucid'
+import type { OrderUTxOWithDatumAndBlock, UTxO } from './types'
 
 const blockfrostUrl = env.BLOCKFROST_URL
 const blockfrostId = env.BLOCKFROST_PROJECT_ID
@@ -100,10 +101,14 @@ export async function processBatch<T, R>(
 
 /**
  * parses an Order datum and returns normalized values
+ * Mint action has all the values we need in the datum
+ * Burn action requires us to look into the consuming transaction UTxOs,
+ *  to find the UTxO sent to the user's address, with the payment value
  * @param d a decoded Order datum
  * @returns
  */
-export function parseOrderDatum(d: OrderDatum) {
+export async function parseOrderDatum(orderUTxO: OrderUTxOWithDatumAndBlock) {
+  const d = orderUTxO.orderDatum
   const entries = Object.entries(d.actionFields)
 
   if (entries.length === 0) {
@@ -124,15 +129,39 @@ export function parseOrderDatum(d: OrderDatum) {
   else if (actionName.includes('DJED')) token = 'DJED'
   else token = 'BOTH'
 
-  const paid: bigint = values.adaAmount ?? 0n
-
+  let paid: bigint = 0n
   let received: bigint = 0n
 
-  if ('shenAmount' in values && typeof values.shenAmount === 'bigint') {
-    received += values.shenAmount
-  }
-  if ('djedAmount' in values && typeof values.djedAmount === 'bigint') {
-    received += values.djedAmount
+  if (action === 'Mint') {
+    paid = values.adaAmount ?? 0n
+
+    if ('shenAmount' in values && typeof values.shenAmount === 'bigint') {
+      received += values.shenAmount
+    }
+    if ('djedAmount' in values && typeof values.djedAmount === 'bigint') {
+      received += values.djedAmount
+    }
+  } else {
+    const userAddr = constructAddress(d.address.paymentKeyHash[0], d.address.stakeKeyHash[0][0][0], network)
+
+    const utxosOfConsumingTx = (await blockfrostFetch(`/txs/${orderUTxO.consumed_by_tx}/utxos`)) as UTxO
+    if (!utxosOfConsumingTx || !utxosOfConsumingTx.outputs) {
+      return { action, token, paid: undefined, received: undefined }
+    }
+
+    const outputUTxOToUserAddr = utxosOfConsumingTx.outputs.find((utxo) => utxo.address === userAddr)
+    if (!outputUTxOToUserAddr) {
+      throw new Error('Could not find output UTxO to user address in consuming transaction')
+    }
+
+    received = BigInt(outputUTxOToUserAddr.amount.find((a) => a.unit === 'lovelace')?.quantity ?? '0')
+
+    if ('shenAmount' in values && typeof values.shenAmount === 'bigint') {
+      paid += values.shenAmount
+    }
+    if ('djedAmount' in values && typeof values.djedAmount === 'bigint') {
+      paid += values.djedAmount
+    }
   }
 
   return {
@@ -141,4 +170,16 @@ export function parseOrderDatum(d: OrderDatum) {
     paid,
     received,
   }
+}
+
+export function constructAddress(
+  paymentKeyHash: string,
+  stakeKeyHash: string,
+  network: 'Mainnet' | 'Preprod' | 'Preview',
+): string {
+  return credentialToAddress(
+    network,
+    { type: 'Key', hash: paymentKeyHash },
+    { type: 'Key', hash: stakeKeyHash },
+  )
 }

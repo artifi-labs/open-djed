@@ -1,7 +1,7 @@
 import { OrderDatum } from '@open-djed/data'
 import { Data } from '@lucid-evolution/lucid'
 import { prisma } from '../lib/prisma'
-import type { Block, Transaction, TransactionData, UTxO } from './types'
+import type { Block, OrderUTxOWithDatumAndBlock, Transaction, TransactionData, UTxO } from './types'
 import { processBatch, parseOrderDatum, registry, blockfrost, blockfrostFetch } from './utils'
 
 export const populateDbWithHistoricOrders = async () => {
@@ -98,26 +98,28 @@ export const populateDbWithHistoricOrders = async () => {
 
   console.log('Processing order data...')
 
-  const ordersToInsert = orderUTxOWithDatumAndBlock.map((utxo) => {
-    const d: OrderDatum = utxo.orderDatum
-    const { action, token, paid, received } = parseOrderDatum(d)
-    const totalAmountPaid = BigInt(utxo.amount.find((a) => a.unit === 'lovelace')?.quantity ?? '0')
-    const fees = totalAmountPaid - paid
+  const ordersToInsert = await Promise.all(
+    orderUTxOWithDatumAndBlock.map(async (utxo: OrderUTxOWithDatumAndBlock) => {
+      const d = utxo.orderDatum as OrderDatum
+      const { action, token, paid, received } = await parseOrderDatum(utxo)
+      const totalAmountPaid = BigInt(utxo.amount.find((a) => a.unit === 'lovelace')?.quantity ?? '0')
+      const fees = action === 'Mint' ? totalAmountPaid - paid : totalAmountPaid
 
-    return {
-      address: d.address,
-      tx_hash: utxo.tx_hash,
-      block: utxo.block_hash,
-      slot: utxo.block_slot,
-      action,
-      token,
-      paid,
-      fees,
-      received,
-      orderDate: new Date(Number(d.creationDate)),
-      status: utxo.consumed_by_tx ? 'Completed' : 'Created',
-    }
-  })
+      return {
+        address: d.address,
+        tx_hash: utxo.tx_hash,
+        block: utxo.block_hash,
+        slot: utxo.block_slot,
+        action,
+        token,
+        paid,
+        fees,
+        received,
+        orderDate: new Date(Number(d.creationDate)),
+        status: utxo.consumed_by_tx ? 'Completed' : 'Created',
+      }
+    }),
+  )
 
   console.log(`Inserting ${ordersToInsert.length} orders into database...`)
   await prisma.order.createMany({
