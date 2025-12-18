@@ -1,83 +1,103 @@
-import React from "react"
+import { useMemo } from "react"
 import { transactionSummaryBuilder } from "./transactionSummaryBuilder"
-import { formatToken, formatUSD } from "@/lib/utils"
+import { capitalize, formatValue } from "@/lib/utils"
 import { useMintBurnAction } from "./useMintBurnAction"
 
-export function useTransactionSummary(
-  action: ReturnType<typeof useMintBurnAction>,
-) {
-  const {
-    payValues,
-    config,
-    bothSelected,
-    activePayToken,
-    activeReceiveToken,
-  } = action
+type Action = ReturnType<typeof useMintBurnAction>
 
-  return React.useMemo(() => {
+type SectionConfig = {
+  label: string
+  read: (ctx: Action, data: any) => unknown
+  default: (ctx: Action) => DisplayValue
+}
+
+type DisplayValue = [string, string]
+
+const extractValues = (val: unknown): DisplayValue[] => {
+  if (!val || typeof val !== "object") {
+    return [[formatValue(val as any), "$0.00"]]
+  }
+
+  return Object.entries(val as Record<string, number>).map(
+    ([token, amount]) => [formatValue({ [token]: amount }), "$0.00"],
+  )
+}
+
+export function useTransactionSummary({ action }: { action: Action }) {
+  const { actionData, protocolData } = action
+
+  return useMemo(() => {
     const b = transactionSummaryBuilder()
 
-    const payTokens = config.pay
-    const receiveTokens = config.receive
+    const sections: SectionConfig[] = [
+      {
+        label: "Base Cost",
+        read: (_, d) => d.baseCost,
+        default: ctx => [`0.00 ${ctx.actionType === "Mint" ? ctx.activePayToken : ctx.activeReceiveToken}`, "$0.00"],
+      },
+      {
+        label: `${capitalize(action.actionType)} Fee`,
+        read: (_, d) => d.actionFee,
+        default: ctx => [
+          `0.00 ${
+            ctx.actionType === "Burn"
+              ? ctx.activePayToken
+              : ctx.activeReceiveToken
+          }`,
+          "$0.00",
+        ],
+      },
+      {
+        label: "Operator Fee",
+        read: (_, d) => d.operatorFee,
+        default: () => ["0.00 ADA", "$0.00"],
+      },
+      {
+        label: "Total Cost",
+        read: (_, d) => d.totalCost,
+        default: ctx => [`0.00 ${ctx.activePayToken}`, "$0.00"],
+      },
+      {
+        label: "Refundable Deposit",
+        read: ctx => ctx.protocolData?.refundableDeposit,
+        default: () => ["0.00 ADA", "$0.00"],
+      },
+      {
+        label: "Price",
+        read: (_, d) => d.price,
+        default: ctx => [
+          `~0 ADA/${
+            ctx.actionType === "Burn"
+              ? ctx.activePayToken
+              : ctx.activeReceiveToken
+          }`,
+          "$0.00",
+        ],
+      },
+    ]
 
-    const visiblePayTokens = bothSelected ? payTokens : [activePayToken]
-    const visibleReceiveTokens = bothSelected
-      ? receiveTokens
-      : [activeReceiveToken]
+    const empty = !actionData || Object.keys(actionData).length === 0
+    const entries = empty ? [] : Object.entries(actionData)
 
-    const primaryPayToken = visiblePayTokens[0]
+    sections.forEach(section => {
+      let values: DisplayValue[] = []
 
-    const totalPay = visiblePayTokens.reduce(
-      (acc, t) => acc + (payValues[t] || 0),
-      0,
-    )
+      if (empty) {
+        values = [section.default(action)]
+      } else {
+        entries.forEach(([, data]) => {
+          values.push(...extractValues(section.read(action, data)))
+        })
+      }
 
-    b.addSingle(
-      "Base Cost",
-      formatToken(totalPay, primaryPayToken),
-      formatUSD(totalPay * 0.52),
-    )
-      .addSingle(
-        "Mint Fee",
-        formatToken(totalPay * 0.05, primaryPayToken),
-        formatUSD(totalPay * 0.03),
-      )
-      .addMulti(
-        "Operator Fee",
-        visiblePayTokens.map((t) => [
-          formatToken(payValues[t] || 0, t),
-          formatUSD((payValues[t] || 0) * 0.52),
-        ]),
-      )
-      .addMulti(
-        "Total Cost",
-        visiblePayTokens.map((t) => [
-          formatToken(payValues[t] || 0, t),
-          formatUSD((payValues[t] || 0) * 0.52),
-        ]),
-      )
-      .addMulti(
-        "Refundable Deposit",
-        visiblePayTokens.map((t) => [
-          formatToken(payValues[t] || 0, t),
-          formatUSD((payValues[t] || 0) * 0.52),
-        ]),
-      )
-      .addMulti(
-        "Price",
-        visibleReceiveTokens.map((t) => [
-          formatToken(payValues[t] || 0, t),
-          formatUSD((payValues[t] || 0) * 0.52),
-        ]),
-      )
+      if (values.length > 1 && !empty) {
+        b.addMulti(section.label, values)
+      } else {
+        const [top, bottom] = values[0]
+        b.addSingle(section.label, top, bottom)
+      }
+    })
 
     return b.build()
-  }, [
-    config.pay,
-    config.receive,
-    bothSelected,
-    activePayToken,
-    activeReceiveToken,
-    payValues,
-  ])
+  }, [action, actionData])
 }

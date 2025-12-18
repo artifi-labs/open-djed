@@ -14,13 +14,13 @@ export type ActionsProps = {
 
 const Actions: React.FC<ActionsProps> = ({ action, onActionChange }) => {
   const tabs: TabItem[] = [
-    { key: "mint", leadingIcon: "Mint", text: "Mint" },
-    { key: "burn", leadingIcon: "Burn", text: "Burn" },
+    { key: "Mint", leadingIcon: "Mint", text: "Mint" },
+    { key: "Burn", leadingIcon: "Burn", text: "Burn" },
   ]
 
   const descriptionText: Record<ActionType, string> = {
-    mint: "Mint DJED, SHEN or both by depositing ADA into the protocol.",
-    burn: "Burn DJED, SHEN or both to withdraw your ADA from the protocol.",
+    Mint: "Mint DJED, SHEN or both by depositing ADA into the protocol.",
+    Burn: "Burn DJED, SHEN or both to withdraw your ADA from the protocol.",
   }
 
   return (

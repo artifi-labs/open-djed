@@ -7,7 +7,7 @@ import LinkButton from "@/components/new-components/LinkButton"
 import React from "react"
 
 export default function DashboardPage() {
-  const action: ReturnType<typeof useMintBurnAction> = useMintBurnAction("mint")
+  const action: ReturnType<typeof useMintBurnAction> = useMintBurnAction("Mint")
 
   return (
     <div className="desktop:pt-32 desktop:pb-64 mx-auto w-full max-w-[1120px] pt-16 pb-16">

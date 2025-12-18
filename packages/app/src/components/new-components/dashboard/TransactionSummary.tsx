@@ -16,11 +16,13 @@ export type Valueitem = {
 }
 
 export type TransactionItem = {
+  parentIndex: number
   label: string
   values?: Valueitem[]
 }
 
 const TransactionSummaryItem: React.FC<TransactionItem> = ({
+  parentIndex,
   label,
   values,
 }) => {
@@ -32,7 +34,7 @@ const TransactionSummaryItem: React.FC<TransactionItem> = ({
       <div className="flex flex-row gap-12">
         {values &&
           values.map((item, index) => (
-            <React.Fragment key={index}>
+            <React.Fragment key={parentIndex + "-" + index}>
               <div className="flex flex-col items-end gap-4">
                 <p className="text-xs">{item.topValue}</p>
                 <p className="text-secondary text-xxs">{item.bottomValue}</p>
@@ -48,14 +50,15 @@ const TransactionSummaryItem: React.FC<TransactionItem> = ({
 }
 
 const TransactionSummary: React.FC<TransactionSummaryProps> = ({ action }) => {
-  const { payValues, config } = action
-  const items = useTransactionSummary(action)
+  const items = useTransactionSummary({ action })
+
+  const totalPay = action.payValues[action.activePayToken];
 
   const BlurContent = React.useMemo(() => {
-    const totalPay = Object.values(payValues).reduce((a, b) => a + b, 0)
+
     if (totalPay === 0) {
       return (
-        <div className="flex h-full flex-col items-center justify-center gap-6">
+        <div className="flex h-full flex-col justify-center text-center gap-6">
           <p className="text-md font-semibold">Transaction Summary</p>
           <p className="text-sm">
             Start by entering an amount to see the full cost breakdown.
@@ -65,19 +68,19 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({ action }) => {
     }
 
     return null
-  }, [payValues])
+  }, [totalPay])
 
   return (
     <BaseCard
       className="p-24"
-      overlay={BlurContent !== null}
+      overlay={totalPay === 0}
       overlayContent={BlurContent || undefined}
     >
       <div className="flex flex-col gap-24">
         <p className="text-md font-medium">Transaction Summary</p>
         <div className="flex flex-col gap-16">
-          {items.map((item) => (
-            <TransactionSummaryItem key={item.label} {...item} />
+          {items.map((item, index) => (
+            <TransactionSummaryItem key={item.label} {...item} parentIndex={index} />
           ))}
         </div>
       </div>
