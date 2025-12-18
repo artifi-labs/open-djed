@@ -182,27 +182,34 @@ async function enrichUTxOsWithData(orderUTxOs: OrderUTxO[]) {
  * @param utxos array of Order UTxOs, with decoded datum
  * @returns array of Order objects to be inserted in the database
  */
-function processOrdersToInsert(utxos: OrderUTxOWithDatum[]) {
-  return utxos.map((utxo) => {
-    const d: OrderDatum = utxo.orderDatum
-    const { action, token, paid, received } = parseOrderDatum(d)
-    const totalAmountPaid = BigInt(utxo.amount.find((a) => a.unit === 'lovelace')?.quantity ?? '0')
-    const fees = totalAmountPaid - paid
+async function processOrdersToInsert(utxos: OrderUTxOWithDatum[]) {
+  return Promise.all(
+    utxos.map(async (utxo) => {
+      const d = utxo.orderDatum as OrderDatum
+      const { action, token, paid, received } = await parseOrderDatum(utxo)
+      const totalAmountPaid = BigInt(utxo.amount.find((a) => a.unit === 'lovelace')?.quantity ?? '0')
+      const fees =
+        action === 'Mint'
+          ? totalAmountPaid - paid
+          : paid === undefined || received === undefined
+            ? undefined
+            : totalAmountPaid
 
-    return {
-      address: d.address,
-      tx_hash: utxo.tx_hash,
-      block: utxo.block_hash,
-      slot: utxo.block_slot,
-      action,
-      token,
-      paid,
-      fees,
-      received,
-      orderDate: new Date(Number(d.creationDate)),
-      status: utxo.consumed_by_tx ? 'Completed' : 'Created',
-    }
-  })
+      return {
+        address: d.address,
+        tx_hash: utxo.tx_hash,
+        block: utxo.block_hash,
+        slot: utxo.block_slot,
+        action,
+        token,
+        paid,
+        fees,
+        received,
+        orderDate: new Date(Number(d.creationDate)),
+        status: utxo.consumed_by_tx ? 'Completed' : 'Created',
+      }
+    }),
+  )
 }
 
 /**
@@ -270,7 +277,7 @@ async function syncNewOrders() {
   }
 
   const orderUTxOsWithData: OrderUTxOWithDatum[] = await enrichUTxOsWithData(orderUTxOs)
-  const ordersToInsert: Order[] = processOrdersToInsert(orderUTxOsWithData)
+  const ordersToInsert: Order[] = await processOrdersToInsert(orderUTxOsWithData)
   if (ordersToInsert.length === 0) {
     console.log('No orders to insert')
     return updateLatestBlock(latestSyncedBlock, finalizedBlocks)

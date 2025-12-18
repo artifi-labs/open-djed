@@ -9,8 +9,8 @@ CREATE TABLE "Order" (
     "id" SERIAL NOT NULL,
     "address" JSONB NOT NULL,
     "tx_hash" TEXT NOT NULL,
-    "block" TEXT,
-    "slot" BIGINT,
+    "block" TEXT NOT NULL,
+    "slot" BIGINT NOT NULL,
     "action" "Actions" NOT NULL,
     "token" "Token" NOT NULL,
     "orderDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -24,7 +24,7 @@ CREATE TABLE "Order" (
 
 -- CreateTable
 CREATE TABLE "Block" (
-    "id" SERIAL NOT NULL,
+    "id" INTEGER NOT NULL DEFAULT 1,
     "latestBlock" TEXT NOT NULL,
     "latestSlot" BIGINT NOT NULL,
     "updatedAt" TIMESTAMPTZ(6) NOT NULL,
@@ -34,6 +34,9 @@ CREATE TABLE "Block" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Order_tx_hash_key" ON "Order"("tx_hash");
+
+-- CreateIndex
+CREATE INDEX "idx_order_slot" ON "Order"("slot");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Block_latestBlock_key" ON "Block"("latestBlock");
