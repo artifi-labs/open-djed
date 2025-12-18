@@ -10,6 +10,8 @@ export const blockfrost = new Blockfrost(blockfrostUrl, blockfrostId)
 const network = env.NETWORK
 export const registry = registryByNetwork[network]
 
+export const SAFETY_MARGIN = 50 // updates database 50 slots behind the tip of the blockchain
+
 export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
 export function blockfrostFetch(path: string, init?: RequestInit) {

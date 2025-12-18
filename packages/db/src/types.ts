@@ -33,7 +33,7 @@ export type Output = {
   inline_datum: string | null
   output_index: number
   reference_script_hash: string | null
-  consumed_by_tx?: string
+  consumed_by_tx: string | null
 }
 
 export type OrderUTxO = Output & { tx_hash: string }
@@ -42,6 +42,7 @@ export type OrderUTxOWithDatum = Output & {
   tx_hash: string
   orderDatum: OrderDatum
   block_hash: string
+  block_slot: number
 }
 
 export type AddressDatum = {
@@ -53,6 +54,7 @@ export type Order = {
   address: AddressDatum
   tx_hash: string
   block: string
+  slot: number
   action: Actions
   token: Token
   paid: bigint
