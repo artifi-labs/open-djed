@@ -15,6 +15,7 @@ import type { OrderApi } from "@/app/orders/page"
 import type { HeaderItem } from "./table/Table"
 import Tag from "./Tag"
 import Dialog from "./Dialog"
+import Snackbar from "./Snackbar"
 
 type OrderStatus =
   | "Processing"
@@ -50,9 +51,62 @@ const headers: HeaderItem[] = [
   },
 ]
 
+const STATUS_CONFIG: Record<
+  OrderStatus,
+  { type: "success" | "warning" | "error" | "surface"; text: string }
+> = {
+  Processing: { type: "surface", text: "Processing" },
+  Completed: { type: "success", text: "Completed" },
+  Cancelling: { type: "warning", text: "Cancelling" },
+  Canceled: { type: "surface", text: "Canceled" },
+  Failed: { type: "error", text: "Failed" },
+  Expired: { type: "error", text: "Expired" },
+}
+
 const formatAda = (value?: bigint | null) => {
   if (!value) return "-"
   return (Number(value) / 1e6).toLocaleString()
+}
+
+const shouldShowAda = (
+  token: string | undefined,
+  action: string | undefined,
+  type: "paid" | "received",
+): boolean => {
+  if (token !== "BOTH" || !action) return false
+  const isMint = action === "Mint"
+  return (isMint && type === "paid") || (!isMint && type === "received")
+}
+
+const renderValueDisplay = (
+  value: bigint | null | undefined,
+  showAda: boolean,
+) => {
+  const adaValue = formatAda(value)
+  if (showAda) {
+    return (
+      <div className="flex items-center gap-2 px-16 py-12">
+        <span>{adaValue}</span>
+        <span>ADA</span>
+      </div>
+    )
+  }
+  /* For BOTH tokens showing DJED + SHEN */
+  return (
+    <div className="flex items-center gap-8 px-16 py-12">
+      <div className="flex items-center gap-2">
+        <span>{adaValue}</span>
+        <span>DJED</span>
+      </div>
+
+      <Divider orientation="vertical" />
+
+      <div className="flex items-center gap-2">
+        <span>{adaValue}</span>
+        <span>SHEN</span>
+      </div>
+    </div>
+  )
 }
 
 const TokenCell = ({ token }: { token: string }) => {
@@ -92,7 +146,7 @@ const DateCell = ({ date }: { date: string }) => {
   const dateTime = new Date(date)
 
   return (
-    <div className="px-16 py-12">
+    <div className="px-16 py-12 text-nowrap">
       <span>
         {dateTime.toLocaleDateString("en-US", {
           day: "2-digit",
@@ -122,52 +176,16 @@ const ValueCell = ({
 }) => {
   if (!value) return <span>-</span>
 
-  const adaValue = formatAda(value)
+  const showAda = shouldShowAda(token, action, type)
 
   if (token === "BOTH" && action) {
-    const isMint = action === "Mint"
-
-    const showAda =
-      (isMint && type === "paid") || (!isMint && type === "received")
-
-    {
-      /* Paid ADA (Mint) or Received ADA (Burn) */
-    }
-    if (showAda) {
-      return (
-        <div className="flex items-center gap-2 px-16 py-12">
-          <span>{adaValue}</span>
-          <span>ADA</span>
-        </div>
-      )
-    }
-
-    {
-      /* Received DJED + SHEN (Mint) OR Paid DJED + SHEN (Burn) */
-    }
-    return (
-      <div className="flex items-center gap-8 px-16 py-12">
-        <div className="flex items-center gap-2">
-          <span>{adaValue}</span>
-          <span>DJED</span>
-        </div>
-
-        <Divider orientation="vertical" />
-
-        <div className="flex items-center gap-2">
-          <span>{adaValue}</span>
-          <span>SHEN</span>
-        </div>
-      </div>
-    )
+    return renderValueDisplay(value, showAda)
   }
 
-  {
-    /* Single Token */
-  }
+  /* Single token */
   return (
     <div className="flex items-center gap-2 px-16 py-12">
-      <span>{adaValue}</span>
+      <span>{formatAda(value)}</span>
       <span>ADA</span>
     </div>
   )
@@ -176,37 +194,7 @@ const ValueCell = ({
 const StatusCell = ({ status }: { status?: string | null }) => {
   if (!status) return <span>-</span>
 
-  const statusConfig: Record<
-    OrderStatus,
-    { type: "success" | "warning" | "error" | "surface"; text: string }
-  > = {
-    Processing: {
-      type: "surface",
-      text: "Processing",
-    },
-    Completed: {
-      type: "success",
-      text: "Completed",
-    },
-    Cancelling: {
-      type: "warning",
-      text: "Cancelling",
-    },
-    Canceled: {
-      type: "surface",
-      text: "Canceled",
-    },
-    Failed: {
-      type: "error",
-      text: "Failed",
-    },
-    Expired: {
-      type: "error",
-      text: "Expired",
-    },
-  }
-
-  const config = statusConfig[status as OrderStatus]
+  const config = STATUS_CONFIG[status as OrderStatus]
 
   if (!config) return <span>{status}</span>
 
@@ -231,6 +219,7 @@ const ExternalCell = ({
 }) => {
   const [isOpen, setIsOpen] = React.useState(false)
   const [isDialogOpen, setIsDialogOpen] = React.useState(false)
+  const [showSnackbar, setShowSnackbar] = React.useState(false)
 
   const showCancel = status === "Processing"
 
@@ -242,6 +231,19 @@ const ExternalCell = ({
   const handleCloseDialog = () => {
     setIsDialogOpen(false)
   }
+
+  const handleCancelOrder = () => {
+    setIsDialogOpen(false)
+    setShowSnackbar(true)
+    // TODO: Implement backend cancellation logic
+  }
+
+  React.useEffect(() => {
+    if (!showSnackbar) return
+
+    const time = setTimeout(() => setShowSnackbar(false), 5000)
+    return () => clearTimeout(time)
+  }, [showSnackbar])
 
   return (
     <div className="flex justify-end gap-8 px-16 py-6">
@@ -268,7 +270,7 @@ const ExternalCell = ({
               secondaryButtonLabel="Dismiss"
               hasSkrim={true}
               onSecondaryButtonClick={handleCloseDialog}
-              onPrimaryButtonClick={() => {}} //TO DO: Implement cancellation logic
+              onPrimaryButtonClick={handleCancelOrder}
             />
           )}
         </>
@@ -291,6 +293,19 @@ const ExternalCell = ({
         onClick={handleToggle}
       />
       {/* TO DO: Implement view Tx details */}
+
+      {showSnackbar && (
+        <div className="fixed right-24 bottom-24 z-50 duration-200">
+          <Snackbar
+            text="Your order has been canceled."
+            type="success"
+            closeIcon={true}
+            leadingIcon="Checkmark"
+            action={false}
+            onCloseClick={() => setShowSnackbar(false)}
+          />
+        </div>
+      )}
     </div>
   )
 }
