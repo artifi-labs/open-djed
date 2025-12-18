@@ -303,7 +303,7 @@ async function rollback() {
   const sync = await prisma.block.findFirst()
   if (!sync) return
 
-  const syncIsValid = await ((await blockfrostFetch(`/blocks/${sync.latestBlock}`)) as Promise<Block>)
+  const syncIsValid = await blockfrostFetch(`/blocks/${sync.latestBlock}`)
     .then(() => true)
     .catch((e) => {
       if (e.response?.status === 404) return false
