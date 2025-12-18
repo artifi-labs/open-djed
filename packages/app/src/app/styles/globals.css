@@ -301,10 +301,10 @@
   --color-background-primary-pressed: var(--color-primary-700);
   --color-background-secondary: var(--color-primary-900);
 
-  --color-no-color-hover: var(--color-primary-100);
-  --color-no-color-focused: var(--color-primary-100);
-  --color-no-color-pressed: var(--color-primary-100);
-  --color-no-color-text-hover: var(--color-primary-700);
+  --color-no-color-hover: var(--color-primary-100-8);
+  --color-no-color-focused: var(--color-primary-100-12);
+  --color-no-color-pressed: var(--color-primary-100-12);
+  --color-no-color-text-hover: var(--color-primary-100);
   --color-no-color-text-focused: var(--color-primary-150);
   --color-no-color-text-pressed: var(--color-primary-150);
 
