@@ -10,6 +10,7 @@ CREATE TABLE "Order" (
     "address" JSONB NOT NULL,
     "tx_hash" TEXT NOT NULL,
     "block" TEXT,
+    "slot" BIGINT,
     "action" "Actions" NOT NULL,
     "token" "Token" NOT NULL,
     "orderDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -25,6 +26,7 @@ CREATE TABLE "Order" (
 CREATE TABLE "Block" (
     "id" SERIAL NOT NULL,
     "latestBlock" TEXT NOT NULL,
+    "latestSlot" BIGINT NOT NULL,
     "updatedAt" TIMESTAMPTZ(6) NOT NULL,
 
     CONSTRAINT "Block_pkey" PRIMARY KEY ("id")
