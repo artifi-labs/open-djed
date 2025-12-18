@@ -9,11 +9,17 @@ import React, {
 } from "react"
 import { useWallet } from "@/context/WalletContext"
 import WalletSidebar from "@/components/new-components/wallet/WalletSidebar"
+import SettingsSidebar from "@/components/new-components/SettingsSidebar"
+
+type SidebarType = "wallet" | "settings" | null
 
 type SidebarContextType = {
+  activeSidebar: SidebarType
   isWalletSidebarOpen: boolean
+  isSettingsSidebarOpen: boolean
   openWalletSidebar: () => void
-  closeWalletSidebar: () => void
+  openSettingsSidebar: () => void
+  closeSidebar: () => void
 }
 
 const SidebarContext = createContext<SidebarContextType | undefined>(undefined)
@@ -22,13 +28,19 @@ export const SidebarProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const { wallet, wallets, connect, disconnect, detectWallets } = useWallet()
-  const [isWalletSidebarOpen, setIsWalletSidebarOpen] = useState(false)
+  const [activeSidebar, setActiveSidebar] = useState<SidebarType>(null)
 
-  const openWalletSidebar = useCallback(() => setIsWalletSidebarOpen(true), [])
-  const closeWalletSidebar = useCallback(
-    () => setIsWalletSidebarOpen(false),
+  const openWalletSidebar = useCallback(() => setActiveSidebar("wallet"), [])
+
+  const openSettingsSidebar = useCallback(
+    () => setActiveSidebar("settings"),
     [],
   )
+
+  const closeSidebar = useCallback(() => setActiveSidebar(null), [])
+
+  const isWalletSidebarOpen = activeSidebar === "wallet"
+  const isSettingsSidebarOpen = activeSidebar === "settings"
 
   useEffect(() => {
     if (isWalletSidebarOpen && !wallet) detectWallets()
@@ -36,7 +48,14 @@ export const SidebarProvider: React.FC<{ children: React.ReactNode }> = ({
 
   return (
     <SidebarContext.Provider
-      value={{ isWalletSidebarOpen, openWalletSidebar, closeWalletSidebar }}
+      value={{
+        activeSidebar,
+        isWalletSidebarOpen,
+        isSettingsSidebarOpen,
+        openWalletSidebar,
+        openSettingsSidebar,
+        closeSidebar,
+      }}
     >
       {children}
 
@@ -46,17 +65,16 @@ export const SidebarProvider: React.FC<{ children: React.ReactNode }> = ({
         connect={connect}
         disconnect={disconnect}
         isOpen={isWalletSidebarOpen}
-        onClose={closeWalletSidebar}
+        onClose={closeSidebar}
       />
+
+      <SettingsSidebar isOpen={isSettingsSidebarOpen} onClose={closeSidebar} />
     </SidebarContext.Provider>
   )
 }
 
-export const useWalletSidebar = () => {
+export const useSidebar = () => {
   const ctx = useContext(SidebarContext)
-  if (!ctx)
-    throw new Error(
-      "useWalletSidebar must be used within a WalletSidebarProvider",
-    )
+  if (!ctx) throw new Error("useSidebar must be used within SidebarProvider")
   return ctx
 }

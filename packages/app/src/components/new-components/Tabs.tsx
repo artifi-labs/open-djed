@@ -3,7 +3,7 @@ import React from "react"
 import clsx from "clsx"
 import Tab, { Radius, TabProps, Variant } from "./Tab"
 
-type Type = 1 | 2 | 3
+type Type = "primary" | "secondary" | "outlined"
 
 export type TabItem = {
   key?: string | number
@@ -29,16 +29,16 @@ const Tabs: React.FC<TabsProps> = ({
     Type,
     { className?: string; radius: Radius; variant: Variant }
   > = {
-    1: {
+    primary: {
       radius: "full",
       variant: "primary",
     },
-    2: {
+    secondary: {
       className: "gap-4",
       radius: "4",
       variant: "secondary",
     },
-    3: {
+    outlined: {
       className: "gap-4",
       radius: "full",
       variant: "outlined",

@@ -28,7 +28,7 @@ const Actions: React.FC<ActionsProps> = ({ action, onActionChange }) => {
       <div className="flex flex-col gap-24">
         <div className="flex flex-col gap-12">
           <Tabs
-            type={1}
+            type={"primary"}
             items={tabs}
             activeItemIndex={tabs.findIndex((t) => t.key === action.actionType)}
             onTabChange={(tab) => onActionChange?.(tab.key as ActionType)}

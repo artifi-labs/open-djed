@@ -1,11 +1,14 @@
 "use client"
 
 import React from "react"
-import ButtonIcon from "../ButtonIcon"
+import Icon from "../Icon"
+import Logo from "../Logo"
 
 type ModalProps = {
   title: string
+  logo?: boolean
   closeButton?: React.ReactNode
+  headerAction?: React.ReactNode
   isOpen: boolean
   onClose: () => void
   children: React.ReactNode
@@ -14,6 +17,8 @@ type ModalProps = {
 
 export const Modal: React.FC<ModalProps> = ({
   title,
+  logo = false,
+  headerAction,
   closeButton,
   isOpen,
   onClose,
@@ -21,13 +26,12 @@ export const Modal: React.FC<ModalProps> = ({
   className = "",
 }) => {
   const CloseBtn = closeButton || (
-    <ButtonIcon
-      size="tiny"
+    <Icon
+      name="Close"
+      aria-label="Close modal"
       onClick={onClose}
       id="close-modal-button"
-      variant="outlined"
-      aria-label="Close modal"
-      icon="Close"
+      className="cursor-pointer"
     />
   )
 
@@ -46,10 +50,17 @@ export const Modal: React.FC<ModalProps> = ({
         className={`bg-surface-modal border-border-primary fixed z-50 flex h-full transform flex-col overflow-hidden rounded-[8px] border p-[24px] transition-transform duration-300 ease-in-out ${className}`}
       >
         <div className="flex shrink-0 items-center justify-between pb-[24px]">
-          <h2 className="text-primary leading-heading-s text-xl font-semibold">
-            {title}
-          </h2>
-          {CloseBtn}
+          {logo ? (
+            <Logo />
+          ) : (
+            <h2 className="text-primary leading-heading-s text-xl font-semibold">
+              {title}
+            </h2>
+          )}
+          <div className="flex flex-row items-center gap-8">
+            {headerAction && headerAction}
+            {CloseBtn}
+          </div>
         </div>
 
         <div className="flex-1 overflow-y-auto">{children}</div>

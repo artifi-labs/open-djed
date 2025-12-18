@@ -4,9 +4,9 @@ import * as React from "react"
 import { ACTION_CONFIG, ActionType } from "./actionConfig"
 import { SUPPORTED_TOKENS, Token } from "@/lib/tokens"
 import { useWallet } from "@/context/WalletContext"
-import { useWalletSidebar } from "@/context/SidebarContext"
 import { useProtocolData } from "@/hooks/useProtocolData"
 import { TokenType } from "@open-djed/api"
+import { useSidebar } from "@/context/SidebarContext"
 
 const createInitialRecord = (): Record<Token, number> =>
   SUPPORTED_TOKENS.reduce((acc, token) => {
@@ -36,7 +36,7 @@ export function useMintBurnAction(defaultActionType: ActionType) {
   const [actionType, setActionType] = React.useState<ActionType>(defaultActionType)
   const config = ACTION_CONFIG[actionType]
   const { wallet } = useWallet()
-  const { openWalletSidebar } = useWalletSidebar()
+  const { openWalletSidebar } = useSidebar()
   const [linkClicked, setLinkClicked] = React.useState(false)
   const [bothSelected, setBothSelected] = React.useState(false)
   const [payValues, setPayValues] = React.useState<Record<Token, number>>(createInitialRecord())
