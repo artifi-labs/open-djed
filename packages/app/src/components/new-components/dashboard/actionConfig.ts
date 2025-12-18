@@ -21,14 +21,14 @@ export const ACTION_CONFIG: Record<
     payHasLeadingIcon: false,
     receiveHasLeadingIcon: true,
     payShowDual: false,
-    receiveShowDual: true,
+    receiveShowDual: false, // TODO: change to true when dual values are available for Mint
   },
   Burn: {
     pay: ["DJED", "SHEN"],
     receive: ["ADA"],
     payHasLeadingIcon: true,
     receiveHasLeadingIcon: false,
-    payShowDual: true,
+    payShowDual: false, // TODO: change to true when dual values are available for Burn
     receiveShowDual: false,
   },
 }

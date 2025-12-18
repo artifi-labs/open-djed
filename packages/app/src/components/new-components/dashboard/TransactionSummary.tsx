@@ -52,13 +52,12 @@ const TransactionSummaryItem: React.FC<TransactionItem> = ({
 const TransactionSummary: React.FC<TransactionSummaryProps> = ({ action }) => {
   const items = useTransactionSummary({ action })
 
-  const totalPay = action.payValues[action.activePayToken];
+  const totalPay = action.payValues[action.activePayToken]
 
   const BlurContent = React.useMemo(() => {
-
     if (totalPay === 0) {
       return (
-        <div className="flex h-full flex-col justify-center text-center gap-6">
+        <div className="flex h-full flex-col justify-center gap-6 text-center">
           <p className="text-md font-semibold">Transaction Summary</p>
           <p className="text-sm">
             Start by entering an amount to see the full cost breakdown.
@@ -80,7 +79,11 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({ action }) => {
         <p className="text-md font-medium">Transaction Summary</p>
         <div className="flex flex-col gap-16">
           {items.map((item, index) => (
-            <TransactionSummaryItem key={item.label} {...item} parentIndex={index} />
+            <TransactionSummaryItem
+              key={item.label}
+              {...item}
+              parentIndex={index}
+            />
           ))}
         </div>
       </div>
