@@ -101,9 +101,9 @@ const ButtonIcon: React.FC<ButtonIconProps> = ({
 
   const buttonClasses = clsx(
     baseClasses,
-    variantClasses[variant],
-    sizeClasses[size],
+    variantClasses[variant].className,
     active && variantClasses[variant].active,
+    sizeClasses[size],
     className,
   )
 

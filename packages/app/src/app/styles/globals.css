@@ -1,34 +1,7 @@
 @import "tailwindcss";
 @import "./utilities.css";
 
-@plugin "daisyui" {
-  themes: false;
-  include: tooltip;
-  logs: false;
-} /* TODO: Delete This  */
-
 @theme {
-  /* DELETE THIS BLOCK START */
-  --color-light-bg: #fffefe;
-  --color-light-text: #121212;
-  --color-light-foreground: #fffefe;
-  --color-light-disabled: #c5c5c5;
-  --color-light-navbar: #ffffff;
-  --color-light-footer: #ffffff;
-  --color-light-action-line: #305a87;
-
-  --color-dark-bg: #0b1a23;
-  --color-dark-text: #ffffff;
-  --color-dark-foreground: #000d1c;
-  --color-dark-disabled: #717171;
-  --color-dark-navbar: #000d1c;
-  --color-dark-footer: #000d1c;
-  --color-dark-action-line: #305a87;
-
-  --color-primary: #4885c7;
-  --color-primary-hover: #305a87;
-  /* END */
-
   /*Font Size*/
   --text-xxs: 10px;
   --text-xxs--line-height: 14px;
