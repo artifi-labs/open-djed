@@ -30,7 +30,7 @@ export function Table({
   headers,
   rows,
   totalCount,
-  rowsPerPage = 6,
+  rowsPerPage = 10,
   paginatedTable = true,
 }: TableProps) {
   const [currentPage, setCurrentPage] = useState(1)

@@ -619,56 +619,60 @@ export default function OrderPage() {
     },
   ]
 
-  if (!wallet) {
-    return (
-      <div className="bg-surface-card border-border-primary rounded-8 mb-36 flex min-h-screen w-full flex-col items-center justify-center gap-6 border">
-        <span className="text-lg font-semibold">No orders to display yet.</span>
-
-        <span className="mb-24 text-center text-sm text-nowrap">
-          Once the wallet is connected and activity starts, orders will appear
-          here
-        </span>
-
-        <Button
-          text="Connect wallet"
-          variant="accent"
-          size="small"
-          onClick={() => openWalletSidebar()}
-        />
-      </div>
-    )
-  }
-
   return (
-    <>
-      <div className="flex w-full flex-col">
-        <div className="flex flex-row py-18">
-          {/* Search */}
-          <div className="flex items-center gap-8 px-10 py-8">
-            <SearchInput id="search-input" placeholder="Search" size="Small" />
-          </div>
+    <div className="desktop:pt-32 desktop:pb-64 mx-auto w-full max-w-280">
+      {!wallet ? (
+        <div className="bg-surface-card border-border-primary rounded-8 mb-36 flex min-h-screen w-full flex-col items-center justify-center gap-6 border">
+          <span className="text-lg font-semibold">
+            No orders to display yet.
+          </span>
 
-          {/* Calendar */}
-          <div className="flex w-full items-center">
-            <ButtonIcon variant="secondary" size="small" icon="Calendar" />
-          </div>
+          <span className="mb-24 text-center text-sm text-nowrap">
+            Once the wallet is connected and activity starts, orders will appear
+            here
+          </span>
 
-          {/* Filters */}
-          <div className="flex flex-row gap-8 px-14 py-6">
-            {STATUS_FILTERS.map((status) => (
-              <Chip
-                key={status}
-                text={status}
-                size="small"
-                variant="outlined"
-              />
-            ))}
-          </div>
+          <Button
+            text="Connect wallet"
+            variant="accent"
+            size="small"
+            onClick={() => openWalletSidebar()}
+          />
         </div>
+      ) : (
+        <>
+          <div className="flex flex-row gap-8 py-18">
+            {/* Search */}
+            <div className="flex items-center">
+              <SearchInput
+                id="search-input"
+                placeholder="Search"
+                size="Small"
+              />
+            </div>
 
-        {/* Table */}
-        <OrderHistory data={orders} />
-      </div>
-    </>
+            {/* Calendar */}
+            <div className="flex w-full items-center">
+              <ButtonIcon variant="secondary" size="small" icon="Calendar" />
+            </div>
+
+            {/* Filters */}
+            <div className="flex flex-row gap-8">
+              {STATUS_FILTERS.map((status) => (
+                <Chip
+                  key={status}
+                  text={status}
+                  size="small"
+                  variant="outlined"
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Table */}
+          <OrderHistory data={orders} />
+        </>
+      )}
+    </div>
   )
 }
