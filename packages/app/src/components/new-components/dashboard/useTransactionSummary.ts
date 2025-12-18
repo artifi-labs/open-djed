@@ -14,16 +14,16 @@ type SectionConfig = {
 type DisplayValue = [string, string]
 
 const extractValues = (
-  val: unknown,
+  val: Value,
   toUSD?: (v: Value) => number,
 ): DisplayValue[] => {
   if (!val || typeof val !== "object") {
     const isFinite = Number.isFinite(val as number)
     return [
       [
-        isFinite ? formatValue(val as any) : "$0.00",
+        isFinite ? formatValue(val) : "$0.00",
         toUSD && isFinite
-          ? `$${formatNumber(toUSD(val as Value), { maximumFractionDigits: 2 })}`
+          ? `$${formatNumber(toUSD(val), { maximumFractionDigits: 2 })}`
           : "$0.00",
       ],
     ]
@@ -31,7 +31,7 @@ const extractValues = (
 
   return Object.entries(val as Record<string, number>).map(
     ([token, amount]) => {
-      const valueObj = { [token]: amount } as Value
+      const valueObj = { [token]: amount }
       const isFinite = Number.isFinite(amount)
       const usdValue =
         toUSD && isFinite
@@ -43,7 +43,7 @@ const extractValues = (
 }
 
 export function useTransactionSummary({ action }: { action: Action }) {
-  const { actionData, protocolData, data } = action
+  const { actionData, data } = action
 
   return useMemo(() => {
     const b = transactionSummaryBuilder()
@@ -79,7 +79,7 @@ export function useTransactionSummary({ action }: { action: Action }) {
       },
       {
         label: "Refundable Deposit",
-        read: (ctx) => ctx.protocolData?.refundableDeposit,
+        read: (ctx) => ctx.protocolData?.protocolData.refundableDeposit,
         default: () => ["0.00 ADA", "$0.00"],
       },
       {
@@ -100,6 +100,17 @@ export function useTransactionSummary({ action }: { action: Action }) {
 
       if (empty) {
         values = [section.default(action)]
+      } else if (section.label === "Price") {
+        values = entries.map(([token, data]) => {
+          const priceValue = (section.read(action, data) as Value) ?? {}
+          const adaAmount = priceValue.ADA ?? 0
+          const priceLabel = `~${formatNumber(adaAmount, { maximumFractionDigits: 6 })} ADA/${token}`
+          const usdLabel =
+            toUSD && Number.isFinite(adaAmount)
+              ? `$${formatNumber(toUSD({ ADA: adaAmount }), { maximumFractionDigits: 2 })}`
+              : "$0.00"
+          return [priceLabel, usdLabel]
+        })
       } else {
         entries.forEach(([, data]) => {
           values.push(...extractValues(section.read(action, data), toUSD))
