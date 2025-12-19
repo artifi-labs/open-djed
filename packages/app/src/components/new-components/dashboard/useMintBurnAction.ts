@@ -21,31 +21,119 @@ const createInitialRecord = <T>(initialValue: T): Record<Token, T> =>
     {} as Record<Token, T>,
   )
 
-type ApplyValueFn = (token: Token, value: string) => void
-
 const parseBalance = (balanceStr?: string): number =>
   balanceStr ? parseFloat(balanceStr) || 0 : 0
 
-const applyFromBalance = (
-  token: Token,
-  balanceStr: string | undefined,
-  apply: ApplyValueFn,
-  factor: number,
-  { requirePositive = false } = {},
-) => {
-  const bal = parseBalance(balanceStr)
-  if (requirePositive && bal <= 0) return
-  apply(token, (bal * factor).toString())
+const parseValue = (value: string): number => parseFloat(value) || 0
+
+interface CalculationParams {
+  data: ProtocolData
+  action: ActionType
+  sourceToken: Token
+  sourceValue: number
+  targetTokens: Token[]
 }
 
-export function useMintBurnAction(defaultActionType: ActionType) {
-  const [actionType, setActionType] =
-    React.useState<ActionType>(defaultActionType)
-  const config = ACTION_CONFIG[actionType]
-  const { wallet } = useWallet()
-  const { openWalletSidebar } = useSidebar()
-  const [linkClicked, setLinkClicked] = React.useState(false)
-  const [bothSelected, setBothSelected] = React.useState(false)
+const calculateTokenAction = (
+  data: ProtocolData,
+  token: Token,
+  action: "Mint" | "Burn",
+  amount: number,
+  isMint: boolean,
+): ActionData => {
+  const tokenAction = (isMint ? token : token) as TokenType
+  const amountInToken = amount
+
+  return data.tokenActionData(tokenAction, action, amountInToken)
+}
+
+const calculateFromPay = ({
+  data,
+  action,
+  sourceToken,
+  sourceValue,
+  targetTokens,
+}: CalculationParams) => {
+  const isMint = action === "Mint"
+  const nextReceive: Record<Token, number> = createInitialRecord(0)
+  const nextActionData: ActionDataMap = {}
+
+  targetTokens.forEach((targetToken) => {
+    let token = sourceToken
+
+    if (isMint) {
+      // TODO: IF minting and sourceToken is ADA we need to convert ADA or modify useProtocol to accept ada
+      token = targetToken
+    }
+
+    const actionData = calculateTokenAction(
+      data,
+      token,
+      action,
+      sourceValue,
+      isMint,
+    )
+
+    nextReceive[targetToken] = actionData.toReceive[targetToken] ?? 0
+    nextActionData[token] = actionData
+  })
+
+  return { receive: nextReceive, actionData: nextActionData }
+}
+
+const calculateFromReceive = ({
+  data,
+  action,
+  sourceToken,
+  sourceValue,
+  targetTokens,
+}: CalculationParams) => {
+  const isMint = action === "Mint"
+  const nextPay: Record<Token, number> = createInitialRecord(0)
+  const nextActionData: ActionDataMap = {}
+  targetTokens.forEach((targetToken) => {
+    let token = sourceToken
+
+    if (!isMint) {
+      // TODO: IF burning and sourceToken is ADA we need to convert ADA or modify useProtocol to accept ada
+      console.log(sourceToken)
+      token = targetToken
+    }
+
+    const actionData = calculateTokenAction(
+      data,
+      token,
+      action,
+      sourceValue,
+      isMint,
+    )
+
+    nextPay[targetToken] = actionData.toSend[targetToken] ?? 0
+    nextActionData[token] = actionData
+  })
+
+  return { pay: nextPay, actionData: nextActionData }
+}
+
+type ApplyValueFn = (token: Token, value: string) => void
+
+interface ApplyBalanceOptions {
+  requirePositive?: boolean
+}
+
+const applyBalance = (
+  token: Token,
+  balanceStr: string | undefined,
+  applyFn: ApplyValueFn,
+  factor: number,
+  options: ApplyBalanceOptions = {},
+) => {
+  const balance = parseBalance(balanceStr)
+  if (options.requirePositive && balance <= 0) return
+  applyFn(token, (balance * factor).toString())
+}
+
+const useTokenState = (config: (typeof ACTION_CONFIG)[ActionType]) => {
   const [payValues, setPayValues] = React.useState<Record<Token, number>>(
     createInitialRecord(0),
   )
@@ -58,197 +146,268 @@ export function useMintBurnAction(defaultActionType: ActionType) {
   const [activeReceiveToken, setActiveReceiveToken] = React.useState<Token>(
     config.receive[0],
   )
-  const hasWalletConnected = Boolean(wallet)
 
-  const { isPending, error, data } = useProtocolData()
-  const [actionData, setActionData] = React.useState<ActionDataMap>({})
-  const [protocolData, setProtocolData] = React.useState<
-    ProtocolData | undefined
-  >(undefined)
-
-  const isMint = actionType === "Mint"
-
-  React.useEffect(() => {
-    if (data) {
-      setProtocolData(data)
-    }
-  }, [data])
-
-  React.useEffect(() => {
-    setBothSelected(false)
+  const resetValues = React.useCallback(() => {
     setPayValues(createInitialRecord(0))
     setReceiveValues(createInitialRecord(0))
     setActivePayToken(config.pay[0])
     setActiveReceiveToken(config.receive[0])
-  }, [actionType, config.pay, config.receive])
+  }, [config.pay, config.receive])
 
+  return {
+    payValues,
+    setPayValues,
+    receiveValues,
+    setReceiveValues,
+    activePayToken,
+    setActivePayToken,
+    activeReceiveToken,
+    setActiveReceiveToken,
+    resetValues,
+  }
+}
+
+const useTokenCalculations = (
+  data: ProtocolData | undefined,
+  action: ActionType,
+  config: (typeof ACTION_CONFIG)[ActionType],
+  bothSelected: boolean,
+  activePayToken: Token,
+  activeReceiveToken: Token,
+) => {
+  const getTargetTokens = React.useCallback(
+    (direction: "pay" | "receive") => {
+      if (bothSelected) {
+        return direction === "pay" ? config.receive : config.pay
+      }
+      return direction === "pay" ? [activeReceiveToken] : [activePayToken]
+    },
+    [bothSelected, config, activePayToken, activeReceiveToken],
+  )
+
+  const calculateFromPayValue = React.useCallback(
+    (sourceToken: Token, sourceValue: number) => {
+      if (!data || sourceValue === 0) {
+        return { receive: createInitialRecord(0), actionData: {} }
+      }
+
+      return calculateFromPay({
+        data,
+        action,
+        sourceToken,
+        sourceValue,
+        targetTokens: getTargetTokens("pay"),
+      })
+    },
+    [data, action, getTargetTokens],
+  )
+
+  const calculateFromReceiveValue = React.useCallback(
+    (sourceToken: Token, sourceValue: number) => {
+      if (!data || sourceValue === 0) {
+        return { pay: createInitialRecord(0), actionData: {} }
+      }
+
+      return calculateFromReceive({
+        data,
+        action,
+        sourceToken,
+        sourceValue,
+        targetTokens: getTargetTokens("receive"),
+      })
+    },
+    [data, action, getTargetTokens],
+  )
+
+  return { calculateFromPayValue, calculateFromReceiveValue }
+}
+
+export function useMintBurnAction(defaultActionType: ActionType) {
+  const [actionType, setActionType] =
+    React.useState<ActionType>(defaultActionType)
+  const [bothSelected, setBothSelected] = React.useState(false)
+  const [linkClicked, setLinkClicked] = React.useState(false)
+  const [actionData, setActionData] = React.useState<ActionDataMap>({})
+
+  const config = ACTION_CONFIG[actionType]
+  const { wallet } = useWallet()
+  const { openWalletSidebar } = useSidebar()
+  const { isPending, error, data } = useProtocolData()
+
+  const isMint = actionType === "Mint"
+  const hasWalletConnected = Boolean(wallet)
+
+  const {
+    payValues,
+    setPayValues,
+    receiveValues,
+    setReceiveValues,
+    activePayToken,
+    setActivePayToken,
+    activeReceiveToken,
+    setActiveReceiveToken,
+    resetValues,
+  } = useTokenState(config)
+
+  const { calculateFromPayValue, calculateFromReceiveValue } =
+    useTokenCalculations(
+      data,
+      actionType,
+      config,
+      bothSelected,
+      activePayToken,
+      activeReceiveToken,
+    )
+
+  // Reset state when action type changes
   React.useEffect(() => {
+    setBothSelected(false)
+    resetValues()
     setLinkClicked(false)
-  }, [actionType])
+    setActionData({})
+  }, [actionType, resetValues])
 
-  const recalcReceiveFromPay = (payToken: Token, payValue: number) => {
-    if (!data) return
+  const handlePayValueChange = React.useCallback(
+    (token: Token, value: string) => {
+      const numValue = parseValue(value)
+      setPayValues((prev) => ({ ...prev, [token]: numValue }))
 
-    const nextReceive: Record<Token, number> = createInitialRecord(0)
-    const nextActionData: ActionDataMap = {}
-    const receiveTokens = bothSelected ? config.receive : [activeReceiveToken]
+      const result = calculateFromPayValue(token, numValue)
+      setReceiveValues(result.receive)
+      setActionData(result.actionData)
+    },
+    [calculateFromPayValue, setPayValues, setReceiveValues],
+  )
 
-    const action = isMint ? "Mint" : "Burn"
+  const handleReceiveValueChange = React.useCallback(
+    (token: Token, value: string) => {
+      const numValue = parseValue(value)
+      setReceiveValues((prev) => ({ ...prev, [token]: numValue }))
 
-    receiveTokens.forEach((rc) => {
-      let amountInToken: number
-      let tokenAction: TokenType
+      const result = calculateFromReceiveValue(token, numValue)
+      setPayValues(result.pay)
+      setActionData(result.actionData)
+    },
+    [calculateFromReceiveValue, setPayValues, setReceiveValues],
+  )
+
+  const handlePayHalf = React.useCallback(
+    (token: Token, balanceStr?: string) => {
+      applyBalance(token, balanceStr, handlePayValueChange, 0.5)
+    },
+    [handlePayValueChange],
+  )
+
+  const handlePayMax = React.useCallback(
+    (token: Token, balanceStr?: string) => {
+      applyBalance(token, balanceStr, handlePayValueChange, 1)
+    },
+    [handlePayValueChange],
+  )
+
+  const handleReceiveHalf = React.useCallback(
+    (token: Token, balanceStr?: string) => {
+      applyBalance(token, balanceStr, handleReceiveValueChange, 0.5, {
+        requirePositive: true,
+      })
+    },
+    [handleReceiveValueChange],
+  )
+
+  const handleReceiveMax = React.useCallback(
+    (token: Token, balanceStr?: string) => {
+      applyBalance(token, balanceStr, handleReceiveValueChange, 1, {
+        requirePositive: true,
+      })
+    },
+    [handleReceiveValueChange],
+  )
+
+  const handlePayTokenChange = React.useCallback(
+    (newToken: Token) => {
+      const currentValue = payValues[activePayToken] || 0
+      setActivePayToken(newToken)
+      setPayValues((prev) => ({ ...prev, [newToken]: currentValue }))
 
       if (!isMint) {
-        tokenAction = payToken as TokenType
-        amountInToken = payValue
-      } else {
-        tokenAction = rc as TokenType
-        amountInToken = payValue
+        const result = calculateFromPayValue(newToken, currentValue)
+        setReceiveValues(result.receive)
+        setActionData(result.actionData)
       }
+    },
+    [
+      payValues,
+      activePayToken,
+      setActivePayToken,
+      setPayValues,
+      isMint,
+      calculateFromPayValue,
+      setReceiveValues,
+    ],
+  )
 
-      const actionData = data.tokenActionData(
-        tokenAction,
-        action,
-        amountInToken,
-      )
-
-      nextReceive[rc] = actionData.toReceive[rc] ?? 0
-      nextActionData[tokenAction] = actionData
-    })
-
-    setReceiveValues(nextReceive)
-    setActionData(nextActionData)
-  }
-
-  const recalcPayFromReceive = (receiveToken: Token, receiveValue: number) => {
-    if (!data) return
-
-    const nextPay: Record<Token, number> = createInitialRecord(0)
-    const nextActionData: ActionDataMap = {}
-    const payTokens = bothSelected ? config.pay : [activePayToken]
-    const action = isMint ? "Mint" : "Burn"
-
-    payTokens.forEach((pc) => {
-      let amountInToken: number
-      let tokenDoAction: TokenType
+  const handleReceiveTokenChange = React.useCallback(
+    (newToken: Token) => {
+      const currentValue = receiveValues[activeReceiveToken] || 0
+      setActiveReceiveToken(newToken)
+      setReceiveValues((prev) => ({ ...prev, [newToken]: currentValue }))
 
       if (isMint) {
-        tokenDoAction = receiveToken as TokenType
-        amountInToken = receiveValue
-      } else {
-        tokenDoAction = pc as TokenType
-        amountInToken = receiveValue
+        const result = calculateFromReceiveValue(newToken, currentValue)
+        setPayValues(result.pay)
+        setActionData(result.actionData)
       }
+    },
+    [
+      receiveValues,
+      activeReceiveToken,
+      setActiveReceiveToken,
+      setReceiveValues,
+      isMint,
+      calculateFromReceiveValue,
+      setPayValues,
+    ],
+  )
 
-      const actionData = data.tokenActionData(
-        tokenDoAction,
-        action,
-        amountInToken,
-      )
-
-      nextPay[pc] = actionData.toSend[pc] ?? 0
-      nextActionData[tokenDoAction] = actionData
-    })
-
-    setPayValues(nextPay)
-    setActionData(nextActionData)
-  }
-
-  const recalcFromPay = (token: Token, value: number) => {
-    setPayValues((prev) => ({ ...prev, [token]: value }))
-    if (value === 0) {
+  const handleBothSelectedChange = React.useCallback(
+    (selected: boolean) => {
+      setBothSelected(selected)
+      setPayValues(createInitialRecord(0))
       setReceiveValues(createInitialRecord(0))
       setActionData({})
-      return
-    }
-    recalcReceiveFromPay(token, value)
-  }
+    },
+    [setPayValues, setReceiveValues],
+  )
 
-  const recalcFromReceive = (token: Token, value: number) => {
-    setReceiveValues((prev) => ({ ...prev, [token]: value }))
-    if (value === 0) {
-      setPayValues(createInitialRecord(0))
-      setActionData({})
-      return
-    }
-    recalcPayFromReceive(token, value)
-  }
+  const handleHalfClick = React.useCallback(
+    (token: Token) => {
+      const balance = wallet?.balance[token]?.toString()
+      if (config.pay.includes(token)) {
+        handlePayHalf(token, balance)
+      } else if (config.receive.includes(token)) {
+        handleReceiveHalf(token, balance)
+      }
+    },
+    [config, wallet, handlePayHalf, handleReceiveHalf],
+  )
 
-  const onPayValueChange = (token: Token, value: string) =>
-    recalcFromPay(token, parseFloat(value) || 0)
-  const onReceiveValueChange = (token: Token, value: string) =>
-    recalcFromReceive(token, parseFloat(value) || 0)
-  const onActionChange = (newActionType: ActionType) =>
-    setActionType(newActionType)
+  const handleMaxClick = React.useCallback(
+    (token: Token) => {
+      const balance = wallet?.balance[token]?.toString()
+      if (config.pay.includes(token)) {
+        handlePayMax(token, balance)
+      } else if (config.receive.includes(token)) {
+        handleReceiveMax(token, balance)
+      }
+    },
+    [config, wallet, handlePayMax, handleReceiveMax],
+  )
 
-  const onPayHalf = (token: Token, balanceStr?: string) =>
-    applyFromBalance(token, balanceStr, onPayValueChange, 0.5)
+  const handleLinkClick = React.useCallback(() => {
+    setLinkClicked((prev) => !prev)
+  }, [])
 
-  const onPayMax = (token: Token, balanceStr?: string) =>
-    applyFromBalance(token, balanceStr, onPayValueChange, 1)
-
-  const onReceiveHalf = (token: Token, balanceStr?: string) =>
-    applyFromBalance(token, balanceStr, onReceiveValueChange, 0.5, {
-      requirePositive: true,
-    })
-
-  const onReceiveMax = (token: Token, balanceStr?: string) =>
-    applyFromBalance(token, balanceStr, onReceiveValueChange, 1, {
-      requirePositive: true,
-    })
-
-  const onPayTokenChange = (newToken: Token) => {
-    const oldToken = activePayToken
-    const oldValue = payValues[oldToken] || 0
-    setActivePayToken(newToken)
-
-    const nextPayValues = { ...payValues, [newToken]: oldValue }
-    setPayValues(nextPayValues)
-
-    if (!isMint) {
-      recalcReceiveFromPay(newToken, oldValue)
-    } else {
-      // TODO: Implement this when dual Input is implemented
-    }
-  }
-
-  const onReceiveTokenChange = (newToken: Token) => {
-    const oldValue = receiveValues[activeReceiveToken] || 0
-
-    setActiveReceiveToken(newToken)
-
-    const nextReceiveValues = { ...receiveValues, [newToken]: oldValue }
-    setReceiveValues(nextReceiveValues)
-
-    if (isMint) {
-      recalcPayFromReceive(newToken, oldValue)
-    } else {
-      // TODO: Implement this when dual Input is implemented
-    }
-  }
-
-  const onBothSelectedChange = (selected: boolean) => {
-    setBothSelected(selected)
-    setPayValues(createInitialRecord(0))
-    setReceiveValues(createInitialRecord(0))
-  }
-
-  const onHalfClick = (t: Token) => {
-    if (config.pay.includes(t)) onPayHalf(t, wallet?.balance[t]?.toString())
-    else if (config.receive.includes(t))
-      onReceiveHalf(t, wallet?.balance[t]?.toString())
-  }
-
-  const onMaxClick = (t: Token) => {
-    if (config.pay.includes(t)) onPayMax(t, wallet?.balance[t]?.toString())
-    else if (config.receive.includes(t))
-      onReceiveMax(t, wallet?.balance[t]?.toString())
-  }
-
-  const onLinkClick = () => setLinkClicked(!linkClicked)
-
-  const onButtonClick = () => {
+  const handleButtonClick = React.useCallback(() => {
     if (!hasWalletConnected) {
       openWalletSidebar()
       return
@@ -256,34 +415,40 @@ export function useMintBurnAction(defaultActionType: ActionType) {
     console.log("Button clicked for", actionType)
     console.log("Pay values:", payValues)
     console.log("Receive values:", receiveValues)
-  }
+  }, [
+    hasWalletConnected,
+    openWalletSidebar,
+    actionType,
+    payValues,
+    receiveValues,
+  ])
 
   return {
     actionType,
     actionData,
-    protocolData,
+    protocolData: data,
     data,
-    onActionChange,
+    onActionChange: setActionType,
     config,
     hasWalletConnected,
     bothSelected,
-    onBothSelectedChange,
+    onBothSelectedChange: handleBothSelectedChange,
     payValues,
     receiveValues,
     activePayToken,
     activeReceiveToken,
-    onPayValueChange,
-    onReceiveValueChange,
-    onPayTokenChange,
-    onReceiveTokenChange,
-    onPayHalf,
-    onPayMax,
-    onReceiveHalf,
-    onReceiveMax,
-    onButtonClick,
-    onHalfClick,
-    onMaxClick,
+    onPayValueChange: handlePayValueChange,
+    onReceiveValueChange: handleReceiveValueChange,
+    onPayTokenChange: handlePayTokenChange,
+    onReceiveTokenChange: handleReceiveTokenChange,
+    onPayHalf: handlePayHalf,
+    onPayMax: handlePayMax,
+    onReceiveHalf: handleReceiveHalf,
+    onReceiveMax: handleReceiveMax,
+    onButtonClick: handleButtonClick,
+    onHalfClick: handleHalfClick,
+    onMaxClick: handleMaxClick,
     linkClicked,
-    onLinkClick,
+    onLinkClick: handleLinkClick,
   }
 }
