@@ -1,8 +1,18 @@
-import { shenADAMintRate, operatorFee } from '@open-djed/math'
-import { Data, fromUnit, type LucidEvolution, type UTxO } from '@lucid-evolution/lucid'
-import { type Registry } from '@open-djed/registry'
-import { OrderDatum, OrderMintRedeemer, PoolDatum, fromBech32 } from '@open-djed/data'
-import type { OracleUTxO, PoolUTxO } from './types'
+import { shenADAMintRate, operatorFee } from "@open-djed/math"
+import {
+  Data,
+  fromUnit,
+  type LucidEvolution,
+  type UTxO,
+} from "@lucid-evolution/lucid"
+import { type Registry } from "@open-djed/registry"
+import {
+  OrderDatum,
+  OrderMintRedeemer,
+  PoolDatum,
+  fromBech32,
+} from "@open-djed/data"
+import type { OracleUTxO, PoolUTxO } from "./types"
 
 export const createMintShenOrder = ({
   lucid,
@@ -41,7 +51,7 @@ export const createMintShenOrder = ({
     .pay.ToContract(
       registry.orderAddress,
       {
-        kind: 'inline',
+        kind: "inline",
         value: Data.to(
           {
             actionFields: {
@@ -51,9 +61,11 @@ export const createMintShenOrder = ({
               },
             },
             address: fromBech32(address),
-            adaUSDExchangeRate: oracleUTxO.oracleDatum.oracleFields.adaUSDExchangeRate,
+            adaUSDExchangeRate:
+              oracleUTxO.oracleDatum.oracleFields.adaUSDExchangeRate,
             creationDate: BigInt(ttl),
-            orderStateTokenMintingPolicyId: fromUnit(registry.orderAssetId).policyId,
+            orderStateTokenMintingPolicyId: fromUnit(registry.orderAssetId)
+              .policyId,
           },
           OrderDatum,
         ),
@@ -72,5 +84,9 @@ export const createMintShenOrder = ({
       },
       OrderMintRedeemer,
     )
-    .pay.ToAddressWithData(address, { kind: 'asHash', value: Data.to(poolUTxO.poolDatum, PoolDatum) }, {})
+    .pay.ToAddressWithData(
+      address,
+      { kind: "asHash", value: Data.to(poolUTxO.poolDatum, PoolDatum) },
+      {},
+    )
 }

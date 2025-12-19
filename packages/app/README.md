@@ -7,8 +7,8 @@ Below you'll find a short overview of the technologies used, how to install and 
 ## Technologies
 
 - Framework: React
-- Routing: React Router
-- Bundler / dev server: Vite
+- Routing: Next.js
+- Bundler / dev server: Turbopack
 - Cloud runtime: Cloudflare Workers (wrangler)
 - Internationalization: i18next + react-i18next
 - Translation extraction: i18next-parser
@@ -37,7 +37,7 @@ cd packages/app
 bun run dev
 ```
 
-This runs the `react-router dev` script defined in `packages/app/package.json` and starts the Vite-based dev server.
+This runs the `next dev --turbopack` script defined in `packages/app/package.json` and starts the Turbopack-based dev server.
 
 If you prefer to run from the repo root you can also execute the same script via Bun's workspace script runner:
 

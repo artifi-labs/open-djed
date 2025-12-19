@@ -1,5 +1,5 @@
-import type { UTxO } from '@lucid-evolution/lucid'
-import type { OracleDatum, OrderDatum, PoolDatum } from '@open-djed/data'
+import type { UTxO } from "@lucid-evolution/lucid"
+import type { OracleDatum, OrderDatum, PoolDatum } from "@open-djed/data"
 
 export type OrderUTxO = UTxO & { orderDatum: OrderDatum }
 
