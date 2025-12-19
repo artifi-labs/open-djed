@@ -27,3 +27,9 @@ export const getOrdersByAddressKeys = async (keys: AddressKey[]) => {
 export const getAllorders = async () => {
   return await prisma.order.findFirst()
 }
+
+const getLastOrder = async () => {
+  const lo = await prisma.order.findMany({ take: -1 })
+  console.log('Last Order: ', lo)
+}
+await getLastOrder()

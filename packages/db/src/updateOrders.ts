@@ -1,7 +1,15 @@
 import { Data } from '@lucid-evolution/lucid'
 import { OrderDatum } from '@open-djed/data'
 import { prisma } from '../lib/prisma'
-import type { Block, UTxO, TransactionData, OrderUTxO, OrderUTxOWithDatum, Order } from './types'
+import type {
+  Block,
+  UTxO,
+  TransactionData,
+  OrderUTxO,
+  OrderUTxOWithDatum,
+  Order,
+  AddressDatum,
+} from './types'
 import {
   registry,
   blockfrost,
@@ -10,6 +18,8 @@ import {
   sleep,
   blockfrostFetch,
   SAFETY_MARGIN,
+  constructAddress,
+  network,
 } from './utils'
 
 /**
@@ -43,11 +53,31 @@ async function updatePendingOrders() {
         )
 
         const isConsumed = typeof orderUTxOWithUnit?.consumed_by_tx === 'string'
+        let received = order.received
 
-        return { tx_hash: order.tx_hash, isConsumed }
+        if (order.action === 'Burn' && isConsumed) {
+          const address = order.address as AddressDatum
+          const paymentKeyHash = address.paymentKeyHash[0]
+          const stakeKeyHash = address.stakeKeyHash[0]?.[0]?.[0]
+          if (!paymentKeyHash || !stakeKeyHash) {
+            throw new Error(`Invalid address structure for order ${order.tx_hash}`)
+          }
+          const userAddr = constructAddress(paymentKeyHash, stakeKeyHash, network)
+
+          const utxosOfConsumingTx = (await blockfrostFetch(
+            `/txs/${orderUTxOWithUnit.consumed_by_tx}/utxos`,
+          )) as UTxO
+          const outputUTxOToUserAddr = utxosOfConsumingTx.outputs.find((utxo) => utxo.address === userAddr)
+          if (!outputUTxOToUserAddr) {
+            throw new Error('Could not find output UTxO to user address in consuming transaction')
+          }
+          received = BigInt(outputUTxOToUserAddr.amount.find((a) => a.unit === 'lovelace')?.quantity ?? '0')
+        }
+
+        return { tx_hash: order.tx_hash, isConsumed, received: received }
       } catch (error) {
         console.error(`Error checking order ${order.tx_hash}:`, error)
-        return { tx_hash: order.tx_hash, isConsumed: false }
+        return { tx_hash: order.tx_hash, isConsumed: false, received: order.received }
       }
     },
     10,
@@ -62,7 +92,7 @@ async function updatePendingOrders() {
     for (const order of completedOrders) {
       await prisma.order.update({
         where: { tx_hash: order.tx_hash },
-        data: { status: 'Completed' },
+        data: { status: 'Completed', received: order.received },
       })
     }
 
@@ -188,12 +218,7 @@ async function processOrdersToInsert(utxos: OrderUTxOWithDatum[]) {
       const d = utxo.orderDatum as OrderDatum
       const { action, token, paid, received } = await parseOrderDatum(utxo)
       const totalAmountPaid = BigInt(utxo.amount.find((a) => a.unit === 'lovelace')?.quantity ?? '0')
-      const fees =
-        action === 'Mint'
-          ? totalAmountPaid - paid
-          : paid === undefined || received === undefined
-            ? undefined
-            : totalAmountPaid
+      const fees = action === 'Mint' ? totalAmountPaid - paid : totalAmountPaid
 
       return {
         address: d.address,

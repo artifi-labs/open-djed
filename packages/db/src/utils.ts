@@ -8,7 +8,7 @@ import type { OrderUTxOWithDatumAndBlock, UTxO } from './types'
 const blockfrostUrl = env.BLOCKFROST_URL
 const blockfrostId = env.BLOCKFROST_PROJECT_ID
 export const blockfrost = new Blockfrost(blockfrostUrl, blockfrostId)
-const network = env.NETWORK
+export const network = env.NETWORK
 export const registry = registryByNetwork[network]
 
 export const SAFETY_MARGIN = 50 // updates database 50 slots behind the tip of the blockchain
@@ -50,6 +50,7 @@ export async function fetchWithRetry<T = unknown>(
           await sleep(delayMs * 2)
           continue
         }
+        console.log('URL: ', url)
         throw new Error(`HTTP ${response.status}: ${response.statusText}`)
       }
 
@@ -142,11 +143,20 @@ export async function parseOrderDatum(orderUTxO: OrderUTxOWithDatumAndBlock) {
       received += values.djedAmount
     }
   } else {
+    if ('shenAmount' in values && typeof values.shenAmount === 'bigint') {
+      paid += values.shenAmount
+    }
+    if ('djedAmount' in values && typeof values.djedAmount === 'bigint') {
+      paid += values.djedAmount
+    }
+
+    if (typeof orderUTxO.consumed_by_tx !== 'string') return { action, token, paid, received: undefined }
+
     const userAddr = constructAddress(d.address.paymentKeyHash[0], d.address.stakeKeyHash[0][0][0], network)
 
     const utxosOfConsumingTx = (await blockfrostFetch(`/txs/${orderUTxO.consumed_by_tx}/utxos`)) as UTxO
     if (!utxosOfConsumingTx || !utxosOfConsumingTx.outputs) {
-      return { action, token, paid: undefined, received: undefined }
+      return { action, token, paid, received: undefined }
     }
 
     const outputUTxOToUserAddr = utxosOfConsumingTx.outputs.find((utxo) => utxo.address === userAddr)
@@ -155,13 +165,6 @@ export async function parseOrderDatum(orderUTxO: OrderUTxOWithDatumAndBlock) {
     }
 
     received = BigInt(outputUTxOToUserAddr.amount.find((a) => a.unit === 'lovelace')?.quantity ?? '0')
-
-    if ('shenAmount' in values && typeof values.shenAmount === 'bigint') {
-      paid += values.shenAmount
-    }
-    if ('djedAmount' in values && typeof values.djedAmount === 'bigint') {
-      paid += values.djedAmount
-    }
   }
 
   return {
