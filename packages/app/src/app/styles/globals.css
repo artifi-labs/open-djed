@@ -320,13 +320,6 @@
     )
   );
 
-  --color-no-color-hover: var(--color-primary-100-8);
-  --color-no-color-focused: var(--color-primary-100-12);
-  --color-no-color-pressed: var(--color-primary-100-12);
-  --color-no-color-text-hover: var(--color-primary-100);
-  --color-no-color-text-focused: var(--color-primary-150);
-  --color-no-color-text-pressed: var(--color-primary-150);
-
   /* Spacing */
   --spacing-2: 2px;
   --spacing-4: 4px;
