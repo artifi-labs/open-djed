@@ -56,7 +56,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
     <th
       scope="col"
       className={clsx(
-        "text-tertiary text-xxs font-regular px-16 py-12 text-left",
+        "text-tertiary font-normal text-xxs px-16 py-12 text-left",
         columnWidths[size],
         {
           "cursor-pointer": isSortable,
@@ -73,7 +73,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
           )}
         </div>
         {action && (
-          <span className="ml-auto py-2 pr-0 text-right font-normal">
+          <span className="ml-auto py-2 pr-0 text-right">
             {action}
           </span>
         )}
