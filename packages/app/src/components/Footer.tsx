@@ -38,7 +38,7 @@ const Logo = () => {
       href={WEBSITE_URL}
       target="_blank"
       rel="noopener noreferrer"
-      className="w-[214px]"
+      className="w-53.5"
     >
       <Image
         src="/logos/artifilabs-logo.svg"

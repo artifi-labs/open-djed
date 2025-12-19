@@ -11,7 +11,7 @@
   --text-sm--line-height: 20px;
   --text-md: 16px;
   --text-md--line-height: 22px;
-  --text-lg: 18px;
+  --text-lg: 20px;
   --text-lg--line-height: 24px;
 
   --text-display: 40px;
@@ -274,10 +274,10 @@
   --color-background-primary-pressed: var(--color-primary-700);
   --color-background-secondary: var(--color-primary-900);
 
-  --color-no-color-hover: var(--color-primary-100);
-  --color-no-color-focused: var(--color-primary-100);
-  --color-no-color-pressed: var(--color-primary-100);
-  --color-no-color-text-hover: var(--color-primary-700);
+  --color-no-color-hover: var(--color-primary-100-8);
+  --color-no-color-focused: var(--color-primary-100-12);
+  --color-no-color-pressed: var(--color-primary-100-12);
+  --color-no-color-text-hover: var(--color-primary-100);
   --color-no-color-text-focused: var(--color-primary-150);
   --color-no-color-text-pressed: var(--color-primary-150);
 
@@ -320,13 +320,12 @@
     )
   );
 
+  --color-no-color-hover: var(--color-primary-100-8);
+  --color-no-color-focused: var(--color-primary-100-12);
+  --color-no-color-pressed: var(--color-primary-100-12);
   --color-no-color-text-hover: var(--color-primary-100);
   --color-no-color-text-focused: var(--color-primary-150);
   --color-no-color-text-pressed: var(--color-primary-150);
-
-  --color-no-color-hover: var(--color-lilac-925);
-  --color-no-color-focused: var(--color-lilac-900);
-  --color-no-color-pressed: var(--color-lilac-900);
 
   /* Spacing */
   --spacing-2: 2px;
@@ -402,7 +401,7 @@
   --radius-8: 8px;
   --radius-full: 99999px;
 
-  --radius-input-dropdown: 4px;
+  --radius-input-dropdown: 99999px;
   --radius-input: 4px;
   --radius-card: 8px;
   --radius-button: 99999px;

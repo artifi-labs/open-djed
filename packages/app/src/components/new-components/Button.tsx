@@ -4,7 +4,7 @@ import * as React from "react"
 import clsx from "clsx"
 import Icon, { type IconName } from "./Icon"
 
-type ButtonVariant =
+export type ButtonVariant =
   | "primary"
   | "secondary"
   | "outlined"
