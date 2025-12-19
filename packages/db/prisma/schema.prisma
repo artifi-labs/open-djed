@@ -28,7 +28,8 @@ model Order {
   id        Int      @id @default(autoincrement())
   address   Json     // user address, stores paymentKeyHash and stakeKeyHash
   tx_hash   String   @unique // hash of tx
-  block     String?
+  block     String  // block hash
+  slot      BigInt  // block slot
   action    Actions
   token     Token
   orderDate DateTime @default(now())
@@ -36,10 +37,13 @@ model Order {
   fees      BigInt?
   received  BigInt? // token value received
   status    String? // Created -> still to be consumed; Completed -> already consumed
+
+  @@index([slot], name: "idx_order_slot") // index makes lookups much faster
 }
 
 model Block {
-  id           Int      @id @default(autoincrement())
+  id           Int      @id @default(1) // only one row
   latestBlock  String   @unique // hash of the latest block synced
+  latestSlot   BigInt   // slot of the latest block synced
   updatedAt    DateTime @updatedAt @db.Timestamptz(6)
 }

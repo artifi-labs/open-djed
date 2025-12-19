@@ -1,8 +1,26 @@
 import { Data } from '@lucid-evolution/lucid'
 import { OrderDatum } from '@open-djed/data'
 import { prisma } from '../lib/prisma'
-import type { Block, UTxO, TransactionData, OrderUTxO, OrderUTxOWithDatum, Order } from './types'
-import { registry, blockfrost, processBatch, parseOrderDatum, sleep, blockfrostFetch } from './utils'
+import type {
+  Block,
+  UTxO,
+  TransactionData,
+  OrderUTxO,
+  OrderUTxOWithDatum,
+  Order,
+  AddressDatum,
+} from './types'
+import {
+  registry,
+  blockfrost,
+  processBatch,
+  parseOrderDatum,
+  sleep,
+  blockfrostFetch,
+  SAFETY_MARGIN,
+  constructAddress,
+  network,
+} from './utils'
 
 /**
  * search the database for orders that have status 'Created', meaning that the order is yet to be fulfilled
@@ -21,26 +39,45 @@ async function updatePendingOrders() {
     console.log('No orders to update')
     return
   }
-  console.log(`Found ${pendingOrders.length} pending orders to check`)
+  console.log(`Found ${pendingOrders.length} pending orders to check.`)
 
   const orderStatusUpdates = await processBatch(
     pendingOrders,
     async (order) => {
       try {
         const utxo = (await blockfrostFetch(`/txs/${order.tx_hash}/utxos`)) as UTxO
-
         const orderUTxOWithUnit = utxo.outputs.find(
           (output) =>
-            output.address === order.address &&
+            output.address === registry.orderAddress &&
             output.amount.some((amt) => amt.unit === registry.orderAssetId),
         )
 
-        const isConsumed = orderUTxOWithUnit?.consumed_by_tx !== undefined
+        const isConsumed = typeof orderUTxOWithUnit?.consumed_by_tx === 'string'
+        let received = order.received
 
-        return { tx_hash: order.tx_hash, isConsumed }
+        if (order.action === 'Burn' && isConsumed) {
+          const address = order.address as AddressDatum
+          const paymentKeyHash = address.paymentKeyHash[0]
+          const stakeKeyHash = address.stakeKeyHash[0]?.[0]?.[0]
+          if (!paymentKeyHash || !stakeKeyHash) {
+            throw new Error(`Invalid address structure for order ${order.tx_hash}`)
+          }
+          const userAddr = constructAddress(paymentKeyHash, stakeKeyHash, network)
+
+          const utxosOfConsumingTx = (await blockfrostFetch(
+            `/txs/${orderUTxOWithUnit.consumed_by_tx}/utxos`,
+          )) as UTxO
+          const outputUTxOToUserAddr = utxosOfConsumingTx.outputs.find((utxo) => utxo.address === userAddr)
+          if (!outputUTxOToUserAddr) {
+            throw new Error('Could not find output UTxO to user address in consuming transaction')
+          }
+          received = BigInt(outputUTxOToUserAddr.amount.find((a) => a.unit === 'lovelace')?.quantity ?? '0')
+        }
+
+        return { tx_hash: order.tx_hash, isConsumed, received: received }
       } catch (error) {
         console.error(`Error checking order ${order.tx_hash}:`, error)
-        return { tx_hash: order.tx_hash, isConsumed: false }
+        return { tx_hash: order.tx_hash, isConsumed: false, received: order.received }
       }
     },
     10,
@@ -55,7 +92,7 @@ async function updatePendingOrders() {
     for (const order of completedOrders) {
       await prisma.order.update({
         where: { tx_hash: order.tx_hash },
-        data: { status: 'Completed' },
+        data: { status: 'Completed', received: order.received },
       })
     }
 
@@ -158,6 +195,7 @@ async function enrichUTxOsWithData(orderUTxOs: OrderUTxO[]) {
           ...utxo,
           orderDatum: Data.from(rawDatum, OrderDatum),
           block_hash: tx.block,
+          block_slot: tx.slot,
         }
       } catch (error) {
         console.error(`Error processing UTxO ${idx + 1}/${orderUTxOs.length}:`, error)
@@ -174,28 +212,29 @@ async function enrichUTxOsWithData(orderUTxOs: OrderUTxO[]) {
  * @param utxos array of Order UTxOs, with decoded datum
  * @returns array of Order objects to be inserted in the database
  */
-function processOrdersToInsert(utxos: OrderUTxOWithDatum[]) {
-  return utxos.map((utxo) => {
-    const d: OrderDatum = utxo.orderDatum
-    const { action, token, paid, received } = parseOrderDatum(d)
-    const totalAmountPaid = BigInt(utxo.amount.find((a) => a.unit === 'lovelace')?.quantity ?? '0')
-    const fees = totalAmountPaid - paid
+async function processOrdersToInsert(utxos: OrderUTxOWithDatum[]) {
+  return Promise.all(
+    utxos.map(async (utxo) => {
+      const d = utxo.orderDatum as OrderDatum
+      const { action, token, paid, received } = await parseOrderDatum(utxo)
+      const totalAmountPaid = BigInt(utxo.amount.find((a) => a.unit === 'lovelace')?.quantity ?? '0')
+      const fees = action === 'Mint' ? totalAmountPaid - paid : totalAmountPaid
 
-    console.log('Address: ', d.address)
-
-    return {
-      address: d.address,
-      tx_hash: utxo.tx_hash,
-      block: utxo.block_hash,
-      action,
-      token,
-      paid,
-      fees,
-      received,
-      orderDate: new Date(Number(d.creationDate)),
-      status: utxo.consumed_by_tx ? 'Completed' : 'Created',
-    }
-  })
+      return {
+        address: d.address,
+        tx_hash: utxo.tx_hash,
+        block: utxo.block_hash,
+        slot: utxo.block_slot,
+        action,
+        token,
+        paid,
+        fees,
+        received,
+        orderDate: new Date(Number(d.creationDate)),
+        status: utxo.consumed_by_tx ? 'Completed' : 'Created',
+      }
+    }),
+  )
 }
 
 /**
@@ -211,7 +250,7 @@ async function updateLatestBlock(latestSyncedBlock: { id: number }, newBlocks: B
   if (latestBlock) {
     await prisma.block.update({
       where: { id: latestSyncedBlock.id },
-      data: { latestBlock: latestBlock.hash },
+      data: { latestBlock: latestBlock.hash, latestSlot: latestBlock.slot },
     })
     console.log(`New latest block: ${latestBlock.hash}`)
   }
@@ -221,7 +260,7 @@ async function updateLatestBlock(latestSyncedBlock: { id: number }, newBlocks: B
 
 /**
  * sync the database with the newly created orders
- * check every new block, after the last sync, and get every new transaction
+ * check every new block, within the safety margin, after the last sync, and get every new transaction
  * check the UTxOs of the new transactions to check if any new order was created
  * @returns
  */
@@ -235,30 +274,38 @@ async function syncNewOrders() {
   }
   console.log('Latest synced block:', latestSyncedBlock.latestBlock)
 
+  const tip = (await blockfrostFetch('/blocks/latest')) as Block
+
   const newBlocks = await fetchNewBlocks(latestSyncedBlock.latestBlock)
   if (newBlocks.length === 0) {
     console.log('No new blocks to process')
     return latestSyncedBlock
   }
 
-  const blockHashes = newBlocks.map((block) => block.hash)
+  const finalizedBlocks = newBlocks.filter((b) => tip.slot - b.slot >= SAFETY_MARGIN)
+  if (finalizedBlocks.length === 0) {
+    console.log('No finalized blocks to process yet')
+    return latestSyncedBlock
+  }
+
+  const blockHashes = finalizedBlocks.map((block) => block.hash)
   const transactions = await fetchTransactionsFromBlocks(blockHashes)
   if (transactions.length === 0) {
     console.log('No new transactions since last sync')
-    return updateLatestBlock(latestSyncedBlock, newBlocks)
+    return updateLatestBlock(latestSyncedBlock, finalizedBlocks)
   }
 
   const orderUTxOs = await fetchOrderUTxOs(transactions)
   if (orderUTxOs.length === 0) {
     console.log('No order UTxOs in new blocks')
-    return updateLatestBlock(latestSyncedBlock, newBlocks)
+    return updateLatestBlock(latestSyncedBlock, finalizedBlocks)
   }
 
   const orderUTxOsWithData: OrderUTxOWithDatum[] = await enrichUTxOsWithData(orderUTxOs)
-  const ordersToInsert: Order[] = processOrdersToInsert(orderUTxOsWithData)
+  const ordersToInsert: Order[] = await processOrdersToInsert(orderUTxOsWithData)
   if (ordersToInsert.length === 0) {
     console.log('No orders to insert')
-    return updateLatestBlock(latestSyncedBlock, newBlocks)
+    return updateLatestBlock(latestSyncedBlock, finalizedBlocks)
   }
 
   await prisma.order.createMany({
@@ -268,7 +315,7 @@ async function syncNewOrders() {
 
   console.log(`Successfully inserted ${ordersToInsert.length} new orders`)
 
-  const latestBlock = newBlocks[newBlocks.length - 1]
+  const latestBlock = finalizedBlocks[finalizedBlocks.length - 1]
   if (latestBlock) {
     await prisma.block.update({
       where: { id: latestSyncedBlock.id },
@@ -279,11 +326,70 @@ async function syncNewOrders() {
   return latestSyncedBlock
 }
 
+/**
+ * if a finalized block disappears from the blockchain, a rollback has occurred
+ * if that happens, go through
+ * @returns
+ */
+async function rollback() {
+  const sync = await prisma.block.findFirst()
+  if (!sync) return
+
+  const syncIsValid = await blockfrostFetch(`/blocks/${sync.latestBlock}`)
+    .then(() => true)
+    .catch((e) => {
+      if (e.response?.status === 404) return false
+      throw e
+    })
+
+  if (syncIsValid) {
+    console.log('No rollback detected')
+    return
+  }
+
+  console.log('Checking rollback from:', sync.latestBlock)
+
+  const storedBlocks = await prisma.order.findMany({
+    where: { slot: { lte: sync.latestSlot } },
+    select: { block: true, slot: true },
+    orderBy: { slot: 'desc' },
+    distinct: ['block'],
+  })
+
+  for (const b of storedBlocks) {
+    const exists = await ((await blockfrostFetch(`/blocks/${b.block}`)) as Promise<Block>)
+      .then(() => true)
+      .catch(() => false)
+
+    if (exists) {
+      console.log('Rollback anchor found at block', b.block, 'slot', b.slot)
+
+      await prisma.order.deleteMany({
+        where: { slot: { gt: b.slot } },
+      })
+
+      await prisma.block.update({
+        where: { id: sync.id },
+        data: {
+          latestBlock: b.block,
+          latestSlot: b.slot,
+        },
+      })
+
+      console.log('Rollback completed')
+      return
+    }
+  }
+
+  throw new Error('Rollback exceeds DB history — full resync required')
+}
+
 export async function updateOrders() {
   const start = Date.now()
   console.log('=== Starting Order Update Process ===')
 
   try {
+    await rollback()
     await updatePendingOrders()
     await syncNewOrders()
 

@@ -33,7 +33,7 @@ export type Output = {
   inline_datum: string | null
   output_index: number
   reference_script_hash: string | null
-  consumed_by_tx?: string
+  consumed_by_tx: string | null
 }
 
 export type OrderUTxO = Output & { tx_hash: string }
@@ -42,6 +42,7 @@ export type OrderUTxOWithDatum = Output & {
   tx_hash: string
   orderDatum: OrderDatum
   block_hash: string
+  block_slot: number
 }
 
 export type AddressDatum = {
@@ -53,11 +54,12 @@ export type Order = {
   address: AddressDatum
   tx_hash: string
   block: string
+  slot: number
   action: Actions
   token: Token
-  paid: bigint
-  fees: bigint
-  received: bigint
+  paid?: bigint
+  fees?: bigint
+  received?: bigint
   orderDate: Date
   status: string
 }
@@ -119,4 +121,53 @@ export type Block = {
 export type AddressKey = {
   paymentKeyHash: string
   stakeKeyHash: string
+}
+
+export type OrderUTxOWithDatumAndBlock = {
+  orderDatum: {
+    address: {
+      paymentKeyHash: [string]
+      stakeKeyHash: [[[string]]]
+    }
+    actionFields:
+      | {
+          MintDJED: {
+            djedAmount: bigint
+            adaAmount: bigint
+          }
+        }
+      | {
+          BurnDJED: {
+            djedAmount: bigint
+          }
+        }
+      | {
+          MintSHEN: {
+            shenAmount: bigint
+            adaAmount: bigint
+          }
+        }
+      | {
+          BurnSHEN: {
+            shenAmount: bigint
+          }
+        }
+    adaUSDExchangeRate: {
+      numerator: bigint
+      denominator: bigint
+    }
+    creationDate: bigint
+    orderStateTokenMintingPolicyId: string
+  }
+  block_hash: string
+  block_slot: number
+  tx_hash: string
+  address: string
+  amount: Amount[]
+  collateral: boolean
+  data_hash: string | null
+  inline_datum: string | null
+  output_index: number
+  reference_script_hash: string | null
+  consumed_by_tx: string | null
 }
