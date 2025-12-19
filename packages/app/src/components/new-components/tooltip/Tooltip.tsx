@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react"
 import clsx from "clsx"
+import "./tooltip.css"
 
 type TooltipProps = {
   text: string
