@@ -41,7 +41,7 @@ export type Wallet = {
 type WalletContextType = {
   wallet: Wallet | null
   wallets: WalletMetadata[]
-  connect: (id: string) => Promise<void>
+  connect: (id: string, showConnectNotification?: boolean) => Promise<void>
   detectWallets: () => void
   disconnect: () => void
 }
@@ -83,10 +83,11 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
   const [connectedWalletId, setConnectedWalletId] = useLocalStorage<
     string | null
   >("connectedWalletId", null)
+
   const { network } = useEnv()
 
   const connect = useCallback(
-    async (id: string) => {
+    async (id: string, showConnectNotification = true) => {
       try {
         const cardano = getCardanoFromWindowObject()
         if (!cardano) return
@@ -109,6 +110,14 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
         }
 
         const decodedBalance = decode(balanceStr)
+        const policyId = registryByNetwork[network].djedAssetId.slice(0, 56)
+        const djedTokenName =
+          registryByNetwork[network].djedAssetId.slice(56)
+        const shenTokenName =
+          registryByNetwork[network].shenAssetId.slice(56)
+        const adaHandlePolicyId =
+          "f0ff48bbb7bbe9d59a40f1ce90e9e9d0ff5002ec48f232b49ca0fb9a"
+
         const parsedBalance = z
           .union([
             z.number(),
@@ -125,13 +134,6 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
           ])
           .transform((b) => {
             if (typeof b === "number") return { ADA: b / 1e6, DJED: 0, SHEN: 0 }
-            const policyId = registryByNetwork[network].djedAssetId.slice(0, 56)
-            const djedTokenName =
-              registryByNetwork[network].djedAssetId.slice(56)
-            const shenTokenName =
-              registryByNetwork[network].shenAssetId.slice(56)
-            const adaHandlePolicyId =
-              "f0ff48bbb7bbe9d59a40f1ce90e9e9d0ff5002ec48f232b49ca0fb9a"
             const hexHandle = [
               ...(b[1].get(adaHandlePolicyId)?.keys() ?? []),
             ][0]
@@ -146,34 +148,44 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
             }
           })
           .parse(decodedBalance)
+
         setConnectedWalletId(id)
+
         const getChangeAddress = async () => {
           const address = await api.getChangeAddress()
           return address
         }
+
         const getUsedAddresses = async () => {
-          const oldAddresses = await api.getUsedAddresses()
-          return oldAddresses
+          const addresses = await api.getUsedAddresses()
+          return addresses
         }
+
+        const walletAddress = await getChangeAddress().then(async (a) =>
+          (
+            await import("@dcspark/cardano-multiplatform-lib-browser")
+          ).Address.from_hex(a).to_bech32(),
+        )
+
         setWallet({
           name: cardano[id].name,
           icon: cardano[id].icon,
           balance: parsedBalance,
-          address: await getChangeAddress().then(async (a) =>
-            (
-              await import("@dcspark/cardano-multiplatform-lib-browser")
-            ).Address.from_hex(a).to_bech32(),
-          ),
+          address: walletAddress,
           utxos: () => api.getUtxos(),
           signTx: (txCbor: string) => api.signTx(txCbor, false),
           submitTx: api.submitTx,
           getChangeAddress,
           getUsedAddresses,
         })
-        showToast({
-          message: "Your wallet has been successfully connected.",
-          type: "success",
-        })
+
+        // Prevent showing notification on auto-reconnect
+        if (showConnectNotification) {
+          showToast({
+            message: "Your wallet has been successfully connected.",
+            type: "success",
+          })
+        }
       } catch (err) {
         console.error(`Failed to enable ${id}`, err)
         showToast({
@@ -182,14 +194,14 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
         })
       }
     },
-    [setConnectedWalletId, setWallet],
+    [network, setConnectedWalletId, showToast],
   )
 
   useEffect(() => {
     ;(async () => {
       if (connectedWalletId) {
         try {
-          await connect(connectedWalletId)
+          await connect(connectedWalletId, false)
         } catch (err) {
           console.error("Failed to reconnect wallet:", err)
         }
