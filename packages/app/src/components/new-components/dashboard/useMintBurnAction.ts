@@ -7,6 +7,12 @@ import { useWallet } from "@/context/WalletContext"
 import { useProtocolData } from "@/hooks/useProtocolData"
 import { TokenType } from "@open-djed/api"
 import { useSidebar } from "@/context/SidebarContext"
+import { Value } from "@/lib/utils"
+import { getWalletData } from "@/lib/getWalletData"
+import { useApiClient } from "@/context/ApiClientContext"
+import { AppError } from "@open-djed/api/src/errors"
+import { signAndSubmitTx } from "@/lib/signAndSubmitTx"
+import { useToast } from "@/context/ToastContext"
 
 type ProtocolData = NonNullable<ReturnType<typeof useProtocolData>["data"]>
 type ActionData = ReturnType<ProtocolData["tokenActionData"]>
@@ -60,9 +66,14 @@ const calculateFromPay = ({
 
   targetTokens.forEach((targetToken) => {
     let token = sourceToken
+    let valueToPay
 
     if (isMint) {
       // TODO: IF minting and sourceToken is ADA we need to convert ADA or modify useProtocol to accept ada
+
+      const value = { ADA: sourceValue } as Value
+      const convertedValue = data.to(value, targetToken)
+      console.log("Converted value: ", convertedValue)
       token = targetToken
     }
 
@@ -232,7 +243,10 @@ export function useMintBurnAction(defaultActionType: ActionType) {
   const config = ACTION_CONFIG[actionType]
   const { wallet } = useWallet()
   const { openWalletSidebar } = useSidebar()
-  const { isPending, error, data } = useProtocolData()
+  const { data } = useProtocolData()
+
+  const { showToast } = useToast()
+  const client = useApiClient()
 
   const isMint = actionType === "Mint"
   const hasWalletConnected = Boolean(wallet)
@@ -407,7 +421,7 @@ export function useMintBurnAction(defaultActionType: ActionType) {
     setLinkClicked((prev) => !prev)
   }, [])
 
-  const handleButtonClick = React.useCallback(() => {
+  const handleButtonClick = React.useCallback(async () => {
     if (!hasWalletConnected) {
       openWalletSidebar()
       return
@@ -415,6 +429,71 @@ export function useMintBurnAction(defaultActionType: ActionType) {
     console.log("Button clicked for", actionType)
     console.log("Pay values:", payValues)
     console.log("Receive values:", receiveValues)
+    //NOTE: This is a workaround to dynamically import the Cardano libraries without causing issues with SSR.
+    const { Transaction, TransactionWitnessSet } =
+      await import("@dcspark/cardano-multiplatform-lib-browser")
+
+    if (!wallet) return
+    if (payValues && !Object.values(payValues).some((value) => value > 0))
+      return
+    if (
+      receiveValues &&
+      !Object.values(receiveValues).some((value) => value > 0)
+    )
+      return
+
+    const tokenAmount =
+      actionType === "Mint"
+        ? Object.entries(receiveValues).find(([, value]) => value > 0)
+        : Object.entries(payValues).find(([, value]) => value > 0)
+
+    if (!tokenAmount) return
+
+    try {
+      const { address, utxos } = await getWalletData(wallet)
+
+      const response = await client.api[":token"][":action"][":amount"][
+        "tx"
+      ].$post({
+        param: {
+          token: tokenAmount[0] as TokenType,
+          action: actionType,
+          amount: tokenAmount[1].toString(),
+        },
+        json: { hexAddress: address, utxosCborHex: utxos },
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new AppError(errorData.message)
+      }
+
+      const txCbor = await response.text()
+      const txHash = await signAndSubmitTx(
+        wallet,
+        txCbor,
+        Transaction,
+        TransactionWitnessSet,
+      )
+      showToast({
+        message: `Transaction submitted succesfully!`,
+        type: "success",
+      })
+    } catch (err) {
+      console.error("Action failed:", err)
+      if (err instanceof AppError) {
+        showToast({
+          message: `${err.message}`,
+          type: "error",
+        })
+        return
+      }
+
+      showToast({
+        message: `Transaction failed. Please try again.`,
+        type: "error",
+      })
+    }
   }, [
     hasWalletConnected,
     openWalletSidebar,
