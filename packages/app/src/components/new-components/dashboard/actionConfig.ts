@@ -2,7 +2,7 @@ import { Token } from "@/lib/tokens"
 
 export type Type = "pay" | "receive"
 
-export type ActionType = "mint" | "burn"
+export type ActionType = "Mint" | "Burn"
 
 export const ACTION_CONFIG: Record<
   ActionType,
@@ -15,20 +15,20 @@ export const ACTION_CONFIG: Record<
     receiveShowDual: boolean
   }
 > = {
-  mint: {
+  Mint: {
     pay: ["ADA"],
     receive: ["DJED", "SHEN"],
     payHasLeadingIcon: false,
     receiveHasLeadingIcon: true,
     payShowDual: false,
-    receiveShowDual: true,
+    receiveShowDual: false, // TODO: change to true when dual values are available for Mint
   },
-  burn: {
+  Burn: {
     pay: ["DJED", "SHEN"],
     receive: ["ADA"],
     payHasLeadingIcon: true,
     receiveHasLeadingIcon: false,
-    payShowDual: true,
+    payShowDual: false, // TODO: change to true when dual values are available for Burn
     receiveShowDual: false,
   },
 }

@@ -63,6 +63,7 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const sanitized = sanitizeNumberInput(e.target.value)
+    if (sanitized === displayedValue) return
     if (value === undefined) setInternalValue(sanitized)
     onValueChange?.(sanitized)
   }

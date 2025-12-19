@@ -8,23 +8,19 @@ import { ActionType } from "./actionConfig"
 import { useMintBurnAction } from "./useMintBurnAction"
 
 export type ActionsProps = {
-  defaultActionType: ActionType
+  action: ReturnType<typeof useMintBurnAction>
+  onActionChange?: (actionType: ActionType) => void
 }
 
-const Actions: React.FC<ActionsProps> = ({ defaultActionType }) => {
-  const [selectedAction, setSelectedAction] =
-    React.useState<ActionType>(defaultActionType)
-
-  const action = useMintBurnAction(selectedAction)
-
+const Actions: React.FC<ActionsProps> = ({ action, onActionChange }) => {
   const tabs: TabItem[] = [
-    { key: "mint", leadingIcon: "Mint", text: "Mint" },
-    { key: "burn", leadingIcon: "Burn", text: "Burn" },
+    { key: "Mint", leadingIcon: "Mint", text: "Mint" },
+    { key: "Burn", leadingIcon: "Burn", text: "Burn" },
   ]
 
   const descriptionText: Record<ActionType, string> = {
-    mint: "Mint DJED, SHEN or both by depositing ADA into the protocol.",
-    burn: "Burn DJED, SHEN or both to withdraw your ADA from the protocol.",
+    Mint: "Mint DJED, SHEN or both by depositing ADA into the protocol.",
+    Burn: "Burn DJED, SHEN or both to withdraw your ADA from the protocol.",
   }
 
   return (
@@ -34,16 +30,16 @@ const Actions: React.FC<ActionsProps> = ({ defaultActionType }) => {
           <Tabs
             type={"primary"}
             items={tabs}
-            activeItemIndex={tabs.findIndex((t) => t.key === selectedAction)}
-            onTabChange={(tab) => setSelectedAction(tab.key as ActionType)}
+            activeItemIndex={tabs.findIndex((t) => t.key === action.actionType)}
+            onTabChange={(tab) => onActionChange?.(tab.key as ActionType)}
           />
 
           <p className="text-tertiary text-xs">
-            {descriptionText[selectedAction]}
+            {descriptionText[action.actionType]}
           </p>
         </div>
 
-        <Action actionType={selectedAction} {...action} />
+        <Action {...action} />
       </div>
     </BaseCard>
   )
