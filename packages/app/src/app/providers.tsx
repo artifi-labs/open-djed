@@ -8,6 +8,7 @@ import { EnvProvider } from "@/context/EnvContext"
 import { WalletProvider } from "@/context/WalletContext"
 import { I18nProvider } from "@/context/I18nProvider"
 import { SidebarProvider } from "@/context/SidebarContext"
+import { ToastProvider } from "@/context/ToastContext"
 
 export interface ProvidersProps {
   children: React.ReactNode
@@ -28,17 +29,19 @@ export const Providers = ({
 
   return (
     <EnvProvider env={{ apiUrl, network, config, posthog }}>
-      <WalletProvider>
-        <SidebarProvider>
-          <ThemeProvider>
-            <ClientProvider apiUrl={apiUrl}>
-              <QueryClientProvider client={queryClient}>
-                <I18nProvider>{children}</I18nProvider>
-              </QueryClientProvider>
-            </ClientProvider>
-          </ThemeProvider>
-        </SidebarProvider>
-      </WalletProvider>
+      <ClientProvider apiUrl={apiUrl}>
+        <QueryClientProvider client={queryClient}>
+          <ToastProvider>
+            <WalletProvider>
+              <SidebarProvider>
+                <ThemeProvider>
+                  <I18nProvider>{children}</I18nProvider>
+                </ThemeProvider>
+              </SidebarProvider>
+            </WalletProvider>
+          </ToastProvider>
+        </QueryClientProvider>
+      </ClientProvider>
     </EnvProvider>
   )
 }

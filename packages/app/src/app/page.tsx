@@ -1,9 +1,10 @@
 "use client"
+import Actions from "@/components/new-components/dashboard/Actions"
 import LinkButton from "@/components/new-components/LinkButton"
 
 export default function DashboardPage() {
   return (
-    <div className="desktop:pt-32 desktop:pb-64 w-full pt-16 pb-16">
+    <div className="desktop:pt-32 desktop:pb-64 mx-auto w-full max-w-[1120px] pt-16 pb-16">
       {/* Header */}
       <div className="desktop:flex-row flex flex-col justify-between">
         <div className="flex items-center gap-6">
@@ -20,8 +21,7 @@ export default function DashboardPage() {
       </div>
       {/* Content */}
       <div className="desktop:grid-cols-2 desktop:gap-24 desktop:pt-32 grid grid-cols-1 gap-16 pt-16">
-        <div className="bg-black">Left Side</div>
-        <div className="bg-black">Right Side</div>
+        <Actions defaultActionType="mint" />
       </div>
     </div>
   )

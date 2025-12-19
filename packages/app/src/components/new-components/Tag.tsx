@@ -1,8 +1,7 @@
 "use client"
 import clsx from "clsx"
 import * as React from "react"
-import type { IconName } from "./Icon"
-import Icon from "./Icon"
+import Icon, { type IconName } from "./Icon"
 
 type Type = "surface" | "success" | "warning" | "error" | "brand"
 type Role = "Primary" | "Secondary"
