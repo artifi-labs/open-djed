@@ -1,5 +1,6 @@
 "use client"
 
+import * as React from "react"
 import OrderHistory from "@/components/new-components/OrderHistory"
 import SearchInput from "@/components/new-components/input-fields/SearchInput"
 import Chip from "@/components/new-components/Chip"
@@ -39,8 +40,9 @@ const STATUS_FILTERS = [
 export default function OrderPage() {
   const { wallet } = useWallet()
   const { openWalletSidebar } = useWalletSidebar()
+  const [selectedFilter, setSelectedFilter] = React.useState<string>("All")
 
-  const orders: OrderApi[] = [
+  const allOrders: OrderApi[] = [
     {
       id: 1,
       tx_hash:
@@ -619,6 +621,11 @@ export default function OrderPage() {
     },
   ]
 
+  const orders =
+    selectedFilter === "All"
+      ? allOrders
+      : allOrders.filter((order) => order.status === selectedFilter)
+
   return (
     <div className="desktop:pt-32 desktop:pb-64 mx-auto w-full max-w-280">
       {!wallet ? (
@@ -663,7 +670,9 @@ export default function OrderPage() {
                   key={status}
                   text={status}
                   size="small"
-                  variant="outlined"
+                  variant={"outlined"}
+                  onClick={() => setSelectedFilter(status)}
+                  active={selectedFilter === status}
                 />
               ))}
             </div>

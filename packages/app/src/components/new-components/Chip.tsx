@@ -15,6 +15,7 @@ export type ChipProps = {
   variant?: Variant
   disabled?: boolean
   className?: string
+  active?: boolean
 } & React.ButtonHTMLAttributes<HTMLButtonElement>
 
 const Chip: React.FC<ChipProps> = ({
@@ -25,6 +26,7 @@ const Chip: React.FC<ChipProps> = ({
   variant = "filled",
   disabled = false,
   className = "",
+  active = false,
   ...props
 }) => {
   const baseClasses: string =
@@ -40,6 +42,13 @@ const Chip: React.FC<ChipProps> = ({
       "border-color-secondary border-color-gradient-active bg-transparent hover:bg-no-color-hover hover:text-primary active:text-primary active:bg-no-color-pressed",
   }
 
+  const activeClasses: Record<Variant, string> = {
+    filled:
+      "border-color-secondary bg-surface-primary bg-brand-primary text-on-brand-primary hover:bg-surface-primary-hover hover:text-primary",
+    outlined:
+      "border-color-secondary border-color-gradient bg-no-color-pressed text-primary hover:bg-no-color-hover hover:text-primary",
+  }
+
   const sizeClasses: Record<Size, string> = {
     large: "px-16 py-10 text-md",
     medium: "px-16 py-8 text-sm",
@@ -47,11 +56,12 @@ const Chip: React.FC<ChipProps> = ({
   }
 
   const iconSize: Record<Size, number> = { small: 16, medium: 22, large: 24 }
-
+  console.log(active)
   const buttonClasses: string = clsx(
     baseClasses,
     sizeClasses[size],
-    !disabled && variantClasses[variant],
+    !disabled && !active && variantClasses[variant],
+    !disabled && active && activeClasses[variant],
     disabledClasses,
     className,
   )

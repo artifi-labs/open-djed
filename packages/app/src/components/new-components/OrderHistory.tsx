@@ -241,7 +241,7 @@ const ExternalCell = ({
   React.useEffect(() => {
     if (!showSnackbar) return
 
-    const time = setTimeout(() => setShowSnackbar(false), 5000)
+    const time = setTimeout(() => setShowSnackbar(false), 4000)
     return () => clearTimeout(time)
   }, [showSnackbar])
 
@@ -292,10 +292,10 @@ const ExternalCell = ({
         })}
         onClick={handleToggle}
       />
-      {/* TO DO: Implement view Tx details */}
+      {/* TODO: Implement view Tx details */}
 
       {showSnackbar && (
-        <div className="fixed right-24 bottom-24 z-50 duration-200">
+        <div className="fixed right-24 bottom-24 z-50">
           <Snackbar
             text="Your order has been canceled."
             type="success"
