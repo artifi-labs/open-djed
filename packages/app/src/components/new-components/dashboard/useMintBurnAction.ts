@@ -4,7 +4,7 @@ import * as React from "react"
 import { ACTION_CONFIG, ActionType } from "./actionConfig"
 import { SUPPORTED_TOKENS, Token } from "@/lib/tokens"
 import { useWallet } from "@/context/WalletContext"
-import { useWalletSidebar } from "@/context/SidebarContext"
+import { useSidebar } from "@/context/SidebarContext"
 
 // TODO: Replace with real conversion logic
 const convert = (amount: number, from: Token, to: Token): number => {
@@ -28,7 +28,7 @@ export function useMintBurnAction(actionType: ActionType) {
   const config = ACTION_CONFIG[actionType]
   const isMint = actionType === "mint"
   const { wallet } = useWallet()
-  const { openWalletSidebar } = useWalletSidebar()
+  const { openWalletSidebar } = useSidebar()
 
   const [linkClicked, setLinkClicked] = React.useState(false)
   const [bothSelected, setBothSelected] = React.useState(false)

@@ -7,7 +7,7 @@ import Chip from "@/components/new-components/Chip"
 import ButtonIcon from "@/components/new-components/ButtonIcon"
 import Button from "@/components/new-components/Button"
 import { useWallet } from "@/context/WalletContext"
-import { useWalletSidebar } from "@/context/SidebarContext"
+import { useSidebar } from "@/context/SidebarContext"
 
 export type OrderApi = {
   id: number
@@ -39,7 +39,7 @@ const STATUS_FILTERS = [
 
 export default function OrderPage() {
   const { wallet } = useWallet()
-  const { openWalletSidebar } = useWalletSidebar()
+  const { openWalletSidebar } = useSidebar()
   const [selectedFilter, setSelectedFilter] = React.useState<string>("All")
 
   const allOrders: OrderApi[] = [
