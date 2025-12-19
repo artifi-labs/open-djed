@@ -94,6 +94,7 @@ const Action: React.FC<ActionProps> = ({
       onTokenChange: onReceiveTokenChange,
       onValueChange: onReceiveValueChange,
       hasMaxAndHalfActions: false,
+      hasAvailableAmount: false,
     },
   ]
 
@@ -119,6 +120,7 @@ const Action: React.FC<ActionProps> = ({
           linkClicked={linkClicked}
           onLinkClick={onLinkClick}
           hasMaxAndHalfActions={i.hasMaxAndHalfActions}
+          hasAvailableAmount={i.hasAvailableAmount}
         />
       ))}
 

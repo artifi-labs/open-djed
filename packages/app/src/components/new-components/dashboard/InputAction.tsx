@@ -25,6 +25,7 @@ export type InputActionProps = {
   linkClicked?: boolean
   onLinkClick?: () => void
   hasMaxAndHalfActions?: boolean
+  hasAvailableAmount?: boolean
 }
 
 export type TransactionInputGroupProps = {
@@ -40,6 +41,7 @@ export type TransactionInputGroupProps = {
   linkClicked?: boolean
   onLinkClick?: () => void
   hasMaxAndHalfActions?: boolean
+  hasAvailableAmount?: boolean
 }
 
 const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
@@ -55,6 +57,7 @@ const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
   linkClicked,
   onLinkClick,
   hasMaxAndHalfActions,
+  hasAvailableAmount,
 }) => {
   const { wallet } = useWallet()
   const walletConnected = wallet !== null
@@ -83,6 +86,7 @@ const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
         value={values[coin] ? values[coin].toString() : ""}
         onValueChange={(v) => onValueChange(coin, v)}
         amount={balanceStr}
+        hasAmount={hasAvailableAmount}
         onHalfClick={onHalfClick ? () => onHalfClick(coin) : undefined}
         onMaxClick={onMaxClick ? () => onMaxClick(coin) : undefined}
         hasMaxAndHalfActions={hasMaxAndHalfActions}
@@ -134,6 +138,7 @@ const InputAction: React.FC<InputActionProps> = ({
   linkClicked,
   onLinkClick,
   hasMaxAndHalfActions,
+  hasAvailableAmount,
 }) => {
   return (
     <div className="flex flex-col gap-12">
@@ -168,6 +173,7 @@ const InputAction: React.FC<InputActionProps> = ({
         linkClicked={linkClicked}
         onLinkClick={onLinkClick}
         hasMaxAndHalfActions={hasMaxAndHalfActions}
+        hasAvailableAmount={hasAvailableAmount}
       />
     </div>
   )

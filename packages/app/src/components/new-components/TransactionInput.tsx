@@ -23,6 +23,7 @@ export type TransactionInputProps = {
   buttonIcon?: boolean
   trailingIcon?: IconName
   amount?: string
+  hasAmount?: boolean
   status?: InputStatus
   disabled?: boolean
   hasMaxAndHalfActions?: boolean
@@ -46,6 +47,7 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
   buttonIcon,
   trailingIcon,
   amount,
+  hasAmount = true,
   status = "default",
   disabled = false,
   hasMaxAndHalfActions = true,
@@ -196,7 +198,7 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
         )}
 
         {/* Amount */}
-        {amount && (
+        {hasAmount && amount && (
           <span
             className={clsx(
               "text-xxs flex flex-row items-center justify-center gap-1 pr-8 leading-none",
