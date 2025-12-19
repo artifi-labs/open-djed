@@ -111,10 +111,8 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
 
         const decodedBalance = decode(balanceStr)
         const policyId = registryByNetwork[network].djedAssetId.slice(0, 56)
-        const djedTokenName =
-          registryByNetwork[network].djedAssetId.slice(56)
-        const shenTokenName =
-          registryByNetwork[network].shenAssetId.slice(56)
+        const djedTokenName = registryByNetwork[network].djedAssetId.slice(56)
+        const shenTokenName = registryByNetwork[network].shenAssetId.slice(56)
         const adaHandlePolicyId =
           "f0ff48bbb7bbe9d59a40f1ce90e9e9d0ff5002ec48f232b49ca0fb9a"
 

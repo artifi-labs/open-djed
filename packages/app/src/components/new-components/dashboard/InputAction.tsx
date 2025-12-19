@@ -80,6 +80,7 @@ const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
           hasLeadingIcon,
           onCoinChange: handleTokenChange,
         }}
+        assetIcon="Switch"
         value={values[coin] ? values[coin].toString() : ""}
         onValueChange={(v) => onValueChange(coin, v)}
         amount={balanceStr}

@@ -29,6 +29,7 @@ export type TransactionInputProps = {
   inputDisabled?: boolean
   value?: string
   defaultValue?: string
+  assetIcon?: IconName
   onValueChange?: (value: string) => void
   onAssetClick?: () => void
   onHalfClick?: () => void
@@ -52,8 +53,9 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
   inputDisabled = false,
   value,
   defaultValue = "",
+  assetIcon,
   onValueChange,
-  onAssetClick,
+  onAssetClick, // TODO: CHECK THIS, should be used in Actions component
   onHalfClick,
   onMaxClick,
   ...props
@@ -141,14 +143,14 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
         {suffix && <span className="text-xxs">{suffix}</span>}
 
         {/* Asset */}
-        {asset && <Asset {...asset} />}
+        {asset && <Asset buttonIcon={assetIcon} {...asset} />}
 
         {/* Button Icon */}
         {buttonIcon && (
           <ButtonIcon
             variant="onlyIcon"
             size="tiny"
-            icon="Vector"
+            icon="Arrows"
             disabled={disabled}
           />
         )}
