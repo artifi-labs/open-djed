@@ -33,7 +33,6 @@ export type TransactionInputProps = {
   value?: string
   defaultValue?: string
   onValueChange?: (value: string) => void
-  onAssetClick?: () => void
   onHalfClick?: () => void
   onMaxClick?: () => void
 } & React.InputHTMLAttributes<HTMLInputElement>
@@ -59,7 +58,6 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
   value,
   defaultValue = "",
   onValueChange,
-  onAssetClick,
   onHalfClick,
   onMaxClick,
   ...props

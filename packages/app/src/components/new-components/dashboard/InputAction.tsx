@@ -5,12 +5,12 @@ import Checkbox from "../Checkbox"
 import TransactionInput from "../TransactionInput"
 import ButtonIcon from "../ButtonIcon"
 import { useWallet } from "@/context/WalletContext"
-import { Token } from "@/lib/tokens"
+import type { Token } from "@/lib/tokens"
 import { registryByNetwork } from "@open-djed/registry"
 import { useEnv } from "@/context/EnvContext"
 import { useProtocolData } from "@/hooks/useProtocolData"
-import { ActionType, TokenType } from "@open-djed/api"
-import { ReserveBoundsType } from "./useMintBurnAction"
+import type { ActionType, TokenType } from "@open-djed/api"
+import type { ReserveBoundsType } from "./useMintBurnAction"
 
 export type InputActionProps = {
   label: string

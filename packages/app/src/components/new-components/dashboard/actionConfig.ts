@@ -1,4 +1,4 @@
-import { Token } from "@/lib/tokens"
+import type { Token } from "@/lib/tokens"
 
 export type Type = "pay" | "receive"
 

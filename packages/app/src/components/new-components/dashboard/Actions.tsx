@@ -2,13 +2,10 @@
 
 import * as React from "react"
 import BaseCard from "../card/BaseCard"
-import Tabs, { TabItem } from "../Tabs"
+import Tabs, { type TabItem } from "../Tabs"
 import Action from "./Action"
-import { ActionType } from "./actionConfig"
-import { useMintBurnAction } from "./useMintBurnAction"
-import { useProtocolData } from "@/hooks/useProtocolData"
-import { formatNumber } from "@/lib/utils"
-import { maxReserveRatio, minReserveRatio } from "@open-djed/math"
+import type { ActionType } from "./actionConfig"
+import type { useMintBurnAction } from "./useMintBurnAction"
 import Snackbar from "../Snackbar"
 
 export type ActionsProps = {
@@ -17,8 +14,6 @@ export type ActionsProps = {
 }
 
 const Actions: React.FC<ActionsProps> = ({ action, onActionChange }) => {
-  const { data } = useProtocolData()
-
   const tabs: TabItem[] = [
     { key: "Mint", leadingIcon: "Mint", text: "Mint" },
     { key: "Burn", leadingIcon: "Burn", text: "Burn" },

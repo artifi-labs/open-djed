@@ -1,13 +1,12 @@
 "use client"
 
 import * as React from "react"
-import { ACTION_CONFIG, ActionType } from "./actionConfig"
-import { SUPPORTED_TOKENS, Token } from "@/lib/tokens"
+import { ACTION_CONFIG, type ActionType } from "./actionConfig"
+import { SUPPORTED_TOKENS, type Token } from "@/lib/tokens"
 import { useWallet } from "@/context/WalletContext"
 import { useProtocolData } from "@/hooks/useProtocolData"
-import { TokenType } from "@open-djed/api"
+import type { TokenType } from "@open-djed/api"
 import { useSidebar } from "@/context/SidebarContext"
-import { Value } from "@/lib/utils"
 import { getWalletData } from "@/lib/getWalletData"
 import { useApiClient } from "@/context/ApiClientContext"
 import { AppError } from "@open-djed/api/src/errors"
@@ -480,12 +479,7 @@ export function useMintBurnAction(defaultActionType: ActionType) {
       }
 
       const txCbor = await response.text()
-      const txHash = await signAndSubmitTx(
-        wallet,
-        txCbor,
-        Transaction,
-        TransactionWitnessSet,
-      )
+      await signAndSubmitTx(wallet, txCbor, Transaction, TransactionWitnessSet)
       showToast({
         message: `Transaction submitted succesfully!`,
         type: "success",

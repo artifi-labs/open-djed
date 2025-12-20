@@ -3,10 +3,10 @@
 import * as React from "react"
 import Button from "../Button"
 import { capitalize } from "@/lib/utils"
-import { ActionType } from "./actionConfig"
+import type { ActionType } from "./actionConfig"
 import InputAction from "./InputAction"
-import { Token } from "@/lib/tokens"
-import { ReserveBoundsType } from "./useMintBurnAction"
+import type { Token } from "@/lib/tokens"
+import type { ReserveBoundsType } from "./useMintBurnAction"
 
 export type ActionProps = {
   actionType: ActionType
