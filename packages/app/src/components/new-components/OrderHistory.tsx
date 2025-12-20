@@ -2,7 +2,6 @@
 
 import * as React from "react"
 import { useMemo } from "react"
-import clsx from "clsx"
 import Link from "next/link"
 import { Skeleton } from "../Skeleton"
 import Table from "./table/Table"
@@ -16,6 +15,7 @@ import type { HeaderItem } from "./table/Table"
 import Tag from "./Tag"
 import Dialog from "./Dialog"
 import Snackbar from "./Snackbar"
+import TransactionDetails from "./TransactionDetails"
 
 type OrderStatus =
   | "Processing"
@@ -28,6 +28,7 @@ type OrderStatus =
 interface RowItem {
   columns: { content: React.ReactNode }[]
   key: string
+  raw: OrderApi
 }
 
 interface OrderHistoryProps {
@@ -246,7 +247,7 @@ const ExternalCell = ({
   }, [showSnackbar])
 
   return (
-    <div className="flex justify-end gap-8 px-16 py-6">
+    <div className="flex justify-end gap-8">
       {showCancel && (
         <>
           <Button
@@ -275,24 +276,12 @@ const ExternalCell = ({
           )}
         </>
       )}
-
       <Link
         href={`https://preview.cardanoscan.io/transaction/${txHash}`}
         target="_blank"
       >
         <ButtonIcon size="small" variant="outlined" icon="External" />
       </Link>
-
-      <ButtonIcon
-        size="tiny"
-        variant="onlyIcon"
-        icon="Chevron-down"
-        className={clsx("transition-transform duration-200", {
-          "rotate-180": isOpen,
-        })}
-        onClick={handleToggle}
-      />
-      {/* TODO: Implement view Tx details */}
 
       {showSnackbar && (
         <div className="fixed right-24 bottom-24 z-50">
@@ -316,6 +305,7 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({ data }) => {
 
     return data.map((order) => ({
       key: order.tx_hash,
+      raw: order,
       columns: [
         { content: <TokenCell token={order.token} /> },
         { content: <TypeCell action={order.action} /> },
@@ -354,7 +344,14 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({ data }) => {
     return <Skeleton width="w-full" height="h-32" />
   }
 
-  return <Table headers={headers} rows={rows} totalCount={data.length} />
+  return (
+    <Table
+      headers={headers}
+      RowComponent={TransactionDetails}
+      rows={rows}
+      totalCount={data.length}
+    />
+  )
 }
 
 export default OrderHistory
