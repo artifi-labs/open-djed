@@ -28,8 +28,8 @@ export type ActionProps = {
   onReceiveValueChange: (t: Token, value: string) => void
   onPayTokenChange: (t: Token) => void
   onReceiveTokenChange: (t: Token) => void
-  onHalfClick?: (t: Token) => void
-  onMaxClick?: (t: Token) => void
+  onHalfClick?: (t: Token, maxAmount: string) => void
+  onMaxClick?: (t: Token, maxAmount: string) => void
   onButtonClick?: () => void
   linkClicked?: boolean
   onLinkClick?: () => void
@@ -69,7 +69,7 @@ const Action: React.FC<ActionProps> = ({
   const inputs = [
     {
       key: "pay",
-      label: "You Pay",
+      label: actionType === "Mint" ? "You Mint" : "You Burn",
       coins: config.pay,
       hasLeadingIcon: !bothSelected && config.payHasLeadingIcon,
       showDual: config.payShowDual && bothSelected,
@@ -81,10 +81,12 @@ const Action: React.FC<ActionProps> = ({
       onHalfClick,
       onMaxClick,
       hasMaxAndHalfActions: true,
+      hasAvailableAmount: false,
+      hasMaxAmount: true,
     },
     {
       key: "receive",
-      label: "You Receive",
+      label: actionType === "Mint" ? "You Pay" : "You Receive",
       coins: config.receive,
       hasLeadingIcon: !bothSelected && config.receiveHasLeadingIcon,
       showDual: config.receiveShowDual && bothSelected,
@@ -95,6 +97,7 @@ const Action: React.FC<ActionProps> = ({
       onValueChange: onReceiveValueChange,
       hasMaxAndHalfActions: false,
       hasAvailableAmount: false,
+      disabled: true,
     },
   ]
 
@@ -121,6 +124,9 @@ const Action: React.FC<ActionProps> = ({
           onLinkClick={onLinkClick}
           hasMaxAndHalfActions={i.hasMaxAndHalfActions}
           hasAvailableAmount={i.hasAvailableAmount}
+          disabled={i.disabled}
+          hasMaxAmount={i.hasMaxAmount}
+          action={actionType}
         />
       ))}
 

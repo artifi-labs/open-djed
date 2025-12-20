@@ -65,28 +65,18 @@ const calculateFromPay = ({
   const nextActionData: ActionDataMap = {}
 
   targetTokens.forEach((targetToken) => {
-    let token = sourceToken
-    let valueToPay
-
-    if (isMint) {
-      // TODO: IF minting and sourceToken is ADA we need to convert ADA or modify useProtocol to accept ada
-
-      const value = { ADA: sourceValue } as Value
-      const convertedValue = data.to(value, targetToken)
-      console.log("Converted value: ", convertedValue)
-      token = targetToken
-    }
-
     const actionData = calculateTokenAction(
       data,
-      token,
+      sourceToken,
       action,
       sourceValue,
       isMint,
     )
 
-    nextReceive[targetToken] = actionData.toReceive[targetToken] ?? 0
-    nextActionData[token] = actionData
+    nextReceive[targetToken] = isMint
+      ? (actionData.toSend["ADA"] ?? 0)
+      : (actionData.toReceive[targetToken] ?? 0)
+    nextActionData[sourceToken] = actionData
   })
 
   return { receive: nextReceive, actionData: nextActionData }
@@ -394,8 +384,7 @@ export function useMintBurnAction(defaultActionType: ActionType) {
   )
 
   const handleHalfClick = React.useCallback(
-    (token: Token) => {
-      const balance = wallet?.balance[token]?.toString()
+    (token: Token, balance: string) => {
       if (config.pay.includes(token)) {
         handlePayHalf(token, balance)
       } else if (config.receive.includes(token)) {
@@ -406,8 +395,7 @@ export function useMintBurnAction(defaultActionType: ActionType) {
   )
 
   const handleMaxClick = React.useCallback(
-    (token: Token) => {
-      const balance = wallet?.balance[token]?.toString()
+    (token: Token, balance: string) => {
       if (config.pay.includes(token)) {
         handlePayMax(token, balance)
       } else if (config.receive.includes(token)) {
@@ -436,16 +424,8 @@ export function useMintBurnAction(defaultActionType: ActionType) {
     if (!wallet) return
     if (payValues && !Object.values(payValues).some((value) => value > 0))
       return
-    if (
-      receiveValues &&
-      !Object.values(receiveValues).some((value) => value > 0)
-    )
-      return
 
-    const tokenAmount =
-      actionType === "Mint"
-        ? Object.entries(receiveValues).find(([, value]) => value > 0)
-        : Object.entries(payValues).find(([, value]) => value > 0)
+    const tokenAmount = Object.entries(payValues).find(([, value]) => value > 0)
 
     if (!tokenAmount) return
 
