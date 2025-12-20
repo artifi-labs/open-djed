@@ -7,36 +7,13 @@ import WalletOrder from "./WalletOrder"
 import Button from "../Button"
 import Link from "next/link"
 import { useSidebar } from "@/context/SidebarContext"
-import JSONBig from "json-bigint"
+import { useOrders } from "@/hooks/useOrders"
 
 export default function OrdersWalletSection({ wallet }: { wallet: Wallet }) {
   const { closeSidebar } = useSidebar()
-  const [orders, setOrders] = useState<OrderUTxO[]>([])
+  const { orders } = useOrders()
 
   const client = useApiClient()
-
-  useEffect(() => {
-    if (!wallet) return
-
-    const fetchOrders = async () => {
-      const usedAddress = await wallet.getUsedAddresses()
-      if (!usedAddress) throw new Error("Failed to get used address")
-
-      try {
-        const res = await client.api.orders.$post({
-          json: { usedAddresses: usedAddress },
-        })
-        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`)
-        const data = await res.text()
-        const parsed = JSONBig.parse(data)
-        setOrders(parsed.orders)
-      } catch (err) {
-        console.error("Error fetching orders:", err)
-      }
-    }
-
-    fetchOrders().catch(console.error)
-  }, [wallet])
 
   return (
     <>

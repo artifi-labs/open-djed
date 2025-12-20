@@ -11,6 +11,7 @@ import ButtonIcon from "../ButtonIcon"
 import { useEnv } from "@/context/EnvContext"
 import Coin, { type IconCoinName } from "../Coin"
 import Divider from "../Divider"
+import { useOrders } from "@/hooks/useOrders"
 
 type WalletOrderProps = {
   order: OrderUTxO
@@ -25,80 +26,7 @@ const WalletOrder: React.FC<WalletOrderProps> = ({
 }) => {
   const apiClient = useApiClient()
   const { network } = useEnv()
-
-  function formatRelativeDate(timestampMs: bigint): string {
-    const date = new Date(Number(timestampMs))
-    const now = new Date()
-
-    const diffMs = now.getTime() - date.getTime()
-    const diffMinutes = Math.floor(diffMs / 60000)
-    const diffDays = Math.floor(diffMs / 86400000)
-
-    // if date is less than 1 hour ago → "X min(s) ago"
-    if (diffMinutes < 60) {
-      if (diffMinutes <= 1) return "1 min ago"
-      return `${diffMinutes} mins ago`
-    }
-
-    const time = date.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    })
-
-    // if date is more than 1h ago but less than 24h → "Today, 14:30"
-    if (diffDays === 0) {
-      return `Today, ${time}`
-    }
-
-    // if date is more than 24h ago but less than 48h → "Yesterday, 21:30"
-    if (diffDays === 1) {
-      return `Yesterday, ${time}`
-    }
-
-    // if date is more than 48h ago → "12/02/2020, 14:30"
-    return date.toLocaleDateString([], {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    })
-  }
-  const creationDate = formatRelativeDate(order.orderDatum.creationDate)
-
-  const handleCancelOrder = async (orderTx: string, outIndex: number) => {
-    const { Transaction, TransactionWitnessSet } =
-      await import("@dcspark/cardano-multiplatform-lib-browser")
-    if (!wallet) return
-    try {
-      const { address, utxos } = await getWalletData(wallet)
-      const response = await apiClient.api["cancel-order"].$post({
-        json: {
-          hexAddress: address,
-          utxosCborHex: utxos,
-          txHash: orderTx,
-          outIndex,
-        },
-      })
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new AppError(errorData.message)
-      }
-      const txCbor = await response.text()
-      const txHash = await signAndSubmitTx(
-        wallet,
-        txCbor,
-        Transaction,
-        TransactionWitnessSet,
-      )
-      // TODO replace with toast
-      console.log("Transaction submitted with hash:", txHash)
-    } catch (err) {
-      console.error("Action failed:", err)
-      if (err instanceof AppError) {
-        // TODO replace with toast
-        console.error("AppError:", err.message)
-      }
-    }
-  }
+  const { formatDate, handleCancelOrder } = useOrders()
 
   const formatLovelace = (amount: bigint) =>
     (Number(amount) / 1_000_000).toLocaleString(undefined, {
@@ -190,7 +118,9 @@ const WalletOrder: React.FC<WalletOrderProps> = ({
           <Coin name={token as IconCoinName} checked={false} size="small" />
           <span className="text-xs">{actionType}</span>
           <span className="bg-secondary h-0.75 w-0.75 rounded-full"></span>
-          <span className="text-secondary text-[10px]">{creationDate}</span>
+          <span className="text-secondary text-[10px]">
+            {formatDate(order.orderDatum.creationDate)}
+          </span>
         </div>
         <div className="flex flex-row items-center gap-4">
           <span className="text-xs">Paid: {paid}</span>
