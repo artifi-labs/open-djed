@@ -1,12 +1,52 @@
 import { useApiClient } from "@/context/ApiClientContext"
 import { useToast } from "@/context/ToastContext"
 import { useWallet } from "@/context/WalletContext"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import JSONBig from "json-bigint"
-import { OrderUTxO } from "@open-djed/txs/src/types"
 import { getWalletData } from "@/lib/getWalletData"
 import { signAndSubmitTx } from "@/lib/signAndSubmitTx"
 import { AppError } from "@open-djed/api/src/errors"
+import type { Order } from "@open-djed/api"
+
+// this value will be retreive from the db package when integrated
+export type OrderApi = {
+  id: number
+  tx_hash: string
+  action: "Mint" | "Burn"
+  token: "DJED" | "SHEN" | "BOTH"
+  orderDate: string
+  paid?: bigint | null
+  fees?: bigint | null
+  received?: bigint | null
+  status?: OrderStatus
+  address: {
+    paymentKeyHash: string[]
+    stakeKeyHash: string[][][]
+  }
+}
+
+export type OrderStatus =
+  | "Processing"
+  | "Created"
+  | "Completed"
+  | "Cancelling"
+  | "Canceled"
+  | "Failed"
+  | "Expired"
+
+export const statusFiltersArray = [
+  "All",
+  "Processing",
+  "Created",
+  "Completed",
+  "Cancelling",
+  "Canceled",
+  "Failed",
+  "Expired",
+] as const
+
+// derive the type from the filters array
+export type StatusFilters = (typeof statusFiltersArray)[number]
 
 function formatRelativeDate(timestampMs: bigint): string {
   const date = new Date(Number(timestampMs))
@@ -49,31 +89,27 @@ export const useOrders = () => {
   const apiClient = useApiClient()
   const { wallet } = useWallet()
   const { showToast } = useToast()
+  const [orders, setOrders] = useState<Order[]>([])
 
-  const [userOrders, setUserOrders] = useState<OrderUTxO[]>([])
-
-  useEffect(() => {
+  const fetchOrders = async () => {
     if (!wallet) return
+    const usedAddress = await wallet.getUsedAddresses()
+    if (!usedAddress) throw new Error("Failed to get used address")
 
-    const fetchOrders = async () => {
-      const usedAddress = await wallet.getUsedAddresses()
-      if (!usedAddress) throw new Error("Failed to get used address")
-
-      try {
-        const res = await apiClient.api.orders.$post({
-          json: { usedAddresses: usedAddress },
-        })
-        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`)
-        const data = await res.text()
-        const parsed = JSONBig.parse(data)
-        setUserOrders(parsed.orders)
-      } catch (err) {
-        console.error("Error fetching orders:", err)
-      }
+    try {
+      const res = await apiClient.api["historical-orders"].$post({
+        json: { usedAddresses: usedAddress },
+      })
+      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`)
+      const data = await res.text()
+      const parsed: { orders: Order[] } = JSONBig({
+        useNativeBigInt: true,
+      }).parse(data)
+      setOrders(parsed.orders)
+    } catch (err) {
+      console.error("Error fetching orders:", err)
     }
-
-    fetchOrders().catch(console.error)
-  }, [wallet])
+  }
 
   const handleCancelOrder = async (orderTx: string, outIndex: number) => {
     const { Transaction, TransactionWitnessSet } =
@@ -94,12 +130,7 @@ export const useOrders = () => {
         throw new AppError(errorData.message)
       }
       const txCbor = await response.text()
-      const txHash = await signAndSubmitTx(
-        wallet,
-        txCbor,
-        Transaction,
-        TransactionWitnessSet,
-      )
+      await signAndSubmitTx(wallet, txCbor, Transaction, TransactionWitnessSet)
 
       showToast({
         message: "Your order has been cancelled.",
@@ -118,7 +149,8 @@ export const useOrders = () => {
   }
 
   return {
-    orders: userOrders,
+    orders,
+    fetchOrders,
     formatDate: formatRelativeDate,
     handleCancelOrder,
   }

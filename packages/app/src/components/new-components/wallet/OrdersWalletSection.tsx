@@ -1,33 +1,36 @@
 "use client"
-import { useEffect, useState } from "react"
-import type { OrderUTxO } from "@open-djed/txs"
-import { useApiClient } from "@/context/ApiClientContext"
-import type { Wallet } from "@/context/WalletContext"
 import WalletOrder from "./WalletOrder"
 import Button from "../Button"
 import Link from "next/link"
 import { useSidebar } from "@/context/SidebarContext"
 import { useOrders } from "@/hooks/useOrders"
+import { useEffect, useMemo } from "react"
+import { type Wallet } from "@/context/WalletContext"
 
 export default function OrdersWalletSection({ wallet }: { wallet: Wallet }) {
   const { closeSidebar } = useSidebar()
-  const { orders } = useOrders()
+  const { orders, fetchOrders } = useOrders()
 
-  const client = useApiClient()
+  useEffect(() => {
+    fetchOrders().catch((e) => console.error(e))
+  }, [wallet])
+
+  const lastFiveOrders = useMemo(() => {
+    return orders.slice(0, 4)
+  }, [orders])
 
   return (
     <>
-      <div className="flex h-full w-full flex-col gap-6 px-12 py-8">
+      <div className="flex h-full w-full flex-col gap-6 overflow-y-auto px-12 py-8">
         <h1 className="text-sm font-medium">Orders</h1>
         <div className="flex h-full w-full flex-col gap-12">
-          {orders.length > 0 ? (
+          {lastFiveOrders.length > 0 ? (
             <>
-              {orders.map((order, index) => {
+              {lastFiveOrders.map((order, index) => {
                 return (
                   <WalletOrder
                     order={order}
-                    wallet={wallet}
-                    key={order.txHash}
+                    key={order.tx_hash}
                     divider={index !== orders.length - 1}
                   />
                 )
