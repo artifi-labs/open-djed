@@ -43,6 +43,8 @@ import {
   ValidationError,
 } from "./errors"
 import JSONbig from "json-bigint"
+import { readFile } from "fs/promises"
+import { join } from "path"
 
 //NOTE: We only need this cache for transactions, not for other requests. Using this for `protocol-data` sligltly increases the response time.
 const requestCache = new TTLCache<string, { value: Response; expiry: number }>({
@@ -205,6 +207,56 @@ async function completeTransaction(createOrderFn: () => TxBuilder) {
     }
     throw err
   }
+}
+
+// this will be removed when db is integrated
+export type Order = {
+  id: number
+  address: {
+    paymentKeyHash: string[]
+    stakeKeyHash: string[][][]
+  }
+  tx_hash: string
+  block: string
+  slot: number
+  action: "Mint" | "Burn"
+  token: "DJED" | "SHEN"
+  paid?: bigint
+  fees?: bigint
+  received?: bigint
+  orderDate: Date
+  status: string
+}
+type OrderFromFile = Omit<Order, "orderDate" | "paid" | "fees" | "received"> & {
+  orderDate: string
+  paid?: string
+  fees?: string
+  received?: string
+}
+
+// this will be removed when db is integrated
+function parseOrder(order: OrderFromFile): Order {
+  return {
+    ...order,
+    orderDate: new Date(order.orderDate),
+    paid: order.paid ? BigInt(order.paid) : undefined,
+    fees: order.fees ? BigInt(order.fees) : undefined,
+    received: order.received ? BigInt(order.received) : undefined,
+  }
+}
+
+// this will be removed when db is integrated
+async function readOrdersFromFile<T = unknown>(): Promise<T[]> {
+  const filePath = join(__dirname, "./mock_orders.json")
+  const fileContents = await readFile(filePath, "utf-8")
+
+  const data = JSON.parse(fileContents)
+
+  if (!Array.isArray(data)) {
+    throw new Error("Invalid orders file: expected an array")
+  }
+
+  return data as T[]
 }
 
 const tokenSchema = z.enum(["DJED", "SHEN"]).openapi({ example: "DJED" })
@@ -534,6 +586,100 @@ const app = new Hono()
           { error: "InternalServerError", message: "Something went wrong." },
           500,
         )
+      }
+    },
+  )
+  .post(
+    "/historical-orders",
+    cacheMiddleware,
+    describeRoute({
+      description: "Get the users' historical orders",
+      tags: ["Action"],
+      responses: {
+        200: {
+          description: "Successfully got the historical orders",
+          content: {
+            "text/plain": {
+              example: "Order",
+            },
+          },
+        },
+        400: {
+          description: "Bad Request",
+          content: {
+            "text/plain": {
+              example: "Bad Request",
+            },
+          },
+        },
+        500: {
+          description: "Internal Server Error",
+          content: {
+            "text/plain": {
+              example: "Internal Server Error",
+            },
+          },
+        },
+      },
+    }),
+    zValidator("json", z.object({ usedAddresses: z.array(z.string()) })),
+    async (c) => {
+      let json
+
+      try {
+        json = c.req.valid("json")
+        if (!json?.usedAddresses) {
+          throw new ValidationError("Missing hexAddress in request.")
+        }
+      } catch (e) {
+        console.error("Invalid or missing request payload.", e)
+        throw new ValidationError("Invalid or missing request payload.")
+      }
+
+      try {
+        // fix this after integration with db
+        const fileOrders = await readOrdersFromFile<OrderFromFile>()
+        const allOrders: Order[] = fileOrders.map(parseOrder)
+
+        const usedAddressesKeys = json.usedAddresses.map((addr) => {
+          try {
+            const paymentKeyHash = paymentCredentialOf(addr)
+            const stakeKeyHash = stakeCredentialOf(addr)
+            return {
+              paymentKeyHash: paymentKeyHash.hash,
+              stakeKeyHash: stakeKeyHash.hash,
+            }
+          } catch {
+            return { paymentKeyHash: "", stakeKeyHash: "" }
+          }
+        })
+
+        const filteredOrders = allOrders.filter((order) => {
+          const paymentKeyHash = order.address.paymentKeyHash?.[0]
+          const stakeKeyHash = order.address.stakeKeyHash?.[0]?.[0]?.[0]
+
+          if (!paymentKeyHash || !stakeKeyHash) return false
+
+          return usedAddressesKeys.some(
+            (key) =>
+              key.paymentKeyHash === paymentKeyHash &&
+              key.stakeKeyHash === stakeKeyHash,
+          )
+        })
+
+        const sortedOrders = [...filteredOrders].sort(
+          (a, b) => b.orderDate.getTime() - a.orderDate.getTime(),
+        )
+
+        return new Response(JSONbig.stringify({ orders: sortedOrders }), {
+          headers: { "Content-Type": "application/json" },
+        })
+      } catch (err) {
+        if (err instanceof AppError) {
+          throw err
+        }
+        console.error("Unhandled error in orders endpoint:", err)
+        throw new InternalServerError()
       }
     },
   )
