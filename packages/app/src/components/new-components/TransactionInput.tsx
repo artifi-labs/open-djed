@@ -154,7 +154,7 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
           <ButtonIcon
             variant="onlyIcon"
             size="tiny"
-            icon="Vector"
+            icon="Placeholder"
             disabled={disabled}
           />
         )}

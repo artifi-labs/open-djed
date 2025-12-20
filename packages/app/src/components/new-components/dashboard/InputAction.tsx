@@ -10,6 +10,7 @@ import { registryByNetwork } from "@open-djed/registry"
 import { useEnv } from "@/context/EnvContext"
 import { useProtocolData } from "@/hooks/useProtocolData"
 import { ActionType, TokenType } from "@open-djed/api"
+import { ReserveBoundsType } from "./useMintBurnAction"
 
 export type InputActionProps = {
   label: string
@@ -33,6 +34,7 @@ export type InputActionProps = {
   disabled?: boolean
   hasMaxAmount?: boolean
   action: ActionType
+  reserveBounds: ReserveBoundsType
 }
 
 export type TransactionInputGroupProps = {
@@ -52,6 +54,7 @@ export type TransactionInputGroupProps = {
   disabled?: boolean
   hasMaxAmount?: boolean
   action: ActionType
+  reserveBounds: ReserveBoundsType
 }
 
 const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
@@ -71,6 +74,7 @@ const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
   disabled,
   hasMaxAmount,
   action,
+  reserveBounds,
 }) => {
   const { wallet } = useWallet()
   const walletConnected = wallet !== null
@@ -113,10 +117,30 @@ const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
             ) * 1e6,
           ) / 1e6
 
+    const isDisabled =
+      ((token === "DJED" && action === "Mint") ||
+        (token === "SHEN" && action === "Burn")) &&
+      reserveBounds === "below"
+        ? true
+        : token === "SHEN" && action === "Mint" && reserveBounds === "above"
+          ? true
+          : false
+
+    console.log(
+      "token: ",
+      token,
+      " action: ",
+      action,
+      " bound: ",
+      reserveBounds,
+      " disabled: ",
+      isDisabled,
+    )
+
     return (
       <TransactionInput
         key={coin}
-        disabled={disabled}
+        disabled={disabled || isDisabled}
         placeholder="0"
         asset={{
           coin: coin,
@@ -193,6 +217,7 @@ const InputAction: React.FC<InputActionProps> = ({
   disabled,
   hasMaxAmount,
   action,
+  reserveBounds,
 }) => {
   return (
     <div className="flex flex-col gap-12">
@@ -231,6 +256,7 @@ const InputAction: React.FC<InputActionProps> = ({
         disabled={disabled}
         hasMaxAmount={hasMaxAmount}
         action={action}
+        reserveBounds={reserveBounds}
       />
     </div>
   )

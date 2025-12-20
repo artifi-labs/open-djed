@@ -6,6 +6,10 @@ import Tabs, { TabItem } from "../Tabs"
 import Action from "./Action"
 import { ActionType } from "./actionConfig"
 import { useMintBurnAction } from "./useMintBurnAction"
+import { useProtocolData } from "@/hooks/useProtocolData"
+import { formatNumber } from "@/lib/utils"
+import { maxReserveRatio, minReserveRatio } from "@open-djed/math"
+import Snackbar from "../Snackbar"
 
 export type ActionsProps = {
   action: ReturnType<typeof useMintBurnAction>
@@ -13,6 +17,8 @@ export type ActionsProps = {
 }
 
 const Actions: React.FC<ActionsProps> = ({ action, onActionChange }) => {
+  const { data } = useProtocolData()
+
   const tabs: TabItem[] = [
     { key: "Mint", leadingIcon: "Mint", text: "Mint" },
     { key: "Burn", leadingIcon: "Burn", text: "Burn" },
@@ -22,6 +28,8 @@ const Actions: React.FC<ActionsProps> = ({ action, onActionChange }) => {
     Mint: "Mint DJED, SHEN or both by depositing ADA into the protocol.",
     Burn: "Burn DJED, SHEN or both to withdraw your ADA from the protocol.",
   }
+
+  const { reserveWarning } = action.reserveDetails()
 
   return (
     <BaseCard className="p-24">
@@ -38,6 +46,17 @@ const Actions: React.FC<ActionsProps> = ({ action, onActionChange }) => {
             {descriptionText[action.actionType]}
           </p>
         </div>
+
+        {reserveWarning && (
+          <Snackbar
+            text={reserveWarning}
+            type="attention"
+            leadingIcon={"Information"}
+            closeIcon={false}
+            action={false}
+            full={true}
+          />
+        )}
 
         <Action {...action} />
       </div>

@@ -6,6 +6,7 @@ import { capitalize } from "@/lib/utils"
 import { ActionType } from "./actionConfig"
 import InputAction from "./InputAction"
 import { Token } from "@/lib/tokens"
+import { ReserveBoundsType } from "./useMintBurnAction"
 
 export type ActionProps = {
   actionType: ActionType
@@ -33,6 +34,13 @@ export type ActionProps = {
   onButtonClick?: () => void
   linkClicked?: boolean
   onLinkClick?: () => void
+  reserveDetails: () => {
+    maxRatio: number
+    minRatio: number
+    reserveRatio: number
+    reserveBounds: ReserveBoundsType
+    reserveWarning: string | null
+  }
 }
 
 const Action: React.FC<ActionProps> = ({
@@ -54,6 +62,7 @@ const Action: React.FC<ActionProps> = ({
   onMaxClick,
   linkClicked,
   onLinkClick,
+  reserveDetails,
 }) => {
   const actionText = capitalize(actionType)
 
@@ -65,6 +74,8 @@ const Action: React.FC<ActionProps> = ({
     : payEmpty || receiveEmpty
       ? `Fill in the Amount to ${actionText}`
       : actionText
+
+  const { reserveBounds } = reserveDetails()
 
   const inputs = [
     {
@@ -127,6 +138,7 @@ const Action: React.FC<ActionProps> = ({
           disabled={i.disabled}
           hasMaxAmount={i.hasMaxAmount}
           action={actionType}
+          reserveBounds={reserveBounds}
         />
       ))}
 
