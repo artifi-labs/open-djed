@@ -217,6 +217,7 @@ export type Order = {
     stakeKeyHash: string[][][]
   }
   tx_hash: string
+  out_index: number
   block: string
   slot: number
   action: "Mint" | "Burn"

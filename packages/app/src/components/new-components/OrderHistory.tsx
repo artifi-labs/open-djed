@@ -332,7 +332,7 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({ data, filters }) => {
             content: (
               <ExternalCell
                 txHash={order.tx_hash}
-                outIndex={0}
+                outIndex={order.out_index}
                 status={order.status}
               />
             ),
