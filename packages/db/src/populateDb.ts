@@ -1,7 +1,7 @@
 import { OrderDatum } from '@open-djed/data'
 import { Data } from '@lucid-evolution/lucid'
 import { prisma } from '../lib/prisma'
-import type { Block, OrderUTxOWithDatumAndBlock, Transaction, TransactionData, UTxO } from './types'
+import type { Block, Order, OrderUTxOWithDatumAndBlock, Transaction, TransactionData, UTxO } from './types'
 import { processBatch, parseOrderDatum, registry, blockfrost, blockfrostFetch } from './utils'
 
 export const populateDbWithHistoricOrders = async () => {
@@ -98,7 +98,7 @@ export const populateDbWithHistoricOrders = async () => {
 
   console.log('Processing order data...')
 
-  const ordersToInsert = await Promise.all(
+  const ordersToInsert: Order[] = await Promise.all(
     orderUTxOWithDatumAndBlock.map(async (utxo: OrderUTxOWithDatumAndBlock) => {
       const d = utxo.orderDatum as OrderDatum
       const { action, token, paid, received } = await parseOrderDatum(utxo)
@@ -108,6 +108,7 @@ export const populateDbWithHistoricOrders = async () => {
       return {
         address: d.address,
         tx_hash: utxo.tx_hash,
+        out_index: utxo.output_index,
         block: utxo.block_hash,
         slot: utxo.block_slot,
         action,

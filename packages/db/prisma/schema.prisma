@@ -26,10 +26,11 @@ enum Token {
 
 model Order {
   id        Int      @id @default(autoincrement())
-  address   Json     // user address, stores paymentKeyHash and stakeKeyHash
+  address   Json // user address, stores paymentKeyHash and stakeKeyHash
   tx_hash   String   @unique // hash of tx
-  block     String  // block hash
-  slot      BigInt  // block slot
+  out_index Int // output index
+  block     String // block hash
+  slot      BigInt // block slot
   action    Actions
   token     Token
   orderDate DateTime @default(now())
@@ -42,8 +43,8 @@ model Order {
 }
 
 model Block {
-  id           Int      @id @default(1) // only one row
-  latestBlock  String   @unique // hash of the latest block synced
-  latestSlot   BigInt   // slot of the latest block synced
-  updatedAt    DateTime @updatedAt @db.Timestamptz(6)
+  id          Int      @id @default(1) // only one row
+  latestBlock String   @unique // hash of the latest block synced
+  latestSlot  BigInt // slot of the latest block synced
+  updatedAt   DateTime @updatedAt @db.Timestamptz(6)
 }

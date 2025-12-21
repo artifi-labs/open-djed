@@ -53,6 +53,7 @@ export type AddressDatum = {
 export type Order = {
   address: AddressDatum
   tx_hash: string
+  out_index: number
   block: string
   slot: number
   action: Actions

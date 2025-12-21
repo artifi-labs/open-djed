@@ -9,6 +9,7 @@ CREATE TABLE "Order" (
     "id" SERIAL NOT NULL,
     "address" JSONB NOT NULL,
     "tx_hash" TEXT NOT NULL,
+    "out_index" INTEGER NOT NULL,
     "block" TEXT NOT NULL,
     "slot" BIGINT NOT NULL,
     "action" "Actions" NOT NULL,

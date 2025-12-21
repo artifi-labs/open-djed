@@ -223,6 +223,7 @@ async function processOrdersToInsert(utxos: OrderUTxOWithDatum[]) {
       return {
         address: d.address,
         tx_hash: utxo.tx_hash,
+        out_index: utxo.output_index,
         block: utxo.block_hash,
         slot: utxo.block_slot,
         action,
