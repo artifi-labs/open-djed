@@ -14,10 +14,9 @@ export default function OrderPage() {
   const [selectedFilter] = useState<StatusFilters>("All")
   const { orders, fetchOrders } = useOrders()
 
-  // TODO: FIX THIS LOOP
-  /*useEffect(() => {
+  useEffect(() => {
     fetchOrders().catch((e) => console.error(e))
-  }, [fetchOrders, wallet])*/
+  }, [fetchOrders, wallet])
 
   const filteredOrders = useMemo(() => {
     if (selectedFilter === "All") {
