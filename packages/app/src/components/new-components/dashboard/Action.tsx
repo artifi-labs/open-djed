@@ -6,7 +6,6 @@ import { capitalize } from "@/lib/utils"
 import type { ActionType } from "./actionConfig"
 import InputAction from "./InputAction"
 import type { Token } from "@/lib/tokens"
-import type { ReserveBoundsType } from "./useMintBurnAction"
 import { useReserveDetails } from "@/hooks/useReserveDetails"
 
 export type ActionProps = {
