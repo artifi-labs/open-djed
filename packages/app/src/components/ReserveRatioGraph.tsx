@@ -1,5 +1,5 @@
 import { formatNumber } from "@/lib/utils"
-import Tooltip from "./Tooltip"
+import Tooltip from "./new-components/tooltip/Tooltip"
 import { useTranslation } from "react-i18next"
 
 interface ReserveRatioGraphProps {
