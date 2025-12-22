@@ -20,6 +20,9 @@ export type TableProps<T> = {
   totalCount: number
   rowsPerPage?: number
   paginatedTable?: boolean
+  currentPage?: number
+  onPageChange?: (page: number) => void
+  serverSidePagination?: boolean
   RowComponent: ComponentType<{
     row: T
     hasBorder?: boolean
@@ -32,23 +35,38 @@ function Table<T>({
   totalCount,
   rowsPerPage = 10,
   paginatedTable = true,
+  currentPage: externalCurrentPage,
+  onPageChange,
+  serverSidePagination = false,
   RowComponent,
 }: TableProps<T>) {
-  const [currentPage, setCurrentPage] = useState(1)
+  const [internalCurrentPage, setInternalCurrentPage] = useState(1)
 
-  const lastPage = totalCount
-    ? Math.ceil(totalCount / rowsPerPage)
-    : Math.ceil(rows.length / rowsPerPage)
+  // Use external pagination if provided, otherwise use internal
+  const currentPage = serverSidePagination
+    ? (externalCurrentPage ?? 1)
+    : internalCurrentPage
+  const setCurrentPage = serverSidePagination
+    ? onPageChange
+    : setInternalCurrentPage
 
-  const rowsToRender = useMemo(() => {
+  const lastPage = Math.ceil(totalCount / rowsPerPage)
+
+  // Only slice rows if using client-side pagination
+  const currentRows = useMemo(() => {
+    if (serverSidePagination) {
+      return rows // Rows are already paginated from server
+    }
     const startIndex = (currentPage - 1) * rowsPerPage
     const endIndex = startIndex + rowsPerPage
     return rows.slice(startIndex, endIndex)
-  }, [rows, currentPage, rowsPerPage])
+  }, [rows, currentPage, rowsPerPage, serverSidePagination])
 
-  if (currentPage > lastPage && lastPage > 0) {
+  if (currentPage > lastPage && lastPage > 0 && setCurrentPage) {
     setCurrentPage(lastPage)
   }
+
+  const rowsToRender = currentRows.length > 0 ? currentRows : []
 
   return (
     <div className="w-full">
@@ -73,7 +91,6 @@ function Table<T>({
                 ))}
               </tr>
             </thead>
-
             {/* Body */}
             <tbody>
               {rowsToRender.map((row, index) => (
@@ -87,14 +104,13 @@ function Table<T>({
           </table>
         </div>
       </div>
-
       {/* Pagination */}
       {paginatedTable && (
         <div className="border-border-primary bg-background-primary w-full rounded-b-lg border px-24 py-12">
           <Pagination
             currentPage={currentPage}
             lastPage={lastPage}
-            setCurrentPage={setCurrentPage}
+            setCurrentPage={setCurrentPage ?? setInternalCurrentPage}
           />
         </div>
       )}

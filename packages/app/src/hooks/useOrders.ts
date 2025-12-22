@@ -47,6 +47,15 @@ export const statusFiltersArray = [
 // derive the type from the filters array
 export type StatusFilters = (typeof statusFiltersArray)[number]
 
+export type Pagination = {
+  currentPage: number
+  totalPages: number
+  totalOrders: number
+  ordersPerPage: number
+  hasNextPage: boolean
+  hasPreviousPage: boolean
+}
+
 function formatRelativeDate(timestampMs: bigint): string {
   const date = new Date(Number(timestampMs))
   const now = new Date()
@@ -90,25 +99,32 @@ export const useOrders = () => {
   const { showToast } = useToast()
   const [orders, setOrders] = useState<Order[]>([])
 
-  const fetchOrders = useCallback(async () => {
-    if (!wallet) return
-    const usedAddress = await wallet.getUsedAddresses()
-    if (!usedAddress) throw new Error("Failed to get used address")
-
-    try {
-      const res = await apiClient.api["historical-orders"].$post({
-        json: { usedAddresses: usedAddress },
-      })
-      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`)
-      const data = await res.text()
-      const parsed: { orders: Order[] } = JSONBig({
-        useNativeBigInt: true,
-      }).parse(data)
-      setOrders(parsed.orders)
-    } catch (err) {
-      console.error("Error fetching orders:", err)
-    }
-  }, [wallet, apiClient])
+  const fetchOrders = useCallback(
+    async (page = 1, limit = 10) => {
+      if (!wallet) return
+      const usedAddress = await wallet.getUsedAddresses()
+      if (!usedAddress) throw new Error("Failed to get used address")
+      try {
+        const res = await apiClient.api["historical-orders"].$post({
+          json: { usedAddresses: usedAddress },
+          query: { page: page.toString(), limit: limit.toString() },
+        })
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`)
+        const data = await res.text()
+        const parsed: {
+          orders: Order[]
+          pagination: Pagination
+        } = JSONBig({
+          useNativeBigInt: true,
+        }).parse(data)
+        setOrders(parsed.orders)
+        return parsed.pagination
+      } catch (err) {
+        console.error("Error fetching orders:", err)
+      }
+    },
+    [wallet, apiClient],
+  )
 
   const handleCancelOrder = async (orderTx: string, outIndex: number) => {
     const { Transaction, TransactionWitnessSet } =

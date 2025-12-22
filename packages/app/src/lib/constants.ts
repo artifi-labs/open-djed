@@ -13,3 +13,6 @@ export const SUPPORTED_LANGUAGES = [
   { code: "en", label: "English" },
   { code: "pt", label: "Português" },
 ]
+
+export const ORDERS_PER_PAGE = 10
+export const ORDERS_SIDEBAR = 5

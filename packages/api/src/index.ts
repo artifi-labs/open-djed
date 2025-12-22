@@ -624,9 +624,15 @@ const app = new Hono()
       },
     }),
     zValidator("json", z.object({ usedAddresses: z.array(z.string()) })),
+    zValidator(
+      "query",
+      z.object({
+        page: z.string().optional().default("1"),
+        limit: z.string().optional().default("10"),
+      }),
+    ),
     async (c) => {
       let json
-
       try {
         json = c.req.valid("json")
         if (!json?.usedAddresses) {
@@ -636,12 +642,21 @@ const app = new Hono()
         console.error("Invalid or missing request payload.", e)
         throw new ValidationError("Invalid or missing request payload.")
       }
-
       try {
+        // Get pagination parameters from query string
+        const page = parseInt(c.req.query("page") || "1", 10)
+        const limit = parseInt(c.req.query("limit") || "10", 10)
+
+        // Validate pagination parameters
+        if (page < 1 || limit < 1 || limit > 100) {
+          throw new ValidationError(
+            "Invalid pagination parameters. Page must be >= 1, limit must be between 1 and 100.",
+          )
+        }
+
         // fix this after integration with db
         const fileOrders = await readOrdersFromFile<OrderFromFile>()
         const allOrders: Order[] = fileOrders.map(parseOrder)
-
         const usedAddressesKeys = json.usedAddresses.map((addr) => {
           try {
             const paymentKeyHash = paymentCredentialOf(addr)
@@ -654,27 +669,43 @@ const app = new Hono()
             return { paymentKeyHash: "", stakeKeyHash: "" }
           }
         })
-
         const filteredOrders = allOrders.filter((order) => {
           const paymentKeyHash = order.address.paymentKeyHash?.[0]
           const stakeKeyHash = order.address.stakeKeyHash?.[0]?.[0]?.[0]
-
           if (!paymentKeyHash || !stakeKeyHash) return false
-
           return usedAddressesKeys.some(
             (key) =>
               key.paymentKeyHash === paymentKeyHash &&
               key.stakeKeyHash === stakeKeyHash,
           )
         })
-
         const sortedOrders = [...filteredOrders].sort(
           (a, b) => b.orderDate.getTime() - a.orderDate.getTime(),
         )
 
-        return new Response(JSONbig.stringify({ orders: sortedOrders }), {
-          headers: { "Content-Type": "application/json" },
-        })
+        // Calculate pagination
+        const totalOrders = sortedOrders.length
+        const totalPages = Math.ceil(totalOrders / limit)
+        const startIndex = (page - 1) * limit
+        const endIndex = startIndex + limit
+        const paginatedOrders = sortedOrders.slice(startIndex, endIndex)
+
+        return new Response(
+          JSONbig.stringify({
+            orders: paginatedOrders,
+            pagination: {
+              currentPage: page,
+              totalPages: totalPages,
+              totalOrders: totalOrders,
+              ordersPerPage: limit,
+              hasNextPage: page < totalPages,
+              hasPreviousPage: page > 1,
+            },
+          }),
+          {
+            headers: { "Content-Type": "application/json" },
+          },
+        )
       } catch (err) {
         if (err instanceof AppError) {
           throw err

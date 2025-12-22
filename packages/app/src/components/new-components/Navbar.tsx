@@ -3,6 +3,7 @@
 import Link from "next/link"
 import React, { useState } from "react"
 import { useTranslation } from "react-i18next"
+import { usePathname } from "next/navigation"
 import Button from "./Button"
 import ButtonIcon from "./ButtonIcon"
 import Image from "next/image"
@@ -25,6 +26,7 @@ type NavigationItem = {
 type NavigationItemsProps = {
   items: NavigationItem[]
   className?: string
+  activePath: string
 }
 
 type NetworkBadgeProps = {
@@ -36,6 +38,7 @@ type NetworkBadgeProps = {
 const NavigationItems: React.FC<NavigationItemsProps> = ({
   items,
   className,
+  activePath,
 }) => {
   const baseClassName = clsx(
     "hidden desktop:flex items-center gap-24",
@@ -44,15 +47,30 @@ const NavigationItems: React.FC<NavigationItemsProps> = ({
 
   return (
     <nav className={baseClassName} aria-label="Main navigation">
-      {items.map((item) => (
-        <Link
-          key={item.href}
-          href={item.href}
-          className="desktop:text-md p-6 font-medium"
-        >
-          {item.label}
-        </Link>
-      ))}
+      {items.map((item) => {
+        const isActive = activePath === item.href
+
+        return (
+          <Link
+            key={item.href}
+            href={item.href}
+            className={clsx(
+              "desktop:text-md relative p-6 font-medium transition-all",
+              isActive && "border-b-2",
+            )}
+            style={
+              isActive
+                ? {
+                    borderImageSource: "var(--color-gradient-angular-2)",
+                    borderImageSlice: 1,
+                  }
+                : {}
+            }
+          >
+            {item.label}
+          </Link>
+        )
+      })}
     </nav>
   )
 }
@@ -95,6 +113,7 @@ export const Navbar = () => {
   const { wallet } = useWallet()
   const { openWalletSidebar, openSettingsSidebar } = useSidebar()
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false)
+  const pathname = usePathname()
 
   const handleNetworkSwitch = () => {
     const targetNetwork = network === "Mainnet" ? "Preprod" : "Mainnet"
@@ -105,8 +124,8 @@ export const Navbar = () => {
 
   const navLinks: { label: string; href: string }[] = [
     { label: "Dashboard", href: "/" },
-    { label: "Analytics", href: "/analytics" },
-    { label: "YIELD Simulator", href: "/yield-simulator" },
+    // { label: "Analytics", href: "/analytics" },
+    // { label: "YIELD Simulator", href: "/yield-simulator" },
     { label: "Orders", href: "/orders" },
   ]
   const getWalletButtonText = () => {
@@ -115,6 +134,7 @@ export const Navbar = () => {
     if (wallet.address) return `${shortenString(wallet.address)}`
     return "Loading address..."
   }
+
   const walletButtonText = getWalletButtonText()
   const walletIcon = wallet && (
     <Wallet name={wallet.name.toUpperCase() as WalletName} size={22} />
@@ -128,7 +148,7 @@ export const Navbar = () => {
         </div>
 
         {/* Navigation Items */}
-        <NavigationItems items={navLinks} />
+        <NavigationItems items={navLinks} activePath={pathname} />
 
         {/* Right Side */}
         <div className="desktop:gap-12 flex items-center gap-10">
@@ -178,16 +198,31 @@ export const Navbar = () => {
           >
             <div className="flex h-full flex-col justify-between">
               <nav className="flex flex-col gap-6" aria-label="Main navigation">
-                {navLinks.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className="desktop:text-md p-6 font-medium"
-                    onClick={() => setIsMobileSidebarOpen(false)}
-                  >
-                    {item.label}
-                  </Link>
-                ))}
+                {navLinks.map((item) => {
+                  const isActive = pathname === item.href
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className={clsx(
+                        "desktop:text-md w-fit p-6 font-medium transition-all",
+                        isActive && "border-b-2",
+                      )}
+                      style={
+                        isActive
+                          ? {
+                              borderImageSource:
+                                "var(--color-gradient-angular-2)",
+                              borderImageSlice: 1,
+                            }
+                          : {}
+                      }
+                      onClick={() => setIsMobileSidebarOpen(false)}
+                    >
+                      {item.label}
+                    </Link>
+                  )
+                })}
               </nav>
               <div className="flex flex-col gap-24">
                 <Button
