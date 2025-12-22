@@ -132,7 +132,7 @@
   --color-primary-200: #9fa5aa;
   --color-primary-300: #707880;
   --color-primary-400: #404b55;
-  --color-primary-400-36: #404b555c;
+  --color-primary-400-36: #404b554d;
   --color-primary-500: #101f2b;
   --color-primary-600: #0d1822;
   --color-primary-650: #0b141c;
@@ -263,7 +263,7 @@
 
   --color-border-primary: var(--color-neutral-800);
   --color-border-secondary: var(--color-primary-400);
-  --color-border-tertiary: var(--color-primary-500);
+  --color-border-tertiary: var(--color-primary-400-36);
 
   --color-background-primary: var(--color-primary-600);
   --color-background-primary-hover: var(--color-primary-650);

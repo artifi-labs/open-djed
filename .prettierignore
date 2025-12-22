@@ -1,0 +1,10 @@
+build
+
+.react-router/*
+
+**/.git
+**/node_modules
+**/dist
+**/.next
+**/out
+**/.open-next
