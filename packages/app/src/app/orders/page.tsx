@@ -70,15 +70,15 @@ export default function OrderPage() {
         </BaseCard>
       ) : (
         <>
-          <div className="flex flex-row justify-start gap-8 py-18">
+          {/*<div className="flex flex-row justify-start gap-8 py-18">
             {/* Search */}
-            <div className="flex items-center">
+            {/*<div className="flex items-center">
               <SearchInput
                 id="search-input"
                 placeholder="Search"
                 size="Small"
               />
-            </div>
+            </div>*/}
 
             {/* Calendar */}
             {/*{<div className="flex w-fit items-center">
@@ -86,7 +86,7 @@ export default function OrderPage() {
             </div>}*/}
 
             {/* Filters */}
-            <div className="flex w-full flex-row justify-end gap-8">
+            {/*<div className="flex w-full flex-row justify-end gap-8">
               {statusFiltersArray.map((status) => (
                 <Chip
                   key={status}
@@ -98,7 +98,7 @@ export default function OrderPage() {
                 />
               ))}
             </div>
-          </div>
+          </div>*/}
 
           {/* Table */}
           <OrderHistory
