@@ -2,6 +2,7 @@ import clsx from "clsx"
 import React from "react"
 import Coin, { type IconCoinName } from "./Coin"
 import ButtonIcon from "./ButtonIcon"
+import { IconName } from "./Icon"
 
 type Size = "small" | "medium" | "large"
 
@@ -16,6 +17,7 @@ export type AssetProps = {
   checked: boolean
   size?: Size
   hasLeadingIcon?: boolean
+  buttonIcon?: IconName
   onCoinChange?: (coin: IconCoinName) => void
 }
 
@@ -25,6 +27,7 @@ export const Asset: React.FC<AssetProps> = ({
   checked,
   size = "large",
   hasLeadingIcon = true,
+  buttonIcon = "Arrows",
   onCoinChange,
 }) => {
   const textSize = sizeMap[size]
@@ -53,7 +56,7 @@ export const Asset: React.FC<AssetProps> = ({
           id={`${currentCoin}-leading-icon`}
           variant="onlyIcon"
           size="tiny"
-          icon="Arrows"
+          icon={buttonIcon}
           onClick={handleClick}
         />
       )}

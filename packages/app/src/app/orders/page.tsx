@@ -1,24 +1,22 @@
 "use client"
 import * as React from "react"
 import OrderHistory from "@/components/new-components/OrderHistory"
-import SearchInput from "@/components/new-components/input-fields/SearchInput"
-import Chip from "@/components/new-components/Chip"
-import ButtonIcon from "@/components/new-components/ButtonIcon"
 import Button from "@/components/new-components/Button"
 import { useWallet } from "@/context/WalletContext"
 import { useSidebar } from "@/context/SidebarContext"
-import { StatusFilters, statusFiltersArray, useOrders } from "@/hooks/useOrders"
+import BaseCard from "@/components/new-components/card/BaseCard"
+import { StatusFilters, useOrders } from "@/hooks/useOrders"
 import { useEffect, useMemo, useState } from "react"
 
 export default function OrderPage() {
   const { wallet } = useWallet()
   const { openWalletSidebar } = useSidebar()
-  const [selectedFilter, setSelectedFilter] = useState<StatusFilters>("All")
+  const [selectedFilter] = useState<StatusFilters>("All")
   const { orders, fetchOrders } = useOrders()
 
   useEffect(() => {
     fetchOrders().catch((e) => console.error(e))
-  }, [wallet])
+  }, [fetchOrders, wallet])
 
   const filteredOrders = useMemo(() => {
     if (selectedFilter === "All") {
@@ -28,40 +26,53 @@ export default function OrderPage() {
   }, [orders, selectedFilter])
 
   return (
-    <div className="desktop:pt-32 desktop:pb-64 mx-auto w-full max-w-280">
+    <div className="desktop:pt-32 desktop:pb-64 mx-auto w-full max-w-280 flex flex-col flex-1">
       {!wallet ? (
-        <div className="bg-surface-card border-border-primary rounded-8 mb-36 flex min-h-screen w-full flex-col items-center justify-center gap-6 border">
-          <span className="text-lg font-semibold">
-            No orders to display yet.
-          </span>
-          <span className="mb-24 text-center text-sm text-nowrap">
-            Once the wallet is connected and activity starts, orders will appear
-            here
-          </span>
-          <Button
-            text="Connect wallet"
-            variant="accent"
-            size="small"
-            onClick={() => openWalletSidebar()}
-          />
-        </div>
+        <BaseCard
+          border="border-gradient border-color-primary"
+          className="justify-center p-16"
+        >
+          <div className="flex flex-col text-center items-center justify-center gap-24">
+            {/* TITLE & DESCRIPTION */}
+            <div className="flex flex-col gap-6">
+              <p className="text-lg font-semibold">
+                No orders to display yet.
+              </p>
+
+              <p className="text-sm">
+                Once the wallet is connected and activity starts, orders will appear
+                here
+              </p>
+            </div>
+
+            <Button
+              text="Connect wallet"
+              variant="accent"
+              size="small"
+              onClick={() => openWalletSidebar()}
+            />
+          </div>
+        </BaseCard>
       ) : (
         <>
-          <div className="flex flex-row justify-start gap-8 py-18">
+          {/*<div className="flex flex-row justify-start gap-8 py-18">
             {/* Search */}
-            <div className="flex items-center">
+            {/*<div className="flex items-center">
               <SearchInput
                 id="search-input"
                 placeholder="Search"
                 size="Small"
               />
             </div>
+            */}
+
             {/* Calendar */}
-            <div className="flex w-fit items-center">
+            {/*<div className="flex w-fit items-center">
               <ButtonIcon variant="secondary" size="small" icon="Calendar" />
-            </div>
+            </div>*/}
+
             {/* Filters */}
-            <div className="flex w-full flex-row justify-start gap-8">
+            {/*<div className="flex w-full flex-row justify-start gap-8">
               {statusFiltersArray.map((status) => (
                 <Chip
                   key={status}
@@ -72,8 +83,9 @@ export default function OrderPage() {
                   active={selectedFilter === status}
                 />
               ))}
-            </div>
-          </div>
+            </div> 
+          </div>*/}
+
           {/* Table */}
           <OrderHistory
             data={filteredOrders}
