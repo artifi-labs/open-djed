@@ -98,7 +98,6 @@ const calculateFromReceive = ({
 
     if (!isMint) {
       // TODO: IF burning and sourceToken is ADA we need to convert ADA or modify useProtocol to accept ada
-      console.log(sourceToken)
       token = targetToken
     }
 
@@ -415,9 +414,6 @@ export function useMintBurnAction(defaultActionType: ActionType) {
       openWalletSidebar()
       return
     }
-    console.log("Button clicked for", actionType)
-    console.log("Pay values:", payValues)
-    console.log("Receive values:", receiveValues)
     //NOTE: This is a workaround to dynamically import the Cardano libraries without causing issues with SSR.
     const { Transaction, TransactionWitnessSet } =
       await import("@dcspark/cardano-multiplatform-lib-browser")

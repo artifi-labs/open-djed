@@ -126,17 +126,6 @@ const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
           ? true
           : false
 
-    console.log(
-      "token: ",
-      token,
-      " action: ",
-      action,
-      " bound: ",
-      reserveBounds,
-      " disabled: ",
-      isDisabled,
-    )
-
     return (
       <TransactionInput
         key={coin}

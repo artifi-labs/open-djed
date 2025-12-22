@@ -117,7 +117,6 @@ const Select = ({
               <li
                 key={option.value}
                 onClick={() => {
-                  console.log("Clicked on option:", option)
                   handleSelect(option)
                 }}
                 className={`hover:bg-primary cursor-pointer px-4 py-2 transition-colors duration-150 hover:text-white ${
