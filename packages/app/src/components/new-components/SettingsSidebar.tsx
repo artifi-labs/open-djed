@@ -1,7 +1,4 @@
-import { useState, useEffect } from "react"
-import { useTranslation } from "react-i18next"
 import Dropdown from "./Dropdown"
-import { SUPPORTED_LANGUAGES } from "@/lib/constants"
 import Sidebar from "./modals/Sidebar"
 import { useEnv } from "@/context/EnvContext"
 import { type ContextualMenuItem } from "./ContextualMenu"
@@ -13,13 +10,13 @@ export default function SettingsSidebar({
   isOpen: boolean
   onClose: () => void
 }) {
-  const { i18n } = useTranslation()
+  //const { i18n } = useTranslation()
   const { network, config } = useEnv()
 
-  const [activeLanguage, setActiveLanguage] = useState<string>("en")
-  const [_isClient, setIsClient] = useState(false)
+  //const [activeLanguage, setActiveLanguage] = useState<string>("en")
+  //const [_isClient, setIsClient] = useState(false)
 
-  useEffect(() => {
+  /*useEffect(() => {
     setIsClient(true)
     setActiveLanguage(i18n.language)
   }, [i18n.language])
@@ -38,7 +35,7 @@ export default function SettingsSidebar({
   const currentLanguageItem = supportedLanguages.find(
     (lang) => lang.key === activeLanguage,
   )
-
+*/
   const networkItems = Object.keys(config).map((key) => ({
     key: key,
     text: key.charAt(0).toUpperCase() + key.slice(1),

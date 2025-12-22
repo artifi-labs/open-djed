@@ -209,17 +209,11 @@ const ExternalCell = ({
   outIndex: number
 }) => {
   const { network } = useEnv()
-  const [isOpen, setIsOpen] = React.useState(false)
   const [isDialogOpen, setIsDialogOpen] = React.useState(false)
   const [showSnackbar, setShowSnackbar] = React.useState(false)
   const { handleCancelOrder } = useOrders()
 
   const showCancel = status === "Created"
-
-  const handleToggle = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    setIsOpen((prev) => !prev)
-  }
 
   const handleCloseDialog = () => {
     setIsDialogOpen(false)
@@ -257,7 +251,9 @@ const ExternalCell = ({
               secondaryButtonLabel="Dismiss"
               hasSkrim={true}
               onSecondaryButtonClick={handleCloseDialog}
-              onPrimaryButtonClick={() => handleCancelOrder(txHash, outIndex)}
+              onPrimaryButtonClick={() => {
+                handleCancelOrder(txHash, outIndex).catch(console.error)
+              }}
             />
           )}
         </>

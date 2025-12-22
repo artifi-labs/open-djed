@@ -41,7 +41,11 @@ const WalletOrder: React.FC<WalletOrderProps> = ({ order, divider }) => {
               text="Cancel"
               variant="secondary"
               size="small"
-              onClick={() => handleCancelOrder(order.tx_hash, order.out_index)}
+              onClick={() => {
+                handleCancelOrder(order.tx_hash, order.out_index).catch(
+                  console.error,
+                )
+              }}
             />
           )}
           <a

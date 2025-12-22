@@ -41,9 +41,7 @@ export default defineConfig([
     },
     languageOptions: {
       parserOptions: {
-        project: globalThis.process.cwd().match(/packages\/.+/)
-          ? "../../tsconfig.json"
-          : "tsconfig.json",
+        project: true,
       },
     },
   },

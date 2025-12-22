@@ -10,7 +10,7 @@ import { FiEye, FiEyeOff, FiMenu, FiX } from "react-icons/fi"
 import Sidebar from "./Sidebar"
 import { useLocalStorage } from "usehooks-ts"
 import { DEFAULT_SHOW_BALANCE } from "@/lib/utils"
-import Tooltip from "./Tooltip"
+import Tooltip from "./new-components/tooltip/Tooltip"
 import { useTranslation } from "react-i18next"
 import Toast from "./Toast"
 import Orders from "./Orders"
@@ -358,7 +358,7 @@ export const Header = () => {
                   className="hover:bg-primary flex flex-row items-center justify-between gap-2 rounded-lg p-4 pr-6 hover:text-white"
                   key={id}
                   onClick={() => {
-                    connect(id)
+                    connect(id).catch(() => {})
                   }}
                 >
                   <div className="flex flex-row items-center justify-start">
