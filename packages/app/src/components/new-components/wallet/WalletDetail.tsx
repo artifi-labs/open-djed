@@ -9,7 +9,7 @@ import {
 import Icon from "../Icon"
 import { useClipboard } from "@/hooks/useClipboard"
 import ButtonIcon from "../ButtonIcon"
-import Tooltip from "../Tooltip"
+import Tooltip from "../tooltip/Tooltip"
 import { useEnv } from "@/context/EnvContext"
 import { useProtocolData } from "@/hooks/useProtocolData"
 
@@ -40,21 +40,21 @@ const WalletDetail: React.FC<WalletDetailProps> = ({
 
     const value = { ADA: balance.ADA } as Value
     return data.to(value, "DJED")
-  }, [data, balance.ADA])
+  }, [data, network, balance.ADA])
 
   const djedUSD = React.useMemo(() => {
     if (!data || network === "Preprod") return 0
 
     const value = { DJED: balance.DJED } as Value
     return data.to(value, "DJED")
-  }, [data, balance.DJED])
+  }, [data, network, balance.DJED])
 
   const shenUSD = React.useMemo(() => {
     if (!data || network === "Preprod") return 0
 
     const value = { SHEN: balance.SHEN } as Value
     return data.to(value, "DJED")
-  }, [data, balance.SHEN])
+  }, [data, network, balance.SHEN])
 
   const totalBalance = adaUSD + djedUSD + shenUSD
 

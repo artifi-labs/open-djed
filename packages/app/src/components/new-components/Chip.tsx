@@ -56,7 +56,6 @@ const Chip: React.FC<ChipProps> = ({
   }
 
   const iconSize: Record<Size, number> = { small: 16, medium: 22, large: 24 }
-  console.log(active)
   const buttonClasses: string = clsx(
     baseClasses,
     sizeClasses[size],

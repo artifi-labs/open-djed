@@ -11,6 +11,7 @@ type SnackbarBase = {
   type: Type
   text: string
   leadingIcon?: IconName
+  full?: boolean
 } & React.HTMLAttributes<HTMLDivElement>
 
 type InfoProps = Pick<SnackbarBase, "type" | "text" | "leadingIcon">
@@ -55,7 +56,7 @@ const Info: React.FC<InfoProps> = ({ text, type, leadingIcon = null }) => {
       {leadingIcon && (
         <Icon name={leadingIcon} size={16} className="shrink-0" />
       )}
-      <span className="break-all">{text}</span>
+      <span className="break">{text}</span>
     </div>
   )
 }
@@ -68,10 +69,10 @@ const Snackbar: React.FC<SnackbarProps> = ({
   actionText,
   closeIcon,
   onCloseClick,
+  full = false,
   ...props
 }) => {
-  const baseClasses =
-    "max-w-[343px] inline-flex items-center gap-12 rounded-8 px-12 py-8 gap-12"
+  const baseClasses = `${full ? "w-full" : "max-w-[343px] "} inline-flex items-center gap-12 rounded-8 px-12 py-8 gap-12`
 
   const typeClasses: Record<Type, string> = {
     success: "bg-success-primary",

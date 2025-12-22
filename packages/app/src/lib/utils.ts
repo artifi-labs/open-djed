@@ -7,7 +7,7 @@ import {
   type PartialOracleDatum,
   type PartialPoolDatum,
 } from "@open-djed/math"
-import { Token } from "./tokens"
+import type { Token } from "./tokens"
 
 export function formatNumber(
   value: number,
