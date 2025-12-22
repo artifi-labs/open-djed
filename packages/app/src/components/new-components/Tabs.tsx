@@ -14,6 +14,7 @@ type TabsProps = {
   items: TabItem[]
   activeItemIndex?: number
   onTabChange?: (item: TabItem, index: number) => void
+  className?: string
 }
 
 const Tabs: React.FC<TabsProps> = ({
@@ -21,9 +22,10 @@ const Tabs: React.FC<TabsProps> = ({
   items,
   activeItemIndex = 0,
   onTabChange,
+  className,
 }) => {
   const tabAggregatorBaseClasses =
-    "flex flex-row p-2 border1 rounded-button bg-surface-primary w-fit"
+    "flex flex-row p-2 border-1 border-border-tertiary rounded-button bg-surface-primary w-fit"
 
   const tabAggregatorVariantClasses: Record<
     Type,
@@ -48,6 +50,7 @@ const Tabs: React.FC<TabsProps> = ({
   const tabAggregatorClasses = clsx(
     tabAggregatorBaseClasses,
     tabAggregatorVariantClasses[type].className,
+    className,
   )
 
   return (
@@ -63,6 +66,7 @@ const Tabs: React.FC<TabsProps> = ({
             active={index == activeItemIndex}
             onClick={() => onTabChange?.(items[index], index)}
             {...itemProps}
+            className="flex-1"
           />
         )
       })}

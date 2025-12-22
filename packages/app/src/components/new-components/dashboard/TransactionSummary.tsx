@@ -71,13 +71,13 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({ action }) => {
 
   return (
     <BaseCard
-      className="p-24"
+      className="desktop:p-24 p-16"
       overlay={totalPay === 0}
       overlayContent={BlurContent || undefined}
     >
-      <div className="flex flex-col gap-24">
+      <div className="desktop:gap-24 flex flex-col gap-16">
         <p className="text-md font-medium">Transaction Summary</p>
-        <div className="flex flex-col gap-16">
+        <div className="desktop:gap-16 flex flex-col gap-14">
           {items.map((item, index) => (
             <TransactionSummaryItem
               key={item.label}

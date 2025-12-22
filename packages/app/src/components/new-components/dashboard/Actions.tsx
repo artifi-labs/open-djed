@@ -27,14 +27,15 @@ const Actions: React.FC<ActionsProps> = ({ action, onActionChange }) => {
   const { reserveWarning } = action.reserveDetails()
 
   return (
-    <BaseCard className="p-24">
-      <div className="flex flex-col gap-24">
+    <BaseCard className="desktop:p-24 p-16">
+      <div className="desktop:gap-24 flex flex-col gap-16">
         <div className="flex flex-col gap-12">
           <Tabs
             type={"primary"}
             items={tabs}
             activeItemIndex={tabs.findIndex((t) => t.key === action.actionType)}
             onTabChange={(tab) => onActionChange?.(tab.key as ActionType)}
+            className="desktop:w-fit w-full"
           />
 
           <p className="text-tertiary text-xs">
