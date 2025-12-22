@@ -1,21 +1,25 @@
-import Image from "next/image"
-
 export default function Background() {
   return (
-    <picture>
-      <source media="(min-width: 1929px)" srcSet="/backgrounds/bg-large.svg" />
-      <source
-        media="(min-width: 1440px)"
-        srcSet="/backgrounds/bg-desktop.svg"
-      />
-      <source media="(min-width: 744px)" srcSet="/backgrounds/bg-tablet.svg" />
-      <Image
-        src="/backgrounds/bg-mobile.svg"
-        alt="Background"
-        fill
-        priority
-        className="-z-10 object-cover"
-      />
-    </picture>
+    <div className="absolute inset-0 -z-10">
+      <picture>
+        <source
+          media="(min-width: 1929px)"
+          srcSet="/backgrounds/bg-large.svg"
+        />
+        <source
+          media="(min-width: 1440px)"
+          srcSet="/backgrounds/bg-desktop.svg"
+        />
+        <source
+          media="(min-width: 744px)"
+          srcSet="/backgrounds/bg-tablet.svg"
+        />
+        <img
+          src="/backgrounds/bg-mobile.svg"
+          alt="Background"
+          className="h-full w-full object-cover opacity-24"
+        />
+      </picture>
+    </div>
   )
 }
