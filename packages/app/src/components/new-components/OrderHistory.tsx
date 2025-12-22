@@ -2,7 +2,6 @@
 
 import * as React from "react"
 import { useMemo } from "react"
-import clsx from "clsx"
 import Link from "next/link"
 import Table from "./table/Table"
 import Button from "./Button"
@@ -14,6 +13,7 @@ import type { HeaderItem } from "./table/Table"
 import Tag from "./Tag"
 import Dialog from "./Dialog"
 import Snackbar from "./Snackbar"
+import TransactionDetails from "./TransactionDetails"
 import { type OrderStatus, useOrders } from "@/hooks/useOrders"
 import { type Order } from "@open-djed/api"
 import { useEnv } from "@/context/EnvContext"
@@ -22,6 +22,7 @@ import BaseCard from "./card/BaseCard"
 interface RowItem {
   columns: { content: React.ReactNode }[]
   key: string
+  raw: Order
 }
 
 interface OrderHistoryProps {
@@ -47,13 +48,13 @@ export const STATUS_CONFIG: Record<
   OrderStatus,
   { type: "success" | "warning" | "error" | "surface"; text: string }
 > = {
-  Processing: { type: "surface", text: "Processing" },
+  // Processing: { type: "surface", text: "Processing" },
   Created: { type: "surface", text: "Created" },
   Completed: { type: "success", text: "Completed" },
-  Cancelling: { type: "warning", text: "Cancelling" },
-  Canceled: { type: "surface", text: "Canceled" },
-  Failed: { type: "error", text: "Failed" },
-  Expired: { type: "error", text: "Expired" },
+  // Cancelling: { type: "warning", text: "Cancelling" },
+  // Canceled: { type: "surface", text: "Canceled" },
+  // Failed: { type: "error", text: "Failed" },
+  // Expired: { type: "error", text: "Expired" },
 }
 
 const formatAda = (value?: bigint | null) => {
@@ -228,7 +229,7 @@ const ExternalCell = ({
   }, [showSnackbar])
 
   return (
-    <div className="flex justify-end gap-8 px-16 py-6">
+    <div className="flex justify-end gap-8">
       {showCancel && (
         <>
           <Button
@@ -257,24 +258,12 @@ const ExternalCell = ({
           )}
         </>
       )}
-
       <Link
         href={`https://${network.toLowerCase()}.cardanoscan.io/transaction/${txHash}`}
         target="_blank"
       >
         <ButtonIcon size="small" variant="outlined" icon="External" />
       </Link>
-
-      <ButtonIcon
-        size="tiny"
-        variant="onlyIcon"
-        icon="Chevron-down"
-        className={clsx("transition-transform duration-200", {
-          "rotate-180": isOpen,
-        })}
-        onClick={handleToggle}
-      />
-      {/* TODO: Implement view Tx details */}
 
       {showSnackbar && (
         <div className="fixed right-24 bottom-24 z-50">
@@ -295,49 +284,45 @@ const ExternalCell = ({
 const OrderHistory: React.FC<OrderHistoryProps> = ({ data, filters }) => {
   const rows: RowItem[] = useMemo(() => {
     if (!data.length) return []
-
-    return data.map((order) => {
-      return {
-        key: order.tx_hash,
-        columns: [
-          { content: <TokenCell token={order.token} /> },
-          { content: <TypeCell action={order.action} /> },
-          {
-            content: <DateCell date={order.orderDate} />,
-          },
-          {
-            content: (
-              <ValueCell
-                value={order.paid}
-                token={order.token}
-                action={order.action}
-                type="paid"
-              />
-            ),
-          },
-          {
-            content: (
-              <ValueCell
-                value={order.received}
-                token={order.token}
-                action={order.action}
-                type="received"
-              />
-            ),
-          },
-          { content: <StatusCell status={order.status} /> },
-          {
-            content: (
-              <ExternalCell
-                txHash={order.tx_hash}
-                outIndex={order.out_index}
-                status={order.status}
-              />
-            ),
-          },
-        ],
-      }
-    })
+    return data.map((order) => ({
+      key: order.tx_hash,
+      raw: order,
+      columns: [
+        { content: <TokenCell token={order.token} /> },
+        { content: <TypeCell action={order.action} /> },
+        { content: <DateCell date={order.orderDate} /> },
+        {
+          content: (
+            <ValueCell
+              value={order.paid}
+              token={order.token}
+              action={order.action}
+              type="paid"
+            />
+          ),
+        },
+        {
+          content: (
+            <ValueCell
+              value={order.received}
+              token={order.token}
+              action={order.action}
+              type="received"
+            />
+          ),
+        },
+        { content: <StatusCell status={order.status} /> },
+        {
+          content: (
+            <ExternalCell
+              txHash={order.tx_hash}
+              status={order.status}
+              outIndex={order.out_index}
+            />
+          ),
+        },
+      ],
+    }))
   }, [data])
 
   if (!data.length) {
@@ -346,7 +331,7 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({ data, filters }) => {
         border="border-gradient border-color-primary"
         className="justify-center p-16"
       >
-        <div className="flex flex-col text-center items-center justify-center gap-24">
+        <div className="flex flex-col items-center justify-center gap-24 text-center">
           {/* TITLE & DESCRIPTION */}
           <div className="flex flex-col gap-6">
             <p className="text-lg font-semibold">
@@ -368,7 +353,14 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({ data, filters }) => {
     )
   }
 
-  return <Table headers={headers} rows={rows} totalCount={data.length} />
+  return (
+    <Table
+      headers={headers}
+      RowComponent={TransactionDetails}
+      rows={rows}
+      totalCount={data.length}
+    />
+  )
 }
 
 export default OrderHistory

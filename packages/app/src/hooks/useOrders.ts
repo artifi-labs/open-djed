@@ -26,23 +26,22 @@ export type OrderApi = {
 }
 
 export type OrderStatus =
-  | "Processing"
-  | "Created"
-  | "Completed"
-  | "Cancelling"
-  | "Canceled"
-  | "Failed"
-  | "Expired"
+  // | "Processing"
+  "Created" | "Completed"
+// | "Cancelling"
+// | "Canceled"
+// | "Failed"
+// | "Expired"
 
 export const statusFiltersArray = [
   "All",
-  "Processing",
+  // "Processing",
   "Created",
   "Completed",
-  "Cancelling",
-  "Canceled",
-  "Failed",
-  "Expired",
+  // "Cancelling",
+  // "Canceled",
+  // "Failed",
+  // "Expired",
 ] as const
 
 // derive the type from the filters array
