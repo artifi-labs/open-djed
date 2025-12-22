@@ -15,8 +15,8 @@ export type ActionsProps = {
 
 const Actions: React.FC<ActionsProps> = ({ action, onActionChange }) => {
   const tabs: TabItem[] = [
-    { key: "Mint", leadingIcon: "Mint", text: "Mint" },
-    { key: "Burn", leadingIcon: "Burn", text: "Burn" },
+    { leadingIcon: "Mint", text: "Mint" },
+    { leadingIcon: "Burn", text: "Burn" },
   ]
 
   const descriptionText: Record<ActionType, string> = {
