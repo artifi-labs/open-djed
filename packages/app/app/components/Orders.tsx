@@ -50,7 +50,7 @@ export default function Orders({
     if (!usedAddress) throw new Error('Failed to get used address')
 
     try {
-      const res = await client.api['historical-orders'].$post({ json: { usedAddresses: usedAddress } })
+      const res = await client.api['historical-orders'].$get({ json: { usedAddresses: usedAddress } })
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`)
       const data = await res.text()
       const parsed = JSONbig.parse(data)
