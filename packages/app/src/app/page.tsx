@@ -4,6 +4,7 @@ import Actions from "@/components/new-components/dashboard/Actions"
 import TransactionSummary from "@/components/new-components/dashboard/TransactionSummary"
 import { useMintBurnAction } from "@/components/new-components/dashboard/useMintBurnAction"
 import LinkButton from "@/components/new-components/LinkButton"
+import ReserveDetails from "@/components/new-components/ReserveDetails"
 import React from "react"
 
 export default function DashboardPage() {
@@ -30,6 +31,7 @@ export default function DashboardPage() {
         <Actions action={action} onActionChange={action.onActionChange} />
         <TransactionSummary action={action} />
       </div>
+      <ReserveDetails />
     </div>
   )
 }
