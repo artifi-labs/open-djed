@@ -16,7 +16,6 @@ import Logo from "./Logo"
 import { useEnv } from "@/context/EnvContext"
 import { useViewport } from "@/hooks/useViewport"
 import Icon from "./Icon"
-import { ContextualMenuItem } from "./ContextualMenu"
 
 type NavigationItem = {
   label: string

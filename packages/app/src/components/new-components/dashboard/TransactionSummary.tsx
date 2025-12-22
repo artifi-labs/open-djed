@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { useMintBurnAction } from "./useMintBurnAction"
+import { type useMintBurnAction } from "./useMintBurnAction"
 import BaseCard from "../card/BaseCard"
 import Divider from "../Divider"
 import { useTransactionSummary } from "./useTransactionSummary"

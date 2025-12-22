@@ -1,8 +1,8 @@
 import { useMemo } from "react"
 import { transactionSummaryBuilder } from "./transactionSummaryBuilder"
-import { capitalize, formatNumber, formatValue, Value } from "@/lib/utils"
-import { useMintBurnAction } from "./useMintBurnAction"
-import { Token } from "@/lib/tokens"
+import { capitalize, formatNumber, formatValue, type Value } from "@/lib/utils"
+import { type useMintBurnAction } from "./useMintBurnAction"
+import type { Token } from "@/lib/tokens"
 
 type Action = ReturnType<typeof useMintBurnAction>
 type DisplayValue = [string, string]

@@ -2,10 +2,11 @@
 
 import * as React from "react"
 import BaseCard from "../card/BaseCard"
-import Tabs, { TabItem } from "../Tabs"
+import Tabs, { type TabItem } from "../Tabs"
 import Action from "./Action"
-import { ActionType } from "./actionConfig"
-import { useMintBurnAction } from "./useMintBurnAction"
+import type { ActionType } from "./actionConfig"
+import type { useMintBurnAction } from "./useMintBurnAction"
+import Snackbar from "../Snackbar"
 
 export type ActionsProps = {
   action: ReturnType<typeof useMintBurnAction>
@@ -23,6 +24,8 @@ const Actions: React.FC<ActionsProps> = ({ action, onActionChange }) => {
     Burn: "Burn DJED, SHEN or both to withdraw your ADA from the protocol.",
   }
 
+  const { reserveWarning } = action.reserveDetails()
+
   return (
     <BaseCard className="desktop:p-24 p-16">
       <div className="desktop:gap-24 flex flex-col gap-16">
@@ -39,6 +42,17 @@ const Actions: React.FC<ActionsProps> = ({ action, onActionChange }) => {
             {descriptionText[action.actionType]}
           </p>
         </div>
+
+        {reserveWarning && (
+          <Snackbar
+            text={reserveWarning}
+            type="attention"
+            leadingIcon={"Information"}
+            closeIcon={false}
+            action={false}
+            full={true}
+          />
+        )}
 
         <Action {...action} />
       </div>

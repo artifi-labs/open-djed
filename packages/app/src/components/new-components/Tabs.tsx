@@ -1,7 +1,7 @@
 "use client"
 import React from "react"
 import clsx from "clsx"
-import Tab, { Radius, TabProps, Variant } from "./Tab"
+import Tab, { type Radius, type TabProps, type Variant } from "./Tab"
 
 type Type = "primary" | "secondary" | "outlined"
 
@@ -56,7 +56,7 @@ const Tabs: React.FC<TabsProps> = ({
   return (
     <div className={tabAggregatorClasses}>
       {items.map((item, index) => {
-        const { key, ...itemProps } = item
+        const { ...itemProps } = item
         return (
           <Tab
             key={item.key || item.text}

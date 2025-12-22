@@ -1,56 +1,36 @@
 "use client"
-import { useEffect, useState } from "react"
-import type { OrderUTxO } from "@open-djed/txs"
-import { useApiClient } from "@/context/ApiClientContext"
-import type { Wallet } from "@/context/WalletContext"
 import WalletOrder from "./WalletOrder"
 import Button from "../Button"
 import Link from "next/link"
 import { useSidebar } from "@/context/SidebarContext"
-import JSONBig from "json-bigint"
+import { useOrders } from "@/hooks/useOrders"
+import { useEffect, useMemo } from "react"
+import { type Wallet } from "@/context/WalletContext"
 
 export default function OrdersWalletSection({ wallet }: { wallet: Wallet }) {
   const { closeSidebar } = useSidebar()
-  const [orders, setOrders] = useState<OrderUTxO[]>([])
-
-  const client = useApiClient()
+  const { orders, fetchOrders } = useOrders()
 
   useEffect(() => {
-    if (!wallet) return
-
-    const fetchOrders = async () => {
-      const usedAddress = await wallet.getUsedAddresses()
-      if (!usedAddress) throw new Error("Failed to get used address")
-
-      try {
-        const res = await client.api.orders.$post({
-          json: { usedAddresses: usedAddress },
-        })
-        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`)
-        const data = await res.text()
-        const parsed = JSONBig.parse(data)
-        setOrders(parsed.orders)
-      } catch (err) {
-        console.error("Error fetching orders:", err)
-      }
-    }
-
-    fetchOrders().catch(console.error)
+    fetchOrders().catch((e) => console.error(e))
   }, [wallet])
+
+  const lastFiveOrders = useMemo(() => {
+    return orders.slice(0, 4)
+  }, [orders])
 
   return (
     <>
-      <div className="flex h-full w-full flex-col gap-6 px-12 py-8">
+      <div className="flex h-full w-full flex-col gap-6 overflow-y-auto px-12 py-8">
         <h1 className="text-sm font-medium">Orders</h1>
         <div className="flex h-full w-full flex-col gap-12">
-          {orders.length > 0 ? (
+          {lastFiveOrders.length > 0 ? (
             <>
-              {orders.map((order, index) => {
+              {lastFiveOrders.map((order, index) => {
                 return (
                   <WalletOrder
                     order={order}
-                    wallet={wallet}
-                    key={order.txHash}
+                    key={order.tx_hash}
                     divider={index !== orders.length - 1}
                   />
                 )

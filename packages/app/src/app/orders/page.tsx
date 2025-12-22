@@ -1,5 +1,4 @@
 "use client"
-
 import * as React from "react"
 import OrderHistory from "@/components/new-components/OrderHistory"
 import SearchInput from "@/components/new-components/input-fields/SearchInput"
@@ -8,623 +7,25 @@ import ButtonIcon from "@/components/new-components/ButtonIcon"
 import Button from "@/components/new-components/Button"
 import { useWallet } from "@/context/WalletContext"
 import { useSidebar } from "@/context/SidebarContext"
-
-export type OrderApi = {
-  id: number
-  tx_hash: string
-  action: "Mint" | "Burn"
-  token: "DJED" | "SHEN" | "BOTH"
-  orderDate: string
-  paid?: bigint | null
-  fees?: bigint | null
-  received?: bigint | null
-  status?:
-    | "Processing"
-    | "Completed"
-    | "Cancelling"
-    | "Canceled"
-    | "Failed"
-    | "Expired"
-}
-
-const STATUS_FILTERS = [
-  "All",
-  "Processing",
-  "Completed",
-  "Cancelling",
-  "Canceled",
-  "Failed",
-  "Expired",
-] as const
+import { StatusFilters, statusFiltersArray, useOrders } from "@/hooks/useOrders"
+import { useEffect, useMemo, useState } from "react"
 
 export default function OrderPage() {
   const { wallet } = useWallet()
   const { openWalletSidebar } = useSidebar()
-  const [selectedFilter, setSelectedFilter] = React.useState<string>("All")
+  const [selectedFilter, setSelectedFilter] = useState<StatusFilters>("All")
+  const { orders, fetchOrders } = useOrders()
 
-  const allOrders: OrderApi[] = [
-    {
-      id: 1,
-      tx_hash:
-        "17a81e15b52628768fe74d0efc04e004016e387b429a80998c4d15112a26e052",
-      action: "Burn",
-      token: "DJED",
-      orderDate: "2025-08-15T10:42:12.000Z",
-      paid: BigInt(100000000),
-      fees: BigInt(178965),
-      received: BigInt(99821035),
-      status: "Processing",
-    },
-    {
-      id: 2,
-      tx_hash:
-        "17a81e15b52628768fe74d0efc04e004016e387b429a80998c4d15112a26e052",
-      action: "Mint",
-      token: "DJED",
-      orderDate: "2025-08-15T10:42:12.000Z",
-      paid: BigInt(100000000),
-      fees: BigInt(178965),
-      received: BigInt(99821035),
-      status: "Completed",
-    },
-    {
-      id: 3,
-      tx_hash:
-        "17a81e15b52628768fe74d0efc04e004016e387b429a80998c4d15112a26e052",
-      action: "Burn",
-      token: "SHEN",
-      orderDate: "2025-08-15T10:42:12.000Z",
-      paid: BigInt(100000000),
-      fees: BigInt(178965),
-      received: BigInt(99821035),
-      status: "Cancelling",
-    },
-    {
-      id: 4,
-      tx_hash:
-        "17a81e15b52628768fe74d0efc04e004016e387b429a80998c4d15112a26e052",
-      action: "Mint",
-      token: "SHEN",
-      orderDate: "2025-08-15T10:42:12.000Z",
-      paid: BigInt(100000000),
-      fees: BigInt(178965),
-      received: BigInt(99821035),
-      status: "Canceled",
-    },
-    {
-      id: 5,
-      tx_hash:
-        "17a81e15b52628768fe74d0efc04e004016e387b429a80998c4d15112a26e052",
-      action: "Burn",
-      token: "BOTH",
-      orderDate: "2025-08-15T10:42:12.000Z",
-      paid: BigInt(100000000),
-      fees: BigInt(178965),
-      received: BigInt(99821035),
-      status: "Failed",
-    },
-    {
-      id: 6,
-      tx_hash:
-        "17a81e15b52628768fe74d0efc04e004016e387b429a80998c4d15112a26e052",
-      action: "Mint",
-      token: "BOTH",
-      orderDate: "2025-08-15T10:42:12.000Z",
-      paid: BigInt(100000000),
-      fees: BigInt(178965),
-      received: BigInt(99821035),
-      status: "Expired",
-    },
-    {
-      id: 1,
-      tx_hash:
-        "17a81e15b52628768fe74d0efc04e004016e387b429a80998c4d15112a26e052",
-      action: "Burn",
-      token: "DJED",
-      orderDate: "2025-08-15T10:42:12.000Z",
-      paid: BigInt(100000000),
-      fees: BigInt(178965),
-      received: BigInt(99821035),
-      status: "Processing",
-    },
-    {
-      id: 2,
-      tx_hash:
-        "17a81e15b52628768fe74d0efc04e004016e387b429a80998c4d15112a26e052",
-      action: "Mint",
-      token: "DJED",
-      orderDate: "2025-08-15T10:42:12.000Z",
-      paid: BigInt(100000000),
-      fees: BigInt(178965),
-      received: BigInt(99821035),
-      status: "Completed",
-    },
-    {
-      id: 3,
-      tx_hash:
-        "17a81e15b52628768fe74d0efc04e004016e387b429a80998c4d15112a26e052",
-      action: "Burn",
-      token: "SHEN",
-      orderDate: "2025-08-15T10:42:12.000Z",
-      paid: BigInt(100000000),
-      fees: BigInt(178965),
-      received: BigInt(99821035),
-      status: "Cancelling",
-    },
-    {
-      id: 4,
-      tx_hash:
-        "17a81e15b52628768fe74d0efc04e004016e387b429a80998c4d15112a26e052",
-      action: "Mint",
-      token: "SHEN",
-      orderDate: "2025-08-15T10:42:12.000Z",
-      paid: BigInt(100000000),
-      fees: BigInt(178965),
-      received: BigInt(99821035),
-      status: "Canceled",
-    },
-    {
-      id: 5,
-      tx_hash:
-        "17a81e15b52628768fe74d0efc04e004016e387b429a80998c4d15112a26e052",
-      action: "Burn",
-      token: "BOTH",
-      orderDate: "2025-08-15T10:42:12.000Z",
-      paid: BigInt(100000000),
-      fees: BigInt(178965),
-      received: BigInt(99821035),
-      status: "Failed",
-    },
-    {
-      id: 6,
-      tx_hash:
-        "17a81e15b52628768fe74d0efc04e004016e387b429a80998c4d15112a26e052",
-      action: "Mint",
-      token: "BOTH",
-      orderDate: "2025-08-15T10:42:12.000Z",
-      paid: BigInt(100000000),
-      fees: BigInt(178965),
-      received: BigInt(99821035),
-      status: "Expired",
-    },
-    {
-      id: 1,
-      tx_hash:
-        "17a81e15b52628768fe74d0efc04e004016e387b429a80998c4d15112a26e052",
-      action: "Burn",
-      token: "DJED",
-      orderDate: "2025-08-15T10:42:12.000Z",
-      paid: BigInt(100000000),
-      fees: BigInt(178965),
-      received: BigInt(99821035),
-      status: "Processing",
-    },
-    {
-      id: 2,
-      tx_hash:
-        "17a81e15b52628768fe74d0efc04e004016e387b429a80998c4d15112a26e052",
-      action: "Mint",
-      token: "DJED",
-      orderDate: "2025-08-15T10:42:12.000Z",
-      paid: BigInt(100000000),
-      fees: BigInt(178965),
-      received: BigInt(99821035),
-      status: "Completed",
-    },
-    {
-      id: 3,
-      tx_hash:
-        "17a81e15b52628768fe74d0efc04e004016e387b429a80998c4d15112a26e052",
-      action: "Burn",
-      token: "SHEN",
-      orderDate: "2025-08-15T10:42:12.000Z",
-      paid: BigInt(100000000),
-      fees: BigInt(178965),
-      received: BigInt(99821035),
-      status: "Cancelling",
-    },
-    {
-      id: 4,
-      tx_hash:
-        "17a81e15b52628768fe74d0efc04e004016e387b429a80998c4d15112a26e052",
-      action: "Mint",
-      token: "SHEN",
-      orderDate: "2025-08-15T10:42:12.000Z",
-      paid: BigInt(100000000),
-      fees: BigInt(178965),
-      received: BigInt(99821035),
-      status: "Canceled",
-    },
-    {
-      id: 5,
-      tx_hash:
-        "17a81e15b52628768fe74d0efc04e004016e387b429a80998c4d15112a26e052",
-      action: "Burn",
-      token: "BOTH",
-      orderDate: "2025-08-15T10:42:12.000Z",
-      paid: BigInt(100000000),
-      fees: BigInt(178965),
-      received: BigInt(99821035),
-      status: "Failed",
-    },
-    {
-      id: 6,
-      tx_hash:
-        "17a81e15b52628768fe74d0efc04e004016e387b429a80998c4d15112a26e052",
-      action: "Mint",
-      token: "BOTH",
-      orderDate: "2025-08-15T10:42:12.000Z",
-      paid: BigInt(100000000),
-      fees: BigInt(178965),
-      received: BigInt(99821035),
-      status: "Expired",
-    },
-    {
-      id: 1,
-      tx_hash:
-        "17a81e15b52628768fe74d0efc04e004016e387b429a80998c4d15112a26e052",
-      action: "Burn",
-      token: "DJED",
-      orderDate: "2025-08-15T10:42:12.000Z",
-      paid: BigInt(100000000),
-      fees: BigInt(178965),
-      received: BigInt(99821035),
-      status: "Processing",
-    },
-    {
-      id: 2,
-      tx_hash:
-        "17a81e15b52628768fe74d0efc04e004016e387b429a80998c4d15112a26e052",
-      action: "Mint",
-      token: "DJED",
-      orderDate: "2025-08-15T10:42:12.000Z",
-      paid: BigInt(100000000),
-      fees: BigInt(178965),
-      received: BigInt(99821035),
-      status: "Completed",
-    },
-    {
-      id: 3,
-      tx_hash:
-        "17a81e15b52628768fe74d0efc04e004016e387b429a80998c4d15112a26e052",
-      action: "Burn",
-      token: "SHEN",
-      orderDate: "2025-08-15T10:42:12.000Z",
-      paid: BigInt(100000000),
-      fees: BigInt(178965),
-      received: BigInt(99821035),
-      status: "Cancelling",
-    },
-    {
-      id: 4,
-      tx_hash:
-        "17a81e15b52628768fe74d0efc04e004016e387b429a80998c4d15112a26e052",
-      action: "Mint",
-      token: "SHEN",
-      orderDate: "2025-08-15T10:42:12.000Z",
-      paid: BigInt(100000000),
-      fees: BigInt(178965),
-      received: BigInt(99821035),
-      status: "Canceled",
-    },
-    {
-      id: 5,
-      tx_hash:
-        "17a81e15b52628768fe74d0efc04e004016e387b429a80998c4d15112a26e052",
-      action: "Burn",
-      token: "BOTH",
-      orderDate: "2025-08-15T10:42:12.000Z",
-      paid: BigInt(100000000),
-      fees: BigInt(178965),
-      received: BigInt(99821035),
-      status: "Failed",
-    },
-    {
-      id: 6,
-      tx_hash:
-        "17a81e15b52628768fe74d0efc04e004016e387b429a80998c4d15112a26e052",
-      action: "Mint",
-      token: "BOTH",
-      orderDate: "2025-08-15T10:42:12.000Z",
-      paid: BigInt(100000000),
-      fees: BigInt(178965),
-      received: BigInt(99821035),
-      status: "Expired",
-    },
-    {
-      id: 1,
-      tx_hash:
-        "17a81e15b52628768fe74d0efc04e004016e387b429a80998c4d15112a26e052",
-      action: "Burn",
-      token: "DJED",
-      orderDate: "2025-08-15T10:42:12.000Z",
-      paid: BigInt(100000000),
-      fees: BigInt(178965),
-      received: BigInt(99821035),
-      status: "Processing",
-    },
-    {
-      id: 2,
-      tx_hash:
-        "17a81e15b52628768fe74d0efc04e004016e387b429a80998c4d15112a26e052",
-      action: "Mint",
-      token: "DJED",
-      orderDate: "2025-08-15T10:42:12.000Z",
-      paid: BigInt(100000000),
-      fees: BigInt(178965),
-      received: BigInt(99821035),
-      status: "Completed",
-    },
-    {
-      id: 3,
-      tx_hash:
-        "17a81e15b52628768fe74d0efc04e004016e387b429a80998c4d15112a26e052",
-      action: "Burn",
-      token: "SHEN",
-      orderDate: "2025-08-15T10:42:12.000Z",
-      paid: BigInt(100000000),
-      fees: BigInt(178965),
-      received: BigInt(99821035),
-      status: "Cancelling",
-    },
-    {
-      id: 4,
-      tx_hash:
-        "17a81e15b52628768fe74d0efc04e004016e387b429a80998c4d15112a26e052",
-      action: "Mint",
-      token: "SHEN",
-      orderDate: "2025-08-15T10:42:12.000Z",
-      paid: BigInt(100000000),
-      fees: BigInt(178965),
-      received: BigInt(99821035),
-      status: "Canceled",
-    },
-    {
-      id: 5,
-      tx_hash:
-        "17a81e15b52628768fe74d0efc04e004016e387b429a80998c4d15112a26e052",
-      action: "Burn",
-      token: "BOTH",
-      orderDate: "2025-08-15T10:42:12.000Z",
-      paid: BigInt(100000000),
-      fees: BigInt(178965),
-      received: BigInt(99821035),
-      status: "Failed",
-    },
-    {
-      id: 6,
-      tx_hash:
-        "17a81e15b52628768fe74d0efc04e004016e387b429a80998c4d15112a26e052",
-      action: "Mint",
-      token: "BOTH",
-      orderDate: "2025-08-15T10:42:12.000Z",
-      paid: BigInt(100000000),
-      fees: BigInt(178965),
-      received: BigInt(99821035),
-      status: "Expired",
-    },
-    {
-      id: 1,
-      tx_hash:
-        "17a81e15b52628768fe74d0efc04e004016e387b429a80998c4d15112a26e052",
-      action: "Burn",
-      token: "DJED",
-      orderDate: "2025-08-15T10:42:12.000Z",
-      paid: BigInt(100000000),
-      fees: BigInt(178965),
-      received: BigInt(99821035),
-      status: "Processing",
-    },
-    {
-      id: 2,
-      tx_hash:
-        "17a81e15b52628768fe74d0efc04e004016e387b429a80998c4d15112a26e052",
-      action: "Mint",
-      token: "DJED",
-      orderDate: "2025-08-15T10:42:12.000Z",
-      paid: BigInt(100000000),
-      fees: BigInt(178965),
-      received: BigInt(99821035),
-      status: "Completed",
-    },
-    {
-      id: 3,
-      tx_hash:
-        "17a81e15b52628768fe74d0efc04e004016e387b429a80998c4d15112a26e052",
-      action: "Burn",
-      token: "SHEN",
-      orderDate: "2025-08-15T10:42:12.000Z",
-      paid: BigInt(100000000),
-      fees: BigInt(178965),
-      received: BigInt(99821035),
-      status: "Cancelling",
-    },
-    {
-      id: 4,
-      tx_hash:
-        "17a81e15b52628768fe74d0efc04e004016e387b429a80998c4d15112a26e052",
-      action: "Mint",
-      token: "SHEN",
-      orderDate: "2025-08-15T10:42:12.000Z",
-      paid: BigInt(100000000),
-      fees: BigInt(178965),
-      received: BigInt(99821035),
-      status: "Canceled",
-    },
-    {
-      id: 5,
-      tx_hash:
-        "17a81e15b52628768fe74d0efc04e004016e387b429a80998c4d15112a26e052",
-      action: "Burn",
-      token: "BOTH",
-      orderDate: "2025-08-15T10:42:12.000Z",
-      paid: BigInt(100000000),
-      fees: BigInt(178965),
-      received: BigInt(99821035),
-      status: "Failed",
-    },
-    {
-      id: 6,
-      tx_hash:
-        "17a81e15b52628768fe74d0efc04e004016e387b429a80998c4d15112a26e052",
-      action: "Mint",
-      token: "BOTH",
-      orderDate: "2025-08-15T10:42:12.000Z",
-      paid: BigInt(100000000),
-      fees: BigInt(178965),
-      received: BigInt(99821035),
-      status: "Expired",
-    },
-    {
-      id: 1,
-      tx_hash:
-        "17a81e15b52628768fe74d0efc04e004016e387b429a80998c4d15112a26e052",
-      action: "Burn",
-      token: "DJED",
-      orderDate: "2025-08-15T10:42:12.000Z",
-      paid: BigInt(100000000),
-      fees: BigInt(178965),
-      received: BigInt(99821035),
-      status: "Processing",
-    },
-    {
-      id: 2,
-      tx_hash:
-        "17a81e15b52628768fe74d0efc04e004016e387b429a80998c4d15112a26e052",
-      action: "Mint",
-      token: "DJED",
-      orderDate: "2025-08-15T10:42:12.000Z",
-      paid: BigInt(100000000),
-      fees: BigInt(178965),
-      received: BigInt(99821035),
-      status: "Completed",
-    },
-    {
-      id: 3,
-      tx_hash:
-        "17a81e15b52628768fe74d0efc04e004016e387b429a80998c4d15112a26e052",
-      action: "Burn",
-      token: "SHEN",
-      orderDate: "2025-08-15T10:42:12.000Z",
-      paid: BigInt(100000000),
-      fees: BigInt(178965),
-      received: BigInt(99821035),
-      status: "Cancelling",
-    },
-    {
-      id: 4,
-      tx_hash:
-        "17a81e15b52628768fe74d0efc04e004016e387b429a80998c4d15112a26e052",
-      action: "Mint",
-      token: "SHEN",
-      orderDate: "2025-08-15T10:42:12.000Z",
-      paid: BigInt(100000000),
-      fees: BigInt(178965),
-      received: BigInt(99821035),
-      status: "Canceled",
-    },
-    {
-      id: 5,
-      tx_hash:
-        "17a81e15b52628768fe74d0efc04e004016e387b429a80998c4d15112a26e052",
-      action: "Burn",
-      token: "BOTH",
-      orderDate: "2025-08-15T10:42:12.000Z",
-      paid: BigInt(100000000),
-      fees: BigInt(178965),
-      received: BigInt(99821035),
-      status: "Failed",
-    },
-    {
-      id: 6,
-      tx_hash:
-        "17a81e15b52628768fe74d0efc04e004016e387b429a80998c4d15112a26e052",
-      action: "Mint",
-      token: "BOTH",
-      orderDate: "2025-08-15T10:42:12.000Z",
-      paid: BigInt(100000000),
-      fees: BigInt(178965),
-      received: BigInt(99821035),
-      status: "Expired",
-    },
-    {
-      id: 1,
-      tx_hash:
-        "17a81e15b52628768fe74d0efc04e004016e387b429a80998c4d15112a26e052",
-      action: "Burn",
-      token: "DJED",
-      orderDate: "2025-08-15T10:42:12.000Z",
-      paid: BigInt(100000000),
-      fees: BigInt(178965),
-      received: BigInt(99821035),
-      status: "Processing",
-    },
-    {
-      id: 2,
-      tx_hash:
-        "17a81e15b52628768fe74d0efc04e004016e387b429a80998c4d15112a26e052",
-      action: "Mint",
-      token: "DJED",
-      orderDate: "2025-08-15T10:42:12.000Z",
-      paid: BigInt(100000000),
-      fees: BigInt(178965),
-      received: BigInt(99821035),
-      status: "Completed",
-    },
-    {
-      id: 3,
-      tx_hash:
-        "17a81e15b52628768fe74d0efc04e004016e387b429a80998c4d15112a26e052",
-      action: "Burn",
-      token: "SHEN",
-      orderDate: "2025-08-15T10:42:12.000Z",
-      paid: BigInt(100000000),
-      fees: BigInt(178965),
-      received: BigInt(99821035),
-      status: "Cancelling",
-    },
-    {
-      id: 4,
-      tx_hash:
-        "17a81e15b52628768fe74d0efc04e004016e387b429a80998c4d15112a26e052",
-      action: "Mint",
-      token: "SHEN",
-      orderDate: "2025-08-15T10:42:12.000Z",
-      paid: BigInt(100000000),
-      fees: BigInt(178965),
-      received: BigInt(99821035),
-      status: "Canceled",
-    },
-    {
-      id: 5,
-      tx_hash:
-        "17a81e15b52628768fe74d0efc04e004016e387b429a80998c4d15112a26e052",
-      action: "Burn",
-      token: "BOTH",
-      orderDate: "2025-08-15T10:42:12.000Z",
-      paid: BigInt(100000000),
-      fees: BigInt(178965),
-      received: BigInt(99821035),
-      status: "Failed",
-    },
-    {
-      id: 6,
-      tx_hash:
-        "17a81e15b52628768fe74d0efc04e004016e387b429a80998c4d15112a26e052",
-      action: "Mint",
-      token: "BOTH",
-      orderDate: "2025-08-15T10:42:12.000Z",
-      paid: BigInt(100000000),
-      fees: BigInt(178965),
-      received: BigInt(99821035),
-      status: "Expired",
-    },
-  ]
+  useEffect(() => {
+    fetchOrders().catch((e) => console.error(e))
+  }, [wallet])
 
-  const orders =
-    selectedFilter === "All"
-      ? allOrders
-      : allOrders.filter((order) => order.status === selectedFilter)
+  const filteredOrders = useMemo(() => {
+    if (selectedFilter === "All") {
+      return orders
+    }
+    return orders.filter((order) => order.status === selectedFilter)
+  }, [orders, selectedFilter])
 
   return (
     <div className="desktop:pt-32 desktop:pb-64 mx-auto w-full max-w-280">
@@ -633,12 +34,10 @@ export default function OrderPage() {
           <span className="text-lg font-semibold">
             No orders to display yet.
           </span>
-
           <span className="mb-24 text-center text-sm text-nowrap">
             Once the wallet is connected and activity starts, orders will appear
             here
           </span>
-
           <Button
             text="Connect wallet"
             variant="accent"
@@ -648,7 +47,7 @@ export default function OrderPage() {
         </div>
       ) : (
         <>
-          <div className="flex flex-row gap-8 py-18">
+          <div className="flex flex-row justify-start gap-8 py-18">
             {/* Search */}
             <div className="flex items-center">
               <SearchInput
@@ -657,15 +56,13 @@ export default function OrderPage() {
                 size="Small"
               />
             </div>
-
             {/* Calendar */}
-            <div className="flex w-full items-center">
+            <div className="flex w-fit items-center">
               <ButtonIcon variant="secondary" size="small" icon="Calendar" />
             </div>
-
             {/* Filters */}
-            <div className="flex flex-row gap-8">
-              {STATUS_FILTERS.map((status) => (
+            <div className="flex w-full flex-row justify-start gap-8">
+              {statusFiltersArray.map((status) => (
                 <Chip
                   key={status}
                   text={status}
@@ -677,9 +74,11 @@ export default function OrderPage() {
               ))}
             </div>
           </div>
-
           {/* Table */}
-          <OrderHistory data={orders} />
+          <OrderHistory
+            data={filteredOrders}
+            filters={selectedFilter !== "All" && orders.length > 0}
+          />
         </>
       )}
     </div>
