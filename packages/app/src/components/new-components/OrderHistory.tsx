@@ -384,9 +384,11 @@ const MobileCell = ({ order }: { order: Order }) => {
           secondaryButtonLabel="Dismiss"
           hasSkrim={true}
           onSecondaryButtonClick={() => setIsDialogOpen(false)}
-          onPrimaryButtonClick={() =>
-            handleCancelOrder(order.tx_hash, order.out_index)
-          }
+          onPrimaryButtonClick={() => {
+            handleCancelOrder(order.tx_hash, order.out_index).catch(
+              console.error,
+            )
+          }}
         />
       )}
     </>
