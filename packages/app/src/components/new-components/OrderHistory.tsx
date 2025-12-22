@@ -17,6 +17,7 @@ import Snackbar from "./Snackbar"
 import { type OrderStatus, useOrders } from "@/hooks/useOrders"
 import { type Order } from "@open-djed/api"
 import { useEnv } from "@/context/EnvContext"
+import BaseCard from "./card/BaseCard"
 
 interface RowItem {
   columns: { content: React.ReactNode }[]
@@ -37,11 +38,8 @@ const headers: HeaderItem[] = [
   { column: "Status", columnKey: "status", size: "medium" },
   {
     column: undefined,
-    columnKey: "export",
+    columnKey: "actions",
     size: "small",
-    action: (
-      <Button text="Export" variant="text" size="small" trailingIcon="Export" />
-    ),
   },
 ]
 
@@ -344,19 +342,29 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({ data, filters }) => {
 
   if (!data.length) {
     return (
-      <div className="bg-surface-card border-border-primary rounded-8 mb-36 flex min-h-220 w-full flex-col items-center justify-center gap-6 border">
-        <span className="text-lg font-semibold">
-          {filters ? "No orders to display." : "No orders to display yet."}
-        </span>
-        <span className="mb-24 text-center text-sm text-nowrap">
-          {filters
-            ? "No orders found with the requested filter."
-            : "Looks like this wallet hasn't made any trades."}
-        </span>
-        <Link href={"/"}>
-          <Button text="Mint & Burn Now" variant="secondary" size="large" />
-        </Link>
-      </div>
+      <BaseCard
+        border="border-gradient border-color-primary"
+        className="justify-center p-16"
+      >
+        <div className="flex flex-col text-center items-center justify-center gap-24">
+          {/* TITLE & DESCRIPTION */}
+          <div className="flex flex-col gap-6">
+            <p className="text-lg font-semibold">
+              {filters ? "No orders to display." : "No orders to display yet."}
+            </p>
+
+            <p className="text-sm">
+              {filters
+                ? "No orders found with the requested filter."
+                : "Looks like this wallet hasn't made any trades."}
+            </p>
+          </div>
+
+          <Link href={"/"}>
+            <Button text="Mint & Burn Now" variant="accent" size="small" />
+          </Link>
+        </div>
+      </BaseCard>
     )
   }
 

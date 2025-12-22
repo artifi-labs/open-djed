@@ -56,10 +56,10 @@ const Tabs: React.FC<TabsProps> = ({
   return (
     <div className={tabAggregatorClasses}>
       {items.map((item, index) => {
-        const { ...itemProps } = item
+        const { key, ...itemProps } = item
         return (
           <Tab
-            key={item.key || item.text}
+            key={key || item.text}
             radius={tabAggregatorVariantClasses[type].radius}
             variant={tabAggregatorVariantClasses[type].variant}
             size="small"

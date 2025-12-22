@@ -3,6 +3,7 @@ import clsx from "clsx"
 
 export type BaseCardProps = {
   padding?: string
+  border?: string
   backgroundColor?: string
   children?: React.ReactNode
   overlay?: boolean
@@ -12,6 +13,7 @@ export type BaseCardProps = {
 const BaseCard: React.FC<BaseCardProps> = ({
   padding = "p-[24px]",
   backgroundColor = "bg-surface-card",
+  border = "border-gradient border-color-gradient",
   className,
   children,
   overlay = false,
@@ -19,7 +21,8 @@ const BaseCard: React.FC<BaseCardProps> = ({
   ...props
 }) => {
   const baseCardClassNames = clsx(
-    "border-gradient border-color-gradient flex w-full flex-1 flex-col rounded-card",
+    "flex w-full flex-1 flex-col rounded-card",
+    border,
     backgroundColor,
     padding,
     className,
