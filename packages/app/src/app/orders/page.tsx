@@ -5,18 +5,18 @@ import Button from "@/components/new-components/Button"
 import { useWallet } from "@/context/WalletContext"
 import { useSidebar } from "@/context/SidebarContext"
 import BaseCard from "@/components/new-components/card/BaseCard"
-import { StatusFilters, statusFiltersArray, useOrders } from "@/hooks/useOrders"
+import { StatusFilters, useOrders } from "@/hooks/useOrders"
 import { useEffect, useMemo, useState } from "react"
 
 export default function OrderPage() {
   const { wallet } = useWallet()
   const { openWalletSidebar } = useSidebar()
-  const [selectedFilter, setSelectedFilter] = useState<StatusFilters>("All")
+  const [selectedFilter] = useState<StatusFilters>("All")
   const { orders, fetchOrders } = useOrders()
 
   useEffect(() => {
     fetchOrders().catch((e) => console.error(e))
-  }, [wallet])
+  }, [fetchOrders, wallet])
 
   const filteredOrders = useMemo(() => {
     if (selectedFilter === "All") {
