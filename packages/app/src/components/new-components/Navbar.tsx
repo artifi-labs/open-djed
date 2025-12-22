@@ -124,8 +124,8 @@ export const Navbar = () => {
 
   const navLinks: { label: string; href: string }[] = [
     { label: "Dashboard", href: "/" },
-    { label: "Analytics", href: "/analytics" },
-    { label: "YIELD Simulator", href: "/yield-simulator" },
+    // { label: "Analytics", href: "/analytics" },
+    // { label: "YIELD Simulator", href: "/yield-simulator" },
     { label: "Orders", href: "/orders" },
   ]
   const getWalletButtonText = () => {

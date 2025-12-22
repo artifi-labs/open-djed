@@ -56,7 +56,7 @@ export default function SettingsSidebar({
   return (
     <Sidebar title="Settings" isOpen={isOpen} onClose={onClose}>
       <div className="flex h-full w-full flex-col items-start justify-start gap-22 px-24 py-8">
-        <div className="flex w-full flex-col items-start justify-start gap-8">
+        {/* <div className="flex w-full flex-col items-start justify-start gap-8">
           <span className="text-secondary text-xs">Language</span>
           <Dropdown
             text={currentLanguageItem?.text || "English"}
@@ -66,7 +66,7 @@ export default function SettingsSidebar({
             onChange={handleLanguageChange}
             trailingIcon="Chevron-down"
           />
-        </div>
+        </div> */}
 
         <div className="flex w-full flex-col items-start justify-start gap-8">
           <span className="text-secondary text-xs">Network</span>
