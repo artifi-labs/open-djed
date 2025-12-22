@@ -1,5 +1,4 @@
 import React from "react"
-import ButtonIcon from "../ButtonIcon"
 import Button from "../Button"
 import { OrderApi } from "@/hooks/useOrders"
 import Tag, { Type } from "../Tag"
@@ -85,22 +84,9 @@ const MobileTableRow: React.FC<{
   onViewTransaction?: () => void
   onCancel?: () => void
 }> = ({ order, onViewTransaction, onCancel }) => {
-  const paidKeys = Object.keys(order.paid || {})
-  const receivedKeys = Object.keys(order.received || {})
   
-  const paid: [string, string?] = paidKeys.length > 1
-    ? [
-        `${Number(order.paid[paidKeys[0]]) / 1e6} ${paidKeys[0]}`,
-        `${Number(order.paid[paidKeys[1]]) / 1e6} ${paidKeys[1]}`
-      ]
-    : [`${Number(order.paid[paidKeys[0]]) / 1e6} ${paidKeys[0]}`]
-    
-  const received: [string, string?] = receivedKeys.length > 1
-    ? [
-        `${Number(order.received[receivedKeys[0]]) / 1e6} ${receivedKeys[0]}`,
-        `${Number(order.received[receivedKeys[1]]) / 1e6} ${receivedKeys[1]}`
-      ]
-    : [`${Number(order.received[receivedKeys[0]]) / 1e6} ${receivedKeys[0]}`]
+  const paid = `${Number(order.paid) / 1e6} ${order.token}`
+  const received = `${Number(order.received) / 1e6} ${order.token}`
 
   // TODO: UPDATE THIOS
   const showCancelButton = ["Processing"].includes(order.status)
@@ -123,11 +109,11 @@ const MobileTableRow: React.FC<{
         </div>
         <div className="flex flex-row">
           <p className="flex-1 text-tertiary text-xxs">Paid</p>
-          <ValueCell value={paid} />
+          <ValueCell value={[paid]} />
         </div>
         <div className="flex flex-row">
           <p className="flex-1 text-tertiary text-xxs">Received</p>
-          <ValueCell value={received} />
+          <ValueCell value={[received]} />
         </div>
         <div className="flex flex-row">          
           <p className="flex-1 text-tertiary text-xxs">Status</p>
