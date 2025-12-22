@@ -1,4 +1,4 @@
-import { TransactionItem } from "./TransactionSummary"
+import type { TransactionItem } from "./TransactionSummary"
 
 export type TransactionSummaryBuilder = {
   addSingle(

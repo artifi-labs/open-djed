@@ -3,36 +3,30 @@
 import * as React from "react"
 import { useMemo } from "react"
 import Link from "next/link"
-import { Skeleton } from "../Skeleton"
 import Table from "./table/Table"
 import Button from "./Button"
 import Coin from "./Coin"
 import Divider from "./Divider"
 import ButtonIcon from "./ButtonIcon"
 import type { IconCoinName } from "./Coin"
-import type { OrderApi } from "@/app/orders/page"
 import type { HeaderItem } from "./table/Table"
 import Tag from "./Tag"
 import Dialog from "./Dialog"
 import Snackbar from "./Snackbar"
 import TransactionDetails from "./TransactionDetails"
-
-type OrderStatus =
-  | "Processing"
-  | "Completed"
-  | "Cancelling"
-  | "Canceled"
-  | "Failed"
-  | "Expired"
+import { type OrderStatus, useOrders } from "@/hooks/useOrders"
+import { type Order } from "@open-djed/api"
+import { useEnv } from "@/context/EnvContext"
 
 interface RowItem {
   columns: { content: React.ReactNode }[]
   key: string
-  raw: OrderApi
+  raw: Order
 }
 
 interface OrderHistoryProps {
-  data: OrderApi[]
+  data: Order[]
+  filters: boolean
 }
 
 const headers: HeaderItem[] = [
@@ -52,11 +46,12 @@ const headers: HeaderItem[] = [
   },
 ]
 
-const STATUS_CONFIG: Record<
+export const STATUS_CONFIG: Record<
   OrderStatus,
   { type: "success" | "warning" | "error" | "surface"; text: string }
 > = {
   Processing: { type: "surface", text: "Processing" },
+  Created: { type: "surface", text: "Created" },
   Completed: { type: "success", text: "Completed" },
   Cancelling: { type: "warning", text: "Cancelling" },
   Canceled: { type: "surface", text: "Canceled" },
@@ -74,7 +69,7 @@ const shouldShowAda = (
   action: string | undefined,
   type: "paid" | "received",
 ): boolean => {
-  if (token !== "BOTH" || !action) return false
+  if (token === "BOTH" || !action) return false
   const isMint = action === "Mint"
   return (isMint && type === "paid") || (!isMint && type === "received")
 }
@@ -143,23 +138,14 @@ const TypeCell = ({ action }: { action: string }) => (
   </div>
 )
 
-const DateCell = ({ date }: { date: string }) => {
-  const dateTime = new Date(date)
+const DateCell = ({ date }: { date: string | Date }) => {
+  const { formatDate } = useOrders()
+  const timestamp =
+    typeof date === "string" ? new Date(date).getTime() : date.getTime()
 
   return (
     <div className="px-16 py-12 text-nowrap">
-      <span>
-        {dateTime.toLocaleDateString("en-US", {
-          day: "2-digit",
-          month: "short",
-        })}
-        ,{" "}
-        {dateTime.toLocaleTimeString("en-US", {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: false,
-        })}
-      </span>
+      <span>{formatDate(BigInt(timestamp))}</span>
     </div>
   )
 }
@@ -187,7 +173,7 @@ const ValueCell = ({
   return (
     <div className="flex items-center gap-2 px-16 py-12">
       <span>{formatAda(value)}</span>
-      <span>ADA</span>
+      <span>{showAda ? "ADA" : token}</span>
     </div>
   )
 }
@@ -214,15 +200,19 @@ const StatusCell = ({ status }: { status?: string | null }) => {
 const ExternalCell = ({
   txHash,
   status,
+  outIndex,
 }: {
   txHash: string
   status?: string
+  outIndex: number
 }) => {
+  const { network } = useEnv()
   const [isOpen, setIsOpen] = React.useState(false)
   const [isDialogOpen, setIsDialogOpen] = React.useState(false)
   const [showSnackbar, setShowSnackbar] = React.useState(false)
+  const { handleCancelOrder } = useOrders()
 
-  const showCancel = status === "Processing"
+  const showCancel = status === "Created"
 
   const handleToggle = (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -231,12 +221,6 @@ const ExternalCell = ({
 
   const handleCloseDialog = () => {
     setIsDialogOpen(false)
-  }
-
-  const handleCancelOrder = () => {
-    setIsDialogOpen(false)
-    setShowSnackbar(true)
-    // TODO: Implement backend cancellation logic
   }
 
   React.useEffect(() => {
@@ -271,13 +255,13 @@ const ExternalCell = ({
               secondaryButtonLabel="Dismiss"
               hasSkrim={true}
               onSecondaryButtonClick={handleCloseDialog}
-              onPrimaryButtonClick={handleCancelOrder}
+              onPrimaryButtonClick={() => handleCancelOrder(txHash, outIndex)}
             />
           )}
         </>
       )}
       <Link
-        href={`https://preview.cardanoscan.io/transaction/${txHash}`}
+        href={`https://${network.toLowerCase()}.cardanoscan.io/transaction/${txHash}`}
         target="_blank"
       >
         <ButtonIcon size="small" variant="outlined" icon="External" />
@@ -299,10 +283,9 @@ const ExternalCell = ({
   )
 }
 
-const OrderHistory: React.FC<OrderHistoryProps> = ({ data }) => {
+const OrderHistory: React.FC<OrderHistoryProps> = ({ data, filters }) => {
   const rows: RowItem[] = useMemo(() => {
     if (!data.length) return []
-
     return data.map((order) => ({
       key: order.tx_hash,
       raw: order,
@@ -333,7 +316,7 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({ data }) => {
         { content: <StatusCell status={order.status} /> },
         {
           content: (
-            <ExternalCell txHash={order.tx_hash} status={order.status} />
+            <ExternalCell txHash={order.tx_hash} status={order.status} outIndex={order.out_index} />
           ),
         },
       ],
@@ -341,7 +324,21 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({ data }) => {
   }, [data])
 
   if (!data.length) {
-    return <Skeleton width="w-full" height="h-32" />
+    return (
+      <div className="bg-surface-card border-border-primary rounded-8 mb-36 flex min-h-220 w-full flex-col items-center justify-center gap-6 border">
+        <span className="text-lg font-semibold">
+          {filters ? "No orders to display." : "No orders to display yet."}
+        </span>
+        <span className="mb-24 text-center text-sm text-nowrap">
+          {filters
+            ? "No orders found with the requested filter."
+            : "Looks like this wallet hasn't made any trades."}
+        </span>
+        <Link href={"/"}>
+          <Button text="Mint & Burn Now" variant="secondary" size="large" />
+        </Link>
+      </div>
+    )
   }
 
   return (

@@ -1,0 +1,5966 @@
+[
+  {
+    "id": 1,
+    "address": {
+      "stakeKeyHash": [
+        [["8836a78c84a9cba2a947bf72c1842aa7e81950fb2c0ce94c0cf6d127"]]
+      ],
+      "paymentKeyHash": [
+        "7f65c419e16b4568aef3fe422d2134a67797ab9e3ec1e640ca4c3c75"
+      ]
+    },
+    "tx_hash": "eb7298785739f412e3765b7fd8b3643865cb655f86d706672f3499e85c6ae3e6",
+    "block": "4f318afb2905d349f49967079324f6bf9a3ab223d0835b1ca50c17184de9e7d3",
+    "slot": "76948235",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2024-11-26T14:33:02.000Z",
+    "paid": "12594166",
+    "fees": "2823130",
+    "received": "11111111",
+    "status": "Completed"
+  },
+  {
+    "id": 2,
+    "address": {
+      "stakeKeyHash": [
+        [["8836a78c84a9cba2a947bf72c1842aa7e81950fb2c0ce94c0cf6d127"]]
+      ],
+      "paymentKeyHash": [
+        "7f65c419e16b4568aef3fe422d2134a67797ab9e3ec1e640ca4c3c75"
+      ]
+    },
+    "tx_hash": "5135e4e596d801947d5349df5428c1d3f232ace946436addafbbd4664c2a5493",
+    "block": "674f38e8d2318796687e44db29cdf74d2cbb03c7f7c707d91b50e7f5ed9186c9",
+    "slot": "76948385",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2024-11-26T14:35:30.000Z",
+    "paid": "26447748",
+    "fees": "3145518",
+    "received": "23333333",
+    "status": "Completed"
+  },
+  {
+    "id": 3,
+    "address": {
+      "stakeKeyHash": [
+        [["8836a78c84a9cba2a947bf72c1842aa7e81950fb2c0ce94c0cf6d127"]]
+      ],
+      "paymentKeyHash": [
+        "7f65c419e16b4568aef3fe422d2134a67797ab9e3ec1e640ca4c3c75"
+      ]
+    },
+    "tx_hash": "dac6e50da430054279193a0fbb5365147a0e543412ad240c4511a5c5ed733a3e",
+    "block": "a166e5982376a06007051a1cbc0e801422967e28dd99e3760460e952e0757704",
+    "slot": "77126238",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2024-11-28T15:59:23.000Z",
+    "paid": "244508135",
+    "fees": "14048537",
+    "received": "232000000",
+    "status": "Completed"
+  },
+  {
+    "id": 4,
+    "address": {
+      "stakeKeyHash": [
+        [["8836a78c84a9cba2a947bf72c1842aa7e81950fb2c0ce94c0cf6d127"]]
+      ],
+      "paymentKeyHash": [
+        "7f65c419e16b4568aef3fe422d2134a67797ab9e3ec1e640ca4c3c75"
+      ]
+    },
+    "tx_hash": "b8e3111da86cff8f56a02d8111cc088707cf7c8a88d47707afded71e37365dbd",
+    "block": "2f1b0267e6b58ba8da932e53f62aa5e79ee7aa5a14cd20d3d79821398bf27c81",
+    "slot": "78071884",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2024-12-09T14:40:01.000Z",
+    "paid": "10273815",
+    "fees": "2823130",
+    "received": "11222222",
+    "status": "Completed"
+  },
+  {
+    "id": 5,
+    "address": {
+      "stakeKeyHash": [
+        [["d6edcd03e99346fc181039a064d1d7f400b5a405dcda635f1f9299f0"]]
+      ],
+      "paymentKeyHash": [
+        "72424b5f0ef06105a8b15621cae6e65d78d54f90562b53ff6027fc74"
+      ]
+    },
+    "tx_hash": "c7daebc1de21c50467337129fbaa6ac98b4d7d072c21ad70f151df4a1baa9b26",
+    "block": "d3bd6f02e18678a667e7d1f36446d4e13acdc70c812b64c5a146d1bf316e01d0",
+    "slot": "78133598",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2024-12-10T07:48:27.000Z",
+    "paid": "510760687",
+    "fees": "27361165",
+    "received": "500000000",
+    "status": "Completed"
+  },
+  {
+    "id": 6,
+    "address": {
+      "stakeKeyHash": [
+        [["6d3f0583ecdd7a04cf4d3a7ea3057205c944493cb38061345abfc218"]]
+      ],
+      "paymentKeyHash": [
+        "cb94303220d479f3855768c2f55e8c5fe15725134a4ced9620ccfb5b"
+      ]
+    },
+    "tx_hash": "6f9d27119a679d049e3223273701da0e9c28b2c24516bb54df32f648af7820e7",
+    "block": "ce96e3eeb307a275e75a1e3fc0a8bbb672051e6a177c55c98f5734db0571c7ac",
+    "slot": "78649813",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2024-12-16T07:11:36.000Z",
+    "paid": "9533939",
+    "fees": "2823130",
+    "received": "10000000",
+    "status": "Completed"
+  },
+  {
+    "id": 7,
+    "address": {
+      "stakeKeyHash": [
+        [["e9729a67289feb50b99257e8babf12e3e1090bd16c08a05b70837e4f"]]
+      ],
+      "paymentKeyHash": [
+        "c6317c22a56ff2647a70382f6361dd277204fba1cc0f7973ec13c011"
+      ]
+    },
+    "tx_hash": "d1ed9ed5576a8f7e2db94088e17e6a4d769d96bbab08dab5a2dc3b5ec8d3bd74",
+    "block": "d1df545f86f716179e6d951a011225a973bc6d525457512eb4a2dc1a955ff9c7",
+    "slot": "80554811",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-01-07T08:22:36.000Z",
+    "paid": "926425617",
+    "fees": "48144411",
+    "received": "1000000000",
+    "status": "Completed"
+  },
+  {
+    "id": 8,
+    "address": {
+      "stakeKeyHash": [
+        [["fd8e3b0bd27024222cdc6573fe7b8dee93e3662c5ed562a600bf867a"]]
+      ],
+      "paymentKeyHash": [
+        "a5e6fcf58248a0bfdc95d8758b4ea07297cbe2ed3165b86bf9c885d6"
+      ]
+    },
+    "tx_hash": "7a26ac308531059d6f433918b428fa651f75b0fc6d9f935ff790a23073b6fb3e",
+    "block": "1fc1bb491eaec58f91e0e96aa38ad6aca2626f9d8bb653d6f52722efd17fe07c",
+    "slot": "80769073",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-01-09T19:52:51.000Z",
+    "paid": "2283458065",
+    "fees": "101823130",
+    "received": "2000000000",
+    "status": "Completed"
+  },
+  {
+    "id": 9,
+    "address": {
+      "stakeKeyHash": [
+        [["7b8e3dfad1c97edb1e01c7dfdd7ac506e13b6659ed5def247a9d7942"]]
+      ],
+      "paymentKeyHash": [
+        "51374dcf4a79090cfab6c03c276bf8f994fbedca2c1ed90a085bede7"
+      ]
+    },
+    "tx_hash": "d86173f90002c3cd814c4543d98707aa1251f435621b5d12ec198de1d7f55082",
+    "block": "47f69883483d2d5f208159c6a5985121ca66b631a3fc61cfe0b0bd8960759c57",
+    "slot": "80792659",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-01-10T02:26:37.000Z",
+    "paid": "6718669313",
+    "fees": "101823130",
+    "received": "6000000000",
+    "status": "Completed"
+  },
+  {
+    "id": 10,
+    "address": {
+      "stakeKeyHash": [
+        [["a19ed7f94f2c37ceda78d3d3cafcff0a0cbc6d73891e65d44222314b"]]
+      ],
+      "paymentKeyHash": [
+        "fc3a9e642d8841288e37567aacfb58570484e0900919f8325a0cd89f"
+      ]
+    },
+    "tx_hash": "a3c6503f621ba8321dea892411406a1a1e0e45b6f68fae7852315c1ec51c8b9a",
+    "block": "b11dd122b27e3832b1379e7f1a5e4575ede800ed9bd95c158ab352b3971751b0",
+    "slot": "80910885",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-01-11T11:16:48.000Z",
+    "paid": "6608975374",
+    "fees": "101823130",
+    "received": "6000000000",
+    "status": "Completed"
+  },
+  {
+    "id": 11,
+    "address": {
+      "stakeKeyHash": [
+        [["e10383e3a0447f4bb6e9284ab92cf7d01cec63dff8c02942cbbadd1c"]]
+      ],
+      "paymentKeyHash": [
+        "6d8dd965ab362f421e9359d58d397622968123a1e7d9294b9ebba26b"
+      ]
+    },
+    "tx_hash": "8d0af2163db3acad27fe5c3c46abc40b30d0973abd0fd080086c7e036e8dffbb",
+    "block": "80c3e839ad790ca510d8a8bea87d151cadedfdd6c24884fb9aabb8b663f933e2",
+    "slot": "80990607",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-01-12T09:24:22.000Z",
+    "paid": "6180247210",
+    "fees": "101823130",
+    "received": "6000000000",
+    "status": "Completed"
+  },
+  {
+    "id": 12,
+    "address": {
+      "stakeKeyHash": [
+        [["0322562b723a09c70cc462b7c099c18c0660b78bcff4e9fbb2010f7e"]]
+      ],
+      "paymentKeyHash": [
+        "1b328d37908ea0892acfbb4fc9f865c5cf90ec1cfa72383804f5589f"
+      ]
+    },
+    "tx_hash": "6ad910b02d47286bd4392f29c10d3c50ad6d5b635a840a00b08a1325ecc7a4c0",
+    "block": "0e68f2a8fae14b2d7508aef2df6b7550e1ee1e05875b9417bd86073f101555aa",
+    "slot": "81129376",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-01-13T23:58:08.000Z",
+    "paid": "598459782",
+    "fees": "31746120",
+    "received": "549117063",
+    "status": "Completed"
+  },
+  {
+    "id": 13,
+    "address": {
+      "stakeKeyHash": [
+        [["20825a839f69802a120a04027d0967be5eeb6cd47692c0bd0d1126c0"]]
+      ],
+      "paymentKeyHash": [
+        "f6e55e7272e088b4f30dadabda5f89547213171989895f500f620dae"
+      ]
+    },
+    "tx_hash": "7971e295e42ee82eb91a7a2a1c7d8d750477db8197a99e2022bdb0c5d9d2214c",
+    "block": "727b2ef75302b1bb6249d7982f61cf1510d41bfddb73abe5f81c2f6959093bb2",
+    "slot": "81281131",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-01-15T18:07:58.000Z",
+    "paid": "4897351",
+    "fees": "2823130",
+    "received": "5000000",
+    "status": "Completed"
+  },
+  {
+    "id": 14,
+    "address": {
+      "stakeKeyHash": [
+        [["dd4a8c8048b6b754a81ef378763015b7993289fd8f0429bcaabb7254"]]
+      ],
+      "paymentKeyHash": [
+        "1c8e8c1aaf55492822f775d75b7542c887b4d8cde7b8aaff2f0f2528"
+      ]
+    },
+    "tx_hash": "0ee9ebe77375c937a54545a9fe89abc54d4f3d81e5c0e630a85bcd5fb48fdcb6",
+    "block": "3319b9f97f1ac2db073d1077746c7d55eeb24c2da01f55a563d5b546d1727a9c",
+    "slot": "81329090",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-01-16T07:26:51.000Z",
+    "paid": "19344540",
+    "fees": "2823130",
+    "received": "20000000",
+    "status": "Completed"
+  },
+  {
+    "id": 15,
+    "address": {
+      "stakeKeyHash": [
+        [["dd4a8c8048b6b754a81ef378763015b7993289fd8f0429bcaabb7254"]]
+      ],
+      "paymentKeyHash": [
+        "1c8e8c1aaf55492822f775d75b7542c887b4d8cde7b8aaff2f0f2528"
+      ]
+    },
+    "tx_hash": "838f9664aaf64735847acb8313df4fafcff3a43071fe9b6167ed39dd70161990",
+    "block": "d86c069fa971dce5b64d0c85522ad3be8e364e56aad49657f226080e66d5168a",
+    "slot": "81329795",
+    "action": "Burn",
+    "token": "DJED",
+    "orderDate": "2025-01-16T07:38:50.000Z",
+    "paid": "20000000",
+    "fees": "2823130",
+    "received": "20320676",
+    "status": "Completed"
+  },
+  {
+    "id": 16,
+    "address": {
+      "stakeKeyHash": [
+        [["7b8e3dfad1c97edb1e01c7dfdd7ac506e13b6659ed5def247a9d7942"]]
+      ],
+      "paymentKeyHash": [
+        "51374dcf4a79090cfab6c03c276bf8f994fbedca2c1ed90a085bede7"
+      ]
+    },
+    "tx_hash": "02684a0ef8d824bfc7e254b2e1cf6fc679090467e6d4d544eafda72287cf1d5a",
+    "block": "d9f1a2b98fc89b8f12e5a17329b19b381fa305d78fd68905861552f298f787d1",
+    "slot": "81768408",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-01-21T09:29:37.000Z",
+    "paid": "17117827366",
+    "fees": "101823130",
+    "received": "16000000000",
+    "status": "Completed"
+  },
+  {
+    "id": 17,
+    "address": {
+      "stakeKeyHash": [
+        [["7b8e3dfad1c97edb1e01c7dfdd7ac506e13b6659ed5def247a9d7942"]]
+      ],
+      "paymentKeyHash": [
+        "51374dcf4a79090cfab6c03c276bf8f994fbedca2c1ed90a085bede7"
+      ]
+    },
+    "tx_hash": "32fd7df9a66469728e0b688314f871d8dd61fa134b3131a20e213d3cc17995eb",
+    "block": "c22b2d0dceca5187d7583dfc05c1e57939feae838be07d192c3c8042249ab2d9",
+    "slot": "81862368",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-01-22T11:34:37.000Z",
+    "paid": "41206477809",
+    "fees": "101823130",
+    "received": "40210321209",
+    "status": "Completed"
+  },
+  {
+    "id": 18,
+    "address": {
+      "stakeKeyHash": [
+        [["bef7f14cde5eabb16a698e8b8f15e346b260a17b6ff26e572c06a5b7"]]
+      ],
+      "paymentKeyHash": [
+        "9916b846579fc7109f6ab82fd94c7d9b47af8694ea8697a167b1bb08"
+      ]
+    },
+    "tx_hash": "09aaee1283ab10c86a75d6bb0a40db9759e466aca3ada57f154c418e419907e1",
+    "block": "475f24b41e8ea9f6c2234d81a55da9617857be68d4fb7fdf3cf834430e0f7023",
+    "slot": "81875253",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-01-22T15:08:46.000Z",
+    "paid": "10369267",
+    "fees": "2823130",
+    "received": "10000000",
+    "status": "Completed"
+  },
+  {
+    "id": 19,
+    "address": {
+      "stakeKeyHash": [
+        [["5a3f8c1b91adc65e2faf7fee12dcd9fce630703f99a09df6a331b9ea"]]
+      ],
+      "paymentKeyHash": [
+        "2f5743dace874027242cf3f06764dafe4aa7347f6bac5dfdbe970b34"
+      ]
+    },
+    "tx_hash": "b65faaa853248416cd833ac5310d9a041a66c7fd755dcc0c9129306ed3f2fda3",
+    "block": "d3ca834c79358ba6cb7a5692cb273fca4d6d50d05901a5e76eedb3422b923dc9",
+    "slot": "82210525",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-01-26T12:17:40.000Z",
+    "paid": "104376730",
+    "fees": "7041967",
+    "received": "100000000",
+    "status": "Completed"
+  },
+  {
+    "id": 20,
+    "address": {
+      "stakeKeyHash": [
+        [["aea4ef4d0ca65bc2c3322494f76b09cda5c033e7d94c1cc919e357a9"]]
+      ],
+      "paymentKeyHash": [
+        "909df330c4e308081b7af7726dafb68e9aceadbfd4a9c2f378deace3"
+      ]
+    },
+    "tx_hash": "55d023859c796e49b23a1c1ec039342a5e24787be336cde5312acf4fda27e146",
+    "block": "39249239ffa33992e79e59f4dd3f42f42fe4e8c7bcd402f57f952a9540a14680",
+    "slot": "82462840",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-01-29T10:21:56.000Z",
+    "paid": "33189762",
+    "fees": "3482619",
+    "received": "30000000",
+    "status": "Completed"
+  },
+  {
+    "id": 21,
+    "address": {
+      "stakeKeyHash": [
+        [["aea4ef4d0ca65bc2c3322494f76b09cda5c033e7d94c1cc919e357a9"]]
+      ],
+      "paymentKeyHash": [
+        "909df330c4e308081b7af7726dafb68e9aceadbfd4a9c2f378deace3"
+      ]
+    },
+    "tx_hash": "aab2021ee1233dbe9db0acfb8bf14bace721bec5939e5e6c6a937170fe440cad",
+    "block": "2554d4e48e130831631263746824cda88c6635f995b45648aa6d04d9c733ab54",
+    "slot": "82465528",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-01-29T11:07:49.000Z",
+    "paid": "3314739327",
+    "fees": "101823130",
+    "received": "3000000000",
+    "status": "Completed"
+  },
+  {
+    "id": 22,
+    "address": {
+      "stakeKeyHash": [
+        [["aea4ef4d0ca65bc2c3322494f76b09cda5c033e7d94c1cc919e357a9"]]
+      ],
+      "paymentKeyHash": [
+        "909df330c4e308081b7af7726dafb68e9aceadbfd4a9c2f378deace3"
+      ]
+    },
+    "tx_hash": "3e07c7ded2909f7871727c928c3195e80bd2b3cd99ea52b3ea1f45f4afdb31be",
+    "block": "d21cec29f8002af9fe8df9b50beff0805bdaed3a3e43464e2d9faddce3d3698b",
+    "slot": "82466759",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-01-29T11:27:41.000Z",
+    "paid": "8831754015",
+    "fees": "101823130",
+    "received": "8000000000",
+    "status": "Completed"
+  },
+  {
+    "id": 23,
+    "address": {
+      "stakeKeyHash": [
+        [["8836a78c84a9cba2a947bf72c1842aa7e81950fb2c0ce94c0cf6d127"]]
+      ],
+      "paymentKeyHash": [
+        "7f65c419e16b4568aef3fe422d2134a67797ab9e3ec1e640ca4c3c75"
+      ]
+    },
+    "tx_hash": "4d4d4d6e39e1211b5ebeb8d40d60d4f1a018142e294edd21dbef7ae579897749",
+    "block": "248daab0e96dc7513eda1c21241d4164bc3b6763def9874b16ced40987f462bf",
+    "slot": "82469084",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-01-29T12:06:13.000Z",
+    "paid": "15514135",
+    "fees": "2823130",
+    "received": "14000000",
+    "status": "Completed"
+  },
+  {
+    "id": 24,
+    "address": {
+      "stakeKeyHash": [
+        [["8836a78c84a9cba2a947bf72c1842aa7e81950fb2c0ce94c0cf6d127"]]
+      ],
+      "paymentKeyHash": [
+        "7f65c419e16b4568aef3fe422d2134a67797ab9e3ec1e640ca4c3c75"
+      ]
+    },
+    "tx_hash": "d2bf4ca27bd7e99ffa1883b061015ca68e12c06a3339c680532dae013600c653",
+    "block": "72f2b3d41872b4125dcb72fe7d1fa8d71df23269c56a441503d19e823b607dc3",
+    "slot": "82470227",
+    "action": "Burn",
+    "token": "DJED",
+    "orderDate": "2025-01-29T12:25:47.000Z",
+    "paid": "20000000",
+    "fees": "2874033",
+    "received": "22841175",
+    "status": "Completed"
+  },
+  {
+    "id": 25,
+    "address": {
+      "stakeKeyHash": [
+        [["8836a78c84a9cba2a947bf72c1842aa7e81950fb2c0ce94c0cf6d127"]]
+      ],
+      "paymentKeyHash": [
+        "7f65c419e16b4568aef3fe422d2134a67797ab9e3ec1e640ca4c3c75"
+      ]
+    },
+    "tx_hash": "2bb3f4e24f97ad09354199d5a56f49bbf886cbe48de6ba6a61548580095a9478",
+    "block": "7c0ce032f3ac35b3ca5549b912852130c1b253f1470301b05dd14986f3903efb",
+    "slot": "82470526",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-01-29T12:31:09.000Z",
+    "paid": "110451974",
+    "fees": "7345729",
+    "received": "100000000",
+    "status": "Completed"
+  },
+  {
+    "id": 26,
+    "address": {
+      "stakeKeyHash": [
+        [["8836a78c84a9cba2a947bf72c1842aa7e81950fb2c0ce94c0cf6d127"]]
+      ],
+      "paymentKeyHash": [
+        "7f65c419e16b4568aef3fe422d2134a67797ab9e3ec1e640ca4c3c75"
+      ]
+    },
+    "tx_hash": "7878bf4cd835eacd00b6f81c9eb4144bf1187070fa595497e2ffb9c2b0452747",
+    "block": "cd179ce3057758c278b0a8cec9f355a7eb2c11484c99010500e86bb550fb57a0",
+    "slot": "82472369",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-01-29T13:01:28.000Z",
+    "paid": "33425823",
+    "fees": "3494422",
+    "received": "30000000",
+    "status": "Completed"
+  },
+  {
+    "id": 27,
+    "address": {
+      "stakeKeyHash": [
+        [["8836a78c84a9cba2a947bf72c1842aa7e81950fb2c0ce94c0cf6d127"]]
+      ],
+      "paymentKeyHash": [
+        "7f65c419e16b4568aef3fe422d2134a67797ab9e3ec1e640ca4c3c75"
+      ]
+    },
+    "tx_hash": "5d75494aac232a8e665c0a785c10eea370010126a2573a34a6af534dc37397ce",
+    "block": "5c1cf250b554148d19d41f73d8e43632193620f9f3447ab06a56396a33815e96",
+    "slot": "82472688",
+    "action": "Burn",
+    "token": "SHEN",
+    "orderDate": "2025-01-29T13:07:16.000Z",
+    "paid": "2000000",
+    "fees": "2823130",
+    "received": "7723349",
+    "status": "Completed"
+  },
+  {
+    "id": 28,
+    "address": {
+      "stakeKeyHash": [
+        [["8836a78c84a9cba2a947bf72c1842aa7e81950fb2c0ce94c0cf6d127"]]
+      ],
+      "paymentKeyHash": [
+        "7f65c419e16b4568aef3fe422d2134a67797ab9e3ec1e640ca4c3c75"
+      ]
+    },
+    "tx_hash": "055599bf8f650409a6bfbd0ddc73722e9735214b342cbcb69f51bbb40a44c80b",
+    "block": "7fd6283e8ad771ebefa9e6a991b40b8fb7e0a2444d07d25d9eaa9acfddd8fe18",
+    "slot": "82475340",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-01-29T13:51:09.000Z",
+    "paid": "1341728181",
+    "fees": "68909540",
+    "received": "1200000000",
+    "status": "Completed"
+  },
+  {
+    "id": 29,
+    "address": {
+      "stakeKeyHash": [
+        [["dd4a8c8048b6b754a81ef378763015b7993289fd8f0429bcaabb7254"]]
+      ],
+      "paymentKeyHash": [
+        "1c8e8c1aaf55492822f775d75b7542c887b4d8cde7b8aaff2f0f2528"
+      ]
+    },
+    "tx_hash": "461cc7fc472852885371bde2808a76989781dfbc76fa70e6f0fd05febf6da523",
+    "block": "d47d56e791846f84690d387442878786f42426a3e0191339a3a4bedeca423c6f",
+    "slot": "82978786",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-02-04T09:42:10.000Z",
+    "paid": "140162753",
+    "fees": "8831268",
+    "received": "100000000",
+    "status": "Completed"
+  },
+  {
+    "id": 30,
+    "address": {
+      "stakeKeyHash": [
+        [["dd4a8c8048b6b754a81ef378763015b7993289fd8f0429bcaabb7254"]]
+      ],
+      "paymentKeyHash": [
+        "1c8e8c1aaf55492822f775d75b7542c887b4d8cde7b8aaff2f0f2528"
+      ]
+    },
+    "tx_hash": "01e144fb1096e6b7f7062cf77497e4d98406f3db544d51875a1c9dbb008af45a",
+    "block": "fc21c49e11836dcb3dc7cb6c13029b0b61b579a81ee30e2662f425753cf48370",
+    "slot": "82979835",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-02-04T09:58:49.000Z",
+    "paid": "139510535",
+    "fees": "8798657",
+    "received": "100000000",
+    "status": "Completed"
+  },
+  {
+    "id": 31,
+    "address": {
+      "stakeKeyHash": [
+        [["dd4a8c8048b6b754a81ef378763015b7993289fd8f0429bcaabb7254"]]
+      ],
+      "paymentKeyHash": [
+        "1c8e8c1aaf55492822f775d75b7542c887b4d8cde7b8aaff2f0f2528"
+      ]
+    },
+    "tx_hash": "e5ecdff1792c255d82067497fbe4e213a66ec54c130efd40cf078f0f0d998810",
+    "block": "dd71129c373b1583cad2526f194ed7c0476ac2f2fa4f6bcdf6d60c13614c91b7",
+    "slot": "83044595",
+    "action": "Burn",
+    "token": "DJED",
+    "orderDate": "2025-02-05T03:57:17.000Z",
+    "paid": "100000000",
+    "fees": "8298060",
+    "received": "131321719",
+    "status": "Completed"
+  },
+  {
+    "id": 32,
+    "address": {
+      "stakeKeyHash": [
+        [["dd4a8c8048b6b754a81ef378763015b7993289fd8f0429bcaabb7254"]]
+      ],
+      "paymentKeyHash": [
+        "1c8e8c1aaf55492822f775d75b7542c887b4d8cde7b8aaff2f0f2528"
+      ]
+    },
+    "tx_hash": "4e1a716c1d43b7d7a3a176436a115caffc536145625fcaacce5c9198e98bad5b",
+    "block": "4c7ef23f7beb41cf22a67871dee989dd95ba514c858c20d149378818326f2db7",
+    "slot": "83045055",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-02-05T04:06:49.000Z",
+    "paid": "313352444",
+    "fees": "17490753",
+    "received": "100000000",
+    "status": "Completed"
+  },
+  {
+    "id": 33,
+    "address": {
+      "stakeKeyHash": [
+        [["dd4a8c8048b6b754a81ef378763015b7993289fd8f0429bcaabb7254"]]
+      ],
+      "paymentKeyHash": [
+        "1c8e8c1aaf55492822f775d75b7542c887b4d8cde7b8aaff2f0f2528"
+      ]
+    },
+    "tx_hash": "d4624f03236f82a611c88a1b712675d961e4fd4f490e3456179345492e0f1064",
+    "block": "441b527b5858987683dc31f54888200354ee465f450ef4f882b5f2ea84e7e6bf",
+    "slot": "83046352",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-02-05T04:28:00.000Z",
+    "paid": "626060243",
+    "fees": "33126143",
+    "received": "200000000",
+    "status": "Completed"
+  },
+  {
+    "id": 34,
+    "address": {
+      "stakeKeyHash": [
+        [["dd4a8c8048b6b754a81ef378763015b7993289fd8f0429bcaabb7254"]]
+      ],
+      "paymentKeyHash": [
+        "1c8e8c1aaf55492822f775d75b7542c887b4d8cde7b8aaff2f0f2528"
+      ]
+    },
+    "tx_hash": "b19b83178663125ef1f8038c23c524396a0c98b795bac1b66b0a4816213d35f5",
+    "block": "f973cafb0ac59e1871ce8e1513500905eef1406da28ab3c2ad4a8c40fbb02ec6",
+    "slot": "83058321",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-02-05T07:46:28.000Z",
+    "paid": "137837359",
+    "fees": "8714998",
+    "received": "100000000",
+    "status": "Completed"
+  },
+  {
+    "id": 35,
+    "address": {
+      "stakeKeyHash": [
+        [["dd4a8c8048b6b754a81ef378763015b7993289fd8f0429bcaabb7254"]]
+      ],
+      "paymentKeyHash": [
+        "1c8e8c1aaf55492822f775d75b7542c887b4d8cde7b8aaff2f0f2528"
+      ]
+    },
+    "tx_hash": "39b1c724256d0a6847c0678357992365a43015014b89f3616a403af1f31a3b25",
+    "block": "97e4611ac44f9d9ae672eb169ed09a5202d57bb0da1375658bfdd40d30dba31a",
+    "slot": "83059968",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-02-05T08:15:06.000Z",
+    "paid": "313325001",
+    "fees": "17489381",
+    "received": "100000000",
+    "status": "Completed"
+  },
+  {
+    "id": 36,
+    "address": {
+      "stakeKeyHash": [
+        [["b66edb2ba532769f64bde30c75e4b53075e3bdb4054d04279b066a5f"]]
+      ],
+      "paymentKeyHash": [
+        "dca75366a41182308c75502d9e008e364608dcdfe4f7ffb1181fac48"
+      ]
+    },
+    "tx_hash": "dbb18c05e675194fc56d946ca3953ed8b4def08e317f184d706603e7da0b9e18",
+    "block": "e572854cc656aca3c6cd04f46b8af41c5fee775fe7ab84112687b829d4fd88c2",
+    "slot": "83061199",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-02-05T08:34:59.000Z",
+    "paid": "4870707459",
+    "fees": "101823130",
+    "received": "3550142810",
+    "status": "Completed"
+  },
+  {
+    "id": 37,
+    "address": {
+      "stakeKeyHash": [
+        [["8836a78c84a9cba2a947bf72c1842aa7e81950fb2c0ce94c0cf6d127"]]
+      ],
+      "paymentKeyHash": [
+        "7f65c419e16b4568aef3fe422d2134a67797ab9e3ec1e640ca4c3c75"
+      ]
+    },
+    "tx_hash": "4315e6ebe2c11954d0a7ff4ad0aef95ec628deaf1a70474c7db86ba9f43654fe",
+    "block": "75bdcead4cea97b62ce39e645d72708a11be170abd087bf3f2d11128cc1b0ed8",
+    "slot": "83163096",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-02-06T12:53:34.000Z",
+    "paid": "312519952",
+    "fees": "17449128",
+    "received": "100000000",
+    "status": "Completed"
+  },
+  {
+    "id": 38,
+    "address": {
+      "stakeKeyHash": [
+        [["8836a78c84a9cba2a947bf72c1842aa7e81950fb2c0ce94c0cf6d127"]]
+      ],
+      "paymentKeyHash": [
+        "7f65c419e16b4568aef3fe422d2134a67797ab9e3ec1e640ca4c3c75"
+      ]
+    },
+    "tx_hash": "efc947c7b85b902c62fe3261cb7d2f5ac615557577b62e76a2e1dbed0e82e96c",
+    "block": "83d13ded4c95413c32844fdcfac863a407ffc99412d0dd7c81476d2b6ec559ba",
+    "slot": "83164430",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-02-06T13:16:01.000Z",
+    "paid": "312457831",
+    "fees": "17446022",
+    "received": "100000000",
+    "status": "Completed"
+  },
+  {
+    "id": 39,
+    "address": {
+      "stakeKeyHash": [
+        [["8836a78c84a9cba2a947bf72c1842aa7e81950fb2c0ce94c0cf6d127"]]
+      ],
+      "paymentKeyHash": [
+        "7f65c419e16b4568aef3fe422d2134a67797ab9e3ec1e640ca4c3c75"
+      ]
+    },
+    "tx_hash": "b77dde656bc9e837462fdf84a26a25216915b52c992bf0cbb254836f913cb5b1",
+    "block": "fa299a6d3090d0042e9f5673dc30858c027c017f75abf272723ab01b2bb1149f",
+    "slot": "83164897",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-02-06T13:22:31.000Z",
+    "paid": "138963843",
+    "fees": "8771323",
+    "received": "100000000",
+    "status": "Completed"
+  },
+  {
+    "id": 40,
+    "address": {
+      "stakeKeyHash": [
+        [["b66edb2ba532769f64bde30c75e4b53075e3bdb4054d04279b066a5f"]]
+      ],
+      "paymentKeyHash": [
+        "dca75366a41182308c75502d9e008e364608dcdfe4f7ffb1181fac48"
+      ]
+    },
+    "tx_hash": "a952332d5769cf840ce02b75b89dca56ddac1d3d2e59a3cd69d3c41ef214b681",
+    "block": "2417d1a38e02180d4741f01a6b057d4bd0b7af0e7aefac784c0b5f46fff5ecba",
+    "slot": "83312020",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-02-08T06:16:12.000Z",
+    "paid": "2497012190",
+    "fees": "101823130",
+    "received": "1680755875",
+    "status": "Completed"
+  },
+  {
+    "id": 41,
+    "address": {
+      "stakeKeyHash": [
+        [["aea4ef4d0ca65bc2c3322494f76b09cda5c033e7d94c1cc919e357a9"]]
+      ],
+      "paymentKeyHash": [
+        "909df330c4e308081b7af7726dafb68e9aceadbfd4a9c2f378deace3"
+      ]
+    },
+    "tx_hash": "461b42709b5cb95bef8fed8f17570bb5f5de0a54a14a9fa17ad67f9d5d3d2a12",
+    "block": "ca57a9d20eaae564c54ffddcd8f826e91f8c0c891a53e6dea8fe2621de54fcd8",
+    "slot": "83436088",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-02-09T16:42:58.000Z",
+    "paid": "617906562",
+    "fees": "32718459",
+    "received": "200000000",
+    "status": "Completed"
+  },
+  {
+    "id": 42,
+    "address": {
+      "stakeKeyHash": [
+        [["aea4ef4d0ca65bc2c3322494f76b09cda5c033e7d94c1cc919e357a9"]]
+      ],
+      "paymentKeyHash": [
+        "909df330c4e308081b7af7726dafb68e9aceadbfd4a9c2f378deace3"
+      ]
+    },
+    "tx_hash": "0656d4286fb3ae19db5daa6833e89ce72dbd340596f5c8d5f72fb99b953a86c4",
+    "block": "d7c48f716082cbd4fc86c23835b577040a4fa179d9b76d41376691b17973c912",
+    "slot": "83436911",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-02-09T16:57:27.000Z",
+    "paid": "309038183",
+    "fees": "17275040",
+    "received": "100000000",
+    "status": "Completed"
+  },
+  {
+    "id": 43,
+    "address": {
+      "stakeKeyHash": [
+        [["aea4ef4d0ca65bc2c3322494f76b09cda5c033e7d94c1cc919e357a9"]]
+      ],
+      "paymentKeyHash": [
+        "909df330c4e308081b7af7726dafb68e9aceadbfd4a9c2f378deace3"
+      ]
+    },
+    "tx_hash": "db8eb2144ee39468804fdb0794c1d4945cdba41b928274c33deed2f471ba8b83",
+    "block": "d2aa8452563a4713be0a6ae79494dd9f7a024f06947815c7ca1d84f348eeccbe",
+    "slot": "83436957",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-02-09T16:58:36.000Z",
+    "paid": "148155607",
+    "fees": "9230911",
+    "received": "100000000",
+    "status": "Completed"
+  },
+  {
+    "id": 44,
+    "address": {
+      "stakeKeyHash": [
+        [["aea4ef4d0ca65bc2c3322494f76b09cda5c033e7d94c1cc919e357a9"]]
+      ],
+      "paymentKeyHash": [
+        "909df330c4e308081b7af7726dafb68e9aceadbfd4a9c2f378deace3"
+      ]
+    },
+    "tx_hash": "67e903fc6fcf74c232947108938137f59b4c63529a02d7b8d5cca600f52f077f",
+    "block": "994f99d3a573b45087fae75cd5bdb36247cab0b009c75bc765651e64c57bb135",
+    "slot": "83482301",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-02-10T05:33:38.000Z",
+    "paid": "617517448",
+    "fees": "32699003",
+    "received": "200000000",
+    "status": "Completed"
+  },
+  {
+    "id": 45,
+    "address": {
+      "stakeKeyHash": [
+        [["dd4a8c8048b6b754a81ef378763015b7993289fd8f0429bcaabb7254"]]
+      ],
+      "paymentKeyHash": [
+        "1c8e8c1aaf55492822f775d75b7542c887b4d8cde7b8aaff2f0f2528"
+      ]
+    },
+    "tx_hash": "f87fee368023bfa9cbe19ca04bf738eba5114ec359bc53ca544257bf6b87b2a6",
+    "block": "2fd2273e92691c5fa179afcb82e5b40f82c9aae2b684dcc90fb3afb70bdfe983",
+    "slot": "83744951",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-02-13T06:29:30.000Z",
+    "paid": "132421383",
+    "fees": "8444200",
+    "received": "100000000",
+    "status": "Completed"
+  },
+  {
+    "id": 46,
+    "address": {
+      "stakeKeyHash": [
+        [["dd4a8c8048b6b754a81ef378763015b7993289fd8f0429bcaabb7254"]]
+      ],
+      "paymentKeyHash": [
+        "1c8e8c1aaf55492822f775d75b7542c887b4d8cde7b8aaff2f0f2528"
+      ]
+    },
+    "tx_hash": "9af7f05519664b4f8f6b3a24f66e4584dcee99b62cddc56b8899346a048d3433",
+    "block": "72799b890ecd6bdfbc9491965e6c92e9e7dcee3d913122fdec3a4f9673c6bb10",
+    "slot": "83834372",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-02-14T07:20:27.000Z",
+    "paid": "128597291",
+    "fees": "8252995",
+    "received": "100000000",
+    "status": "Completed"
+  },
+  {
+    "id": 47,
+    "address": {
+      "stakeKeyHash": [
+        [["f94702d1d9825444e82e89debdfd3d9c94d0a4632fd1aef357a5bcb5"]]
+      ],
+      "paymentKeyHash": [
+        "5d9421fbfc2a60770794cd1327d7f2b3a9571a2d3365dd349907c9c0"
+      ]
+    },
+    "tx_hash": "1f1addc06660971c6de434035ed53d75bc697d54d89ef2b97ee57c5a1e2d63f8",
+    "block": "4756d82e6ca07509e30768d636a2d2787b79fe1cd9b8f714ad96cc9594ea6a79",
+    "slot": "84098391",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-02-17T08:41:35.000Z",
+    "paid": "129497851",
+    "fees": "8298023",
+    "received": "100000000",
+    "status": "Completed"
+  },
+  {
+    "id": 48,
+    "address": {
+      "stakeKeyHash": [
+        [["a4a771f2018185c3ba9eb8f8bca54ed2f795dcbe499b4ddd07588780"]]
+      ],
+      "paymentKeyHash": [
+        "f2ee5d5a9d7b7a1c2ac49bfff3142c62e66c4300b9a00ead2f8253de"
+      ]
+    },
+    "tx_hash": "382bacedd91fa6b75b36d1f01e5dd43c9c303a21037d47bbe4828fa464abad9b",
+    "block": "572c81f53755e2e336cf3fbe92ebd9f77fa2eceaebef550dbcbab8c2b035514c",
+    "slot": "84117608",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-02-17T14:02:20.000Z",
+    "paid": "2528785",
+    "fees": "2823130",
+    "received": "2000000",
+    "status": "Completed"
+  },
+  {
+    "id": 49,
+    "address": {
+      "stakeKeyHash": [
+        [["f94702d1d9825444e82e89debdfd3d9c94d0a4632fd1aef357a5bcb5"]]
+      ],
+      "paymentKeyHash": [
+        "5d9421fbfc2a60770794cd1327d7f2b3a9571a2d3365dd349907c9c0"
+      ]
+    },
+    "tx_hash": "d1329fc5e4c29d8bd34a835f3827d037d7cf1936e8b2d5f676c229f7d2094c02",
+    "block": "7842ef9d5aae5b277e8af9f3b28976a2e59621a5077e33b52eb36d8c4e2bf313",
+    "slot": "84251207",
+    "action": "Burn",
+    "token": "DJED",
+    "orderDate": "2025-02-19T03:08:41.000Z",
+    "paid": "100000000",
+    "fees": "8342035",
+    "received": "132201226",
+    "status": "Completed"
+  },
+  {
+    "id": 50,
+    "address": {
+      "stakeKeyHash": [
+        [["026bd4c65eca667d0ca1d081b55367ea615c374e43fd9577f7d418a3"]]
+      ],
+      "paymentKeyHash": [
+        "86e1516f325b20c25b3b6353ebc050fb7565464522ac304624c53996"
+      ]
+    },
+    "tx_hash": "fbfd751647e87e18ab1586dbf3cbe79b88c5f5ec0d166c6d08065b0f0a77fead",
+    "block": "73efd930a945cfb8a2bb2384cd19a1c329be5ae7439bdd428153c2ca9e51fa7e",
+    "slot": "85848604",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-03-09T14:51:30.000Z",
+    "paid": "13432526",
+    "fees": "2823130",
+    "received": "10000000",
+    "status": "Completed"
+  },
+  {
+    "id": 51,
+    "address": {
+      "stakeKeyHash": [
+        [["aea4ef4d0ca65bc2c3322494f76b09cda5c033e7d94c1cc919e357a9"]]
+      ],
+      "paymentKeyHash": [
+        "909df330c4e308081b7af7726dafb68e9aceadbfd4a9c2f378deace3"
+      ]
+    },
+    "tx_hash": "9876b88038b78019121af8657c02246accc1a2ba35ed6635263053cb5f5604b1",
+    "block": "eb315be93e9155d7e66ec6d3209d228fdeff41ffd30e5647b69780b8bbcb5ce7",
+    "slot": "87659745",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-03-30T12:58:04.000Z",
+    "paid": "168792464",
+    "fees": "10262754",
+    "received": "110000000",
+    "status": "Completed"
+  },
+  {
+    "id": 52,
+    "address": {
+      "stakeKeyHash": [
+        [["1677766567155ffe43950cb85e34c8b144c2a142573b8613d1d37850"]]
+      ],
+      "paymentKeyHash": [
+        "43c2b6e2011313ecacaa8f196bf37f9e5611eb663e70547eb8346aad"
+      ]
+    },
+    "tx_hash": "951ba7e3009db7205e428e558a4daa54209542dae9c13f40c8cfe02fb5e9f04a",
+    "block": "290a540aae40d9454fc0c0b555e16a028c8f9de4fc7601246deff7050aba0587",
+    "slot": "87722715",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-03-31T06:27:19.000Z",
+    "paid": "14326780416",
+    "fees": "101823130",
+    "received": "9000000000",
+    "status": "Completed"
+  },
+  {
+    "id": 53,
+    "address": {
+      "stakeKeyHash": [
+        [["3f0045b9904557edbc9ece51adc961612a30385bed6b519ebd2f5381"]]
+      ],
+      "paymentKeyHash": [
+        "36096174638e9d04f532e7ec36556c23d1465b3b6f3e73d7e9c260dd"
+      ]
+    },
+    "tx_hash": "4053376168a2d5a5255083350ffcfd3556dbe87918fee344eb9c8ea1bbe20a5a",
+    "block": "7f2f441b92300f9f734a6f1a2958c9cdb3b34895f1b1a72016360d4a14b1f8ea",
+    "slot": "87724324",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-03-31T06:54:40.000Z",
+    "paid": "7987319549",
+    "fees": "101823130",
+    "received": "5000000000",
+    "status": "Completed"
+  },
+  {
+    "id": 54,
+    "address": {
+      "stakeKeyHash": [
+        [["7b8e3dfad1c97edb1e01c7dfdd7ac506e13b6659ed5def247a9d7942"]]
+      ],
+      "paymentKeyHash": [
+        "51374dcf4a79090cfab6c03c276bf8f994fbedca2c1ed90a085bede7"
+      ]
+    },
+    "tx_hash": "030de6b42d6c35e48fdf7edab27eee51286454d23059d988bdf8f4664d69ff95",
+    "block": "e26f1b8020d35012504f824706cc75ff28cde9233d42791994c6a6c4014d461e",
+    "slot": "87835157",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-04-01T13:41:55.000Z",
+    "paid": "26858923097",
+    "fees": "101823130",
+    "received": "17555826588",
+    "status": "Completed"
+  },
+  {
+    "id": 55,
+    "address": {
+      "stakeKeyHash": [
+        [["3f0045b9904557edbc9ece51adc961612a30385bed6b519ebd2f5381"]]
+      ],
+      "paymentKeyHash": [
+        "36096174638e9d04f532e7ec36556c23d1465b3b6f3e73d7e9c260dd"
+      ]
+    },
+    "tx_hash": "0869e9365d7fa8706c48a471b6a8c79abbda125cc83b58753ccb57216ff9a045",
+    "block": "bc44d170699f9161df617c8b08a8110e5d0ad8f738c35033c0dd3d74e7148012",
+    "slot": "87895789",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-04-02T06:30:59.000Z",
+    "paid": "15467787957",
+    "fees": "101823130",
+    "received": "10000000000",
+    "status": "Completed"
+  },
+  {
+    "id": 56,
+    "address": {
+      "stakeKeyHash": [
+        [["0322562b723a09c70cc462b7c099c18c0660b78bcff4e9fbb2010f7e"]]
+      ],
+      "paymentKeyHash": [
+        "1b328d37908ea0892acfbb4fc9f865c5cf90ec1cfa72383804f5589f"
+      ]
+    },
+    "tx_hash": "6bcb8992d999aafd1bdec4444cf16029a1cde47f850d64f33204a6de585a3ca4",
+    "block": "7762af887b0541d7b0462c3c96fd408c03737b06aacad8e73da32345795c791e",
+    "slot": "88111796",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-04-04T18:30:36.000Z",
+    "paid": "15561264",
+    "fees": "2823130",
+    "received": "10000000",
+    "status": "Completed"
+  },
+  {
+    "id": 57,
+    "address": {
+      "stakeKeyHash": [
+        [["e10383e3a0447f4bb6e9284ab92cf7d01cec63dff8c02942cbbadd1c"]]
+      ],
+      "paymentKeyHash": [
+        "6d8dd965ab362f421e9359d58d397622968123a1e7d9294b9ebba26b"
+      ]
+    },
+    "tx_hash": "7b639d8c99ff181ab3b08bf6b8a704bc7397a14cae42882abd1fc8100fabfba3",
+    "block": "6390cfbd47cbe80998e011b4d30d85f212229c3fa58b77d9e76325f55933bd10",
+    "slot": "88476466",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-04-08T23:49:44.000Z",
+    "paid": "33037149277",
+    "fees": "101823130",
+    "received": "17855520712",
+    "status": "Completed"
+  },
+  {
+    "id": 58,
+    "address": {
+      "stakeKeyHash": [
+        [["a19ed7f94f2c37ceda78d3d3cafcff0a0cbc6d73891e65d44222314b"]]
+      ],
+      "paymentKeyHash": [
+        "fc3a9e642d8841288e37567aacfb58570484e0900919f8325a0cd89f"
+      ]
+    },
+    "tx_hash": "2c8ab018a9106b2b379e80af85caf593452a14044e2cae09ded99e346650e742",
+    "block": "5eda05bd1e6da3e7f647950834d161d7890408aae240d373563a2bb9f08ae81d",
+    "slot": "88476852",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-04-08T23:56:46.000Z",
+    "paid": "32528249490",
+    "fees": "101823130",
+    "received": "17580476682",
+    "status": "Completed"
+  },
+  {
+    "id": 59,
+    "address": {
+      "stakeKeyHash": [
+        [["7b8e3dfad1c97edb1e01c7dfdd7ac506e13b6659ed5def247a9d7942"]]
+      ],
+      "paymentKeyHash": [
+        "51374dcf4a79090cfab6c03c276bf8f994fbedca2c1ed90a085bede7"
+      ]
+    },
+    "tx_hash": "09081d64f7fb5ccfd15fabde9a81a9c8b9a7ae86959add282c6a88f305ea507a",
+    "block": "791bbfca738e45e6c6c3af12b168c090fbb5a709a4550bebd496d257372f5a4b",
+    "slot": "88649795",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-04-10T23:58:04.000Z",
+    "paid": "42461284745",
+    "fees": "101823130",
+    "received": "25155219370",
+    "status": "Completed"
+  },
+  {
+    "id": 60,
+    "address": {
+      "stakeKeyHash": [
+        [["a19ed7f94f2c37ceda78d3d3cafcff0a0cbc6d73891e65d44222314b"]]
+      ],
+      "paymentKeyHash": [
+        "fc3a9e642d8841288e37567aacfb58570484e0900919f8325a0cd89f"
+      ]
+    },
+    "tx_hash": "f53516fccc29904564f4b74cef413d96d1ca3040c6fc17fb35581fad2d2e97f2",
+    "block": "791bbfca738e45e6c6c3af12b168c090fbb5a709a4550bebd496d257372f5a4b",
+    "slot": "88649795",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-04-10T23:58:19.000Z",
+    "paid": "27007538512",
+    "fees": "101823130",
+    "received": "16000000000",
+    "status": "Completed"
+  },
+  {
+    "id": 61,
+    "address": {
+      "stakeKeyHash": [
+        [["e3b02768c245db5ce0f35c66f76ea5b91d805d6cbfbab625d9e2867d"]]
+      ],
+      "paymentKeyHash": [
+        "02368995262e28ff267c96451a6cb5cffc289fb0679c3fec8cad13df"
+      ]
+    },
+    "tx_hash": "6a49d9d9773d8b20de984b29675d43fe2c1ce93c4868d1066d89ee561f7cde0b",
+    "block": "e55984a99b3ad25fd736864f6aed218a1dfe42d8559a22ec31455c1851c65289",
+    "slot": "88752858",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-04-12T04:35:09.000Z",
+    "paid": "40829763979",
+    "fees": "101823130",
+    "received": "24890299808",
+    "status": "Completed"
+  },
+  {
+    "id": 62,
+    "address": {
+      "stakeKeyHash": [
+        [["e10383e3a0447f4bb6e9284ab92cf7d01cec63dff8c02942cbbadd1c"]]
+      ],
+      "paymentKeyHash": [
+        "6d8dd965ab362f421e9359d58d397622968123a1e7d9294b9ebba26b"
+      ]
+    },
+    "tx_hash": "a52f517af09255c3ee2d2678626eeb61e945ab366b892ac70e1235fea44d9b24",
+    "block": "cabce056db4a582a75f34073f1a379f6bb5afa9e2b0c2c4409708b0be65f1b84",
+    "slot": "88752935",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-04-12T04:37:54.000Z",
+    "paid": "24570347214",
+    "fees": "101823130",
+    "received": "14978369918",
+    "status": "Completed"
+  },
+  {
+    "id": 63,
+    "address": {
+      "stakeKeyHash": [
+        [["6d4bd47bede3d697984a0138794df5f41f02a8643f9328ac874a2cc3"]]
+      ],
+      "paymentKeyHash": [
+        "09b8b745bbfd5d94d3e317cbc17e86aae6699930cddce77a6cea8ca4"
+      ]
+    },
+    "tx_hash": "bce454b9420f280661e6e0471cbfdecb8926361e107d4bd35237dbd9241e87ad",
+    "block": "e4aae351019a277b211463cb897a13ccb63b82866afebf356446cdfb1e146492",
+    "slot": "88787952",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-04-12T14:20:34.000Z",
+    "paid": "693046086",
+    "fees": "36475435",
+    "received": "441732772",
+    "status": "Completed"
+  },
+  {
+    "id": 64,
+    "address": {
+      "stakeKeyHash": [
+        [["8ca703e26093d406610a4a0ac7fe6d568cf6006d6d15aca533d59552"]]
+      ],
+      "paymentKeyHash": [
+        "c3994d154965198c60f166c0bbced67d6b695310468329496d0a8e54"
+      ]
+    },
+    "tx_hash": "4286e762602a51cc1a7e6a06e6d9e8ccc7bec062ff7c56165d7d1a52acf021ba",
+    "block": "aed183519120416a379649db352fc70bd457b46a7f0f38c2df28f0304b8ce0ff",
+    "slot": "88807487",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-04-12T19:47:20.000Z",
+    "paid": "78082358",
+    "fees": "10000000",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 65,
+    "address": {
+      "stakeKeyHash": [
+        [["8ca703e26093d406610a4a0ac7fe6d568cf6006d6d15aca533d59552"]]
+      ],
+      "paymentKeyHash": [
+        "c3994d154965198c60f166c0bbced67d6b695310468329496d0a8e54"
+      ]
+    },
+    "tx_hash": "558a1b8a4226640797cf7d2c56d793347d72d88768cc3be6fa802c2067ec4770",
+    "block": "e9efa5fda31308fc652c3a51a4242b97637a8653c5267a718aaefa9f0c8aa2cf",
+    "slot": "88808118",
+    "action": "Burn",
+    "token": "DJED",
+    "orderDate": "2025-04-12T19:55:53.000Z",
+    "paid": "50000000",
+    "fees": "11517912",
+    "received": "82176685",
+    "status": "Completed"
+  },
+  {
+    "id": 66,
+    "address": {
+      "stakeKeyHash": [
+        [["8ca703e26093d406610a4a0ac7fe6d568cf6006d6d15aca533d59552"]]
+      ],
+      "paymentKeyHash": [
+        "c3994d154965198c60f166c0bbced67d6b695310468329496d0a8e54"
+      ]
+    },
+    "tx_hash": "cdc9a2116d2f49214106a4e591eaf801585f0a732b34abb0f4dce1461593bfaf",
+    "block": "387415f1b604e05e264820d63fd8a9645ecbdc6b1817d035874a7751f253d0c9",
+    "slot": "88808263",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-04-12T19:59:35.000Z",
+    "paid": "78172435",
+    "fees": "5731752",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 67,
+    "address": {
+      "stakeKeyHash": [
+        [["8ca703e26093d406610a4a0ac7fe6d568cf6006d6d15aca533d59552"]]
+      ],
+      "paymentKeyHash": [
+        "c3994d154965198c60f166c0bbced67d6b695310468329496d0a8e54"
+      ]
+    },
+    "tx_hash": "64f62688774a9845a725c14c1517e600b5a4f7d6388b726e7bc18068b01fa556",
+    "block": "e569748411ec2c1291b89173ea105d7f6cd91930d69bbd6ae9af49924b494541",
+    "slot": "88808418",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-04-12T20:02:44.000Z",
+    "paid": "78172435",
+    "fees": "5731752",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 68,
+    "address": {
+      "stakeKeyHash": [
+        [["8ca703e26093d406610a4a0ac7fe6d568cf6006d6d15aca533d59552"]]
+      ],
+      "paymentKeyHash": [
+        "c3994d154965198c60f166c0bbced67d6b695310468329496d0a8e54"
+      ]
+    },
+    "tx_hash": "baab45c72a01db160884ed8e6caa2bc4a529c7036eda9c8a4827f88fdf705640",
+    "block": "1b37ebb7982055ab55d43cddbb1a6bfbc3f4444d2c123cb2e1dcaa8cb97fac09",
+    "slot": "88809522",
+    "action": "Burn",
+    "token": "DJED",
+    "orderDate": "2025-04-12T20:21:03.000Z",
+    "paid": "50000000",
+    "fees": "5540321",
+    "received": "76166932",
+    "status": "Completed"
+  },
+  {
+    "id": 69,
+    "address": {
+      "stakeKeyHash": [
+        [["8ca703e26093d406610a4a0ac7fe6d568cf6006d6d15aca533d59552"]]
+      ],
+      "paymentKeyHash": [
+        "c3994d154965198c60f166c0bbced67d6b695310468329496d0a8e54"
+      ]
+    },
+    "tx_hash": "9125dd3380874d041580d297ed17b67a7fe73ba7acf4bc0c8342e1c843439bb8",
+    "block": "e308ff9179d229c843a1db314ed74a41e18871ea68c60bf83079635cf4593e8f",
+    "slot": "88809885",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-04-12T20:26:23.000Z",
+    "paid": "78136854",
+    "fees": "5729973",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 70,
+    "address": {
+      "stakeKeyHash": [
+        [["8ca703e26093d406610a4a0ac7fe6d568cf6006d6d15aca533d59552"]]
+      ],
+      "paymentKeyHash": [
+        "c3994d154965198c60f166c0bbced67d6b695310468329496d0a8e54"
+      ]
+    },
+    "tx_hash": "75206b9777f3246af07c359c74db2e98045c37e41882233fe3be4cfdda59873c",
+    "block": "57ee49b35d923650442a6aebee0f62f8a57ee727da3169dd72dab0b95706be27",
+    "slot": "88811028",
+    "action": "Burn",
+    "token": "DJED",
+    "orderDate": "2025-04-12T20:46:10.000Z",
+    "paid": "50000000",
+    "fees": "5550500",
+    "received": "1228350",
+    "status": "Completed"
+  },
+  {
+    "id": 71,
+    "address": {
+      "stakeKeyHash": [
+        [["8ca703e26093d406610a4a0ac7fe6d568cf6006d6d15aca533d59552"]]
+      ],
+      "paymentKeyHash": [
+        "c3994d154965198c60f166c0bbced67d6b695310468329496d0a8e54"
+      ]
+    },
+    "tx_hash": "abbba85dee0f6338ae62b723a6d70a13df1c8b412d30b5b647640390aea2cfa5",
+    "block": "618b2aeb07a347754a2c38bbf5f4a4d6af0797b2f69a2d0c06fb73e99088e5a6",
+    "slot": "88811278",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-04-12T20:49:31.000Z",
+    "paid": "78350830",
+    "fees": "5740672",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 72,
+    "address": {
+      "stakeKeyHash": [
+        [["8ca703e26093d406610a4a0ac7fe6d568cf6006d6d15aca533d59552"]]
+      ],
+      "paymentKeyHash": [
+        "c3994d154965198c60f166c0bbced67d6b695310468329496d0a8e54"
+      ]
+    },
+    "tx_hash": "f20e8d8312603feb89c1b9ca3a9ec4cf0c1341e72906e98d37e2cc23720836d2",
+    "block": "21d7996682cb02ce06db9ffe469ca8514e5d1c1a6ee5eaf9ee84b6ca8a9f3606",
+    "slot": "88811447",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-04-12T20:52:23.000Z",
+    "paid": "153488785",
+    "fees": "9497570",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 73,
+    "address": {
+      "stakeKeyHash": [
+        [["8ca703e26093d406610a4a0ac7fe6d568cf6006d6d15aca533d59552"]]
+      ],
+      "paymentKeyHash": [
+        "c3994d154965198c60f166c0bbced67d6b695310468329496d0a8e54"
+      ]
+    },
+    "tx_hash": "5d84de480681577e67eecc363e372f159b3ab55d2ca3c84ad36a6df96b340118",
+    "block": "d09db74e13e84c4f2b9b55079066cfd1c8203ad439d3b861a1a030adbf860842",
+    "slot": "88811778",
+    "action": "Burn",
+    "token": "SHEN",
+    "orderDate": "2025-04-12T20:58:36.000Z",
+    "paid": "50000000",
+    "fees": "15849613",
+    "received": "1228350",
+    "status": "Completed"
+  },
+  {
+    "id": 74,
+    "address": {
+      "stakeKeyHash": [
+        [["8ca703e26093d406610a4a0ac7fe6d568cf6006d6d15aca533d59552"]]
+      ],
+      "paymentKeyHash": [
+        "c3994d154965198c60f166c0bbced67d6b695310468329496d0a8e54"
+      ]
+    },
+    "tx_hash": "a1816dbe495c7f62bf44f9164765a6c52494bd195e16e458529809351a672509",
+    "block": "91d09936e1dc1271b54b246d6917025ed36417101cdcf76c3c57e17fee0b8704",
+    "slot": "88890596",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-04-13T18:51:59.000Z",
+    "paid": "80860418",
+    "fees": "10000000",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 75,
+    "address": {
+      "stakeKeyHash": [
+        [["362cc0587801a612dcac0c770ffaadd59e598ec52f328ad56e81ec0c"]]
+      ],
+      "paymentKeyHash": [
+        "f757a52bc7a361211c516992a5abdd8f5a7abaff4e9cd5a267f0d507"
+      ]
+    },
+    "tx_hash": "08643be424dc5fae82222f3974bc443b5900d3e298423a3d07205f60f66bf20c",
+    "block": "9c28c5fd41d076ea41a0f7adcfc03420bf3abf4fe0205f8ff7225ffa47d9a5de",
+    "slot": "88921913",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-04-14T03:34:23.000Z",
+    "paid": "3171670516",
+    "fees": "101823130",
+    "received": "2000000000",
+    "status": "Completed"
+  },
+  {
+    "id": 76,
+    "address": {
+      "stakeKeyHash": [
+        [["95755d1c1e3c79f534b14ee26dee197c9cc75e9625aa463545085583"]]
+      ],
+      "paymentKeyHash": [
+        "4bae9d4b3f3b56e757c90d3300111a420d3c520ca24acf217d9fbb04"
+      ]
+    },
+    "tx_hash": "81144d97a5ecceec971c1a290c0bf18d1ff0116ec9176a12bb1d9a474a5af8e8",
+    "block": "84a21c5aadd3136463b161583ffbcfea71fd5ed58285b914a3b517675bf09147",
+    "slot": "88991461",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-04-14T22:52:14.000Z",
+    "paid": "304410902",
+    "fees": "17043676",
+    "received": "100000000",
+    "status": "Completed"
+  },
+  {
+    "id": 77,
+    "address": {
+      "stakeKeyHash": [
+        [["95755d1c1e3c79f534b14ee26dee197c9cc75e9625aa463545085583"]]
+      ],
+      "paymentKeyHash": [
+        "4bae9d4b3f3b56e757c90d3300111a420d3c520ca24acf217d9fbb04"
+      ]
+    },
+    "tx_hash": "df68a02fac0503ac364513785929e68460f555e67600fd9954122debe6a16ce5",
+    "block": "88936202b55bbafea22379c426a45df22ce7de9d8824e9e3d4039800c9000686",
+    "slot": "89220049",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-04-17T14:22:26.000Z",
+    "paid": "302924452",
+    "fees": "16969353",
+    "received": "100000000",
+    "status": "Completed"
+  },
+  {
+    "id": 78,
+    "address": {
+      "stakeKeyHash": [
+        [["13c5038ccf8f129f35e9f28d2316f906c2a83b612660e973dbbbf983"]]
+      ],
+      "paymentKeyHash": [
+        "91f077d495b9d6606a72e7f93faf4fe6228d7bddd4c107f147e867a7"
+      ]
+    },
+    "tx_hash": "2f7c068ef2e9343350445c1ac35807e8c2bc39bb339f27bdad36c9d60d166d6d",
+    "block": "678678c1054bb1fd10ec2549c08a3f951c94885936bccb524d33079a0cd2878a",
+    "slot": "89283246",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-04-18T07:55:10.000Z",
+    "paid": "166815127",
+    "fees": "10163887",
+    "received": "100000000",
+    "status": "Completed"
+  },
+  {
+    "id": 79,
+    "address": {
+      "stakeKeyHash": [
+        [["8ca703e26093d406610a4a0ac7fe6d568cf6006d6d15aca533d59552"]]
+      ],
+      "paymentKeyHash": [
+        "c3994d154965198c60f166c0bbced67d6b695310468329496d0a8e54"
+      ]
+    },
+    "tx_hash": "6dbe8b91f9a3c8a7bc921d3054de15c24ced5e5117aacafccfe8d399645b7e9b",
+    "block": "19cbf08b7ee9ca52df2831750c68919a807fdf41888144ad0c88f2baf9b24af2",
+    "slot": "89298884",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-04-18T12:15:17.000Z",
+    "paid": "83551406",
+    "fees": "6000701",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 80,
+    "address": {
+      "stakeKeyHash": [
+        [["8ca703e26093d406610a4a0ac7fe6d568cf6006d6d15aca533d59552"]]
+      ],
+      "paymentKeyHash": [
+        "c3994d154965198c60f166c0bbced67d6b695310468329496d0a8e54"
+      ]
+    },
+    "tx_hash": "2f33ab4e7fac060973264f856154c4cde526e8e65b9d1483206e4e8d6a33c41b",
+    "block": "8687986a8d61cff85d890d9112ffe8d5622f4b9182792e109d6d9fbbccd8bcb6",
+    "slot": "89496267",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-04-20T19:07:12.000Z",
+    "paid": "83163978",
+    "fees": "5981329",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 81,
+    "address": {
+      "stakeKeyHash": [
+        [["8ca703e26093d406610a4a0ac7fe6d568cf6006d6d15aca533d59552"]]
+      ],
+      "paymentKeyHash": [
+        "c3994d154965198c60f166c0bbced67d6b695310468329496d0a8e54"
+      ]
+    },
+    "tx_hash": "c5d05d4718451cb2116260a42fb3c4a4e30fa48e19cd4330abd14b0d6bb2c079",
+    "block": "f4b16886229afe14aa2937e2003b7020bdbb315c145af01224555338c49fac9c",
+    "slot": "89496574",
+    "action": "Burn",
+    "token": "DJED",
+    "orderDate": "2025-04-20T19:11:13.000Z",
+    "paid": "1",
+    "fees": "2823130",
+    "received": "1823131",
+    "status": "Completed"
+  },
+  {
+    "id": 82,
+    "address": {
+      "stakeKeyHash": [
+        [["8ca703e26093d406610a4a0ac7fe6d568cf6006d6d15aca533d59552"]]
+      ],
+      "paymentKeyHash": [
+        "c3994d154965198c60f166c0bbced67d6b695310468329496d0a8e54"
+      ]
+    },
+    "tx_hash": "a72b7bfd831331994145e8eb35463f8df6abb92c4bbe702ec8c8fdfb448ff1d9",
+    "block": "98b82488e4a40d0f227fbd9959912f4f40de103b06267f405798542378125e54",
+    "slot": "89497448",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-04-20T19:25:52.000Z",
+    "paid": "82691073",
+    "fees": "5957684",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 83,
+    "address": {
+      "stakeKeyHash": [
+        [["e9d7c128beaf5c89089bad2a8d38d7c3ea5f3847d1a938fc9029916a"]]
+      ],
+      "paymentKeyHash": [
+        "757526133503a90c4ae9e891f8a96833b9031ffa78014252343a8f49"
+      ]
+    },
+    "tx_hash": "b43dc76e3e33682c8a42c685dd87e68edea53e8bd7537587c0e2954de370de6f",
+    "block": "f271ed56ed0796a67687090c29781830eae025d3ef05b666ebae7a44a4654fe0",
+    "slot": "89585815",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-04-21T19:58:26.000Z",
+    "paid": "8270554738",
+    "fees": "101823130",
+    "received": "5000000000",
+    "status": "Completed"
+  },
+  {
+    "id": 84,
+    "address": {
+      "stakeKeyHash": [
+        [["829456ea1453d2adc0d52e32857fd695ecf8772fbf1f203f7a150551"]]
+      ],
+      "paymentKeyHash": [
+        "f5d7fc7aeac3d47f3e55cda4531462bd734eb6578187098ad0fd96cd"
+      ]
+    },
+    "tx_hash": "4066d3137b829949bef774037cc054ff0ab96e9cab798bf03cc32f0936757371",
+    "block": "7b30c2683665dfe3b01d16ab4de9d41ef1a8cfed0f87e68ea9d39ea115585fc8",
+    "slot": "89888645",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-04-25T08:06:32.000Z",
+    "paid": "142521102",
+    "fees": "8949186",
+    "received": "100000000",
+    "status": "Completed"
+  },
+  {
+    "id": 85,
+    "address": {
+      "stakeKeyHash": [
+        [["829456ea1453d2adc0d52e32857fd695ecf8772fbf1f203f7a150551"]]
+      ],
+      "paymentKeyHash": [
+        "f5d7fc7aeac3d47f3e55cda4531462bd734eb6578187098ad0fd96cd"
+      ]
+    },
+    "tx_hash": "e70c5d311295345012f08d4b892d67a5c69b85b31c2b11302bd9b18bf1e5d16b",
+    "block": "354c86b688ddfd14b261e32e3b047417dfc245a2eb71d8f558419c4759532d93",
+    "slot": "89888774",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-04-25T08:08:23.000Z",
+    "paid": "142521102",
+    "fees": "8949186",
+    "received": "100000000",
+    "status": "Completed"
+  },
+  {
+    "id": 86,
+    "address": {
+      "stakeKeyHash": [
+        [["f84dfe4b3ae626b5de8ad2da435cf12f25c39c88d1c9a78dfb3a2859"]]
+      ],
+      "paymentKeyHash": [
+        "a2e6671ee5dd9c8c40ee7221643b1b92b3c121e6116a3d70e7f823a4"
+      ]
+    },
+    "tx_hash": "f5dc8db23da73667f4345f97aea34fdb1e68e20a9ed4b7b3d7f8b75d96cdfa22",
+    "block": "84ee5d118eb67d2b1c6e423ab1a644e2aa7e92202b958c91d6710a96ce710662",
+    "slot": "89929106",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-04-25T19:20:54.000Z",
+    "paid": "143506405",
+    "fees": "8998451",
+    "received": "100000000",
+    "status": "Completed"
+  },
+  {
+    "id": 87,
+    "address": {
+      "stakeKeyHash": [
+        [["2d9cd1ac5fa79d8ed6dffd8a0511ddfeaaea830abc42431f4aaca262"]]
+      ],
+      "paymentKeyHash": [
+        "2c4aa17d479507fd5d3b8ddd83444302c3348f14c486d96af4e41234"
+      ]
+    },
+    "tx_hash": "a73863ee87f69ff5e3ff1d859c53fff4e95be15345332aa20f5c20dbd322f458",
+    "block": "33de86db9c42e5d6732a386b54d5986448416cb460c925813de74a320a0ea527",
+    "slot": "90007550",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-04-26T17:08:19.000Z",
+    "paid": "14539809",
+    "fees": "2823130",
+    "received": "10000000",
+    "status": "Completed"
+  },
+  {
+    "id": 88,
+    "address": {
+      "stakeKeyHash": [
+        [["2d9cd1ac5fa79d8ed6dffd8a0511ddfeaaea830abc42431f4aaca262"]]
+      ],
+      "paymentKeyHash": [
+        "2c4aa17d479507fd5d3b8ddd83444302c3348f14c486d96af4e41234"
+      ]
+    },
+    "tx_hash": "6e7290fc2d79752a96adfe55084267818abc4d300169f1d8b95af3afaf186124",
+    "block": "e227a667ff9dbcef16a4ab51b171b3925fbb159cc8fd5db9924553abec4fc31f",
+    "slot": "90007812",
+    "action": "Burn",
+    "token": "DJED",
+    "orderDate": "2025-04-26T17:12:18.000Z",
+    "paid": "10000000",
+    "fees": "2823130",
+    "received": "1823130",
+    "status": "Completed"
+  },
+  {
+    "id": 89,
+    "address": {
+      "stakeKeyHash": [
+        [["2d9cd1ac5fa79d8ed6dffd8a0511ddfeaaea830abc42431f4aaca262"]]
+      ],
+      "paymentKeyHash": [
+        "2c4aa17d479507fd5d3b8ddd83444302c3348f14c486d96af4e41234"
+      ]
+    },
+    "tx_hash": "fdb556fc8cc1b04597e10500e971bc5d9e680088b6d45a1f902b9b69392b7599",
+    "block": "27be6e915a1b0227e0970e7eeee0da467b651eaa80eb3688e26a65222034b7b3",
+    "slot": "90008046",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-04-26T17:15:01.000Z",
+    "paid": "1453521191",
+    "fees": "74499190",
+    "received": "1000000000",
+    "status": "Completed"
+  },
+  {
+    "id": 90,
+    "address": {
+      "stakeKeyHash": [
+        [["2d9cd1ac5fa79d8ed6dffd8a0511ddfeaaea830abc42431f4aaca262"]]
+      ],
+      "paymentKeyHash": [
+        "2c4aa17d479507fd5d3b8ddd83444302c3348f14c486d96af4e41234"
+      ]
+    },
+    "tx_hash": "71a20c697a47101ee1b98514481e752f083d1032417a68655e206c00f2f65770",
+    "block": "987e9aaf1496ed68365f45157d8f4771017f06c89f3815c9883bc39d0b8a9317",
+    "slot": "90008230",
+    "action": "Burn",
+    "token": "DJED",
+    "orderDate": "2025-04-26T17:18:49.000Z",
+    "paid": "1000000000",
+    "fees": "70971226",
+    "received": "1384785039",
+    "status": "Completed"
+  },
+  {
+    "id": 91,
+    "address": {
+      "stakeKeyHash": [
+        [["8ca703e26093d406610a4a0ac7fe6d568cf6006d6d15aca533d59552"]]
+      ],
+      "paymentKeyHash": [
+        "c3994d154965198c60f166c0bbced67d6b695310468329496d0a8e54"
+      ]
+    },
+    "tx_hash": "8804fccf29de2aacb4946d0ec82cff104551f8e57fc15b9a774eb3e403297478",
+    "block": "f5fc8564d48c2851ad9a4cb2544b46e6d4821290a9057041752428a8a7be4675",
+    "slot": "90259277",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-04-29T15:02:57.000Z",
+    "paid": "322396899",
+    "fees": "17942975",
+    "received": "222000000",
+    "status": "Completed"
+  },
+  {
+    "id": 92,
+    "address": {
+      "stakeKeyHash": [
+        [["8ca703e26093d406610a4a0ac7fe6d568cf6006d6d15aca533d59552"]]
+      ],
+      "paymentKeyHash": [
+        "c3994d154965198c60f166c0bbced67d6b695310468329496d0a8e54"
+      ]
+    },
+    "tx_hash": "47fd1fd0bddb15160407406f9fc9bd6d8293ee5583436de16bf0169b9447d7ad",
+    "block": "6559227d3dd47a2235471672b9df3dec0477b40291da50a85efee0dac90e095a",
+    "slot": "90266073",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-04-29T16:56:16.000Z",
+    "paid": "68720151",
+    "fees": "5259138",
+    "received": "22000000",
+    "status": "Completed"
+  },
+  {
+    "id": 93,
+    "address": {
+      "stakeKeyHash": [
+        [["8ca703e26093d406610a4a0ac7fe6d568cf6006d6d15aca533d59552"]]
+      ],
+      "paymentKeyHash": [
+        "c3994d154965198c60f166c0bbced67d6b695310468329496d0a8e54"
+      ]
+    },
+    "tx_hash": "af69abceec54d72d1ef42cc5aa58f9331a4fd349b4009c51d60ceb6c37086b25",
+    "block": "2c674939e3fcc98bfbddd9286e921309256833f02fada6ff9b2c6f09aa881479",
+    "slot": "90277008",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-04-29T19:58:26.000Z",
+    "paid": "73008223",
+    "fees": "5473542",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 94,
+    "address": {
+      "stakeKeyHash": [
+        [["e30fef3f18b225dc0479e9731fc90764e6c16a2da5c96f38664bf9a6"]]
+      ],
+      "paymentKeyHash": [
+        "659b1b1b724a4ee26bfa16026dcecacf31c7d4917cc24f7639b91d7a"
+      ]
+    },
+    "tx_hash": "412fc8cd2424ef56bf980c49da2139ece805d6e4aa1761f97ebe80c406e06832",
+    "block": "75c73ea32525fda0d76aacc7827a72aac1c07cea48e7c4ea62664a2c8ee28da1",
+    "slot": "90778065",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-05-05T15:09:51.000Z",
+    "paid": "156557558",
+    "fees": "9651008",
+    "received": "100000000",
+    "status": "Completed"
+  },
+  {
+    "id": 95,
+    "address": {
+      "stakeKeyHash": [
+        [["8b71aa37653ab0581fed6ab4111ea7298eaa0a08db9219e7932b3375"]]
+      ],
+      "paymentKeyHash": [
+        "ef2c90b997df719427a36f1687ab3fcf189e6ae42cccc1411fa3234d"
+      ]
+    },
+    "tx_hash": "775d418611b95786a1e0f88f63de8126f7a9799464ff7ac80eb2c163c03f4f2f",
+    "block": "9be7905f06ac0182ee0d6d5affcbc5e40e0281fc8fb0a74abb972566df4c071c",
+    "slot": "91521046",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-05-14T05:32:34.000Z",
+    "paid": "621830476",
+    "fees": "32914654",
+    "received": "500000000",
+    "status": "Completed"
+  },
+  {
+    "id": 96,
+    "address": {
+      "stakeKeyHash": [
+        [["d997e3f9891d68407e8dd636f28abad3c242c7979781fe0c1f8897e2"]]
+      ],
+      "paymentKeyHash": [
+        "2ae10dbd88c3010cb03a33f271308e8f6cd686b7b1a9a6d4a8f1ad00"
+      ]
+    },
+    "tx_hash": "2e7b2917cac61c81c341afc0041a3881b7620e72f8936fc12ee96f40d94da1c3",
+    "block": "ba7cedc15cd9f2535c95696ba90c0f81ea0374921a347ab989c9826c94affcc7",
+    "slot": "91728056",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-05-16T15:00:57.000Z",
+    "paid": "5013696342",
+    "fees": "101823130",
+    "received": "3782911772",
+    "status": "Completed"
+  },
+  {
+    "id": 97,
+    "address": {
+      "stakeKeyHash": [
+        [["8ca703e26093d406610a4a0ac7fe6d568cf6006d6d15aca533d59552"]]
+      ],
+      "paymentKeyHash": [
+        "c3994d154965198c60f166c0bbced67d6b695310468329496d0a8e54"
+      ]
+    },
+    "tx_hash": "9a1bbf4d53f83ede05e44f8e20cf216067fe4a22d65410cbb2dd1185dc0fe0e7",
+    "block": "d34c09cbcf81aad32a2922591f6b1c7d68b4b7bcc60ba37e9fbeb3493cf5fbef",
+    "slot": "91799461",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-05-17T10:52:30.000Z",
+    "paid": "67585302",
+    "fees": "5202396",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 98,
+    "address": {
+      "stakeKeyHash": [
+        [["8ca703e26093d406610a4a0ac7fe6d568cf6006d6d15aca533d59552"]]
+      ],
+      "paymentKeyHash": [
+        "c3994d154965198c60f166c0bbced67d6b695310468329496d0a8e54"
+      ]
+    },
+    "tx_hash": "0de47308704351153deb7f0831166afff1b6179f8ca887a11f126cc27bbf1ffa",
+    "block": "a20ed194f05b3b20ca1a54f9c683229dea401e6a2419142438b0a0bff5ce75ff",
+    "slot": "91799754",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-05-17T10:58:24.000Z",
+    "paid": "67446691",
+    "fees": "5195465",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 99,
+    "address": {
+      "stakeKeyHash": [
+        [["d997e3f9891d68407e8dd636f28abad3c242c7979781fe0c1f8897e2"]]
+      ],
+      "paymentKeyHash": [
+        "2ae10dbd88c3010cb03a33f271308e8f6cd686b7b1a9a6d4a8f1ad00"
+      ]
+    },
+    "tx_hash": "4bf89d1ffb093c6ee2574ba0037e6ce8060459b7fe6984cf2db49e5d648d52ff",
+    "block": "63e050c64fbb3ade06f30d05b0bb261a46a37f86d11c19d7c0263c3fa858e8a9",
+    "slot": "92069152",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-05-20T13:47:33.000Z",
+    "paid": "2465852784",
+    "fees": "101823130",
+    "received": "1742687589",
+    "status": "Completed"
+  },
+  {
+    "id": 100,
+    "address": {
+      "stakeKeyHash": [
+        [["8ca703e26093d406610a4a0ac7fe6d568cf6006d6d15aca533d59552"]]
+      ],
+      "paymentKeyHash": [
+        "c3994d154965198c60f166c0bbced67d6b695310468329496d0a8e54"
+      ]
+    },
+    "tx_hash": "8bfef8b82ebd218905d5a63469d3db59048b2eefd0d983417041a5eb61a34946",
+    "block": "b1254b6cb8f6c3f597d8861460c182f0daad54c473e43bbd2f801ae5de2ffba0",
+    "slot": "92390345",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-05-24T07:01:41.000Z",
+    "paid": "136016243",
+    "fees": "8623943",
+    "received": "100000000",
+    "status": "Completed"
+  },
+  {
+    "id": 101,
+    "address": {
+      "stakeKeyHash": [
+        [["8ca703e26093d406610a4a0ac7fe6d568cf6006d6d15aca533d59552"]]
+      ],
+      "paymentKeyHash": [
+        "c3994d154965198c60f166c0bbced67d6b695310468329496d0a8e54"
+      ]
+    },
+    "tx_hash": "bb7804f0f9fd02417eb9609da2aa5efb7c20e300c0d2170d933de5525fd3980b",
+    "block": "765656a7f661b3063479add6a3a8438fdf058f00305e362f742ced358209a861",
+    "slot": "92390420",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-05-24T07:02:32.000Z",
+    "paid": "136016243",
+    "fees": "8623943",
+    "received": "100000000",
+    "status": "Completed"
+  },
+  {
+    "id": 102,
+    "address": {
+      "stakeKeyHash": [
+        [["8ca703e26093d406610a4a0ac7fe6d568cf6006d6d15aca533d59552"]]
+      ],
+      "paymentKeyHash": [
+        "c3994d154965198c60f166c0bbced67d6b695310468329496d0a8e54"
+      ]
+    },
+    "tx_hash": "f93ea7d2824348a117aedb9ebd650b47f6a3ea9d52c5d5e2653f387a112aeade",
+    "block": "6da37521e3badcd8e13e90352421da353687a04c651e805733496f69b38dc122",
+    "slot": "92390491",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-05-24T07:03:57.000Z",
+    "paid": "136016243",
+    "fees": "8623943",
+    "received": "100000000",
+    "status": "Completed"
+  },
+  {
+    "id": 103,
+    "address": {
+      "stakeKeyHash": [
+        [["8ca703e26093d406610a4a0ac7fe6d568cf6006d6d15aca533d59552"]]
+      ],
+      "paymentKeyHash": [
+        "c3994d154965198c60f166c0bbced67d6b695310468329496d0a8e54"
+      ]
+    },
+    "tx_hash": "ec821908c1c98c5d360dd28c4eeef547f46d55559b0f2bbd7c741eeb69869859",
+    "block": "e6a5cd8d9e7f310cabe0929254e4ba201fb57714ae1af2a4d8e8501cd85df8c0",
+    "slot": "92390586",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-05-24T07:05:25.000Z",
+    "paid": "136016243",
+    "fees": "8623943",
+    "received": "100000000",
+    "status": "Completed"
+  },
+  {
+    "id": 104,
+    "address": {
+      "stakeKeyHash": [
+        [["8ca703e26093d406610a4a0ac7fe6d568cf6006d6d15aca533d59552"]]
+      ],
+      "paymentKeyHash": [
+        "c3994d154965198c60f166c0bbced67d6b695310468329496d0a8e54"
+      ]
+    },
+    "tx_hash": "56331e095f584beff00acc42d61dfcc6ead425d806a7dbaecb78b6fd8bf76ac0",
+    "block": "efe57f632560a03dd07031cd03a3a13f5c4e32039e00f8b6a8aa85cb986e819c",
+    "slot": "92429194",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-05-24T17:47:28.000Z",
+    "paid": "6795603",
+    "fees": "2823130",
+    "received": "5000000",
+    "status": "Completed"
+  },
+  {
+    "id": 105,
+    "address": {
+      "stakeKeyHash": [
+        [["8ca703e26093d406610a4a0ac7fe6d568cf6006d6d15aca533d59552"]]
+      ],
+      "paymentKeyHash": [
+        "c3994d154965198c60f166c0bbced67d6b695310468329496d0a8e54"
+      ]
+    },
+    "tx_hash": "6ddd418363aa7ec4ebf1f19c8e15a7f9170dbcdc51cbbeedfc8028888428c775",
+    "block": "4db58eba77d5fb15d8206ab335f48603920d0b6c4b7f2b3b6b9cc31a9c10b170",
+    "slot": "92434557",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-05-24T19:18:23.000Z",
+    "paid": "6838856",
+    "fees": "2823130",
+    "received": "5000000",
+    "status": "Completed"
+  },
+  {
+    "id": 106,
+    "address": {
+      "stakeKeyHash": [
+        [["8ca703e26093d406610a4a0ac7fe6d568cf6006d6d15aca533d59552"]]
+      ],
+      "paymentKeyHash": [
+        "c3994d154965198c60f166c0bbced67d6b695310468329496d0a8e54"
+      ]
+    },
+    "tx_hash": "9d722c524ec0e2d45fdb385c4a03fd4114caabb051645a6f1b27e5c557bf8bae",
+    "block": "a7396b8874737e949a34799bdb03b3d7f3b1916abb40430d845f557c5ad5862d",
+    "slot": "92434909",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-05-24T19:24:11.000Z",
+    "paid": "6838856",
+    "fees": "2823130",
+    "received": "5000000",
+    "status": "Completed"
+  },
+  {
+    "id": 107,
+    "address": {
+      "stakeKeyHash": [
+        [["8ca703e26093d406610a4a0ac7fe6d568cf6006d6d15aca533d59552"]]
+      ],
+      "paymentKeyHash": [
+        "c3994d154965198c60f166c0bbced67d6b695310468329496d0a8e54"
+      ]
+    },
+    "tx_hash": "17b0d98d8777693c82d8fa31613ce443dffac5bf251046f08008a9f3c5134a60",
+    "block": "0eb5212152c914afb2c17856a8776eb9309f4a43a3ca0541e4f92674172a5815",
+    "slot": "92436050",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-05-24T19:43:04.000Z",
+    "paid": "6833049",
+    "fees": "2823130",
+    "received": "5000000",
+    "status": "Completed"
+  },
+  {
+    "id": 108,
+    "address": {
+      "stakeKeyHash": [
+        [["8ca703e26093d406610a4a0ac7fe6d568cf6006d6d15aca533d59552"]]
+      ],
+      "paymentKeyHash": [
+        "c3994d154965198c60f166c0bbced67d6b695310468329496d0a8e54"
+      ]
+    },
+    "tx_hash": "9798c281b73af1f7bad5e06d284d3ee8867c95d5fbc88c5e47211e18a18151aa",
+    "block": "70f4230c7693606aa173674b44f295e5767ed55518a515303bb8fc6ee5ca8978",
+    "slot": "92436094",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-05-24T19:44:11.000Z",
+    "paid": "6833049",
+    "fees": "2823130",
+    "received": "5000000",
+    "status": "Completed"
+  },
+  {
+    "id": 109,
+    "address": {
+      "stakeKeyHash": [
+        [["8ca703e26093d406610a4a0ac7fe6d568cf6006d6d15aca533d59552"]]
+      ],
+      "paymentKeyHash": [
+        "c3994d154965198c60f166c0bbced67d6b695310468329496d0a8e54"
+      ]
+    },
+    "tx_hash": "29d8a69ffa9f098e02b93de4b2e74117bc5e3a61feae911932b009f2d0c013bd",
+    "block": "469d5de6815f9618fdfca498a725f653db2a2af6ebc6c1ab80a895d81012e8f3",
+    "slot": "92436369",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-05-24T19:48:27.000Z",
+    "paid": "6833049",
+    "fees": "2823130",
+    "received": "5000000",
+    "status": "Completed"
+  },
+  {
+    "id": 110,
+    "address": {
+      "stakeKeyHash": [
+        [["8ca703e26093d406610a4a0ac7fe6d568cf6006d6d15aca533d59552"]]
+      ],
+      "paymentKeyHash": [
+        "c3994d154965198c60f166c0bbced67d6b695310468329496d0a8e54"
+      ]
+    },
+    "tx_hash": "ff57512a9f146ba74b8477ece0de4d4c2feb190d485ffddf99e2cc3716a93d71",
+    "block": "f32025ae8e001f92185b23bfc81abb7b5513cf9d8c56d203b40a6cf1c692abf7",
+    "slot": "92436512",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-05-24T19:50:41.000Z",
+    "paid": "6833049",
+    "fees": "2823130",
+    "received": "5000000",
+    "status": "Completed"
+  },
+  {
+    "id": 111,
+    "address": {
+      "stakeKeyHash": [
+        [["8ca703e26093d406610a4a0ac7fe6d568cf6006d6d15aca533d59552"]]
+      ],
+      "paymentKeyHash": [
+        "c3994d154965198c60f166c0bbced67d6b695310468329496d0a8e54"
+      ]
+    },
+    "tx_hash": "2698ff60f12317b8600b96dc3ae39c72f327ac3b85e3b8ae248cdebccb50ec26",
+    "block": "e48be471d5ba2bc3419aeb3a7175652a6ffef93ce8fef85815983e5994885b1d",
+    "slot": "92436879",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-05-24T19:56:45.000Z",
+    "paid": "6853408",
+    "fees": "2823130",
+    "received": "5000000",
+    "status": "Completed"
+  },
+  {
+    "id": 112,
+    "address": {
+      "stakeKeyHash": [
+        [["8ca703e26093d406610a4a0ac7fe6d568cf6006d6d15aca533d59552"]]
+      ],
+      "paymentKeyHash": [
+        "c3994d154965198c60f166c0bbced67d6b695310468329496d0a8e54"
+      ]
+    },
+    "tx_hash": "d1607e4c77cb48d2e62d7c6c391897026e8d324792771dbb01f5939c34590b4c",
+    "block": "20c4d7362edb187a94d72212bb60eb62e72b88656ccea2d93b9ea975bdac9eb1",
+    "slot": "92437402",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-05-24T20:06:02.000Z",
+    "paid": "6846907",
+    "fees": "2823130",
+    "received": "5000000",
+    "status": "Completed"
+  },
+  {
+    "id": 113,
+    "address": {
+      "stakeKeyHash": [
+        [["8ca703e26093d406610a4a0ac7fe6d568cf6006d6d15aca533d59552"]]
+      ],
+      "paymentKeyHash": [
+        "c3994d154965198c60f166c0bbced67d6b695310468329496d0a8e54"
+      ]
+    },
+    "tx_hash": "d9d6ae79dcf7d4b6884d7afd873e2fae6d9dd3f78f1a9fb2ea970b384931c1b1",
+    "block": "ff09382fb5182f0cb92abe888a76f83e1727f45d6d8a8d38cc982bb3a46f93f8",
+    "slot": "92438252",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-05-24T20:19:57.000Z",
+    "paid": "6866484",
+    "fees": "2823130",
+    "received": "5000000",
+    "status": "Completed"
+  },
+  {
+    "id": 114,
+    "address": {
+      "stakeKeyHash": [
+        [["8ca703e26093d406610a4a0ac7fe6d568cf6006d6d15aca533d59552"]]
+      ],
+      "paymentKeyHash": [
+        "c3994d154965198c60f166c0bbced67d6b695310468329496d0a8e54"
+      ]
+    },
+    "tx_hash": "2227eadbf4f3d4aa1ba3857318ea737901ed77ef24e48fe3153b3b1676da4c6f",
+    "block": "5e1c725cf943e675ded4519355c189c6d31a3cd7490b89adb88abaad7aea9c50",
+    "slot": "92439114",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-05-24T20:34:12.000Z",
+    "paid": "6880662",
+    "fees": "2823130",
+    "received": "5000000",
+    "status": "Completed"
+  },
+  {
+    "id": 115,
+    "address": {
+      "stakeKeyHash": [
+        [["8ca703e26093d406610a4a0ac7fe6d568cf6006d6d15aca533d59552"]]
+      ],
+      "paymentKeyHash": [
+        "c3994d154965198c60f166c0bbced67d6b695310468329496d0a8e54"
+      ]
+    },
+    "tx_hash": "b364e6425928264a1537aaf74005ea0ff4f0eb2dc40354eb73da28dad9936b97",
+    "block": "6d45de8b2b37aa7c13e6d002441495370242e0a6db47341c0488a596fb219cc3",
+    "slot": "92440082",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-05-24T20:50:07.000Z",
+    "paid": "6876032",
+    "fees": "2823130",
+    "received": "5000000",
+    "status": "Completed"
+  },
+  {
+    "id": 116,
+    "address": {
+      "stakeKeyHash": [
+        [["8ca703e26093d406610a4a0ac7fe6d568cf6006d6d15aca533d59552"]]
+      ],
+      "paymentKeyHash": [
+        "c3994d154965198c60f166c0bbced67d6b695310468329496d0a8e54"
+      ]
+    },
+    "tx_hash": "7e2876d66a69e5310d75463835cd8088ecb87c868e2860191edc7a0c8fe807eb",
+    "block": "4295dc89a1b8d783d2a871ab720906e042f0f231425998b85f76eeb14755e3f1",
+    "slot": "92440999",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-05-24T21:05:54.000Z",
+    "paid": "6868906",
+    "fees": "2823130",
+    "received": "5000000",
+    "status": "Completed"
+  },
+  {
+    "id": 117,
+    "address": {
+      "stakeKeyHash": [
+        [["8ca703e26093d406610a4a0ac7fe6d568cf6006d6d15aca533d59552"]]
+      ],
+      "paymentKeyHash": [
+        "c3994d154965198c60f166c0bbced67d6b695310468329496d0a8e54"
+      ]
+    },
+    "tx_hash": "435e5381ded00b496ee801f44dd607fe2d88a6282e23edeea35e3dbf2834df2e",
+    "block": "c4a4b7839889f6105972755e5dd90e77b5ba5d31f16b9897285fe47ee672e305",
+    "slot": "92654699",
+    "action": "Burn",
+    "token": "DJED",
+    "orderDate": "2025-05-27T08:27:34.000Z",
+    "paid": "1086999999",
+    "fees": "71094817",
+    "received": "1387256865",
+    "status": "Completed"
+  },
+  {
+    "id": 118,
+    "address": {
+      "stakeKeyHash": [
+        [["8ca703e26093d406610a4a0ac7fe6d568cf6006d6d15aca533d59552"]]
+      ],
+      "paymentKeyHash": [
+        "c3994d154965198c60f166c0bbced67d6b695310468329496d0a8e54"
+      ]
+    },
+    "tx_hash": "711538b76eb79f477f39e28ea4166be9bc90d2787685150c58a8abdb61f78010",
+    "block": "48ef25830d38707bfc5600f8873f7dc2655d62bffdb9f4352c83b0ab6997e2ef",
+    "slot": "92658333",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-05-27T09:27:43.000Z",
+    "paid": "6709223554",
+    "fees": "101823130",
+    "received": "5000000000",
+    "status": "Completed"
+  },
+  {
+    "id": 119,
+    "address": {
+      "stakeKeyHash": [
+        [["8ca703e26093d406610a4a0ac7fe6d568cf6006d6d15aca533d59552"]]
+      ],
+      "paymentKeyHash": [
+        "c3994d154965198c60f166c0bbced67d6b695310468329496d0a8e54"
+      ]
+    },
+    "tx_hash": "8d0f7a909dd34751a9b89a8bd769529be6ced6ed71d21c1e705840ae2eaad970",
+    "block": "4e0e6453087323973d438bf3cad71dde872abe494dbd074a9b3331d23ca62f4a",
+    "slot": "92658756",
+    "action": "Burn",
+    "token": "DJED",
+    "orderDate": "2025-05-27T09:35:20.000Z",
+    "paid": "3456789100",
+    "fees": "101823130",
+    "received": "4415128651",
+    "status": "Completed"
+  },
+  {
+    "id": 120,
+    "address": {
+      "stakeKeyHash": [
+        [["8ca703e26093d406610a4a0ac7fe6d568cf6006d6d15aca533d59552"]]
+      ],
+      "paymentKeyHash": [
+        "c3994d154965198c60f166c0bbced67d6b695310468329496d0a8e54"
+      ]
+    },
+    "tx_hash": "e2611bb94319cf19586c55aa5245e45751d864ca002282e02a23f4cb32bd6d95",
+    "block": "a6f082acd7baf40604c05b96e9b98e3ac09448c26d241de18431b623286485c5",
+    "slot": "92659278",
+    "action": "Burn",
+    "token": "SHEN",
+    "orderDate": "2025-05-27T09:43:31.000Z",
+    "paid": "56926344",
+    "fees": "10078572",
+    "received": "166931954",
+    "status": "Completed"
+  },
+  {
+    "id": 121,
+    "address": {
+      "stakeKeyHash": [
+        [["ee555cd5075c0fad164bb23a6c73d0cbb02be18d17e5eb04201fac93"]]
+      ],
+      "paymentKeyHash": [
+        "6b93cb7b1b5fedf0387f7a507f31b5351eb5e79d551bbfebcaa7f4ce"
+      ]
+    },
+    "tx_hash": "f5147074cb8118c8e6a107b6b0aa2f8ca170c59598305572d509bd8ee675c067",
+    "block": "8e74e96477affbad2e2104408007671530c5ee3c616b47190a691b5245f8b8ee",
+    "slot": "93277000",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-06-03T13:18:00.000Z",
+    "paid": "151",
+    "fees": "2823130",
+    "received": "100",
+    "status": "Completed"
+  },
+  {
+    "id": 122,
+    "address": {
+      "stakeKeyHash": [
+        [["ee555cd5075c0fad164bb23a6c73d0cbb02be18d17e5eb04201fac93"]]
+      ],
+      "paymentKeyHash": [
+        "6b93cb7b1b5fedf0387f7a507f31b5351eb5e79d551bbfebcaa7f4ce"
+      ]
+    },
+    "tx_hash": "91f0cf502e521278782fb83fef0a5d5346416a91b1282818dacf2121216dfd3e",
+    "block": "0d470534255cd1bba72deef7f3ccf3216cf48bc1606ec63e7465905c5353c32b",
+    "slot": "93368041",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-06-04T14:34:25.000Z",
+    "paid": "1493358",
+    "fees": "2823130",
+    "received": "1000000",
+    "status": "Completed"
+  },
+  {
+    "id": 123,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "346f3aa7d5eabe8a68e0fb678e94c1ec594df1d2603baa824fee1827769c0bc1",
+    "block": "c2a204b01b61de02a6ddc0bfcc736d2285460a52dacfcac326654e5d0f9f3379",
+    "slot": "94744835",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-06-20T13:02:41.000Z",
+    "paid": "85727603",
+    "fees": "6109511",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 124,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "3633804eb118868bee37ad19bf2ab30d8cf13a94523255dedff39a3c24580a53",
+    "block": "5829b43b3d744f43fd84306a77fc8ee23a3ef07ac3c5ce51ba3cdf28354ec663",
+    "slot": "94752553",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-06-20T15:10:28.000Z",
+    "paid": "88282663",
+    "fees": "6237264",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 125,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "b6dc956d8f4a822e39c64309cd0f24ce21dc3959773434d896c892917360bb93",
+    "block": "d7c2d612dc3d55170734482df5d004c70800e0b8374a7cb16eccf8b27a7899ec",
+    "slot": "94752784",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-06-20T15:14:01.000Z",
+    "paid": "88282663",
+    "fees": "6237264",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 126,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "ea2aa647147869161571bb7ae873d7bc6f18cad86bac6b1a81845e12164ca61b",
+    "block": "b008408ef5da443dfaf8b44ad83467cf078962520b630d47949fe127afe816fd",
+    "slot": "94753463",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-06-20T15:26:23.000Z",
+    "paid": "88625022",
+    "fees": "6254382",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 127,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "f1b632e4cb3bc0282ea641429c1659096ec6fd52ae8b348255f30a400f2ae527",
+    "block": "e588f9e068215753bd75cae3e3dbef2d06c406ead27a4844f27faee9d5ef9edb",
+    "slot": "94754325",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-06-20T15:39:37.000Z",
+    "paid": "88716624",
+    "fees": "6258962",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 128,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "8fc5b476e25edaac1f047c627355b514b1f1a882378540e46bcea9ef40a91896",
+    "block": "0b6868f2fb7dae013f83c55ef631efd76110c3c799abc21c415e79dae9328c4f",
+    "slot": "94754671",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-06-20T15:46:08.000Z",
+    "paid": "88842120",
+    "fees": "6265236",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 129,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "e4f6ba517461b07d2b0fd55e06a0d6e6088d9a3577699f6239582c39cd49d304",
+    "block": "72dcc4ef634dc2884b93c924a7d281f77d7ed3121f62ee4f7638ce3a73bbcb63",
+    "slot": "94755023",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-06-20T15:52:42.000Z",
+    "paid": "88842120",
+    "fees": "6265236",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 130,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "0967291c39ebd61ab838a9d39e421dfaa8b5771bb109179d188c8fd89173d49b",
+    "block": "f5faa7d033b4f21b712e0b67761afbf6dddbe3c3b8007c0851331b025051a6e0",
+    "slot": "94757157",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-06-20T16:27:45.000Z",
+    "paid": "89202204",
+    "fees": "6283241",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 131,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "284fdd9fc3d6504f0905e9a908ed3dceeb6ed6872039152d46aedbab6154e946",
+    "block": "abb1c601118fda67685afd94a52af899ec9f8c5c39e1faa1669dd5903fcdf32c",
+    "slot": "94757540",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-06-20T16:33:09.000Z",
+    "paid": "90905882",
+    "fees": "6368425",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 132,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "c16c052f3e8a53ba787d985b778cf4aafeadeb0ee2f63f2ed4aab1c4033ab223",
+    "block": "7b07b3bf40a76b3c8dfd7babb2898ab76980040440597c806ceb13a82b2ebbd6",
+    "slot": "94759054",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-06-20T16:59:53.000Z",
+    "paid": "89999406",
+    "fees": "6323101",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 133,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "3442570f9fb0aeb58f774b2e41971109dbfefd705c22c7801994f34a2e6962ed",
+    "block": "a3d491d35c823c0ebba33443670f6eb7f7ae06752c7b79f6fb3861e10080f6ce",
+    "slot": "94760601",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-06-20T17:24:32.000Z",
+    "paid": "88942312",
+    "fees": "6270246",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 134,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "6e999696bf659defa1fb981e51b96722fba68b55e5456ac933de935aad9bb27a",
+    "block": "7a6e0516efe2265423495bf004e95f60d7e8f3da0dad87ea1868bf2b30877a37",
+    "slot": "94992223",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-06-23T09:45:44.000Z",
+    "paid": "94991285",
+    "fees": "6572695",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 135,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "e4fd5624e1611b530bd7da18d297c373521a7cd9a20b22c8acaf386bb900e75e",
+    "block": "bae5765476cb9fd8eeb77fe5d657b3dcc860558de730d85b959857843cb03ea6",
+    "slot": "95001956",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-06-23T12:28:11.000Z",
+    "paid": "95046158",
+    "fees": "6575438",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 136,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "4d7ca542bf27f40f176d89872ba08167e837fc1cfcf85f8ee7d636fd936e285e",
+    "block": "e9712f5978b5e9d29089e5addef51890fc164917ebbcfb1608e432f40f1e89d9",
+    "slot": "95002870",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-06-23T12:43:49.000Z",
+    "paid": "94711947",
+    "fees": "6558728",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 137,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "f8a093d69b7c6b2cd99e4e5ef71bb2174782d47e056dff677c727e3177fe4572",
+    "block": "9bea503088d90b2ac401aa45a7496d417d54b96de4735975c4751fd3f4798e6d",
+    "slot": "95006195",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-06-23T13:39:07.000Z",
+    "paid": "93653392",
+    "fees": "6505800",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 138,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "58ed2f5dd446ed17dcdf45d83ad290197c0cd075e0b29fef36605debaf55ca47",
+    "block": "f30680c09e9c8bab56836758a3ea49b6c9610f8562d963b3a05f218651da976e",
+    "slot": "95009192",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-06-23T14:28:57.000Z",
+    "paid": "93641472",
+    "fees": "6505204",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 139,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "e8b66a9c960b8df9c71209c904ef16fc2117596f47fbf1276f1194786aeacf0c",
+    "block": "2ae23067380b227a9200cce6cad510db777870439970765c041fb25eff54c559",
+    "slot": "95009443",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-06-23T14:31:25.000Z",
+    "paid": "93641472",
+    "fees": "6505204",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 140,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "9c530a90847ab724ac96e2e79c27a086aad5047b6193e37770c53b1fb474a91a",
+    "block": "c18d488e40d98149c467e11760ebb54a6ff34bf5a7f7f7bda0e7fb00d51b41dd",
+    "slot": "95010449",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-06-23T14:49:30.000Z",
+    "paid": "94430352",
+    "fees": "6544648",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 141,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "a1b9d1fdb0e907a3e5805c649d365c09094036646bbe6d4a2bc382c57579cb38",
+    "block": "7bf6fc3fc2795f165e966f74b7432846b3615081e3680b6afd14d5d32636128b",
+    "slot": "95018897",
+    "action": "Burn",
+    "token": "DJED",
+    "orderDate": "2025-06-23T17:08:34.000Z",
+    "paid": "450000000",
+    "fees": "41689339",
+    "received": "799147302",
+    "status": "Completed"
+  },
+  {
+    "id": 142,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "b8eff2039b3bbd77296bd1686f9e508486614402fb0f0f897315a2591f792227",
+    "block": "49ab30b5e3b13f6fc1f1ce9404d3f282b9889095e2bc5abfd6e8b53358a90694",
+    "slot": "95019027",
+    "action": "Burn",
+    "token": "DJED",
+    "orderDate": "2025-06-23T17:12:42.000Z",
+    "paid": "225000000",
+    "fees": "21756235",
+    "received": "400485216",
+    "status": "Completed"
+  },
+  {
+    "id": 143,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "bfd2f5647828566311a94d83ffa307f1fb72aa32d5045db1c444af67f177d81b",
+    "block": "b4d22c27d24bc8beff491a12849ba319e23a02c1e635ef4812228fcac6d6e677",
+    "slot": "95022966",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-06-23T18:17:56.000Z",
+    "paid": "92993861",
+    "fees": "6472824",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 144,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "86250b16a4002b65be196ec84fe9a741730d33b3195236fd52b73bcd8291b626",
+    "block": "dd090fcf8400d81b63c7d5037d9667b3b35b7a429d46140199dbe23731ffbd54",
+    "slot": "95076537",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-06-24T09:10:11.000Z",
+    "paid": "88357411",
+    "fees": "6241001",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 145,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "2f4855bab4104ec57b65a6a7e736177e577c97278aa191c5366a8805bad18dd4",
+    "block": "df286c72a2ac5debd843cc72ca5a58b17e9da4d4200486bf110e3c2a722c0aa4",
+    "slot": "95076809",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-06-24T09:14:56.000Z",
+    "paid": "88339223",
+    "fees": "6240092",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 146,
+    "address": {
+      "stakeKeyHash": [
+        [["7b8e3dfad1c97edb1e01c7dfdd7ac506e13b6659ed5def247a9d7942"]]
+      ],
+      "paymentKeyHash": [
+        "51374dcf4a79090cfab6c03c276bf8f994fbedca2c1ed90a085bede7"
+      ]
+    },
+    "tx_hash": "25cb49ebbd5a13aaa1101c40568dfcc4f8a9b708ecac1db43a8eb492b72d665b",
+    "block": "40829748e6e2dc8d2014935a7e58fb68a08f848706327ef8fb9c84825d51476f",
+    "slot": "95663600",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-07-01T04:15:54.000Z",
+    "paid": "127678413317",
+    "fees": "101823130",
+    "received": "70000000000",
+    "status": "Completed"
+  },
+  {
+    "id": 147,
+    "address": {
+      "stakeKeyHash": [
+        [["7b8e3dfad1c97edb1e01c7dfdd7ac506e13b6659ed5def247a9d7942"]]
+      ],
+      "paymentKeyHash": [
+        "51374dcf4a79090cfab6c03c276bf8f994fbedca2c1ed90a085bede7"
+      ]
+    },
+    "tx_hash": "4c4de36dda3bf662160a81fdfed74a2463d1d3f4604708c97601ec2842211012",
+    "block": "bfbe8ebc7145c0c43b122773c934c807402f92067d5de3df4aa22fc5e77dfb90",
+    "slot": "95839160",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-07-03T04:59:48.000Z",
+    "paid": "66827482948",
+    "fees": "101823130",
+    "received": "39000000000",
+    "status": "Completed"
+  },
+  {
+    "id": 148,
+    "address": {
+      "stakeKeyHash": [
+        [["7b8e3dfad1c97edb1e01c7dfdd7ac506e13b6659ed5def247a9d7942"]]
+      ],
+      "paymentKeyHash": [
+        "51374dcf4a79090cfab6c03c276bf8f994fbedca2c1ed90a085bede7"
+      ]
+    },
+    "tx_hash": "b9fd7fa2d8d99721262a4ea807bf5e9ad0187f1964b8b272041e24da2727270b",
+    "block": "dc24f21f77ef1e5ee5308d8f3991d5334b37894d2b0cb9b45942c24bfd5ff11f",
+    "slot": "95995179",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-07-05T00:22:00.000Z",
+    "paid": "25137892322",
+    "fees": "101823130",
+    "received": "14000000000",
+    "status": "Completed"
+  },
+  {
+    "id": 149,
+    "address": {
+      "stakeKeyHash": [
+        [["58e4c5952be361d1a813255de52069675ca4279b744528f9d685ad21"]]
+      ],
+      "paymentKeyHash": [
+        "90d883dcb39c36abbf5459858442e084932c72a05dda3d11554f7dbe"
+      ]
+    },
+    "tx_hash": "d05696baea7be55449df7989997bcc1d3b589ad634236f02706906b50aeb31f2",
+    "block": "b04b82a79a6dfd3c582431905b18df87637883cc1165ca1b918556311e7aeebe",
+    "slot": "97262151",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-07-19T16:18:26.000Z",
+    "paid": "324527914",
+    "fees": "18049526",
+    "received": "100000000",
+    "status": "Completed"
+  },
+  {
+    "id": 150,
+    "address": {
+      "stakeKeyHash": [
+        [["58e4c5952be361d1a813255de52069675ca4279b744528f9d685ad21"]]
+      ],
+      "paymentKeyHash": [
+        "90d883dcb39c36abbf5459858442e084932c72a05dda3d11554f7dbe"
+      ]
+    },
+    "tx_hash": "13fb99d79be459023b2dae0a197bea4dccf56c59c82b8cde483b72c8678ef3d2",
+    "block": "239200d403f3d6387d705394a49db2e338b2c62b88ccf6bb5fd9a0328fb78bab",
+    "slot": "97262547",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-07-19T16:24:17.000Z",
+    "paid": "124924197",
+    "fees": "8069340",
+    "received": "100000000",
+    "status": "Completed"
+  },
+  {
+    "id": 151,
+    "address": {
+      "stakeKeyHash": [
+        [["58e4c5952be361d1a813255de52069675ca4279b744528f9d685ad21"]]
+      ],
+      "paymentKeyHash": [
+        "90d883dcb39c36abbf5459858442e084932c72a05dda3d11554f7dbe"
+      ]
+    },
+    "tx_hash": "ff3b9db0667b00a006724c873b87493928e9e9e0d81325b055da94a15aa05f39",
+    "block": "52a4660504690914d1974043e0f24deb014eb3cadc5a8c3509491b40c7b8957b",
+    "slot": "97407044",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-07-21T08:32:15.000Z",
+    "paid": "115970749",
+    "fees": "7621668",
+    "received": "100000000",
+    "status": "Completed"
+  },
+  {
+    "id": 152,
+    "address": {
+      "stakeKeyHash": [
+        [["58e4c5952be361d1a813255de52069675ca4279b744528f9d685ad21"]]
+      ],
+      "paymentKeyHash": [
+        "90d883dcb39c36abbf5459858442e084932c72a05dda3d11554f7dbe"
+      ]
+    },
+    "tx_hash": "d2ea3b19510d83a7cd8c8ed9fe3052aa51959860d8fa9239fa6139329364a6ab",
+    "block": "90f5f3040b91ec4f127d85d2fec6bc33f78ca52bfcf2f0862c4db37ad599e942",
+    "slot": "97413780",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-07-21T10:25:05.000Z",
+    "paid": "114464794",
+    "fees": "7546370",
+    "received": "100000000",
+    "status": "Completed"
+  },
+  {
+    "id": 153,
+    "address": {
+      "stakeKeyHash": [
+        [["58e4c5952be361d1a813255de52069675ca4279b744528f9d685ad21"]]
+      ],
+      "paymentKeyHash": [
+        "90d883dcb39c36abbf5459858442e084932c72a05dda3d11554f7dbe"
+      ]
+    },
+    "tx_hash": "1aa9edd85305a91a37402a3844cf5fe50e6c6f7fe3070d33344a3cd753a2e236",
+    "block": "ab9434a112303fc49d9542195998ecf61f4506b2c05a4b622a20577204090b3f",
+    "slot": "97421603",
+    "action": "Burn",
+    "token": "DJED",
+    "orderDate": "2025-07-21T12:35:02.000Z",
+    "paid": "300000000",
+    "fees": "17742731",
+    "received": "320215142",
+    "status": "Completed"
+  },
+  {
+    "id": 154,
+    "address": {
+      "stakeKeyHash": [
+        [["58e4c5952be361d1a813255de52069675ca4279b744528f9d685ad21"]]
+      ],
+      "paymentKeyHash": [
+        "90d883dcb39c36abbf5459858442e084932c72a05dda3d11554f7dbe"
+      ]
+    },
+    "tx_hash": "b2ca228fbc1a691ba297f3af97786c3395328ba88d390a756c5fe7be8fe00401",
+    "block": "9abb9c685a470399ccd4622f904e7efd9a466812f1014c62c694652403fdbae1",
+    "slot": "97421944",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-07-21T12:41:11.000Z",
+    "paid": "111855791",
+    "fees": "7415920",
+    "received": "100000000",
+    "status": "Completed"
+  },
+  {
+    "id": 155,
+    "address": {
+      "stakeKeyHash": [
+        [["58e4c5952be361d1a813255de52069675ca4279b744528f9d685ad21"]]
+      ],
+      "paymentKeyHash": [
+        "90d883dcb39c36abbf5459858442e084932c72a05dda3d11554f7dbe"
+      ]
+    },
+    "tx_hash": "07a73616dea5a519a13125495654381af01e74d6424bb1de2dd0b8750389eb81",
+    "block": "b58ae59d8808859de6d753193502fdb333cf19f431185d82e995b19ef998bdf3",
+    "slot": "97424726",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-07-21T13:28:17.000Z",
+    "paid": "110758643",
+    "fees": "7361063",
+    "received": "100000000",
+    "status": "Completed"
+  },
+  {
+    "id": 156,
+    "address": {
+      "stakeKeyHash": [
+        [["58e4c5952be361d1a813255de52069675ca4279b744528f9d685ad21"]]
+      ],
+      "paymentKeyHash": [
+        "90d883dcb39c36abbf5459858442e084932c72a05dda3d11554f7dbe"
+      ]
+    },
+    "tx_hash": "1d20db8e9280d8a1d3a402e7526d17080e9297ae51bc49b83ec264c9fcc18633",
+    "block": "ad05c0d110e6a69b1d5c65f9108e4380d6493d4966f6cb488c4ba8531cad50c1",
+    "slot": "97495229",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-07-22T09:02:29.000Z",
+    "paid": "118394275",
+    "fees": "7742844",
+    "received": "100000000",
+    "status": "Completed"
+  },
+  {
+    "id": 157,
+    "address": {
+      "stakeKeyHash": [
+        [["58e4c5952be361d1a813255de52069675ca4279b744528f9d685ad21"]]
+      ],
+      "paymentKeyHash": [
+        "90d883dcb39c36abbf5459858442e084932c72a05dda3d11554f7dbe"
+      ]
+    },
+    "tx_hash": "8c6a1cd0e954fde5fbcbddebef1daa68db0761d5bcad359d2776258ea2409b08",
+    "block": "14685f0fff3493cea3d63509e4386a31081c4d489375d52d5c9ddac3589eb0bf",
+    "slot": "97521720",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-07-22T16:24:29.000Z",
+    "paid": "117039603",
+    "fees": "7675111",
+    "received": "100000000",
+    "status": "Completed"
+  },
+  {
+    "id": 158,
+    "address": {
+      "stakeKeyHash": [
+        [["b9f6cf69d4a3cde9ad584d1496b78dc64b6512a19ba545417973afc7"]]
+      ],
+      "paymentKeyHash": [
+        "cc4c8b0fbf8224478c3c5917ad7bce2b3eb02e3f280a257177944833"
+      ]
+    },
+    "tx_hash": "0e84924e0866da2544efb915ea089a1ffc8adb33f0c90b891a5c3e7e2f1471e4",
+    "block": "f067344475a7c197e947b068ee7a95c95c27e3aeeda398e064dc81b477d9d261",
+    "slot": "98685390",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-08-05T03:38:38.000Z",
+    "paid": "27554842162",
+    "fees": "101823130",
+    "received": "20000000000",
+    "status": "Completed"
+  },
+  {
+    "id": 159,
+    "address": {
+      "stakeKeyHash": [
+        [["e191b17e1a1f96a0727278322a66c33ea0bc1b9cce4311e21dc42470"]]
+      ],
+      "paymentKeyHash": [
+        "ba18ecb5a7feac23d7117f2a3c47c6a7036b6a5f0d07ef939d647905"
+      ]
+    },
+    "tx_hash": "979ee324cbc183bf837c24d6c5513d03ed05e095b8e1451a5d67c4b2d61716c4",
+    "block": "158e33f6d4156646dc1ebe3c3a1d39530b91428d298fa3ecb084de1a3210efa4",
+    "slot": "98685496",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-08-05T03:40:14.000Z",
+    "paid": "40325450571",
+    "fees": "101823130",
+    "received": "29269229948",
+    "status": "Completed"
+  },
+  {
+    "id": 160,
+    "address": {
+      "stakeKeyHash": [
+        [["95b64bd5c109f89420b47a827477e00a3090a520272149bd8e1cf78e"]]
+      ],
+      "paymentKeyHash": [
+        "5e056e4a339df3aa6d916ef94e7f108c58a53278e6fcd4dabfdddd38"
+      ]
+    },
+    "tx_hash": "c8aaf9e33b51a09a115b8f8d23a714858894a43b31025ed6f586fdc41eec4b79",
+    "block": "5544c50983f794e41a1a6a9319f8cdbf6302bb0cb1d6f68ea11067c34579637e",
+    "slot": "104752963",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-10-14T09:05:07.000Z",
+    "paid": "993783829",
+    "fees": "51512322",
+    "received": "319902041",
+    "status": "Completed"
+  },
+  {
+    "id": 161,
+    "address": {
+      "stakeKeyHash": [
+        [["95b64bd5c109f89420b47a827477e00a3090a520272149bd8e1cf78e"]]
+      ],
+      "paymentKeyHash": [
+        "5e056e4a339df3aa6d916ef94e7f108c58a53278e6fcd4dabfdddd38"
+      ]
+    },
+    "tx_hash": "2f04efd64793d186a8bebb129b2d3292038ed889c5aeb4589b1ad8463cfc3278",
+    "block": "cc7ff6ab7133456b3667f00212139f556cd0ef9cdda379341d80711aab64d405",
+    "slot": "104753242",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-10-14T09:09:30.000Z",
+    "paid": "355969311",
+    "fees": "19621596",
+    "received": "234110302",
+    "status": "Completed"
+  },
+  {
+    "id": 162,
+    "address": {
+      "stakeKeyHash": [
+        [["05d8fc0c21caf61d458e87d55ebb1a818c581b932f3a7b3768ebaae4"]]
+      ],
+      "paymentKeyHash": [
+        "6c5ed2f4105cd3a0c89a4b4acb3d6a6fa20f3ddc021192f02f679b03"
+      ]
+    },
+    "tx_hash": "002124013719cd55945d61c835874df133f945832b1098045eca690b6732af19",
+    "block": "84b79c9d9851d6a17cf04473e4d185d1f3792309abfb071fe08c6f5df791dbe6",
+    "slot": "104834350",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-10-15T07:40:50.000Z",
+    "paid": "3069188205",
+    "fees": "101823130",
+    "received": "2121971169",
+    "status": "Completed"
+  },
+  {
+    "id": 163,
+    "address": {
+      "stakeKeyHash": [
+        [["05d8fc0c21caf61d458e87d55ebb1a818c581b932f3a7b3768ebaae4"]]
+      ],
+      "paymentKeyHash": [
+        "6c5ed2f4105cd3a0c89a4b4acb3d6a6fa20f3ddc021192f02f679b03"
+      ]
+    },
+    "tx_hash": "fd6bc2869af810ef1c7fe2ae353441516b9876076437d9d932a7c30744da6053",
+    "block": "9f66e63c3cbbe28d46a4be45733991dd2977772a6ebf00f4b4d2e7196608ee9d",
+    "slot": "105242597",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-10-20T01:05:40.000Z",
+    "paid": "1342958992",
+    "fees": "68971080",
+    "received": "840932236",
+    "status": "Completed"
+  },
+  {
+    "id": 164,
+    "address": {
+      "stakeKeyHash": [
+        [["05d8fc0c21caf61d458e87d55ebb1a818c581b932f3a7b3768ebaae4"]]
+      ],
+      "paymentKeyHash": [
+        "6c5ed2f4105cd3a0c89a4b4acb3d6a6fa20f3ddc021192f02f679b03"
+      ]
+    },
+    "tx_hash": "e50fe81b104faa8274e0c1b74d9482c42a6b48355b6ae389520f5375fcdcf397",
+    "block": "74dc13c92735974f50019d5bff7aca6c5c0042d22f858a788f36175ec78d4339",
+    "slot": "105243917",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-10-20T01:27:32.000Z",
+    "paid": "428057598",
+    "fees": "23226010",
+    "received": "139709564",
+    "status": "Completed"
+  },
+  {
+    "id": 165,
+    "address": {
+      "stakeKeyHash": [
+        [["05d8fc0c21caf61d458e87d55ebb1a818c581b932f3a7b3768ebaae4"]]
+      ],
+      "paymentKeyHash": [
+        "6c5ed2f4105cd3a0c89a4b4acb3d6a6fa20f3ddc021192f02f679b03"
+      ]
+    },
+    "tx_hash": "52847c33a9fb090436cea6e3daef4e9dacde297d60011c2aaca1f3b286773223",
+    "block": "758a6f3ab922881f7b4897cf232454e0788902428b78228ccca28efde69056d3",
+    "slot": "105248548",
+    "action": "Burn",
+    "token": "SHEN",
+    "orderDate": "2025-10-20T02:45:05.000Z",
+    "paid": "51692538",
+    "fees": "9085517",
+    "received": "147070862",
+    "status": "Completed"
+  },
+  {
+    "id": 166,
+    "address": {
+      "stakeKeyHash": [
+        [["b58f99dee5c30350c9ac670fa44e1275016b7fcd984b21f9cbb44c61"]]
+      ],
+      "paymentKeyHash": [
+        "b647161214c2133f54c90172f53c54655b7a7e284bef02650087970d"
+      ]
+    },
+    "tx_hash": "51aaa574ed39a513897fde54faab20fab470733d8ec8945dff2d4eb48092787f",
+    "block": "363d9e939117af55439a21ef33bea14cf5032d39d4f2b5261b0fc61dce712cb7",
+    "slot": "105271240",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-10-20T09:03:17.000Z",
+    "paid": "502650470",
+    "fees": "26955654",
+    "received": "328235637",
+    "status": "Completed"
+  },
+  {
+    "id": 167,
+    "address": {
+      "stakeKeyHash": [
+        [["b58f99dee5c30350c9ac670fa44e1275016b7fcd984b21f9cbb44c61"]]
+      ],
+      "paymentKeyHash": [
+        "b647161214c2133f54c90172f53c54655b7a7e284bef02650087970d"
+      ]
+    },
+    "tx_hash": "9ea01d06184a339921c6cbdbe8c967ec115c7229d0bf0bdf415e846b21be7d15",
+    "block": "93b527cd95ffc1162130b81d60c55577cd4f03ad448a1a5e5742c715b4c2d24e",
+    "slot": "105337399",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-10-21T03:25:16.000Z",
+    "paid": "469552056",
+    "fees": "25300733",
+    "received": "293832456",
+    "status": "Completed"
+  },
+  {
+    "id": 168,
+    "address": {
+      "stakeKeyHash": [
+        [["b58f99dee5c30350c9ac670fa44e1275016b7fcd984b21f9cbb44c61"]]
+      ],
+      "paymentKeyHash": [
+        "b647161214c2133f54c90172f53c54655b7a7e284bef02650087970d"
+      ]
+    },
+    "tx_hash": "55aa4278f1cc4ce38d2e9d8bae1b70bd6ae67ac760b8b69549f176791fce0125",
+    "block": "c9472f68ede39df701a17c35cb758d32d8353bd63ae4bc4e8d64d88b66da2b66",
+    "slot": "105348570",
+    "action": "Burn",
+    "token": "DJED",
+    "orderDate": "2025-10-21T06:32:14.000Z",
+    "paid": "124413618",
+    "fees": "11300657",
+    "received": "191373660",
+    "status": "Completed"
+  },
+  {
+    "id": 169,
+    "address": {
+      "stakeKeyHash": [
+        [["d348fdb2808782754c16d6af0b521e420bbabd2a0a7ea4e17ce8f6b4"]]
+      ],
+      "paymentKeyHash": [
+        "513cfed102440f61a7bd5e122d39b7e250de09650773dc2108560786"
+      ]
+    },
+    "tx_hash": "40bd6e98611f627899457e5f75953c7f585461e9c77791f439a9715454fef3b9",
+    "block": "94b3069623ad890f65ab76bae1d546998f0e3a619d024c77d535a4c964ac9e66",
+    "slot": "105547728",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-10-23T13:50:23.000Z",
+    "paid": "80440471",
+    "fees": "5845154",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 170,
+    "address": {
+      "stakeKeyHash": [
+        [["d348fdb2808782754c16d6af0b521e420bbabd2a0a7ea4e17ce8f6b4"]]
+      ],
+      "paymentKeyHash": [
+        "513cfed102440f61a7bd5e122d39b7e250de09650773dc2108560786"
+      ]
+    },
+    "tx_hash": "ec3698bab37d1f2b4a4f9dc20e455ad866a294c3287e2efebdaec59d6f0fa442",
+    "block": "9a5fe434ae4412c86e435b2b6b2ab39fc66cad8772f29410d0f552d9bb0f6fa7",
+    "slot": "105548295",
+    "action": "Burn",
+    "token": "DJED",
+    "orderDate": "2025-10-23T14:00:30.000Z",
+    "paid": "50000000",
+    "fees": "5656047",
+    "received": "78481452",
+    "status": "Completed"
+  },
+  {
+    "id": 171,
+    "address": {
+      "stakeKeyHash": [
+        [["1acb6f911677ac8d20f472a80f928e81d33131b473443fd924555433"]]
+      ],
+      "paymentKeyHash": [
+        "41cdee448a4de509f9d37c02de5c655d0e09f5a5cdd6253da079bef1"
+      ]
+    },
+    "tx_hash": "7d0c31f5dc6615c1caba69e9194b80a5823b0daafe5beaa48151bb49acd1aa3c",
+    "block": "420c0e5ab7dc0fc53afc6d8cbd6fcd2b47261fe99602b2cabad187dac740159c",
+    "slot": "105890613",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-10-27T14:05:51.000Z",
+    "paid": "310160083",
+    "fees": "17331135",
+    "received": "100000000",
+    "status": "Completed"
+  },
+  {
+    "id": 172,
+    "address": {
+      "stakeKeyHash": [
+        [["d348fdb2808782754c16d6af0b521e420bbabd2a0a7ea4e17ce8f6b4"]]
+      ],
+      "paymentKeyHash": [
+        "513cfed102440f61a7bd5e122d39b7e250de09650773dc2108560786"
+      ]
+    },
+    "tx_hash": "7c630a7ac992b72418ac772800f483a18d5e49aa82ef40bb4f80a06dcd31dec1",
+    "block": "de1587e852e6e3c8843a2b0561821630e2def5835ccfb486c47d23f913c1bb68",
+    "slot": "105900463",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-10-27T16:49:15.000Z",
+    "paid": "75612091",
+    "fees": "5603735",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 173,
+    "address": {
+      "stakeKeyHash": [
+        [["1acb6f911677ac8d20f472a80f928e81d33131b473443fd924555433"]]
+      ],
+      "paymentKeyHash": [
+        "41cdee448a4de509f9d37c02de5c655d0e09f5a5cdd6253da079bef1"
+      ]
+    },
+    "tx_hash": "c3ab9f795f1040ebdf1de6dc5022799995e9cfac73b258ac541757b724d1555c",
+    "block": "aeddcb97e5b8bd0d1f271da8bc008889e0fcd4a5d27541f3206d84a711065252",
+    "slot": "105903736",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-10-27T17:44:43.000Z",
+    "paid": "347265995",
+    "fees": "19186430",
+    "received": "230000000",
+    "status": "Completed"
+  },
+  {
+    "id": 174,
+    "address": {
+      "stakeKeyHash": [
+        [["d348fdb2808782754c16d6af0b521e420bbabd2a0a7ea4e17ce8f6b4"]]
+      ],
+      "paymentKeyHash": [
+        "513cfed102440f61a7bd5e122d39b7e250de09650773dc2108560786"
+      ]
+    },
+    "tx_hash": "74677a57312a83b55310f0d3ee8166203f90f4c102a5a34489bf4da2480f7a5d",
+    "block": "48a4ea7ff1c2f8b4cde4f21d47894e623707c17ab8a0021bf35f91a52575c6a9",
+    "slot": "105963201",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-10-28T10:15:01.000Z",
+    "paid": "77536887",
+    "fees": "5699975",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 175,
+    "address": {
+      "stakeKeyHash": [
+        [["d348fdb2808782754c16d6af0b521e420bbabd2a0a7ea4e17ce8f6b4"]]
+      ],
+      "paymentKeyHash": [
+        "513cfed102440f61a7bd5e122d39b7e250de09650773dc2108560786"
+      ]
+    },
+    "tx_hash": "04d94eaf77de8a4e533c893662e5c30baad96b61db2e560c2df106fa9d474416",
+    "block": "9bd14866bbbde6c941978dab6066f0e7aa65c535b4c03276ebd1493946b5004e",
+    "slot": "105975047",
+    "action": "Burn",
+    "token": "DJED",
+    "orderDate": "2025-10-28T13:33:05.000Z",
+    "paid": "100000000",
+    "fees": "9123488",
+    "received": "147830281",
+    "status": "Completed"
+  },
+  {
+    "id": 176,
+    "address": {
+      "stakeKeyHash": [
+        [["d348fdb2808782754c16d6af0b521e420bbabd2a0a7ea4e17ce8f6b4"]]
+      ],
+      "paymentKeyHash": [
+        "513cfed102440f61a7bd5e122d39b7e250de09650773dc2108560786"
+      ]
+    },
+    "tx_hash": "f812b7d0ac89d0035468711fc27d466b0492594da4a3127968a865e68824e72c",
+    "block": "b681e1eb9d848930b46494bcd14ae108126a865b6bb0d08290a77e0a3d877ce8",
+    "slot": "105976139",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-10-28T13:49:39.000Z",
+    "paid": "4932260076",
+    "fees": "101823130",
+    "received": "3204680915",
+    "status": "Completed"
+  },
+  {
+    "id": 177,
+    "address": {
+      "stakeKeyHash": [
+        [["d348fdb2808782754c16d6af0b521e420bbabd2a0a7ea4e17ce8f6b4"]]
+      ],
+      "paymentKeyHash": [
+        "513cfed102440f61a7bd5e122d39b7e250de09650773dc2108560786"
+      ]
+    },
+    "tx_hash": "2305d61800e143ed563892fe44b87d8c6fca39fa908312a868e6b23e7d0cc4db",
+    "block": "0ee43a08c3e3dbbdb10ed436ad66ec8e2f7ed0633c6eb0108659831cc294dd68",
+    "slot": "105981278",
+    "action": "Burn",
+    "token": "DJED",
+    "orderDate": "2025-10-28T15:16:06.000Z",
+    "paid": "3204680915",
+    "fees": "101823130",
+    "received": "4719899140",
+    "status": "Completed"
+  },
+  {
+    "id": 178,
+    "address": {
+      "stakeKeyHash": [
+        [["d348fdb2808782754c16d6af0b521e420bbabd2a0a7ea4e17ce8f6b4"]]
+      ],
+      "paymentKeyHash": [
+        "513cfed102440f61a7bd5e122d39b7e250de09650773dc2108560786"
+      ]
+    },
+    "tx_hash": "640aee87ec38880c1377022e09e70ef20702b5dce2f09ba1c696cb41ec9828de",
+    "block": "66c666e9b7ac8cc3930c6cedcca266c4e20d63f259795b21526e1f5d149c8b57",
+    "slot": "105982048",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-10-28T15:28:59.000Z",
+    "paid": "154637066",
+    "fees": "9554984",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 179,
+    "address": {
+      "stakeKeyHash": [
+        [["d348fdb2808782754c16d6af0b521e420bbabd2a0a7ea4e17ce8f6b4"]]
+      ],
+      "paymentKeyHash": [
+        "513cfed102440f61a7bd5e122d39b7e250de09650773dc2108560786"
+      ]
+    },
+    "tx_hash": "de3322d9dec5510508c8e69cacbe8b3d41345589433287d2869b0ad1a7b2ea85",
+    "block": "7ffceb4e5ba8ad0984faa11d70523098997481c3f3403dca89f18b9c7f63cec9",
+    "slot": "105982629",
+    "action": "Burn",
+    "token": "SHEN",
+    "orderDate": "2025-10-28T15:38:52.000Z",
+    "paid": "50000000",
+    "fees": "8880376",
+    "received": "142968047",
+    "status": "Completed"
+  },
+  {
+    "id": 180,
+    "address": {
+      "stakeKeyHash": [
+        [["d348fdb2808782754c16d6af0b521e420bbabd2a0a7ea4e17ce8f6b4"]]
+      ],
+      "paymentKeyHash": [
+        "513cfed102440f61a7bd5e122d39b7e250de09650773dc2108560786"
+      ]
+    },
+    "tx_hash": "e1d0a33a968e97eaae4a08a6c329a3fabe71b8e43ed51ae0a5e8014d6ab6818d",
+    "block": "0ebce855856f52c11d45ce0de4ea74439dad5a044a7beb64e5f121961d0e0fb2",
+    "slot": "105982952",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-10-28T15:44:06.000Z",
+    "paid": "77782813",
+    "fees": "5712271",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 181,
+    "address": {
+      "stakeKeyHash": [
+        [["d348fdb2808782754c16d6af0b521e420bbabd2a0a7ea4e17ce8f6b4"]]
+      ],
+      "paymentKeyHash": [
+        "513cfed102440f61a7bd5e122d39b7e250de09650773dc2108560786"
+      ]
+    },
+    "tx_hash": "fa47c20eb120dc77b23f781c0820b41569bc5778d92320a9651fff0ce22b800f",
+    "block": "83eb71288c9ec0af9189afbc1c55974f25c6c6b8cfb87b979a1c193b75f9203e",
+    "slot": "105983908",
+    "action": "Burn",
+    "token": "DJED",
+    "orderDate": "2025-10-28T16:00:45.000Z",
+    "paid": "50000000",
+    "fees": "5512056",
+    "received": "75601643",
+    "status": "Completed"
+  },
+  {
+    "id": 182,
+    "address": {
+      "stakeKeyHash": [
+        [["d348fdb2808782754c16d6af0b521e420bbabd2a0a7ea4e17ce8f6b4"]]
+      ],
+      "paymentKeyHash": [
+        "513cfed102440f61a7bd5e122d39b7e250de09650773dc2108560786"
+      ]
+    },
+    "tx_hash": "640b52c5fe47b20b5d4edb053316571efdbbf25ae94523d6e8eacba16afe6cc5",
+    "block": "32c44cf1262cbc30c6acf435ccfacad16f83d0b9d0346e091ad03ccfccdf7a9f",
+    "slot": "105984218",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-10-28T16:05:02.000Z",
+    "paid": "77542724",
+    "fees": "5700267",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 183,
+    "address": {
+      "stakeKeyHash": [
+        [["d348fdb2808782754c16d6af0b521e420bbabd2a0a7ea4e17ce8f6b4"]]
+      ],
+      "paymentKeyHash": [
+        "513cfed102440f61a7bd5e122d39b7e250de09650773dc2108560786"
+      ]
+    },
+    "tx_hash": "622c604149801bd4795cef820ad7f437b9df316102fd4f175541e2d0427dd2ed",
+    "block": "76967d6d697ba4a5dd63890dc0d47bac346f1e6adf39a93ff099769efa49d00d",
+    "slot": "106153490",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-10-30T15:06:28.000Z",
+    "paid": "84117752",
+    "fees": "6029018",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 184,
+    "address": {
+      "stakeKeyHash": [
+        [["d348fdb2808782754c16d6af0b521e420bbabd2a0a7ea4e17ce8f6b4"]]
+      ],
+      "paymentKeyHash": [
+        "513cfed102440f61a7bd5e122d39b7e250de09650773dc2108560786"
+      ]
+    },
+    "tx_hash": "b1358f86b2437ce9789019738641431495e1ae5bc743b54814adba235b4954e7",
+    "block": "ab15c1ca686a2b9053888a57e4ab3ff8aa0beac2f7b8993244803db74e3cf51f",
+    "slot": "106153596",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-10-30T15:09:17.000Z",
+    "paid": "84117752",
+    "fees": "6029018",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 185,
+    "address": {
+      "stakeKeyHash": [
+        [["d348fdb2808782754c16d6af0b521e420bbabd2a0a7ea4e17ce8f6b4"]]
+      ],
+      "paymentKeyHash": [
+        "513cfed102440f61a7bd5e122d39b7e250de09650773dc2108560786"
+      ]
+    },
+    "tx_hash": "8b73a358b0c6ae22610c50e92fbfc4ee3bb7d82d4f192e4559db585bc2c837e2",
+    "block": "9762959e99255ac192b6f79231581ee104d3873ca9bdf4ce3d9ff792d488272a",
+    "slot": "106154686",
+    "action": "Burn",
+    "token": "DJED",
+    "orderDate": "2025-10-30T15:26:31.000Z",
+    "paid": "50000000",
+    "fees": "5870710",
+    "received": "82774724",
+    "status": "Completed"
+  },
+  {
+    "id": 186,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "d965dc1160639b9dd7e0c9bae96e8199be722466ecc56cdd991f65f126eb9cc9",
+    "block": "99774f12466e5d973ec8537cc5c8faeb03981b07dfdaa0372db81fde94158c1f",
+    "slot": "106228356",
+    "action": "Burn",
+    "token": "DJED",
+    "orderDate": "2025-10-31T11:55:02.000Z",
+    "paid": "187500000",
+    "fees": "16790471",
+    "received": "301169943",
+    "status": "Completed"
+  },
+  {
+    "id": 187,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "3a04ddd1169d03119567eed7377cd5e27d53adc36829055fdbe18d005c47e9c4",
+    "block": "e503d1767b4edea16f5f37060d677bbe512eaf651ea42f6d6bccc2e18f3e3be5",
+    "slot": "106229953",
+    "action": "Burn",
+    "token": "DJED",
+    "orderDate": "2025-10-31T12:20:49.000Z",
+    "paid": "187500000",
+    "fees": "16728890",
+    "received": "299938311",
+    "status": "Completed"
+  },
+  {
+    "id": 188,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "a02d2e93da2293bc7fe95a80ca61d098bd0ab563c21afa0333918b21f8e1b1ba",
+    "block": "1add14f9f54393fb36e968d0c2e67f72d5e08d89e4c8eef22ab24b619b9134e9",
+    "slot": "106240149",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-10-31T15:11:31.000Z",
+    "paid": "83390007",
+    "fees": "5992631",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 189,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "0eeece5ddc0c64ebbb9ffc2a63cbfa4072582b125a7e017c0f69486029737508",
+    "block": "f44b01c375bf644d5febfd025de294ca3dc6ef1d2478bc691a445dd4581ccb42",
+    "slot": "106240313",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-10-31T15:14:14.000Z",
+    "paid": "83203278",
+    "fees": "5983294",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 190,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "47c3362d7cddf7d9ce0cbea76c6ec327195c8a6a7adfc15c6008ecc225aa30dd",
+    "block": "ebd8194e40477bfa9e5a05cd4f2a07eb320819fd1b67b05fe9858db3936c7365",
+    "slot": "106240499",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-10-31T15:16:53.000Z",
+    "paid": "83203278",
+    "fees": "5983294",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 191,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "76ccff70f8587732345cc216961dc54b4d5642aca1fcf83f44b8394d315b51fe",
+    "block": "8a6c30df6dc59a5de643055ba9c9d350af912177d0e47109ed9305765f4a5412",
+    "slot": "106241552",
+    "action": "Burn",
+    "token": "DJED",
+    "orderDate": "2025-10-31T15:34:43.000Z",
+    "paid": "75000000",
+    "fees": "7779689",
+    "received": "1823130",
+    "status": "Completed"
+  },
+  {
+    "id": 192,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "2e429afd81f782532c1e7be7d5f6798134ef71748efe9a00cce458a4bab11ff5",
+    "block": "a741b55792ec8badd79aa496d812afd6e515e86f0032412ece7e1688218ae041",
+    "slot": "106241629",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-10-31T15:35:47.000Z",
+    "paid": "83472860",
+    "fees": "5996773",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 193,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "94d90242ba36b1d5ca9ce7b61a1dc9323cb817df55155b8d57f42c79495322fc",
+    "block": "02ec2eb2097c638e110a221d6ce42a9e0b21618d5098cd3947e5d33f515c18a0",
+    "slot": "106241881",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-10-31T15:39:28.000Z",
+    "paid": "83699281",
+    "fees": "6008095",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 194,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "bb917c25d61d0beec05ceb77624c8629020c880efc5a9174f313b2f696defd49",
+    "block": "31c435efb4c2c3e94426fceb6e1dfbb61482259a1fd766b571706579bab64220",
+    "slot": "106242131",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-10-31T15:44:22.000Z",
+    "paid": "83699281",
+    "fees": "6008095",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 195,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "c61d5925cbb2c5f7ce07450ed68604e445e482ccb394fc26fe7e085664156e8f",
+    "block": "1ba079621af2357609613c69a672982c40a98baf8cf516e7fff67880d1754b31",
+    "slot": "106242621",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-10-31T15:52:53.000Z",
+    "paid": "83984554",
+    "fees": "6022358",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 196,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "31cabe9d942462f0b1dc9912ae025972eadfc0c2706397e508e4ab58346f4120",
+    "block": "1d1bf3c43c1dddb31fe1cbbc6c6bb322830a91a4e0f7dcecaea2d9930446653b",
+    "slot": "106245008",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-10-31T16:32:48.000Z",
+    "paid": "84313582",
+    "fees": "6038810",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 197,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "8d0074663443be83cc9d45d96ee055a39a139cade7ce0a16fed579fbc2aab0c2",
+    "block": "58f79875abac3b4c35d330af0c0c9463628c8985e1d7cb0d2f0e006c42a3c93e",
+    "slot": "106245162",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-10-31T16:35:20.000Z",
+    "paid": "84313582",
+    "fees": "6038810",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 198,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "55bfea79262bb84a6e5796ec51e8a66c9fdd059b585218640a3433ac65db915b",
+    "block": "fa784e36e660501204ac6d6525bac4b9cc80da37982800fe1e06b26eb9f4e98c",
+    "slot": "106246501",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-10-31T16:57:38.000Z",
+    "paid": "85247964",
+    "fees": "6085529",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 199,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "b71a0c76c7cc17d7e501eb94a09e4065908866255cfd267fc096ba4e2314c37c",
+    "block": "90fad8259df0dcb10746eaa52752571357489ec503e2b486f48955a0c5ab4f8c",
+    "slot": "106246847",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-10-31T17:03:07.000Z",
+    "paid": "85247964",
+    "fees": "6085529",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 200,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "783596278c2cf8b9bd234d29f7bf70e062685f0851ff703b25627e8ecfa854bf",
+    "block": "6c993c926e19b107f178928d5cbe73df8d4876091e8f7f9e3c3da1b7aff7b79f",
+    "slot": "106247595",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-10-31T17:15:21.000Z",
+    "paid": "85597940",
+    "fees": "6103027",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 201,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "e73f596f88ccda3facb8365ee288ef178a9d799f03082f46af3e08c6e52754a7",
+    "block": "a62215c7e185a1e7d491586f50e5d26de2af2eb1aa534a32cad2ad86af2a413b",
+    "slot": "106247918",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-10-31T17:20:50.000Z",
+    "paid": "85616154",
+    "fees": "6103938",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 202,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "0e21ee2c397a38d2517229fc8a0c883409699af78910c1960397eec26d736a98",
+    "block": "5bbc0964c4e010698809846feecdf2164cd54ffa612c1f107abd58df46c006ef",
+    "slot": "106249328",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-10-31T17:44:43.000Z",
+    "paid": "150189503",
+    "fees": "9332606",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 203,
+    "address": {
+      "stakeKeyHash": [
+        [["d348fdb2808782754c16d6af0b521e420bbabd2a0a7ea4e17ce8f6b4"]]
+      ],
+      "paymentKeyHash": [
+        "513cfed102440f61a7bd5e122d39b7e250de09650773dc2108560786"
+      ]
+    },
+    "tx_hash": "a2b7d979278424f571f1aaf7529cd274921fd6e5f4ac36d8b50ea5f606c2a187",
+    "block": "d2ce5811dd460cb420b5a605d4b439644cfefd06969b655c3977f82d2f58399e",
+    "slot": "106504166",
+    "action": "Mint",
+    "token": "DJED",
+    "orderDate": "2025-11-03T16:30:59.000Z",
+    "paid": "92178271",
+    "fees": "6432044",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 204,
+    "address": {
+      "stakeKeyHash": [
+        [["083629931345b8d41515552d3d38cfad90711c202071f4cab3112ff9"]]
+      ],
+      "paymentKeyHash": [
+        "a03679e29c27fd39d03145cbd5bb316403ba661338a7d4541158fda0"
+      ]
+    },
+    "tx_hash": "3c2c3bf5edafba2d9c93c4f3eecd46fd354e45276455da70f134cced76d34171",
+    "block": "1d52a1ea38fd96706c5dd31d01e573197f4c43f00355167894bd9da30cb2c43f",
+    "slot": "106668768",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-11-05T14:14:01.000Z",
+    "paid": "145319610",
+    "fees": "9089111",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 205,
+    "address": {
+      "stakeKeyHash": [
+        [["083629931345b8d41515552d3d38cfad90711c202071f4cab3112ff9"]]
+      ],
+      "paymentKeyHash": [
+        "a03679e29c27fd39d03145cbd5bb316403ba661338a7d4541158fda0"
+      ]
+    },
+    "tx_hash": "b7aa9d20cf3d6dc931e4e2c1b13bc430d78e77be1a72098a2d557b9029405eb9",
+    "block": "f0713fda0f55d872629dcf1b6692ee0b906de8383ea9877bc58b78b77dc064f9",
+    "slot": "107292900",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-11-12T19:35:20.000Z",
+    "paid": "145352830",
+    "fees": "9090772",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 206,
+    "address": {
+      "stakeKeyHash": [
+        [["d348fdb2808782754c16d6af0b521e420bbabd2a0a7ea4e17ce8f6b4"]]
+      ],
+      "paymentKeyHash": [
+        "513cfed102440f61a7bd5e122d39b7e250de09650773dc2108560786"
+      ]
+    },
+    "tx_hash": "430b5de99cc65fdce71e59b66579478c82e5c7c0d1cda3a2a4d5eacb56c23e61",
+    "block": "1769fd65b093715043e1e0bd3a869e4c3ac6f4c1280409e894c6ac003c9d5a7e",
+    "slot": "107697595",
+    "action": "Burn",
+    "token": "DJED",
+    "orderDate": "2025-11-17T12:01:36.000Z",
+    "paid": "100000000",
+    "fees": "11706148",
+    "received": "199483476",
+    "status": "Completed"
+  },
+  {
+    "id": 207,
+    "address": {
+      "stakeKeyHash": [
+        [["d348fdb2808782754c16d6af0b521e420bbabd2a0a7ea4e17ce8f6b4"]]
+      ],
+      "paymentKeyHash": [
+        "513cfed102440f61a7bd5e122d39b7e250de09650773dc2108560786"
+      ]
+    },
+    "tx_hash": "cf32a7d7942bba7bed85268b1191621c6da219c93a8797fc3526db02fc747f64",
+    "block": "20710400e48021355f44c0410e1cf0f055d29874221d9bb8a46e403b2d7b1d2f",
+    "slot": "107698858",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-11-17T12:23:28.000Z",
+    "paid": "140426823",
+    "fees": "8844472",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 208,
+    "address": {
+      "stakeKeyHash": [
+        [["d348fdb2808782754c16d6af0b521e420bbabd2a0a7ea4e17ce8f6b4"]]
+      ],
+      "paymentKeyHash": [
+        "513cfed102440f61a7bd5e122d39b7e250de09650773dc2108560786"
+      ]
+    },
+    "tx_hash": "afdcdcbfede3c0b47547d308e8e4fbb990ac33ed77aae2d46cee2527b60aef3b",
+    "block": "c3800ccac0fc140e8aaa91b6332dddadd5d88171ebe02a9e4f9222f5de71ba81",
+    "slot": "107700031",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-11-17T12:42:54.000Z",
+    "paid": "140459122",
+    "fees": "8846087",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 209,
+    "address": {
+      "stakeKeyHash": [
+        [["ba7b4d7251748c1fd04568eec0d4776aad23b805a95f8460563e5d10"]]
+      ],
+      "paymentKeyHash": [
+        "02376dd7746c65bc6cae619c7d3dc2a4e935a3864a997976d26b661d"
+      ]
+    },
+    "tx_hash": "68b8f12b8b33742ab8b8d051275282271d296ac13552c7d399b095fbabf9b04a",
+    "block": "26de594cc629d28734bcc646a939f045bd96d98867bc28c49a97caa4f212b475",
+    "slot": "107710592",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-11-17T15:38:41.000Z",
+    "paid": "2775171",
+    "fees": "2823130",
+    "received": "1000000",
+    "status": "Completed"
+  },
+  {
+    "id": 210,
+    "address": {
+      "stakeKeyHash": [
+        [["ba7b4d7251748c1fd04568eec0d4776aad23b805a95f8460563e5d10"]]
+      ],
+      "paymentKeyHash": [
+        "02376dd7746c65bc6cae619c7d3dc2a4e935a3864a997976d26b661d"
+      ]
+    },
+    "tx_hash": "4b5c32ffd68e85fd361c0f17a6b4f30bfd8ea834bbc792648dd3654cc67832b7",
+    "block": "57e60118e2e175eccac386a8436cc65a7d44147f5c3798dae400cebbc52b7245",
+    "slot": "107710668",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-11-17T15:39:32.000Z",
+    "paid": "2775171",
+    "fees": "2823130",
+    "received": "1000000",
+    "status": "Completed"
+  },
+  {
+    "id": 211,
+    "address": {
+      "stakeKeyHash": [
+        [["d348fdb2808782754c16d6af0b521e420bbabd2a0a7ea4e17ce8f6b4"]]
+      ],
+      "paymentKeyHash": [
+        "513cfed102440f61a7bd5e122d39b7e250de09650773dc2108560786"
+      ]
+    },
+    "tx_hash": "c7b7e1d53c326f30a60f6c896fe07e21ca428233197eef39a4e8d493d78d00bb",
+    "block": "2963bae4f0d0621cb742a3a79a4ad4e895a738fdf916da627a9042eaf92409f3",
+    "slot": "107711145",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-11-17T15:47:45.000Z",
+    "paid": "138758546",
+    "fees": "8761058",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 212,
+    "address": {
+      "stakeKeyHash": [
+        [["d348fdb2808782754c16d6af0b521e420bbabd2a0a7ea4e17ce8f6b4"]]
+      ],
+      "paymentKeyHash": [
+        "513cfed102440f61a7bd5e122d39b7e250de09650773dc2108560786"
+      ]
+    },
+    "tx_hash": "ffc18380132e619e8cb8fb68cc144030c0a8db68c63fa2da681eb17e01ac338c",
+    "block": "f058faa285a36fa6daf26d99b44d9f63b559b34893fad1fde5ef8cb201d4810d",
+    "slot": "107711254",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-11-17T15:50:07.000Z",
+    "paid": "138461267",
+    "fees": "8746194",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 213,
+    "address": {
+      "stakeKeyHash": [
+        [["d348fdb2808782754c16d6af0b521e420bbabd2a0a7ea4e17ce8f6b4"]]
+      ],
+      "paymentKeyHash": [
+        "513cfed102440f61a7bd5e122d39b7e250de09650773dc2108560786"
+      ]
+    },
+    "tx_hash": "72c3d3705b35026e862d19291be05774d4ac5649700342d5c943e509261c1eb5",
+    "block": "e94b9bbffab30f92bc68871aca0db7799b6950881d981cad2f395ad981016286",
+    "slot": "107711448",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-11-17T15:51:30.000Z",
+    "paid": "138461267",
+    "fees": "8746194",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 214,
+    "address": {
+      "stakeKeyHash": [
+        [["d348fdb2808782754c16d6af0b521e420bbabd2a0a7ea4e17ce8f6b4"]]
+      ],
+      "paymentKeyHash": [
+        "513cfed102440f61a7bd5e122d39b7e250de09650773dc2108560786"
+      ]
+    },
+    "tx_hash": "336d07671c508d34d9f17e53c000da85e56c755658c3ed5e0306637e6d8fdd03",
+    "block": "092f0b7fd073e4efc986369c5408a846de24223f4df880c6603e8fb342a35945",
+    "slot": "107711730",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-11-17T15:57:44.000Z",
+    "paid": "138461267",
+    "fees": "8746194",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 215,
+    "address": {
+      "stakeKeyHash": [
+        [["d348fdb2808782754c16d6af0b521e420bbabd2a0a7ea4e17ce8f6b4"]]
+      ],
+      "paymentKeyHash": [
+        "513cfed102440f61a7bd5e122d39b7e250de09650773dc2108560786"
+      ]
+    },
+    "tx_hash": "868115d9dad694db0ceb736a2119e64a09d04d821e349f77c079f2fb8b1daeb8",
+    "block": "730c10b17393ddfb25400194c074e8d3497727e50df07625a01c52984bbec8a3",
+    "slot": "107711901",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-11-17T16:00:56.000Z",
+    "paid": "138461267",
+    "fees": "8746194",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 216,
+    "address": {
+      "stakeKeyHash": [
+        [["d348fdb2808782754c16d6af0b521e420bbabd2a0a7ea4e17ce8f6b4"]]
+      ],
+      "paymentKeyHash": [
+        "513cfed102440f61a7bd5e122d39b7e250de09650773dc2108560786"
+      ]
+    },
+    "tx_hash": "150498e99a515ef915ec931e5b74e96e2e77002ef850fa2892ade62960e5f40b",
+    "block": "c93334bd664ec681f727057e382fc9297347270e8ba701d32d325e07d08bc2c7",
+    "slot": "107716884",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-11-17T17:22:14.000Z",
+    "paid": "138807005",
+    "fees": "8763481",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 217,
+    "address": {
+      "stakeKeyHash": [
+        [["d348fdb2808782754c16d6af0b521e420bbabd2a0a7ea4e17ce8f6b4"]]
+      ],
+      "paymentKeyHash": [
+        "513cfed102440f61a7bd5e122d39b7e250de09650773dc2108560786"
+      ]
+    },
+    "tx_hash": "2787d87fa8b03ad2ee08e08c9110422a3c406b76183a866bb26ecf4fadb302f5",
+    "block": "0518dd36a0884e4544d88a234664910731ae45a358280ba8234b4114ab06203c",
+    "slot": "107716991",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-11-17T17:25:29.000Z",
+    "paid": "138807156",
+    "fees": "8763488",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 218,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "a916ba7a0707953134c06d5ab17a236f7cf3caed15bc582476403fd72b58b344",
+    "block": "5a9c121f1d62d5aadfba1f9ec4973e488064e291a027a14e3c8a4b791b662f95",
+    "slot": "107777388",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-11-18T10:11:42.000Z",
+    "paid": "137421283",
+    "fees": "8694195",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 219,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "206965ce51159a993c42ab0e3f97ec70c1b32653eeded4ec879eb9ff4da02325",
+    "block": "dd3c790c359d118d23b0308fd9ac26a22e281a3e6ac1f21fa61679262633a77e",
+    "slot": "107778061",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-11-18T10:23:07.000Z",
+    "paid": "137227341",
+    "fees": "8684498",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 220,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "d9702ead7fbdad581ccb8afab092e1af6b65b43e788dd0e508782b5c0301f145",
+    "block": "299f4664050cd8679a02f47665d27a20eafc2072bcd2c674d5707126c5cb4d3b",
+    "slot": "107795144",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-11-18T15:08:09.000Z",
+    "paid": "136787219",
+    "fees": "8662491",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 221,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "54743d8eb33b0f34b7119ba6af62c8216c0ca4cbbba0d54eb4110ce4fc1e1080",
+    "block": "60a995926205f9cb656a0caa77645c66667c0a55c9f045da8e1d6285950f4916",
+    "slot": "107795748",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-11-18T15:16:46.000Z",
+    "paid": "136435873",
+    "fees": "8644924",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 222,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "28bc83487ce693fe616d71bf45a59da3c7c47219b197f8177c754b1347425fb0",
+    "block": "20202f1e2ae8c545df91ba6c148ecadad0a2e64904ba77de2946a7819516c8d7",
+    "slot": "107796714",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-11-18T15:34:09.000Z",
+    "paid": "165757317",
+    "fees": "10110996",
+    "received": "60000000",
+    "status": "Completed"
+  },
+  {
+    "id": 223,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "220bfdb85df21b60c9f207403bba092ee178dc678b7aaa4cbf9e92d2c4fe9843",
+    "block": "9248699afe7d7208394bc1404b718110910e1ddd78d7f5bbe7cceef0ff778b3d",
+    "slot": "107886628",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-11-19T16:32:50.000Z",
+    "paid": "135288011",
+    "fees": "8587531",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 224,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "7aeb792427dd30ae940846ba13c5e168b878d0dd8d8259c4816c63581411fe6e",
+    "block": "881a1ea34e371ce82b33876172737f9af016b1f4187a1e240658ffe349f4cb95",
+    "slot": "107887816",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-11-19T16:51:55.000Z",
+    "paid": "162070573",
+    "fees": "9926659",
+    "received": "60000000",
+    "status": "Completed"
+  },
+  {
+    "id": 225,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "4eea7abe0ab6362bb5a5f152b13c882e3b134163ce1d398d6e147f3bef593f6e",
+    "block": "fbf9de44ee150393ba34d50b07ed697243191f4133465c8afa64f670b519642a",
+    "slot": "107888165",
+    "action": "Burn",
+    "token": "DJED",
+    "orderDate": "2025-11-19T16:58:41.000Z",
+    "paid": "575000000",
+    "fees": "64356631",
+    "received": "1228350",
+    "status": "Completed"
+  },
+  {
+    "id": 226,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "94335abcce79b397bca3718e6c7e204f3ed2195bea0d7e4f8fcad9a6d93be440",
+    "block": "6c6d60716dc0191412cdaa0291bbf8253b405923fb8f3fbcbd812b2aa20969b8",
+    "slot": "107888677",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-11-19T17:06:55.000Z",
+    "paid": "135075958",
+    "fees": "8576928",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 227,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "2115c44f53514e80a2d3081601e9d3f18bfc9999f4a73632f18c74aaaada5471",
+    "block": "4fd995e4530cdef7cd6cb787d1bc6a01ea0f0193631f722e719367ca5d1bba80",
+    "slot": "107888988",
+    "action": "Burn",
+    "token": "DJED",
+    "orderDate": "2025-11-19T17:12:06.000Z",
+    "paid": "575000000",
+    "fees": "64339078",
+    "received": "1228350",
+    "status": "Completed"
+  },
+  {
+    "id": 228,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "e5da16d662e547ebbd5b8d3930bf3cbb3a9e36331de28f6713581cd4dbfed665",
+    "block": "2e7edaa2a145583ad5e23284ef293bd5c6157d64bdaca9472831c76de0e7fc13",
+    "slot": "107889717",
+    "action": "Burn",
+    "token": "DJED",
+    "orderDate": "2025-11-19T17:24:43.000Z",
+    "paid": "575000000",
+    "fees": "65287413",
+    "received": "1228350",
+    "status": "Completed"
+  },
+  {
+    "id": 229,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "26aef935440ff83d37dd285275907b7877256ff605c115fb478f54bcef8b3bb0",
+    "block": "39df9481c7096f32a63ca6b960dacd18bd861193c672da254864c6194f053f71",
+    "slot": "107891177",
+    "action": "Burn",
+    "token": "DJED",
+    "orderDate": "2025-11-19T17:48:49.000Z",
+    "paid": "575000000",
+    "fees": "65331115",
+    "received": "1271982829",
+    "status": "Completed"
+  },
+  {
+    "id": 230,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "a4e8c33e1608a90f6023393de1dc95f9df9811e5cc5c5dbae975fb83bb02a16c",
+    "block": "0c927ab592a0cfa060dbad8617615de234191f04375ae539478a77a223b5c5fd",
+    "slot": "107952602",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-11-20T10:52:26.000Z",
+    "paid": "136925328",
+    "fees": "8669397",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 231,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "2609041510c52875b6c315d70e984944ee68583965e604995b1ae27dafbb96c1",
+    "block": "84cd1b09f736dfebd349c0204c06b1cbcaa7dc800e6c8456328775ffe95f61ea",
+    "slot": "107953806",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-11-20T11:12:27.000Z",
+    "paid": "136997674",
+    "fees": "8673014",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 232,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "bdf7c9c7cd96afc2cd1b957f9a471494162bfa9aaecb0dc4b31c501c8e175b43",
+    "block": "4f1025d0ae7fd35322a56a5b6b979d0fc377819f1b7f781c3ea074fa1da43668",
+    "slot": "107954904",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-11-20T11:30:28.000Z",
+    "paid": "137064201",
+    "fees": "8676341",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 233,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "2d271ac1f809839b1cb7a2e87d55f6ec69c6e6410c3b3cc6519f29a7d5f61fbb",
+    "block": "d07fdc1934757e1dfb5b92333268105e8c4bb3b4fc905050cb5bcc6898ae65c1",
+    "slot": "107960429",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-11-20T13:03:05.000Z",
+    "paid": "137291648",
+    "fees": "8687713",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 234,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "40446131b20fa7e9f26e4c985926d5643b2165f8c95fb96d7d5038d1833c1459",
+    "block": "204501238e4519873cfe2762c0eb0c84b98e510d4e01f054963d9d945536cd15",
+    "slot": "107961578",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-11-20T13:21:05.000Z",
+    "paid": "137311546",
+    "fees": "8688708",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 235,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "e8c31347125990a0e2299a4235cd40a5e955177524c92dcdcef422f3ca279770",
+    "block": "c2af0ff8b36f0d3d0dfccdae425fa6a4f4a15a49e1e55058ab2e09b4ace9cc56",
+    "slot": "107962407",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-11-20T13:35:38.000Z",
+    "paid": "137085656",
+    "fees": "8677413",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 236,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "25420b2d44000d30c0e0b139dba2114fac2145a928be020fbf4ddfa3bd06e9bb",
+    "block": "171009a3adb1a33c88328a2f03c45b5bbff0c7523a391f2f61bf330ed4be5759",
+    "slot": "107964401",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-11-20T14:07:06.000Z",
+    "paid": "136697212",
+    "fees": "8657991",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 237,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "b29c7632e99f10567849c02e81fff663a6713ef8693352aeacc40ee36d0bf7d9",
+    "block": "18337e2f61838a0c8bc931fb210f8d10b2e1a2094d50ba9b704d4b9fa36ee2d9",
+    "slot": "107965727",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-11-20T14:30:55.000Z",
+    "paid": "137103692",
+    "fees": "8678315",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 238,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "e7b0aada067f6664d5b042174a05187bca03848dd1b6e832010e5ae20ca316a2",
+    "block": "dec2b2d8a9c79d71f7c908e9adcf62cd89516adfd3c7d03fb76e561966412b66",
+    "slot": "107965991",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-11-20T14:35:47.000Z",
+    "paid": "137103841",
+    "fees": "8678323",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 239,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "3ac68cc32ae6b75d0bf348183bd7d2c644705620d82e39b381f385b214bdcfd2",
+    "block": "7eaf4e5eee1c77b3f065e1e53bf76b61da5b0b20189d1c82a6468e3d0c9c2f53",
+    "slot": "107967059",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-11-20T14:52:30.000Z",
+    "paid": "136893493",
+    "fees": "8667805",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 240,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "334ff4528c63d54383df6d6bc3f29fd346ed5f2c0fbd9c992e75c64b1afeecd6",
+    "block": "1c916a1f5730d7b9a13ddcfe7632e638a1fc8aa7b013800195aa6200eca47da4",
+    "slot": "107968594",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-11-20T15:18:58.000Z",
+    "paid": "136607731",
+    "fees": "8653517",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 241,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "24709b2829490b7226d9c8a7774d246896f67e018cac51868f58f35d3d8d8a7a",
+    "block": "f7a3819d350104f4fa5af1dd75afa75f21ef5efbacdd854b0c77aa1504431fad",
+    "slot": "107968733",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-11-20T15:20:55.000Z",
+    "paid": "136165616",
+    "fees": "8631411",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 242,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "dd6fe2035cfabfbf933a27fb4215ead99941c137c1b1b45f4816aa650d0dc09b",
+    "block": "43d1a6aec0716dce1057d54d3e421322a914a8c6b74dfea6c11355f97e93fa43",
+    "slot": "107968786",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-11-20T15:22:29.000Z",
+    "paid": "272331231",
+    "fees": "15439692",
+    "received": "100000000",
+    "status": "Completed"
+  },
+  {
+    "id": 243,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "63bf8715cdf0248ce9fe3510ea222cb343f9957e2ab95bc4b21265b985c0ec44",
+    "block": "061a9ad3afecfaa5b3db657031b7b1e6a4369fa64faed0b1c6a6255c50e8efa2",
+    "slot": "107971105",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-11-20T15:59:51.000Z",
+    "paid": "135958510",
+    "fees": "8621056",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 244,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "a194c3a1905731a8cb3828895ba7f296b46e87974be228b5b89892bcd44ed082",
+    "block": "02a4979ffd2c3c6e9e5731a9ff7a5198ce7defd2a08b9ad6d129414698b55e7f",
+    "slot": "107972009",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-11-20T16:15:02.000Z",
+    "paid": "134998299",
+    "fees": "8573045",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 245,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "f9577856a6500403a706a7a086c2067025ed8eb6da6801cc3f7ee6383c499c67",
+    "block": "c65ef8cb8900f1f48cbf37b2f7b1d4f9d4d76d3697e2b9104fc56a1ed75d3fab",
+    "slot": "107972226",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-11-20T16:18:47.000Z",
+    "paid": "134998446",
+    "fees": "8573053",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 246,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "02d9bd240cb57d72fda275e09b503ecb993335cd51337d0962601565469cc1b0",
+    "block": "b44fa0500b5e941a8aa248ce2365f853d073a00e4ad4892b5f6e31e93836e57f",
+    "slot": "107972319",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-11-20T16:21:12.000Z",
+    "paid": "134998446",
+    "fees": "8573053",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 247,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "996bde0e03e2f7e3b11c91efdd21b054a7a5c20b10a34215d3425e7a0d785d20",
+    "block": "f589019d1edba7fa9d9f392bb1da6b654d86d624f11b07c800b1f139fecab779",
+    "slot": "107972336",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-11-20T16:21:39.000Z",
+    "paid": "269996892",
+    "fees": "15322975",
+    "received": "100000000",
+    "status": "Completed"
+  },
+  {
+    "id": 248,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "79e95b47c6e7aa7e569035c8c2a27f9fffc9fd78c18fb3e5aa064a4864c6b81c",
+    "block": "f2b2e849a5292402ff2b3a7a090d28ece3292d2aff8c4a354cd81fc1bae38bbc",
+    "slot": "107972474",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-11-20T16:23:26.000Z",
+    "paid": "133931712",
+    "fees": "8519716",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 249,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "27f4ae59f67507bcf31324d89d33a9ca146986b8e3eff6cd29a13be77dd34f12",
+    "block": "e4520e98d3f0d7e17c6b0cdd659838d770bfb893fa84cb86b389cb2c1b11dc32",
+    "slot": "108489553",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-11-26T16:01:53.000Z",
+    "paid": "129361563",
+    "fees": "8291209",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 250,
+    "address": {
+      "stakeKeyHash": [
+        [["d997e3f9891d68407e8dd636f28abad3c242c7979781fe0c1f8897e2"]]
+      ],
+      "paymentKeyHash": [
+        "2ae10dbd88c3010cb03a33f271308e8f6cd686b7b1a9a6d4a8f1ad00"
+      ]
+    },
+    "tx_hash": "9d273a776f7c4d039b1de94f3779d86a52ed01072d91986f381bbbd374300d4a",
+    "block": "689de0188c61599789976a4fbd5cb7621008dc38ac69c23a8558e5f97f175418",
+    "slot": "109094879",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-12-03T16:08:27.000Z",
+    "paid": "1109879243",
+    "fees": "57317093",
+    "received": "417897095",
+    "status": "Completed"
+  },
+  {
+    "id": 251,
+    "address": {
+      "stakeKeyHash": [
+        [["d997e3f9891d68407e8dd636f28abad3c242c7979781fe0c1f8897e2"]]
+      ],
+      "paymentKeyHash": [
+        "2ae10dbd88c3010cb03a33f271308e8f6cd686b7b1a9a6d4a8f1ad00"
+      ]
+    },
+    "tx_hash": "d4020a6988ba4e33159467a28188bc5f84ac740d91c65ea75300be5e54230593",
+    "block": "bb1033a69e07e36560b736160733165619576615b6587e2764ace3d0d4186600",
+    "slot": "109096209",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-12-03T16:32:40.000Z",
+    "paid": "527018688",
+    "fees": "28174065",
+    "received": "198404822",
+    "status": "Completed"
+  },
+  {
+    "id": 252,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "c23bd4e57653f9138af11d1899c291a20a32c09e54a6c6cc29087acb1454cd10",
+    "block": "c65c4dcda049c7a941646be7ce1afa1cafa2d55fbe625640ced2e3e49553aebe",
+    "slot": "109181337",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-12-04T16:11:24.000Z",
+    "paid": "134929176",
+    "fees": "8569589",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 253,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "f3ad10993da605c95c3077dcf189b7cda120fa3ac8b3b1eaa3fb59ded7789e35",
+    "block": "e9710a5d587a97481284486779cff58685a752846c2601d90d34574ccc2587b9",
+    "slot": "109262788",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-12-05T14:48:55.000Z",
+    "paid": "131697954",
+    "fees": "8408028",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 254,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "0eb547d2ba6a5c66649ced643e0d84452fc8304c5e33c51ac92adb08f732f434",
+    "block": "a176b3f29196fc71ff676731660f5299b0d801c11c571e2a43d8cd24e9983151",
+    "slot": "109289978",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-12-05T22:22:12.000Z",
+    "paid": "129739656",
+    "fees": "8310113",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 255,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "f0f7f40d4e0bb852bdd47b09cd3020435ff0ab1391d6e423d996d460d33bef15",
+    "block": "18bc5e91479953020b492ada72cf5cb4c669bccbbdcb8050305de8f30f3d674e",
+    "slot": "109370552",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-12-06T20:44:35.000Z",
+    "paid": "129800063",
+    "fees": "8313134",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 256,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "3f83880b0c0cc89dc809a879f5a38c5b8b47f7dd4c5b48f56cdefde740677081",
+    "block": "f13193d2bcd240f2a4cf4ed1e9a4744df9ee50ecd7b6d66ba330e3872104e1c3",
+    "slot": "109371525",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-12-06T21:00:57.000Z",
+    "paid": "129825071",
+    "fees": "8314384",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 257,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "617405814ea4b1403a51d0e7feb308a8014966878cc2687153607c766b4f1cc9",
+    "block": "eb22669a13b3f96de7ba1a04c51256cd67e350cb5e6b764ff04be2eaeaf9f271",
+    "slot": "109607797",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-12-09T14:39:04.000Z",
+    "paid": "134854251",
+    "fees": "8565843",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 258,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "dd77768ca9a21446507bf2749dc79431480e605c2ca6897dfda5dfc8fe74f73c",
+    "block": "78859b45b1614c52dee588072b72712530bc6dc24228ffc9e0715bdadbe09d4b",
+    "slot": "109611517",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-12-09T15:41:06.000Z",
+    "paid": "141885403",
+    "fees": "8917401",
+    "received": "52000000",
+    "status": "Completed"
+  },
+  {
+    "id": 259,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "7b2fc0004ef1a54c8533a9294d4ba1039b87527b5f5ad8980319433b95784154",
+    "block": "bd02223262387ce01f6695df37c87694f34a92bb078e95774eee638fb2424891",
+    "slot": "109613876",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-12-09T16:20:15.000Z",
+    "paid": "137944736",
+    "fees": "8720367",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 260,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "8da13ce05526ff74d5541ae9142ddf0da02b7a9840e582c32daa8be64f039d79",
+    "block": "a5d8a84d4622ed7776267635cbd65a469a879fcdf948c3ab925103af146c99f2",
+    "slot": "109615804",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-12-09T16:51:43.000Z",
+    "paid": "138210804",
+    "fees": "8733671",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 261,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "dbde62512ac4dcbe472c9dc50427a45ab3e5bb8fc55ac13ad470667eb8818c6d",
+    "block": "3a4aba1363d32aa3635477bb2623911dcf9453cba77466c56938c814b60524d0",
+    "slot": "109619448",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-12-09T17:52:43.000Z",
+    "paid": "138586379",
+    "fees": "8752449",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 262,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "02d2703b8360120ece089aa15d56a345b9cb1f7f3bd06fc7795b1659f901e2a2",
+    "block": "d6033c400fa2022cd878ff82eaf7c66fb4228a9293de97d6aa3c0ca692ea0fd1",
+    "slot": "109621319",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-12-09T18:24:04.000Z",
+    "paid": "138820510",
+    "fees": "8764156",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 263,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "64ec085372f0e1cfe0d67dcb3ca0f21d1b905576a85ac2cd66498c206da27d67",
+    "block": "fd2fa7757e7760ed3a9255e1766899776bbdf01639b96701eaae4c384bbdb07b",
+    "slot": "109623183",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-12-09T18:55:34.000Z",
+    "paid": "138595184",
+    "fees": "8752890",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 264,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "7ae309f41d5d0d8e1abe4e71e0e473cf4529d97916766f63c9be17f74ef10ef1",
+    "block": "2ccc214050002db8eb795afc88c72711872f6e84a95d81b7f446bff6aa3c10a4",
+    "slot": "109624212",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-12-09T19:12:23.000Z",
+    "paid": "138586005",
+    "fees": "8752431",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 265,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "1992c806ab596ba19be680696dc58f1e044ce0d85602813b9fdee6254ee23831",
+    "block": "4372171cb271a7b6d8113605594e8d0288004dd0a5bc3b464e1e7e36b203c7ae",
+    "slot": "109624318",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-12-09T19:14:18.000Z",
+    "paid": "138586005",
+    "fees": "8752431",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 266,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "8f279ba950847c54cbada67a54dd8ec64fca358218979b7511c5488d87cc1030",
+    "block": "7c981c202d95b84c99b8bd4f1acf249c373b8c861f8edbf5437904232b297486",
+    "slot": "110204461",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-12-16T12:22:09.000Z",
+    "paid": "125511025",
+    "fees": "8098682",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 267,
+    "address": {
+      "stakeKeyHash": [
+        [["6e575c476c7936044a6d44757e412dd7b9db1c3c10466cea963077cf"]]
+      ],
+      "paymentKeyHash": [
+        "5d34ab11f4a8933157b900729940d91826d94f165f6ad37a2b6a5cfd"
+      ]
+    },
+    "tx_hash": "cd90507d366e1f351ee249055617de02651d27ff95dcceb10d88120161ed56e2",
+    "block": "b0ed29a612935dc6b2052b3caedaea4717658023c318279068d3df90bb4eefdb",
+    "slot": "110368311",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-12-18T09:53:26.000Z",
+    "paid": "2545444424",
+    "fees": "101823130",
+    "received": "1053838552",
+    "status": "Completed"
+  },
+  {
+    "id": 268,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "a8285db53ad3d36e093a460bb7d6e7075c24b7d7141e50c0958dea9b5a388f17",
+    "block": "5007a967b552526cbd81907624da80a7b289df9367ab78b49eb0b0e2ecaadddc",
+    "slot": "110386317",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-12-18T14:53:39.000Z",
+    "paid": "121995284",
+    "fees": "7922895",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 269,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "0a732e987f69b846426d9eace6788ffac574bb7f88867b3f5378c2df640da1b5",
+    "block": "9f7781d53fc5b827aafaaa6b8b7683f2bf0e2c2d2a000f7f27acce221f28f002",
+    "slot": "110387061",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-12-18T15:06:58.000Z",
+    "paid": "121876278",
+    "fees": "7916944",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 270,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "de0665df04c33538ad4c21fb7b7ba0e16811f48e922c360697c006c71e5d7722",
+    "block": "c07d073d013decb87a4616b023d5b46a54b02841aac8ebc798875193e4928386",
+    "slot": "110387434",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-12-18T15:12:13.000Z",
+    "paid": "121876410",
+    "fees": "7916951",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 271,
+    "address": {
+      "stakeKeyHash": [
+        [["d997e3f9891d68407e8dd636f28abad3c242c7979781fe0c1f8897e2"]]
+      ],
+      "paymentKeyHash": [
+        "2ae10dbd88c3010cb03a33f271308e8f6cd686b7b1a9a6d4a8f1ad00"
+      ]
+    },
+    "tx_hash": "01e9222022c937e8bc1677bc34c1fd85ac95b41e54bce2149934339bcb0bf175",
+    "block": "c0519394692fc7fba87f2ba387bbbcb3a64d27ede894cea03ec8a3b351c902d0",
+    "slot": "110389272",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-12-18T15:43:51.000Z",
+    "paid": "526656224",
+    "fees": "28155942",
+    "received": "213849160",
+    "status": "Completed"
+  },
+  {
+    "id": 272,
+    "address": {
+      "stakeKeyHash": [
+        [["d997e3f9891d68407e8dd636f28abad3c242c7979781fe0c1f8897e2"]]
+      ],
+      "paymentKeyHash": [
+        "2ae10dbd88c3010cb03a33f271308e8f6cd686b7b1a9a6d4a8f1ad00"
+      ]
+    },
+    "tx_hash": "33ead1e96a82741e3bc7967bda2b1d663886c0762451d701306a34a0de14430e",
+    "block": "5714037b70bc48b029010d833852a28c601bda3a8e56b78bf8c923bbf484b333",
+    "slot": "110389396",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-12-18T15:44:57.000Z",
+    "paid": "123137315",
+    "fees": "7979996",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 273,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "7cb071464bd4e1cd2d50c1c13a6d0d3e8113937f776b8950be55c108d2a9c27e",
+    "block": "5714037b70bc48b029010d833852a28c601bda3a8e56b78bf8c923bbf484b333",
+    "slot": "110389396",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-12-18T15:44:57.000Z",
+    "paid": "123137315",
+    "fees": "7979996",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 274,
+    "address": {
+      "stakeKeyHash": [
+        [["d997e3f9891d68407e8dd636f28abad3c242c7979781fe0c1f8897e2"]]
+      ],
+      "paymentKeyHash": [
+        "2ae10dbd88c3010cb03a33f271308e8f6cd686b7b1a9a6d4a8f1ad00"
+      ]
+    },
+    "tx_hash": "4f5bb097ad63b420e1a5180d5c6aaaaf8adabc662b0c52040429a183364e58d8",
+    "block": "7eba929391d4a70701a712c967298b55f289cfc1b662905e333e9a8fe23f6423",
+    "slot": "110389912",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-12-18T15:53:26.000Z",
+    "paid": "123137582",
+    "fees": "7980010",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 275,
+    "address": {
+      "stakeKeyHash": [
+        [["d997e3f9891d68407e8dd636f28abad3c242c7979781fe0c1f8897e2"]]
+      ],
+      "paymentKeyHash": [
+        "2ae10dbd88c3010cb03a33f271308e8f6cd686b7b1a9a6d4a8f1ad00"
+      ]
+    },
+    "tx_hash": "4140472ccef2e86207130c2b6d01bee8dd8da45176a67921cb50157e1f4f1629",
+    "block": "2982932fc5c70bb98c89d57f86be536aa604e681ffdaef38cbc3c93039b52e0f",
+    "slot": "110390139",
+    "action": "Burn",
+    "token": "DJED",
+    "orderDate": "2025-12-18T15:58:08.000Z",
+    "paid": "50000000",
+    "fees": "8375685",
+    "received": "132874213",
+    "status": "Completed"
+  },
+  {
+    "id": 276,
+    "address": {
+      "stakeKeyHash": [
+        [["14312e36aa3e89eba48647ea51d5dcd369608e81d35d57b1ba8083ff"]]
+      ],
+      "paymentKeyHash": [
+        "88590837dc43698a99d73c1ebe14374756cde79c0246ae524fc7c3fa"
+      ]
+    },
+    "tx_hash": "8eeaf51e8a394748e2a560d6c6d0d1e77f352601af80dc65ad4dac1fd8fac1d0",
+    "block": "383e357ed975d97dc4c953333f25de97fb5d5f7a157163874d6b8d3ea975ca59",
+    "slot": "110392493",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-12-18T16:36:47.000Z",
+    "paid": "122010412",
+    "fees": "7923651",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 277,
+    "address": {
+      "stakeKeyHash": [
+        [["d348fdb2808782754c16d6af0b521e420bbabd2a0a7ea4e17ce8f6b4"]]
+      ],
+      "paymentKeyHash": [
+        "513cfed102440f61a7bd5e122d39b7e250de09650773dc2108560786"
+      ]
+    },
+    "tx_hash": "f7716a0b24c1a96112dfbb741e5b4796c9ea371a6ac513a171517e34843f8ae4",
+    "block": "e431a009daff6ee46c9d2338c5eae9aed620c66af7cf5e1c9b2788bd1d1ea39d",
+    "slot": "110467947",
+    "action": "Burn",
+    "token": "DJED",
+    "orderDate": "2025-12-19T13:34:15.000Z",
+    "paid": "50000000",
+    "fees": "8499971",
+    "received": "135359948",
+    "status": "Completed"
+  },
+  {
+    "id": 278,
+    "address": {
+      "stakeKeyHash": [
+        [["d348fdb2808782754c16d6af0b521e420bbabd2a0a7ea4e17ce8f6b4"]]
+      ],
+      "paymentKeyHash": [
+        "513cfed102440f61a7bd5e122d39b7e250de09650773dc2108560786"
+      ]
+    },
+    "tx_hash": "e0b5ee511f189ed662ee24369d3b8b3ad4a3fc1ecaca7e55ecb45d2f58698129",
+    "block": "6076fc6abe5d766dcec96f5addcb24992bdd76e16036338d7501d2941770f66a",
+    "slot": "110472082",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-12-19T14:43:42.000Z",
+    "paid": "121215202",
+    "fees": "7883891",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 279,
+    "address": {
+      "stakeKeyHash": [
+        [["d348fdb2808782754c16d6af0b521e420bbabd2a0a7ea4e17ce8f6b4"]]
+      ],
+      "paymentKeyHash": [
+        "513cfed102440f61a7bd5e122d39b7e250de09650773dc2108560786"
+      ]
+    },
+    "tx_hash": "31d8efff4ceade73b0d944d17312c12163204d0c0210cfc13ba72a24a98cc501",
+    "block": "23533a8c75f1675f625b15ea936a817fccf996702730bb2c55e4d547e64f122f",
+    "slot": "110472332",
+    "action": "Burn",
+    "token": "DJED",
+    "orderDate": "2025-12-19T14:47:33.000Z",
+    "paid": "50000000",
+    "fees": "8507987",
+    "received": "135520265",
+    "status": "Completed"
+  },
+  {
+    "id": 280,
+    "address": {
+      "stakeKeyHash": [
+        [["d348fdb2808782754c16d6af0b521e420bbabd2a0a7ea4e17ce8f6b4"]]
+      ],
+      "paymentKeyHash": [
+        "513cfed102440f61a7bd5e122d39b7e250de09650773dc2108560786"
+      ]
+    },
+    "tx_hash": "45407cdd1075e252c4f218e6e2ec3390000175baa1fc6e4b5004366d9d6f6dec",
+    "block": "19e3a9706cbecc0f440159dc37b50b9d879de25edb0a0f149bc1da590c87b9f2",
+    "slot": "110472674",
+    "action": "Burn",
+    "token": "DJED",
+    "orderDate": "2025-12-19T14:53:36.000Z",
+    "paid": "50000000",
+    "fees": "8443464",
+    "received": "134229796",
+    "status": "Completed"
+  },
+  {
+    "id": 281,
+    "address": {
+      "stakeKeyHash": [
+        [["d348fdb2808782754c16d6af0b521e420bbabd2a0a7ea4e17ce8f6b4"]]
+      ],
+      "paymentKeyHash": [
+        "513cfed102440f61a7bd5e122d39b7e250de09650773dc2108560786"
+      ]
+    },
+    "tx_hash": "8f56cfe8c20bf6d57b6b5396fc4ed214c37e69117618ea9b1a5419e4d1da6515",
+    "block": "1159437d620d25982e427d4d805d75670b2011d1de75547e28d24bec89e7884e",
+    "slot": "110474427",
+    "action": "Mint",
+    "token": "SHEN",
+    "orderDate": "2025-12-19T15:23:02.000Z",
+    "paid": "122547350",
+    "fees": "7950498",
+    "received": "50000000",
+    "status": "Completed"
+  },
+  {
+    "id": 282,
+    "address": {
+      "stakeKeyHash": [
+        [["d348fdb2808782754c16d6af0b521e420bbabd2a0a7ea4e17ce8f6b4"]]
+      ],
+      "paymentKeyHash": [
+        "513cfed102440f61a7bd5e122d39b7e250de09650773dc2108560786"
+      ]
+    },
+    "tx_hash": "3a49998503bef26c1b7c2a211687141673a4bc87c6e07d72e82797969e158d2e",
+    "block": "d4f96c11cb98066be868e199b0a2804cb62bfb74023744a7e19248b44b49ac4d",
+    "slot": "110474675",
+    "action": "Burn",
+    "token": "DJED",
+    "orderDate": "2025-12-19T15:26:27.000Z",
+    "paid": "50000000",
+    "fees": "8387975",
+    "received": "133120021",
+    "status": "Completed"
+  },
+  {
+    "id": 283,
+    "address": {
+      "stakeKeyHash": [
+        [["d348fdb2808782754c16d6af0b521e420bbabd2a0a7ea4e17ce8f6b4"]]
+      ],
+      "paymentKeyHash": [
+        "513cfed102440f61a7bd5e122d39b7e250de09650773dc2108560786"
+      ]
+    },
+    "tx_hash": "f755d3578c534f9c7c857c541e054633b3eb3adc3b2bfbaa45dce8a3985551b0",
+    "block": "19da684f6fada86374fcdb551e0ba5a3baf79b1c0c71c974ada9cc91f63c7b7b",
+    "slot": "110475286",
+    "action": "Burn",
+    "token": "DJED",
+    "orderDate": "2025-12-19T15:37:00.000Z",
+    "paid": "50000000",
+    "fees": null,
+    "received": "133701317",
+    "status": "Completed"
+  },
+  {
+    "id": 284,
+    "address": {
+      "stakeKeyHash": [
+        [["d348fdb2808782754c16d6af0b521e420bbabd2a0a7ea4e17ce8f6b4"]]
+      ],
+      "paymentKeyHash": [
+        "513cfed102440f61a7bd5e122d39b7e250de09650773dc2108560786"
+      ]
+    },
+    "tx_hash": "0c32223a5ea4e7b24d21e06121a415aacc7c3a64dff12d05a25f1b489d3cd28d",
+    "block": "bf71b17b6fe891f225fa7a73518d46a9f87c6cae36eee6f8a4a6ed65fc0bad6e",
+    "slot": "110475892",
+    "action": "Burn",
+    "token": "DJED",
+    "orderDate": "2025-12-19T15:46:08.000Z",
+    "paid": "50000000",
+    "fees": "8405083",
+    "received": "133462171",
+    "status": "Completed"
+  }
+]

@@ -2,14 +2,15 @@
 
 import * as React from "react"
 import clsx from "clsx"
+import Link from "next/link"
 import ButtonIcon from "./ButtonIcon"
-import type { OrderApi } from "@/app/orders/page"
+import { type Order } from "@open-djed/api"
 
 interface TransactionDetailsProps {
   row: {
     key: string
     columns: { content: React.ReactNode }[]
-    raw: OrderApi
+    raw: Order
   }
   hasBorder?: boolean
 }
@@ -85,8 +86,14 @@ const TransactionDetails: React.FC<TransactionDetailsProps> = ({
                 <div className="grid grid-cols-5 text-xs">
                   <div className="flex flex-col gap-2 px-16 py-12">
                     <span className="text-tertiary text-xxs">Batched at:</span>
-                    <div className="text-primary truncate">
+                    <div className="text-primary truncate flex items-center gap-8">
                       {raw.received} ₳
+                        <Link
+                          href={`https://preview.cardanoscan.io/transaction/${raw.tx_hash}`}
+                          target="_blank"
+                        >
+                      <ButtonIcon variant="onlyIcon" size='tiny' icon="External"/>
+                      </Link>
                     </div>
                   </div>
 
