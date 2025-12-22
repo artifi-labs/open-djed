@@ -15,9 +15,11 @@ import {
 } from "@/hooks/useOrders"
 import BaseCard from "@/components/new-components/card/BaseCard"
 import { useEffect, useMemo, useState } from "react"
-import { ORDERS_PER_PAGE } from "@/lib/constants"
+import { ORDERS_PER_PAGE, ORDERS_PER_PAGE_MOBILE } from "@/lib/constants"
+import { useViewport } from "@/hooks/useViewport"
 
 export default function OrderPage() {
+  const { isMobile } = useViewport()
   const { wallet } = useWallet()
   const { openWalletSidebar } = useSidebar()
   const [selectedFilter, setSelectedFilter] = useState<StatusFilters>("All")
@@ -26,14 +28,16 @@ export default function OrderPage() {
   const { orders, fetchOrders } = useOrders()
 
   useEffect(() => {
-    fetchOrders(page, ORDERS_PER_PAGE)
+    fetchOrders(page, isMobile ? ORDERS_PER_PAGE_MOBILE : ORDERS_PER_PAGE)
       .then((paginationData) => {
         if (paginationData) {
           setPagination(paginationData)
         }
       })
       .catch((e) => console.error(e))
-  }, [wallet, page])
+  }, [wallet, page, isMobile])
+
+  console.log("Pag: ", pagination)
 
   const filteredOrders = useMemo(() => {
     if (selectedFilter === "All") {

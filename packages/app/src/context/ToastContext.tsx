@@ -1,6 +1,12 @@
 "use client"
 
-import React, { createContext, useContext, useState, useCallback, useEffect } from "react"
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useEffect,
+} from "react"
 import clsx from "clsx"
 import ToastItem from "@/components/new-components/ToastItem"
 import { useViewport } from "@/hooks/useViewport"
@@ -35,7 +41,10 @@ export const useToast = () => {
   return ctx
 }
 
-const ToastContainer: React.FC<ToastContainerProps> = ({ toasts, closeToast }) => {
+const ToastContainer: React.FC<ToastContainerProps> = ({
+  toasts,
+  closeToast,
+}) => {
   const { isMobile } = useViewport()
   const [isMounted, setIsMounted] = useState(false)
 
@@ -70,7 +79,7 @@ const ToastContainer: React.FC<ToastContainerProps> = ({ toasts, closeToast }) =
 export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [toasts, setToasts] = useState<Toast[]>([])  
+  const [toasts, setToasts] = useState<Toast[]>([])
 
   const closeToast = useCallback((id: string) => {
     setToasts((prev) => prev.filter((t) => t.id !== id))

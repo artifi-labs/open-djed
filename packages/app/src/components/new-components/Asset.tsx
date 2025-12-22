@@ -33,9 +33,9 @@ export const Asset: React.FC<AssetProps> = ({
 }) => {
   const textSize = sizeMap[size]
 
-  const [internalCoin, setInternalCoin] = React.useState<IconCoinName | undefined>(
-    coin ?? coins?.[0],
-  )
+  const [internalCoin, setInternalCoin] = React.useState<
+    IconCoinName | undefined
+  >(coin ?? coins?.[0])
 
   const currentCoin = coin ?? internalCoin
 
