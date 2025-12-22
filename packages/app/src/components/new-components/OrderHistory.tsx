@@ -28,6 +28,10 @@ interface RowItem {
 interface OrderHistoryProps {
   data: Order[]
   filters: boolean
+  totalCount?: number
+  currentPage?: number
+  onPageChange?: (page: number) => void
+  serverSidePagination?: boolean
 }
 
 const headers: HeaderItem[] = [
@@ -281,7 +285,14 @@ const ExternalCell = ({
   )
 }
 
-const OrderHistory: React.FC<OrderHistoryProps> = ({ data, filters }) => {
+const OrderHistory: React.FC<OrderHistoryProps> = ({
+  data,
+  filters,
+  totalCount,
+  currentPage,
+  onPageChange,
+  serverSidePagination = false,
+}) => {
   const rows: RowItem[] = useMemo(() => {
     if (!data.length) return []
     return data.map((order) => ({
@@ -356,9 +367,12 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({ data, filters }) => {
   return (
     <Table
       headers={headers}
-      RowComponent={TransactionDetails}
       rows={rows}
-      totalCount={data.length}
+      totalCount={totalCount ?? data.length}
+      currentPage={currentPage}
+      onPageChange={onPageChange}
+      serverSidePagination={serverSidePagination}
+      RowComponent={TransactionDetails}
     />
   )
 }
