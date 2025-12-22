@@ -26,6 +26,7 @@ type NavigationItem = {
 type NavigationItemsProps = {
   items: NavigationItem[]
   className?: string
+  activePath: string
 }
 
 type NetworkBadgeProps = {
@@ -37,9 +38,8 @@ type NetworkBadgeProps = {
 const NavigationItems: React.FC<NavigationItemsProps> = ({
   items,
   className,
+  activePath,
 }) => {
-  const pathname = usePathname()
-
   const baseClassName = clsx(
     "hidden desktop:flex items-center gap-24",
     className,
@@ -48,7 +48,7 @@ const NavigationItems: React.FC<NavigationItemsProps> = ({
   return (
     <nav className={baseClassName} aria-label="Main navigation">
       {items.map((item) => {
-        const isActive = pathname === item.href
+        const isActive = activePath === item.href
 
         return (
           <Link
@@ -134,6 +134,7 @@ export const Navbar = () => {
     if (wallet.address) return `${shortenString(wallet.address)}`
     return "Loading address..."
   }
+
   const walletButtonText = getWalletButtonText()
   const walletIcon = wallet && (
     <Wallet name={wallet.name.toUpperCase() as WalletName} size={22} />
@@ -147,7 +148,7 @@ export const Navbar = () => {
         </div>
 
         {/* Navigation Items */}
-        <NavigationItems items={navLinks} />
+        <NavigationItems items={navLinks} activePath={pathname} />
 
         {/* Right Side */}
         <div className="desktop:gap-12 flex items-center gap-10">
