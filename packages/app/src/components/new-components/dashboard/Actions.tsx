@@ -7,6 +7,7 @@ import Action from "./Action"
 import type { ActionType } from "./actionConfig"
 import type { useMintBurnAction } from "./useMintBurnAction"
 import Snackbar from "../Snackbar"
+import { useReserveDetails } from "@/hooks/useReserveDetails"
 
 export type ActionsProps = {
   action: ReturnType<typeof useMintBurnAction>
@@ -24,7 +25,7 @@ const Actions: React.FC<ActionsProps> = ({ action, onActionChange }) => {
     Burn: "Burn DJED, SHEN or both to withdraw your ADA from the protocol.",
   }
 
-  const { reserveWarning } = action.reserveDetails()
+  const { reserveWarning } = useReserveDetails()
 
   return (
     <BaseCard className="desktop:p-24 p-16">

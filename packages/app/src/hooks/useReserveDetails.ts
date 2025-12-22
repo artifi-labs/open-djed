@@ -1,0 +1,33 @@
+import { ReserveBoundsType } from "@/components/new-components/dashboard/useMintBurnAction"
+import { maxReserveRatio, minReserveRatio } from "@open-djed/math"
+import { useProtocolData } from "./useProtocolData"
+
+export const useReserveDetails = () => {
+  const { isLoading, data } = useProtocolData()
+
+  const maxRatio = maxReserveRatio.toNumber() * 100
+  const minRatio = minReserveRatio.toNumber() * 100
+  const reserveRatio = (data?.protocolData.reserve.ratio ?? 0) * 100
+  const reserveBounds: ReserveBoundsType =
+    reserveRatio >= minRatio && reserveRatio <= maxRatio
+      ? "in-bounds"
+      : reserveRatio <= minRatio
+        ? "below"
+        : "above"
+
+  const reserveWarning: string | null =
+    reserveBounds === "in-bounds"
+      ? null
+      : reserveBounds === "below"
+        ? `DJED minting and SHEN burning is not permitted when the reserve ratio drops below ${minRatio}%.`
+        : `SHEN minting is not permitted when the reserve ratio rises above ${maxRatio}%.`
+
+  return {
+    maxRatio,
+    minRatio,
+    reserveBounds,
+    reserveRatio,
+    reserveWarning,
+    isLoading,
+  }
+}
