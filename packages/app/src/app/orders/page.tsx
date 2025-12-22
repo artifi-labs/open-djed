@@ -7,18 +7,32 @@ import ButtonIcon from "@/components/new-components/ButtonIcon"
 import Button from "@/components/new-components/Button"
 import { useWallet } from "@/context/WalletContext"
 import { useSidebar } from "@/context/SidebarContext"
-import { StatusFilters, statusFiltersArray, useOrders } from "@/hooks/useOrders"
+import {
+  Pagination,
+  StatusFilters,
+  statusFiltersArray,
+  useOrders,
+} from "@/hooks/useOrders"
 import { useEffect, useMemo, useState } from "react"
+import { ORDERS_PER_PAGE } from "@/lib/constants"
 
 export default function OrderPage() {
   const { wallet } = useWallet()
   const { openWalletSidebar } = useSidebar()
   const [selectedFilter, setSelectedFilter] = useState<StatusFilters>("All")
+  const [page, setPage] = useState(1)
+  const [pagination, setPagination] = useState<Pagination>()
   const { orders, fetchOrders } = useOrders()
 
   useEffect(() => {
-    fetchOrders().catch((e) => console.error(e))
-  }, [wallet])
+    fetchOrders(page, ORDERS_PER_PAGE)
+      .then((paginationData) => {
+        if (paginationData) {
+          setPagination(paginationData)
+        }
+      })
+      .catch((e) => console.error(e))
+  }, [wallet, page])
 
   const filteredOrders = useMemo(() => {
     if (selectedFilter === "All") {
@@ -26,6 +40,10 @@ export default function OrderPage() {
     }
     return orders.filter((order) => order.status === selectedFilter)
   }, [orders, selectedFilter])
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage)
+  }
 
   return (
     <div className="desktop:pt-32 desktop:pb-64 mx-auto w-full max-w-280">
@@ -78,6 +96,10 @@ export default function OrderPage() {
           <OrderHistory
             data={filteredOrders}
             filters={selectedFilter !== "All" && orders.length > 0}
+            totalCount={pagination?.totalOrders}
+            currentPage={page}
+            onPageChange={handlePageChange}
+            serverSidePagination={true}
           />
         </>
       )}

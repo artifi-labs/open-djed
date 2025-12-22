@@ -56,7 +56,7 @@ const Tabs: React.FC<TabsProps> = ({
   return (
     <div className={tabAggregatorClasses}>
       {items.map((item, index) => {
-        const { ...itemProps } = item
+        const { key, ...itemProps } = item
         return (
           <Tab
             key={item.key || item.text}

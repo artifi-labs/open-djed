@@ -26,6 +26,10 @@ interface RowItem {
 interface OrderHistoryProps {
   data: Order[]
   filters: boolean
+  totalCount?: number
+  currentPage?: number
+  onPageChange?: (page: number) => void
+  serverSidePagination?: boolean
 }
 
 const headers: HeaderItem[] = [
@@ -294,7 +298,14 @@ const ExternalCell = ({
   )
 }
 
-const OrderHistory: React.FC<OrderHistoryProps> = ({ data, filters }) => {
+const OrderHistory: React.FC<OrderHistoryProps> = ({
+  data,
+  filters,
+  totalCount,
+  currentPage,
+  onPageChange,
+  serverSidePagination = false,
+}) => {
   const rows: RowItem[] = useMemo(() => {
     if (!data.length) return []
 
@@ -360,7 +371,16 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({ data, filters }) => {
     )
   }
 
-  return <Table headers={headers} rows={rows} totalCount={data.length} />
+  return (
+    <Table
+      headers={headers}
+      rows={rows}
+      totalCount={totalCount ?? data.length}
+      currentPage={currentPage}
+      onPageChange={onPageChange}
+      serverSidePagination={serverSidePagination}
+    />
+  )
 }
 
 export default OrderHistory

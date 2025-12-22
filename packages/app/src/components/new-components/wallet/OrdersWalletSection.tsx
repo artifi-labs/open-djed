@@ -4,29 +4,26 @@ import Button from "../Button"
 import Link from "next/link"
 import { useSidebar } from "@/context/SidebarContext"
 import { useOrders } from "@/hooks/useOrders"
-import { useEffect, useMemo } from "react"
+import { useEffect } from "react"
 import { type Wallet } from "@/context/WalletContext"
+import { ORDERS_SIDEBAR } from "@/lib/constants"
 
 export default function OrdersWalletSection({ wallet }: { wallet: Wallet }) {
   const { closeSidebar } = useSidebar()
   const { orders, fetchOrders } = useOrders()
 
   useEffect(() => {
-    fetchOrders().catch((e) => console.error(e))
+    fetchOrders(1, ORDERS_SIDEBAR).catch((e) => console.error(e))
   }, [wallet])
-
-  const lastFiveOrders = useMemo(() => {
-    return orders.slice(0, 4)
-  }, [orders])
 
   return (
     <>
       <div className="flex h-full w-full flex-col gap-6 overflow-y-auto px-12 py-8">
         <h1 className="text-sm font-medium">Orders</h1>
         <div className="flex h-full w-full flex-col gap-12">
-          {lastFiveOrders.length > 0 ? (
+          {orders.length > 0 ? (
             <>
-              {lastFiveOrders.map((order, index) => {
+              {orders.map((order, index) => {
                 return (
                   <WalletOrder
                     order={order}

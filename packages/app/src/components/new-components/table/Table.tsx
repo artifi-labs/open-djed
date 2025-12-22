@@ -24,6 +24,9 @@ interface TableProps {
   totalCount: number
   rowsPerPage?: number
   paginatedTable?: boolean
+  currentPage?: number
+  onPageChange?: (page: number) => void
+  serverSidePagination?: boolean
 }
 
 export function Table({
@@ -32,20 +35,32 @@ export function Table({
   totalCount,
   rowsPerPage = 10,
   paginatedTable = true,
+  currentPage: externalCurrentPage,
+  onPageChange,
+  serverSidePagination = false,
 }: TableProps) {
-  const [currentPage, setCurrentPage] = useState(1)
-  const lastPage = totalCount
-    ? Math.ceil(totalCount / rowsPerPage)
-    : Math.ceil(rows.length / rowsPerPage)
+  const [internalCurrentPage, setInternalCurrentPage] = useState(1)
+
+  // use external pagination if provided, otherwise use internal
+  const currentPage = serverSidePagination
+    ? (externalCurrentPage ?? 1)
+    : internalCurrentPage
+  const setCurrentPage = serverSidePagination
+    ? onPageChange
+    : setInternalCurrentPage
+
+  const lastPage = Math.ceil(totalCount / rowsPerPage)
 
   const currentRows = useMemo(() => {
+    if (serverSidePagination) {
+      return rows
+    }
     const startIndex = (currentPage - 1) * rowsPerPage
     const endIndex = startIndex + rowsPerPage
-
     return rows.slice(startIndex, endIndex)
-  }, [rows, currentPage, rowsPerPage])
+  }, [rows, currentPage, rowsPerPage, serverSidePagination])
 
-  if (currentPage > lastPage && lastPage > 0) {
+  if (currentPage > lastPage && lastPage > 0 && setCurrentPage) {
     setCurrentPage(lastPage)
   }
 
@@ -74,7 +89,6 @@ export function Table({
                 ))}
               </tr>
             </thead>
-
             {/* Body */}
             <tbody>
               {rowsToRender.map((rowData, index) => (
@@ -88,14 +102,13 @@ export function Table({
           </table>
         </div>
       </div>
-
       {/* Pagination */}
       {paginatedTable && (
         <div className="border-border-primary bg-background-primary w-full rounded-b-lg border px-24 py-12">
           <Pagination
             currentPage={currentPage}
             lastPage={lastPage}
-            setCurrentPage={setCurrentPage}
+            setCurrentPage={setCurrentPage ?? setInternalCurrentPage}
           />
         </div>
       )}
