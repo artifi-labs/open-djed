@@ -70,7 +70,7 @@ function Table<T>({
   return (
     <div className="w-full">
       {/* Table */}
-      <div className="bg-background-primary border-border-primary max-h-175 w-full overflow-auto rounded-t-lg border border-b-0 px-2">
+      <div className="bg-background-primary border-border-primary max-h-fit w-full overflow-auto rounded-t-lg border border-b-0 px-2">
         <div className="inline-block min-w-full align-middle">
           <table className="w-full">
             {/* Header */}

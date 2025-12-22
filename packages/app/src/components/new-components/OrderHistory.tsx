@@ -18,6 +18,10 @@ import { type OrderStatus, useOrders } from "@/hooks/useOrders"
 import { type Order } from "@open-djed/api"
 import { useEnv } from "@/context/EnvContext"
 import BaseCard from "./card/BaseCard"
+import { useViewport } from "@/hooks/useViewport"
+import Asset from "./Asset"
+import Chip from "./Chip"
+import { ORDERS_PER_PAGE, ORDERS_PER_PAGE_MOBILE } from "@/lib/constants"
 
 interface RowItem {
   columns: { content: React.ReactNode }[]
@@ -34,7 +38,7 @@ interface OrderHistoryProps {
   serverSidePagination?: boolean
 }
 
-const headers: HeaderItem[] = [
+const headersDesktop: HeaderItem[] = [
   { column: "Token", columnKey: "token", size: "medium", sortable: true },
   { column: "Type", columnKey: "type", size: "medium", sortable: true },
   { column: "Date", columnKey: "date", size: "medium", sortable: true },
@@ -46,6 +50,10 @@ const headers: HeaderItem[] = [
     columnKey: "actions",
     size: "small",
   },
+]
+
+const headersMobile: HeaderItem[] = [
+  { column: "Orders", columnKey: "orders", size: "auto", sortable: false },
 ]
 
 export const STATUS_CONFIG: Record<
@@ -281,6 +289,110 @@ const ExternalCell = ({
   )
 }
 
+const MobileCell = ({ order }: { order: Order }) => {
+  const { network } = useEnv()
+  const { handleCancelOrder, formatDate } = useOrders()
+
+  const [isDialogOpen, setIsDialogOpen] = React.useState(false)
+
+  const showCancel = order.status === "Created"
+
+  const showAdaPaid = shouldShowAda(order.token, order.action, "paid")
+  const showAdaReceived = shouldShowAda(order.token, order.action, "received")
+
+  return (
+    <>
+      <div className="flex w-full flex-col gap-16 p-8">
+        <div className="flex flex-row items-center justify-between">
+          <Asset coin={order.token} size="small" checked={false} />
+        </div>
+        <div className="flex w-full flex-col gap-8">
+          <div className="flex w-full flex-row items-center justify-between">
+            <span className="text-tertiary text-xxs">Type</span>
+            <span className="text-xs">{order.action}</span>
+          </div>
+          <div className="flex w-full flex-row items-center justify-between">
+            <span className="text-tertiary text-xxs">Date</span>
+            <span className="text-xs">
+              {formatDate(BigInt(new Date(order.orderDate).getTime()))}
+            </span>
+          </div>
+          <div className="flex w-full flex-row items-center justify-between">
+            <span className="text-tertiary text-xxs">Paid</span>
+            <div className="flex items-center gap-2">
+              <span>{formatAda(order.paid)}</span>
+              <span>{showAdaPaid ? "ADA" : order.token}</span>
+            </div>
+          </div>
+          <div className="flex w-full flex-row items-center justify-between">
+            <span className="text-tertiary text-xxs">Received</span>
+            <div className="flex items-center gap-2">
+              <span>{formatAda(order.received)}</span>
+              <span>{showAdaReceived ? "ADA" : order.token}</span>
+            </div>
+          </div>
+          <div className="flex w-full flex-row items-center justify-between">
+            <span className="text-tertiary text-xxs">Status</span>
+            <Chip text={order.status} size="small" />
+          </div>
+          {showCancel ? (
+            <div className="grid grid-cols-2 gap-8">
+              <Button
+                text="Cancel"
+                variant="secondary"
+                size="small"
+                onClick={() => setIsDialogOpen(true)}
+              />
+              <Link
+                href={`https://${network.toLowerCase()}.cardanoscan.io/transaction/${order.tx_hash}`}
+                target="_blank"
+              >
+                <Button
+                  text="View Transaction"
+                  variant="secondary"
+                  size="small"
+                  className="w-full"
+                />
+              </Link>
+            </div>
+          ) : (
+            <Link
+              href={`https://${network.toLowerCase()}.cardanoscan.io/transaction/${order.tx_hash}`}
+              target="_blank"
+            >
+              <Button
+                text="View Transaction"
+                variant="secondary"
+                size="small"
+                className="w-full"
+              />
+            </Link>
+          )}
+        </div>
+      </div>
+      {isDialogOpen && (
+        <Dialog
+          title="Confirm Cancellation"
+          description="You’re about to cancel your order. Once canceled, the order will be removed and no longer processed."
+          type="Info"
+          hasActions
+          hasIcon
+          hasPrimaryButton
+          primaryButtonVariant="destructive"
+          primaryButtonLabel="Cancel Order"
+          hasSecondaryButton
+          secondaryButtonLabel="Dismiss"
+          hasSkrim={true}
+          onSecondaryButtonClick={() => setIsDialogOpen(false)}
+          onPrimaryButtonClick={() =>
+            handleCancelOrder(order.tx_hash, order.out_index)
+          }
+        />
+      )}
+    </>
+  )
+}
+
 const OrderHistory: React.FC<OrderHistoryProps> = ({
   data,
   filters,
@@ -289,8 +401,9 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({
   onPageChange,
   serverSidePagination = false,
 }) => {
-  const rows: RowItem[] = useMemo(() => {
-    if (!data.length) return []
+  const { isMobile } = useViewport()
+  const rowsDesktop: RowItem[] = useMemo(() => {
+    if (!data.length || isMobile) return []
     return data.map((order) => ({
       key: order.tx_hash,
       raw: order,
@@ -330,7 +443,16 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({
         },
       ],
     }))
-  }, [data])
+  }, [data, isMobile])
+
+  const rowsMobile: RowItem[] = useMemo(() => {
+    if (!data.length || !isMobile) return []
+    return data.map((order) => ({
+      key: order.tx_hash,
+      raw: order,
+      columns: [{ content: <MobileCell order={order} /> }],
+    }))
+  }, [data, isMobile])
 
   if (!data.length) {
     return (
@@ -362,8 +484,9 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({
 
   return (
     <Table
-      headers={headers}
-      rows={rows}
+      headers={isMobile ? headersMobile : headersDesktop}
+      rows={isMobile ? rowsMobile : rowsDesktop}
+      rowsPerPage={isMobile ? ORDERS_PER_PAGE_MOBILE : ORDERS_PER_PAGE}
       totalCount={totalCount ?? data.length}
       currentPage={currentPage}
       onPageChange={onPageChange}
