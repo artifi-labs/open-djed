@@ -2,7 +2,6 @@ import React, { useState, useMemo } from "react"
 import type { ComponentType } from "react"
 import TableHeader, { type TableHeaderSize } from "./TableHeader"
 import Pagination from "../Pagination"
-import TableRow from "./TableRow"
 
 export interface HeaderItem {
   column: React.ReactNode

@@ -1,6 +1,5 @@
 "use client"
 
-import { useTranslation } from "react-i18next"
 import Link from "next/link"
 import Image from "next/image"
 import Icon, { type IconName } from "./new-components/Icon"
@@ -70,7 +69,6 @@ const SocialIcons: React.FC<SocialIconProps> = ({ items }) => {
 }
 
 const Footer = () => {
-  const { t } = useTranslation()
   const { isMobile, isDesktop } = useViewport()
 
   const footerItems: FooterItem[] = [

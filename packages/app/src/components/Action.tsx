@@ -325,7 +325,9 @@ export const Action = ({
 
         <Button
           className="w-full"
-          onClick={handleActionClick}
+          onClick={() => {
+            handleActionClick().catch(console.error)
+          }}
           disabled={
             wallet === null ||
             amount <= 0 ||

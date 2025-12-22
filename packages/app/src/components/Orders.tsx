@@ -172,9 +172,12 @@ export default function Orders({
                     <p className="text-lg font-semibold">Order #{index + 1}</p>
                     <Button
                       className="bg-red-400"
-                      onClick={() =>
-                        handleCancelOrder(order.txHash, order.outputIndex)
-                      }
+                      onClick={() => {
+                        handleCancelOrder(
+                          order.txHash,
+                          order.outputIndex,
+                        ).catch(console.error)
+                      }}
                     >
                       Cancel
                     </Button>

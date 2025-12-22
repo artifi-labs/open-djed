@@ -7,12 +7,8 @@ import Chip from "@/components/new-components/Chip"
 // import ButtonIcon from "@/components/new-components/ButtonIcon"
 import { useWallet } from "@/context/WalletContext"
 import { useSidebar } from "@/context/SidebarContext"
-import {
-  Pagination,
-  StatusFilters,
-  statusFiltersArray,
-  useOrders,
-} from "@/hooks/useOrders"
+import type { Pagination, StatusFilters } from "@/hooks/useOrders"
+import { statusFiltersArray, useOrders } from "@/hooks/useOrders"
 import BaseCard from "@/components/new-components/card/BaseCard"
 import { useEffect, useMemo, useState } from "react"
 import { ORDERS_PER_PAGE } from "@/lib/constants"

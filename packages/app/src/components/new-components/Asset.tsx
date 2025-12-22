@@ -2,7 +2,7 @@ import clsx from "clsx"
 import React from "react"
 import Coin, { type IconCoinName } from "./Coin"
 import ButtonIcon from "./ButtonIcon"
-import { IconName } from "./Icon"
+import { type IconName } from "./Icon"
 
 type Size = "small" | "medium" | "large"
 

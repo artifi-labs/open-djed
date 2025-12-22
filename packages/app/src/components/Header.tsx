@@ -358,7 +358,7 @@ export const Header = () => {
                   className="hover:bg-primary flex flex-row items-center justify-between gap-2 rounded-lg p-4 pr-6 hover:text-white"
                   key={id}
                   onClick={() => {
-                    connect(id)
+                    connect(id).catch(() => {})
                   }}
                 >
                   <div className="flex flex-row items-center justify-start">

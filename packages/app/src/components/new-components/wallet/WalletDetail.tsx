@@ -59,7 +59,9 @@ const WalletDetail: React.FC<WalletDetailProps> = ({
   const totalBalance = adaUSD + djedUSD + shenUSD
 
   const handleCopy = () => {
-    copy(address)
+    copy(address).catch((err) => {
+      console.error("Failed to copy address:", err)
+    })
   }
 
   return (
