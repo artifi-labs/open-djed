@@ -1,7 +1,7 @@
 import { useApiClient } from "@/context/ApiClientContext"
 import { useToast } from "@/context/ToastContext"
 import { useWallet } from "@/context/WalletContext"
-import { useState } from "react"
+import { useState, useCallback } from "react"
 import JSONBig from "json-bigint"
 import { getWalletData } from "@/lib/getWalletData"
 import { signAndSubmitTx } from "@/lib/signAndSubmitTx"
@@ -91,7 +91,7 @@ export const useOrders = () => {
   const { showToast } = useToast()
   const [orders, setOrders] = useState<Order[]>([])
 
-  const fetchOrders = async () => {
+  const fetchOrders = useCallback(async () => {
     if (!wallet) return
     const usedAddress = await wallet.getUsedAddresses()
     if (!usedAddress) throw new Error("Failed to get used address")
@@ -109,7 +109,7 @@ export const useOrders = () => {
     } catch (err) {
       console.error("Error fetching orders:", err)
     }
-  }
+  }, [wallet, apiClient])
 
   const handleCancelOrder = async (orderTx: string, outIndex: number) => {
     const { Transaction, TransactionWitnessSet } =

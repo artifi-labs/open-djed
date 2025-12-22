@@ -13,7 +13,7 @@ export default function OrdersWalletSection({ wallet }: { wallet: Wallet }) {
 
   useEffect(() => {
     fetchOrders().catch((e) => console.error(e))
-  }, [wallet])
+  }, [fetchOrders, wallet])
 
   const lastFiveOrders = useMemo(() => {
     return orders.slice(0, 4)
