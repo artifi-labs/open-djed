@@ -1,5 +1,5 @@
 import type { OrderDatum } from '@open-djed/data'
-import type { Actions, Token } from '../generated/prisma/enums'
+import type { Actions, Token } from '../../generated/prisma/enums'
 
 export type Transaction = {
   tx_hash: string

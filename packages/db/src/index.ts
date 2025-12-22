@@ -1,1 +1,2 @@
-export * from './orders'
+export * from './client/orders'
+export * from './sync/types'

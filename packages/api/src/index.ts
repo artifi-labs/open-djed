@@ -43,8 +43,7 @@ import {
   ValidationError,
 } from './errors'
 import JSONbig from 'json-bigint'
-import { getOrdersByAddressKeys } from '@open-djed/db'
-import type { AddressKey } from '@open-djed/db/src/types'
+import { getOrdersByAddressKeys, type AddressKey } from '@open-djed/db'
 
 //NOTE: We only need this cache for transactions, not for other requests. Using this for `protocol-data` sligltly increases the response time.
 const requestCache = new TTLCache<string, { value: Response; expiry: number }>({ ttl: 10_000 })
@@ -479,7 +478,7 @@ const app = new Hono()
       }
     },
   )
-  .post(
+  .get(
     '/historical-orders',
     cacheMiddleware,
     describeRoute({

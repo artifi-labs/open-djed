@@ -1,9 +1,12 @@
-import type { Actions, Token } from '../generated/prisma/enums'
-import { env } from '../lib/env'
+import type { Actions, Token } from '../../generated/prisma/enums'
+import { env } from '../../lib/env'
 import { Blockfrost } from '@open-djed/blockfrost'
 import { registryByNetwork } from '@open-djed/registry'
 import { credentialToAddress } from '@lucid-evolution/lucid'
 import type { OrderUTxOWithDatumAndBlock, UTxO } from './types'
+
+import fs from 'fs'
+import path from 'path'
 
 const blockfrostUrl = env.BLOCKFROST_URL
 const blockfrostId = env.BLOCKFROST_PROJECT_ID
@@ -20,7 +23,7 @@ export function blockfrostFetch(path: string, init?: RequestInit) {
     ...init,
     headers: {
       project_id: blockfrostId,
-      ...(init?.headers ?? {}),
+      ...init?.headers,
     },
   })
 }
@@ -36,9 +39,10 @@ export function blockfrostFetch(path: string, init?: RequestInit) {
 export async function fetchWithRetry<T = unknown>(
   url: string,
   options: RequestInit,
-  retries: number = 3,
-  delayMs: number = 1000,
+  retries: number = 5,
+  delayMs: number = 10_000,
 ): Promise<T> {
+  let lastError: Error | undefined
   for (let i = 0; i < retries; i++) {
     try {
       const response = await fetch(url, options)
@@ -46,8 +50,9 @@ export async function fetchWithRetry<T = unknown>(
       if (!response.ok) {
         if (response.status === 429) {
           // rate limited
-          console.log(`Rate limited, waiting ${delayMs * 2}ms...`)
-          await sleep(delayMs * 2)
+          const delay = delayMs * 2 ** i
+          console.log(`Rate limited, waiting ${delay}ms...`)
+          await sleep(delay)
           continue
         }
         console.log('URL: ', url)
@@ -61,12 +66,14 @@ export async function fetchWithRetry<T = unknown>(
 
       return JSON.parse(text) as T
     } catch (error) {
-      if (i === retries - 1) throw error
-      console.log(`Attempt ${i + 1} failed, retrying in ${delayMs}ms...`, error)
-      await sleep(delayMs)
+      lastError = error as Error
+      if (i === retries - 1) break
+      const delay = delayMs * 2 ** i
+      console.log(`Attempt ${i + 1} failed, retrying in ${delay}ms...`, error)
+      await sleep(delay)
     }
   }
-  throw new Error('All retry attempts failed')
+  throw new Error(`All retry attempts failed. Last error: ${lastError?.message}`)
 }
 
 /**
@@ -83,7 +90,7 @@ export async function processBatch<T, R>(
   items: T[],
   processor: (item: T, index: number) => Promise<R>,
   batchSize: number = 10,
-  delayMs: number = 0,
+  delayMs: number = 10_000,
 ): Promise<R[]> {
   const results: R[] = []
 
@@ -185,4 +192,24 @@ export function constructAddress(
     { type: 'Key', hash: paymentKeyHash },
     { type: 'Key', hash: stakeKeyHash },
   )
+}
+
+const lockDir = path.join(process.cwd(), '.cron-lock')
+const lockFile = path.join(lockDir, 'lock')
+
+export const isLocked = () => {
+  return fs.existsSync(lockFile)
+}
+
+export const lock = () => {
+  if (!fs.existsSync(lockDir)) {
+    fs.mkdirSync(lockDir)
+  }
+  fs.writeFileSync(lockFile, '')
+}
+
+export const unlock = () => {
+  if (fs.existsSync(lockFile)) {
+    fs.unlinkSync(lockFile)
+  }
 }
