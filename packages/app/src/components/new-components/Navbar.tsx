@@ -3,6 +3,7 @@
 import Link from "next/link"
 import React, { useState } from "react"
 import { useTranslation } from "react-i18next"
+import { usePathname } from "next/navigation"
 import Button from "./Button"
 import ButtonIcon from "./ButtonIcon"
 import Image from "next/image"
@@ -37,6 +38,8 @@ const NavigationItems: React.FC<NavigationItemsProps> = ({
   items,
   className,
 }) => {
+  const pathname = usePathname()
+
   const baseClassName = clsx(
     "hidden desktop:flex items-center gap-24",
     className,
@@ -44,15 +47,30 @@ const NavigationItems: React.FC<NavigationItemsProps> = ({
 
   return (
     <nav className={baseClassName} aria-label="Main navigation">
-      {items.map((item) => (
-        <Link
-          key={item.href}
-          href={item.href}
-          className="desktop:text-md p-6 font-medium"
-        >
-          {item.label}
-        </Link>
-      ))}
+      {items.map((item) => {
+        const isActive = pathname === item.href
+
+        return (
+          <Link
+            key={item.href}
+            href={item.href}
+            className={clsx(
+              "desktop:text-md relative p-6 font-medium transition-all",
+              isActive && "border-b-2",
+            )}
+            style={
+              isActive
+                ? {
+                    borderImageSource: "var(--color-gradient-angular-2)",
+                    borderImageSlice: 1,
+                  }
+                : {}
+            }
+          >
+            {item.label}
+          </Link>
+        )
+      })}
     </nav>
   )
 }
@@ -95,6 +113,7 @@ export const Navbar = () => {
   const { wallet } = useWallet()
   const { openWalletSidebar, openSettingsSidebar } = useSidebar()
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false)
+  const pathname = usePathname()
 
   const handleNetworkSwitch = () => {
     const targetNetwork = network === "Mainnet" ? "Preprod" : "Mainnet"
@@ -178,16 +197,31 @@ export const Navbar = () => {
           >
             <div className="flex h-full flex-col justify-between">
               <nav className="flex flex-col gap-6" aria-label="Main navigation">
-                {navLinks.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className="desktop:text-md p-6 font-medium"
-                    onClick={() => setIsMobileSidebarOpen(false)}
-                  >
-                    {item.label}
-                  </Link>
-                ))}
+                {navLinks.map((item) => {
+                  const isActive = pathname === item.href
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className={clsx(
+                        "desktop:text-md w-fit p-6 font-medium transition-all",
+                        isActive && "border-b-2",
+                      )}
+                      style={
+                        isActive
+                          ? {
+                              borderImageSource:
+                                "var(--color-gradient-angular-2)",
+                              borderImageSlice: 1,
+                            }
+                          : {}
+                      }
+                      onClick={() => setIsMobileSidebarOpen(false)}
+                    >
+                      {item.label}
+                    </Link>
+                  )
+                })}
               </nav>
               <div className="flex flex-col gap-24">
                 <Button
