@@ -48,13 +48,13 @@ export const STATUS_CONFIG: Record<
   OrderStatus,
   { type: "success" | "warning" | "error" | "surface"; text: string }
 > = {
-  Processing: { type: "surface", text: "Processing" },
+  // Processing: { type: "surface", text: "Processing" },
   Created: { type: "surface", text: "Created" },
   Completed: { type: "success", text: "Completed" },
-  Cancelling: { type: "warning", text: "Cancelling" },
-  Canceled: { type: "surface", text: "Canceled" },
-  Failed: { type: "error", text: "Failed" },
-  Expired: { type: "error", text: "Expired" },
+  // Cancelling: { type: "warning", text: "Cancelling" },
+  // Canceled: { type: "surface", text: "Canceled" },
+  // Failed: { type: "error", text: "Failed" },
+  // Expired: { type: "error", text: "Expired" },
 }
 
 const formatAda = (value?: bigint | null) => {
@@ -314,7 +314,11 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({ data, filters }) => {
         { content: <StatusCell status={order.status} /> },
         {
           content: (
-            <ExternalCell txHash={order.tx_hash} status={order.status} outIndex={order.out_index} />
+            <ExternalCell
+              txHash={order.tx_hash}
+              status={order.status}
+              outIndex={order.out_index}
+            />
           ),
         },
       ],
@@ -327,7 +331,7 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({ data, filters }) => {
         border="border-gradient border-color-primary"
         className="justify-center p-16"
       >
-        <div className="flex flex-col text-center items-center justify-center gap-24">
+        <div className="flex flex-col items-center justify-center gap-24 text-center">
           {/* TITLE & DESCRIPTION */}
           <div className="flex flex-col gap-6">
             <p className="text-lg font-semibold">

@@ -56,7 +56,6 @@ function Table<T>({
       <div className="bg-background-primary border-border-primary max-h-175 w-full overflow-auto rounded-t-lg border border-b-0 px-2">
         <div className="inline-block min-w-full align-middle">
           <table className="w-full">
-            
             {/* Header */}
             <thead className="bg-background-primary sticky top-0 z-10">
               <tr>
