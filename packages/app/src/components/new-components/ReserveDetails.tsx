@@ -22,38 +22,38 @@ const ReserveDetails = () => {
       </BaseCard>
       <BaseCard>
         <div className="flex w-full flex-col gap-24">
-          <div className="flex w-full flex-row items-center justify-between">
+          <div className="desktop:flex-row flex w-full flex-col justify-between">
             <div className="inline-flex items-center gap-12">
-              <span className="text-secondary text-xs">Current Ratio:</span>
-              <span className="text-sm font-medium">
+              <span className="text-secondary flex-1 text-xs">
+                Current Ratio
+              </span>
+              <span className="text-xs">
                 {formatNumber(reserveRatio, { maximumFractionDigits: 2 })}%
               </span>
             </div>
             <div className="inline-flex items-center gap-12">
-              <span className="text-secondary text-xs">Min Ratio:</span>
-              <span className="text-sm font-medium">
+              <span className="text-secondary flex-1 text-xs">Min Ratio</span>
+              <span className="text-xs">
                 {formatNumber(minRatio, { maximumFractionDigits: 2 })}%
               </span>
             </div>
             <div className="inline-flex items-center gap-12">
-              <span className="text-secondary text-xs">Max Ratio:</span>
-              <span className="text-sm font-medium">
+              <span className="text-secondary flex-1 text-xs">Max Ratio</span>
+              <span className="text-xs">
                 {formatNumber(maxRatio, { maximumFractionDigits: 2 })}%
               </span>
             </div>
           </div>
           <Divider />
-          <div className="inline-flex w-full items-center justify-between">
-            <span className="text-secondary text-xs">Reserve Value:</span>
-            <div className="inline-flex items-center gap-6">
+          <div className="flex w-full flex-row">
+            <span className="text-secondary flex-1 text-xs">Reserve Value</span>
+            <div className="flex flex-col items-end gap-6">
+              <span className="text-xs">{formatValue(reserveValueADA)}</span>
               <span className="text-secondary text-xs">
                 $
                 {formatNumber(reserveValueUSD, {
                   maximumFractionDigits: 2,
                 })}
-              </span>
-              <span className="text-sm font-medium">
-                {formatValue(reserveValueADA)}
               </span>
             </div>
           </div>

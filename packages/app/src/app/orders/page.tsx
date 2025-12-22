@@ -2,13 +2,10 @@
 import * as React from "react"
 import OrderHistory from "@/components/new-components/OrderHistory"
 import Button from "@/components/new-components/Button"
-import SearchInput from "@/components/new-components/input-fields/SearchInput"
-import Chip from "@/components/new-components/Chip"
-// import ButtonIcon from "@/components/new-components/ButtonIcon"
 import { useWallet } from "@/context/WalletContext"
 import { useSidebar } from "@/context/SidebarContext"
 import type { Pagination, StatusFilters } from "@/hooks/useOrders"
-import { statusFiltersArray, useOrders } from "@/hooks/useOrders"
+import { useOrders } from "@/hooks/useOrders"
 import BaseCard from "@/components/new-components/card/BaseCard"
 import { useEffect, useMemo, useState } from "react"
 import { ORDERS_PER_PAGE, ORDERS_PER_PAGE_MOBILE } from "@/lib/constants"
@@ -18,7 +15,7 @@ export default function OrderPage() {
   const { isMobile } = useViewport()
   const { wallet } = useWallet()
   const { openWalletSidebar } = useSidebar()
-  const [selectedFilter, setSelectedFilter] = useState<StatusFilters>("All")
+  const [selectedFilter] = useState<StatusFilters>("All")
   const [page, setPage] = useState(1)
   const [pagination, setPagination] = useState<Pagination>()
   const { orders, fetchOrders } = useOrders()
