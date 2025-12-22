@@ -1,6 +1,6 @@
 "use client"
 
-import React, { createContext, useContext, useState, useCallback } from "react"
+import React, { createContext, useContext, useState, useCallback, useEffect } from "react"
 import clsx from "clsx"
 import ToastItem from "@/components/new-components/ToastItem"
 import { useViewport } from "@/hooks/useViewport"
@@ -14,6 +14,11 @@ type Toast = {
   duration?: number
   action?: () => void
   actionText?: string
+}
+
+type ToastContainerProps = {
+  toasts: Toast[]
+  closeToast: (id: string) => void
 }
 
 type ToastContextType = {
@@ -30,11 +35,42 @@ export const useToast = () => {
   return ctx
 }
 
+const ToastContainer: React.FC<ToastContainerProps> = ({ toasts, closeToast }) => {
+  const { isMobile } = useViewport()
+  const [isMounted, setIsMounted] = useState(false)
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
+  if (!isMounted) return null
+
+  return (
+    <div
+      className={clsx(
+        "fixed right-12 z-9999 flex flex-col items-end space-y-3",
+        isMobile ? "top-12" : "bottom-12",
+      )}
+    >
+      {toasts.map((toast) => (
+        <ToastItem
+          text={toast.message}
+          key={toast.id}
+          type={toast.type}
+          closeIcon={true}
+          leadingIcon={toast.type === "success" ? "Checkmark" : "Information"}
+          action={false}
+          onCloseClick={() => closeToast(toast.id)}
+        />
+      ))}
+    </div>
+  )
+}
+
 export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [toasts, setToasts] = useState<Toast[]>([])
-  const { isMobile } = useViewport()
+  const [toasts, setToasts] = useState<Toast[]>([])  
 
   const closeToast = useCallback((id: string) => {
     setToasts((prev) => prev.filter((t) => t.id !== id))
@@ -61,25 +97,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
   return (
     <ToastContext.Provider value={{ toasts, showToast, closeToast }}>
       {children}
-
-      <div
-        className={clsx(
-          "fixed right-12 z-9999 flex flex-col items-end space-y-3",
-          isMobile ? "top-12" : "bottom-12",
-        )}
-      >
-        {toasts.map((toast) => (
-          <ToastItem
-            text={toast.message}
-            key={toast.id}
-            type={toast.type}
-            closeIcon={true}
-            leadingIcon={toast.type === "success" ? "Checkmark" : "Information"}
-            action={false}
-            onCloseClick={() => closeToast(toast.id)}
-          />
-        ))}
-      </div>
+      <ToastContainer toasts={toasts} closeToast={closeToast} />
     </ToastContext.Provider>
   )
 }
