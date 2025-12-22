@@ -303,8 +303,8 @@
   );
   --color-gradient-angular-2: linear-gradient(
     281deg,
-    var(--color-supportive-2-500, #0287d0) 16.72%,
-    var(--color-supportive-1-500, #2cc399) 91.17%
+    var(--color-supportive-1-500, #2cc399) 1%,
+    var(--color-supportive-2-500, #0287d0) 118.71%
   );
 
   --color-gradient-badge: var(
