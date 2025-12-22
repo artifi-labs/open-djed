@@ -1,33 +1,32 @@
 import React from "react"
-import type { ReactNode } from "react"
 import clsx from "clsx"
 
 type ColumnItem = {
-  content: ReactNode
+  content: React.ReactNode
+}
+
+export type RowItem = {
+  columns: ColumnItem[]
 }
 
 interface TableRowProps {
-  columns: ColumnItem[]
+  row: RowItem
   hasBorder?: boolean
 }
 
-const TableRow: React.FC<TableRowProps> = ({ columns, hasBorder }) => {
+const TableRow: React.FC<TableRowProps> = ({ row, hasBorder }) => {
   return (
     <tr
       className={clsx(
-        `hover:bg-background-primary-hover text-primary text-xs`,
-        {
-          "border-border-primary mx-2 border-b": hasBorder,
-        },
+        "hover:bg-background-primary-hover text-primary text-xs",
+        { "border-border-primary mx-2 border-b": hasBorder },
       )}
     >
-      {columns?.map((column, index) => {
-        return (
-          <td key={index} className={clsx("p-4")}>
-            {column.content}
-          </td>
-        )
-      })}
+      {row.columns.map((column, index) => (
+        <td key={index} className="p-4">
+          {column.content}
+        </td>
+      ))}
     </tr>
   )
 }
