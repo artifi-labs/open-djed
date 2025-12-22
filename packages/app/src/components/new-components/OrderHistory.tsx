@@ -38,11 +38,8 @@ const headers: HeaderItem[] = [
   { column: "Status", columnKey: "status", size: "medium" },
   {
     column: undefined,
-    columnKey: "export",
+    columnKey: "actions",
     size: "small",
-    action: (
-      <Button text="Export" variant="text" size="small" trailingIcon="Export" />
-    ),
   },
 ]
 
