@@ -22,7 +22,10 @@ export type TransactionInputProps = {
   asset?: AssetProps
   buttonIcon?: boolean
   trailingIcon?: IconName
-  amount?: string
+  availableAmount?: string
+  hasAvailableAmount?: boolean
+  maxAmount?: string
+  hasMaxAmount?: boolean
   status?: InputStatus
   disabled?: boolean
   hasMaxAndHalfActions?: boolean
@@ -30,7 +33,6 @@ export type TransactionInputProps = {
   value?: string
   defaultValue?: string
   onValueChange?: (value: string) => void
-  onAssetClick?: () => void
   onHalfClick?: () => void
   onMaxClick?: () => void
 } & React.InputHTMLAttributes<HTMLInputElement>
@@ -45,7 +47,10 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
   asset,
   buttonIcon,
   trailingIcon,
-  amount,
+  availableAmount,
+  hasAvailableAmount = true,
+  maxAmount,
+  hasMaxAmount = false,
   status = "default",
   disabled = false,
   hasMaxAndHalfActions = true,
@@ -53,7 +58,6 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
   value,
   defaultValue = "",
   onValueChange,
-  onAssetClick,
   onHalfClick,
   onMaxClick,
   ...props
@@ -148,7 +152,7 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
           <ButtonIcon
             variant="onlyIcon"
             size="tiny"
-            icon="Vector"
+            icon="Placeholder"
             disabled={disabled}
           />
         )}
@@ -158,7 +162,7 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
       </div>
 
       <div className="text-primary flex w-full items-center justify-between text-xs">
-        {hasMaxAndHalfActions && amount && (
+        {hasMaxAndHalfActions && availableAmount && (
           <div className="flex gap-8">
             {/* Half */}
             <Button
@@ -195,15 +199,27 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
           </div>
         )}
 
-        {/* Amount */}
-        {amount && (
+        {/* Available Amount */}
+        {hasAvailableAmount && availableAmount && (
           <span
             className={clsx(
               "text-xxs flex flex-row items-center justify-center gap-1 pr-8 leading-none",
               disabled ? "text-standalone-text-disabled" : "text-tertiary",
             )}
           >
-            Available: {amount}
+            Available: {availableAmount}
+          </span>
+        )}
+
+        {/* Max Amount */}
+        {hasMaxAmount && maxAmount && (
+          <span
+            className={clsx(
+              "text-xxs flex flex-row items-center justify-center gap-1 pr-8 leading-none",
+              disabled ? "text-standalone-text-disabled" : "text-tertiary",
+            )}
+          >
+            Max: {maxAmount}
           </span>
         )}
       </div>

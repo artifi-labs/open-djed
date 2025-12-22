@@ -1,16 +1,24 @@
 "use client"
 
 import * as React from "react"
-import { ACTION_CONFIG, ActionType } from "./actionConfig"
-import { SUPPORTED_TOKENS, Token } from "@/lib/tokens"
+import { ACTION_CONFIG, type ActionType } from "./actionConfig"
+import { SUPPORTED_TOKENS, type Token } from "@/lib/tokens"
 import { useWallet } from "@/context/WalletContext"
 import { useProtocolData } from "@/hooks/useProtocolData"
-import { TokenType } from "@open-djed/api"
+import type { TokenType } from "@open-djed/api"
 import { useSidebar } from "@/context/SidebarContext"
+import { getWalletData } from "@/lib/getWalletData"
+import { useApiClient } from "@/context/ApiClientContext"
+import { AppError } from "@open-djed/api/src/errors"
+import { signAndSubmitTx } from "@/lib/signAndSubmitTx"
+import { useToast } from "@/context/ToastContext"
+import { maxReserveRatio, minReserveRatio } from "@open-djed/math"
 
 type ProtocolData = NonNullable<ReturnType<typeof useProtocolData>["data"]>
 type ActionData = ReturnType<ProtocolData["tokenActionData"]>
 type ActionDataMap = Partial<Record<Token, ActionData>>
+
+export type ReserveBoundsType = "below" | "above" | "in-bounds"
 
 const createInitialRecord = <T>(initialValue: T): Record<Token, T> =>
   SUPPORTED_TOKENS.reduce(
@@ -59,23 +67,18 @@ const calculateFromPay = ({
   const nextActionData: ActionDataMap = {}
 
   targetTokens.forEach((targetToken) => {
-    let token = sourceToken
-
-    if (isMint) {
-      // TODO: IF minting and sourceToken is ADA we need to convert ADA or modify useProtocol to accept ada
-      token = targetToken
-    }
-
     const actionData = calculateTokenAction(
       data,
-      token,
+      sourceToken,
       action,
       sourceValue,
       isMint,
     )
 
-    nextReceive[targetToken] = actionData.toReceive[targetToken] ?? 0
-    nextActionData[token] = actionData
+    nextReceive[targetToken] = isMint
+      ? (actionData.toSend["ADA"] ?? 0)
+      : (actionData.toReceive[targetToken] ?? 0)
+    nextActionData[sourceToken] = actionData
   })
 
   return { receive: nextReceive, actionData: nextActionData }
@@ -232,10 +235,41 @@ export function useMintBurnAction(defaultActionType: ActionType) {
   const config = ACTION_CONFIG[actionType]
   const { wallet } = useWallet()
   const { openWalletSidebar } = useSidebar()
-  const { isPending, error, data } = useProtocolData()
+  const { data } = useProtocolData()
+
+  const { showToast } = useToast()
+  const client = useApiClient()
 
   const isMint = actionType === "Mint"
   const hasWalletConnected = Boolean(wallet)
+
+  const reserveDetails = React.useCallback(() => {
+    const maxRatio = maxReserveRatio.toNumber() * 100
+    const minRatio = minReserveRatio.toNumber() * 100
+    const reserveRatio = (data?.protocolData.reserve.ratio ?? 0) * 100
+
+    const reserveBounds: ReserveBoundsType =
+      reserveRatio >= minRatio && reserveRatio <= maxRatio
+        ? "in-bounds"
+        : reserveRatio <= minRatio
+          ? "below"
+          : "above"
+
+    const reserveWarning: string | null =
+      reserveBounds === "in-bounds"
+        ? null
+        : reserveBounds === "below"
+          ? `DJED minting and SHEN burning is not permitted when the reserve ratio drops below ${minRatio}%.`
+          : `SHEN minting is not permitted when the reserve ratio rises above ${maxRatio}%.`
+
+    return {
+      maxRatio,
+      minRatio,
+      reserveRatio,
+      reserveBounds,
+      reserveWarning,
+    }
+  }, [maxReserveRatio, minReserveRatio, data?.protocolData.reserve.ratio])
 
   const {
     payValues,
@@ -380,8 +414,7 @@ export function useMintBurnAction(defaultActionType: ActionType) {
   )
 
   const handleHalfClick = React.useCallback(
-    (token: Token) => {
-      const balance = wallet?.balance[token]?.toString()
+    (token: Token, balance: string) => {
       if (config.pay.includes(token)) {
         handlePayHalf(token, balance)
       } else if (config.receive.includes(token)) {
@@ -392,8 +425,7 @@ export function useMintBurnAction(defaultActionType: ActionType) {
   )
 
   const handleMaxClick = React.useCallback(
-    (token: Token) => {
-      const balance = wallet?.balance[token]?.toString()
+    (token: Token, balance: string) => {
       if (config.pay.includes(token)) {
         handlePayMax(token, balance)
       } else if (config.receive.includes(token)) {
@@ -407,7 +439,7 @@ export function useMintBurnAction(defaultActionType: ActionType) {
     setLinkClicked((prev) => !prev)
   }, [])
 
-  const handleButtonClick = React.useCallback(() => {
+  const handleButtonClick = React.useCallback(async () => {
     if (!hasWalletConnected) {
       openWalletSidebar()
       return
@@ -415,6 +447,58 @@ export function useMintBurnAction(defaultActionType: ActionType) {
     console.log("Button clicked for", actionType)
     console.log("Pay values:", payValues)
     console.log("Receive values:", receiveValues)
+    //NOTE: This is a workaround to dynamically import the Cardano libraries without causing issues with SSR.
+    const { Transaction, TransactionWitnessSet } =
+      await import("@dcspark/cardano-multiplatform-lib-browser")
+
+    if (!wallet) return
+    if (payValues && !Object.values(payValues).some((value) => value > 0))
+      return
+
+    const tokenAmount = Object.entries(payValues).find(([, value]) => value > 0)
+
+    if (!tokenAmount) return
+
+    try {
+      const { address, utxos } = await getWalletData(wallet)
+
+      const response = await client.api[":token"][":action"][":amount"][
+        "tx"
+      ].$post({
+        param: {
+          token: tokenAmount[0] as TokenType,
+          action: actionType,
+          amount: tokenAmount[1].toString(),
+        },
+        json: { hexAddress: address, utxosCborHex: utxos },
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new AppError(errorData.message)
+      }
+
+      const txCbor = await response.text()
+      await signAndSubmitTx(wallet, txCbor, Transaction, TransactionWitnessSet)
+      showToast({
+        message: `Transaction submitted succesfully!`,
+        type: "success",
+      })
+    } catch (err) {
+      console.error("Action failed:", err)
+      if (err instanceof AppError) {
+        showToast({
+          message: `${err.message}`,
+          type: "error",
+        })
+        return
+      }
+
+      showToast({
+        message: `Transaction failed. Please try again.`,
+        type: "error",
+      })
+    }
   }, [
     hasWalletConnected,
     openWalletSidebar,
@@ -450,5 +534,6 @@ export function useMintBurnAction(defaultActionType: ActionType) {
     onMaxClick: handleMaxClick,
     linkClicked,
     onLinkClick: handleLinkClick,
+    reserveDetails,
   }
 }
