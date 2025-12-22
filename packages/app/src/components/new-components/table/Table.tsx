@@ -42,7 +42,7 @@ function Table<T>({
 }: TableProps<T>) {
   const [internalCurrentPage, setInternalCurrentPage] = useState(1)
 
-  // use external pagination if provided, otherwise use internal
+  // Use external pagination if provided, otherwise use internal
   const currentPage = serverSidePagination
     ? (externalCurrentPage ?? 1)
     : internalCurrentPage
@@ -52,17 +52,11 @@ function Table<T>({
 
   const lastPage = Math.ceil(totalCount / rowsPerPage)
 
+  // Only slice rows if using client-side pagination
   const currentRows = useMemo(() => {
     if (serverSidePagination) {
-      return rows
+      return rows // Rows are already paginated from server
     }
-  const [currentPage, setCurrentPage] = useState(1)
-
-  const lastPage = totalCount
-    ? Math.ceil(totalCount / rowsPerPage)
-    : Math.ceil(rows.length / rowsPerPage)
-
-  const rowsToRender = useMemo(() => {
     const startIndex = (currentPage - 1) * rowsPerPage
     const endIndex = startIndex + rowsPerPage
     return rows.slice(startIndex, endIndex)
@@ -71,6 +65,8 @@ function Table<T>({
   if (currentPage > lastPage && lastPage > 0 && setCurrentPage) {
     setCurrentPage(lastPage)
   }
+
+  const rowsToRender = currentRows.length > 0 ? currentRows : []
 
   return (
     <div className="w-full">
