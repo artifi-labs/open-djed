@@ -3,7 +3,7 @@ import clsx from "clsx"
 import * as React from "react"
 import Icon, { type IconName } from "./Icon"
 
-type Type = "surface" | "success" | "warning" | "error" | "brand"
+export type Type = "surface" | "success" | "warning" | "error" | "brand"
 type Role = "Primary" | "Secondary"
 type Size = "tiny" | "small" | "medium" | "large"
 

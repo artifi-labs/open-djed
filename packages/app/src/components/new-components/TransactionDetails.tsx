@@ -5,6 +5,7 @@ import clsx from "clsx"
 //import Link from "next/link"
 import ButtonIcon from "./ButtonIcon"
 import { type Order } from "@open-djed/api"
+import { useViewport } from "@/hooks/useViewport"
 
 interface TransactionDetailsProps {
   row: {
@@ -19,6 +20,7 @@ const TransactionDetails: React.FC<TransactionDetailsProps> = ({
   row,
   hasBorder,
 }) => {
+  const { isMobile } = useViewport()
   const [isOpen, setIsOpen] = React.useState(false)
 
   const { raw } = row
@@ -42,25 +44,43 @@ const TransactionDetails: React.FC<TransactionDetailsProps> = ({
           const isLast = index === row.columns.length - 1
 
           return (
-            <td key={index}>
+            <td key={index} className={clsx({ relative: isLast && isMobile })}>
               {isLast ? (
                 <div className="flex items-center justify-end gap-8 px-16 py-12">
                   {column.content}
 
-                  {(isProcessing || isCreated || isCompleted) && (
-                    <ButtonIcon
-                      size="tiny"
-                      variant="onlyIcon"
-                      icon="Chevron-down"
-                      className={clsx("transition-transform duration-200", {
-                        "rotate-180": isOpen,
-                      })}
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        setIsOpen((v) => !v)
-                      }}
-                    />
-                  )}
+                  {(isProcessing || isCreated || isCompleted) &&
+                    (isMobile ? (
+                      <ButtonIcon
+                        size="tiny"
+                        variant="onlyIcon"
+                        icon="Chevron-down"
+                        className={clsx(
+                          "transition-transform duration-200",
+                          {
+                            "rotate-180": isOpen,
+                          },
+                          "absolute top-14 right-4",
+                        )}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setIsOpen((v) => !v)
+                        }}
+                      />
+                    ) : (
+                      <ButtonIcon
+                        size="tiny"
+                        variant="onlyIcon"
+                        icon="Chevron-down"
+                        className={clsx("transition-transform duration-200", {
+                          "rotate-180": isOpen,
+                        })}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setIsOpen((v) => !v)
+                        }}
+                      />
+                    ))}
                 </div>
               ) : (
                 <div className="p-4">{column.content}</div>
@@ -87,7 +107,7 @@ const TransactionDetails: React.FC<TransactionDetailsProps> = ({
               )}
 
               {isCompleted && (
-                <div className="grid grid-cols-5 text-xs">
+                <div className="grid grid-cols-1 text-xs">
                   {/* TODO: Batched */}
                   {/* <div className="flex flex-col gap-2 px-16 py-12">
                     <span className="text-tertiary text-xxs">Batched at:</span>
@@ -126,7 +146,10 @@ const TransactionDetails: React.FC<TransactionDetailsProps> = ({
                       Executed Fee:
                     </span>
                     <div className="text-primary">
-                      {(Number(raw.fees) / 1_000_000).toFixed(2)} ₳
+                      {raw.fees === undefined
+                        ? "-"
+                        : (Number(raw.fees) / 1_000_000).toFixed(2)}{" "}
+                      ₳
                     </div>
                   </div>
 
