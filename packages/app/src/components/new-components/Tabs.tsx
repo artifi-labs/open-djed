@@ -59,7 +59,7 @@ const Tabs: React.FC<TabsProps> = ({
         const { key, ...itemProps } = item
         return (
           <Tab
-            key={item.key || item.text}
+            key={key || item.text}
             radius={tabAggregatorVariantClasses[type].radius}
             variant={tabAggregatorVariantClasses[type].variant}
             size="small"

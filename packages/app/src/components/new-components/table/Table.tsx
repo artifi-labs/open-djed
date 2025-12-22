@@ -1,7 +1,8 @@
 import React, { useState, useMemo } from "react"
+import type { ComponentType } from "react"
 import TableHeader, { type TableHeaderSize } from "./TableHeader"
-import TableRow from "./TableRow"
 import Pagination from "../Pagination"
+import TableRow from "./TableRow"
 
 export interface HeaderItem {
   column: React.ReactNode
@@ -13,23 +14,22 @@ export interface HeaderItem {
   action?: React.ReactNode
 }
 
-export interface RowItem {
-  columns: { content: React.ReactNode }[]
-  hasBorder?: boolean
-}
-
-interface TableProps {
+export type TableProps<T> = {
   headers: HeaderItem[]
-  rows: RowItem[]
+  rows: T[]
   totalCount: number
   rowsPerPage?: number
   paginatedTable?: boolean
   currentPage?: number
   onPageChange?: (page: number) => void
   serverSidePagination?: boolean
+  RowComponent: ComponentType<{
+    row: T
+    hasBorder?: boolean
+  }>
 }
 
-export function Table({
+function Table<T>({
   headers,
   rows,
   totalCount,
@@ -38,7 +38,8 @@ export function Table({
   currentPage: externalCurrentPage,
   onPageChange,
   serverSidePagination = false,
-}: TableProps) {
+  RowComponent,
+}: TableProps<T>) {
   const [internalCurrentPage, setInternalCurrentPage] = useState(1)
 
   // use external pagination if provided, otherwise use internal
@@ -55,6 +56,13 @@ export function Table({
     if (serverSidePagination) {
       return rows
     }
+  const [currentPage, setCurrentPage] = useState(1)
+
+  const lastPage = totalCount
+    ? Math.ceil(totalCount / rowsPerPage)
+    : Math.ceil(rows.length / rowsPerPage)
+
+  const rowsToRender = useMemo(() => {
     const startIndex = (currentPage - 1) * rowsPerPage
     const endIndex = startIndex + rowsPerPage
     return rows.slice(startIndex, endIndex)
@@ -63,8 +71,6 @@ export function Table({
   if (currentPage > lastPage && lastPage > 0 && setCurrentPage) {
     setCurrentPage(lastPage)
   }
-
-  const rowsToRender = currentRows.length > 0 ? currentRows : []
 
   return (
     <div className="w-full">
@@ -91,10 +97,10 @@ export function Table({
             </thead>
             {/* Body */}
             <tbody>
-              {rowsToRender.map((rowData, index) => (
-                <TableRow
+              {rowsToRender.map((row, index) => (
+                <RowComponent
                   key={index}
-                  columns={rowData.columns}
+                  row={row}
                   hasBorder={index !== rowsToRender.length - 1}
                 />
               ))}
