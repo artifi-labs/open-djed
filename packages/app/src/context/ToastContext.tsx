@@ -8,7 +8,7 @@ import React, {
   useEffect,
 } from "react"
 import clsx from "clsx"
-import ToastItem from "@/components/new-components/ToastItem"
+import ToastItem from "@/components/ToastItem"
 import { useViewport } from "@/hooks/useViewport"
 
 type ToastType = "success" | "attention" | "error"

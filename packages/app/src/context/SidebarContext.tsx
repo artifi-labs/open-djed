@@ -8,8 +8,8 @@ import React, {
   useEffect,
 } from "react"
 import { useWallet } from "@/context/WalletContext"
-import WalletSidebar from "@/components/new-components/wallet/WalletSidebar"
-import SettingsSidebar from "@/components/new-components/SettingsSidebar"
+import WalletSidebar from "@/components/wallet/WalletSidebar"
+import SettingsSidebar from "@/components/SettingsSidebar"
 
 type SidebarType = "wallet" | "settings" | null
 

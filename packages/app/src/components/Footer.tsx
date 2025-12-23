@@ -2,8 +2,8 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import Icon, { type IconName } from "./new-components/Icon"
-import ButtonIcon from "./new-components/ButtonIcon"
+import Icon, { type IconName } from "./Icon"
+import ButtonIcon from "./ButtonIcon"
 import React from "react"
 import { useViewport } from "@/hooks/useViewport"
 import {

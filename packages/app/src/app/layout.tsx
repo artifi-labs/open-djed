@@ -3,8 +3,8 @@ import { Poppins } from "next/font/google"
 import { getLoaderData } from "@/lib/loader"
 import { Providers } from "./providers"
 import Footer from "@/components/Footer"
-import { Navbar } from "@/components/new-components/Navbar"
-import Background from "@/components/new-components/Background"
+import { Navbar } from "@/components/Navbar"
+import Background from "@/components/Background"
 import { type Metadata } from "next"
 import {
   APP_NAME,
