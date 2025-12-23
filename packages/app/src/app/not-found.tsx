@@ -1,5 +1,28 @@
 import ErrorPage from "@/components/new-components/ErroPage"
 import PageFade from "@/components/new-components/PageFade"
+import { OPEN_DJED_URL, APP_NAME } from "@/lib/constants"
+import { type Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: {
+    default: `${APP_NAME} | Page Not Found`,
+    template: `%s | ${APP_NAME}`,
+  },
+  openGraph: {
+    title: `${APP_NAME} | Page Not Found`,
+    images: [
+      {
+        url: `${OPEN_DJED_URL}/logos/artifi_banner.png`,
+        width: 512,
+        height: 512,
+        alt: `${APP_NAME} | Page Not Found`,
+      },
+    ],
+  },
+  twitter: {
+    title: `${APP_NAME} | Page Not Found`,
+  },
+}
 
 export default function NotFound() {
   return (
