@@ -18,6 +18,12 @@ COPY packages/cli/package.json ./packages/cli/
 
 RUN bun i --frozen-lockfile
 
+WORKDIR /usr/src/app/packages/db
+
+ARG DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy"
+
+RUN bun run generate
+
 FROM node:22-slim
 
 WORKDIR /usr/src/app
