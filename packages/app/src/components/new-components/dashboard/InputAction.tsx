@@ -138,6 +138,8 @@ const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
         hasMaxAmount={hasMaxAmount}
         maxAmount={(maxAmount ?? 0).toString()}
         status={inputStatus}
+        maxValue={Number.MAX_SAFE_INTEGER}
+        maxDecimalPlaces={4}
       />
     )
   }

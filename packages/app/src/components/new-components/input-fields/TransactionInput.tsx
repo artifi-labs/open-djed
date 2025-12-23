@@ -33,6 +33,8 @@ export type TransactionInputProps = {
   value?: string
   defaultValue?: string
   assetIcon?: IconName
+  maxValue?: number
+  maxDecimalPlaces?: number
   onValueChange?: (value: string) => void
   onHalfClick?: () => void
   onMaxClick?: () => void
@@ -59,6 +61,8 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
   value,
   defaultValue = "",
   assetIcon,
+  maxValue,
+  maxDecimalPlaces,
   onValueChange,
   //onAssetClick, // TODO: CHECK THIS, should be used in Actions component
   onHalfClick,
@@ -71,6 +75,21 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const sanitized = sanitizeNumberInput(e.target.value)
+
+    if (maxDecimalPlaces !== undefined && sanitized !== "") {
+      const parts = sanitized.split(".")
+      if (parts.length > 1 && parts[1].length > maxDecimalPlaces) {
+        return
+      }
+    }
+
+    if (maxValue !== undefined && sanitized !== "") {
+      const numValue = parseFloat(sanitized)
+      if (!isNaN(numValue) && numValue > maxValue) {
+        return
+      }
+    }
+
     if (sanitized === displayedValue) return
     if (value === undefined) setInternalValue(sanitized)
     onValueChange?.(sanitized)
