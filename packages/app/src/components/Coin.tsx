@@ -11,7 +11,7 @@ export type CoinProps = {
   [key: string]: unknown
 }
 
-export type IconCoinName = "PLACEHOLDER" | "ADA" | "DJED" | "SHEN"
+export type IconCoinName = "PLACEHOLDER" | "ADA" | "DJED" | "SHEN" | "BOTH"
 
 const Coin: React.FC<CoinProps> = ({
   name,

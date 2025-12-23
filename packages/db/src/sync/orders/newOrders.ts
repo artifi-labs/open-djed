@@ -146,7 +146,7 @@ async function processOrdersToInsert(utxos: OrderUTxOWithDatum[]) {
         received,
         orderDate: new Date(Number(d.creationDate)),
         status: utxo.consumed_by_tx ? "Completed" : "Created",
-      }
+      } as unknown as Order
     }),
   )
 }
@@ -200,7 +200,9 @@ export async function syncNewOrders() {
     }
   }
 
-  const syncedBlock = (await blockfrostFetch(`/blocks/${latestSyncedBlock.latestBlock}`)) as {
+  const syncedBlock = (await blockfrostFetch(
+    `/blocks/${latestSyncedBlock.latestBlock}`,
+  )) as {
     height: number
   }
 

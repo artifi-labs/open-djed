@@ -51,18 +51,20 @@ export type AddressDatum = {
 }
 
 export type Order = {
-  address: AddressDatum
+  id: number
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  address: any
   tx_hash: string
   out_index: number
   block: string
-  slot: number
+  slot: bigint
   action: Actions
   token: Token
-  paid?: bigint
-  fees?: bigint
-  received?: bigint
+  paid: bigint | null
+  fees: bigint | null
+  received: bigint | null
   orderDate: Date
-  status: string
+  status: string | null
 }
 
 export type UTxO = {

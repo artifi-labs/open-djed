@@ -15,13 +15,14 @@ import Dialog from "./Dialog"
 import Snackbar from "./Snackbar"
 import TransactionDetails from "./TransactionDetails"
 import { type OrderStatus, useOrders } from "@/hooks/useOrders"
-import { type Order } from "@open-djed/api"
+
 import { useEnv } from "@/context/EnvContext"
 import BaseCard from "./card/BaseCard"
 import { useViewport } from "@/hooks/useViewport"
 import Asset from "./Asset"
 import Chip from "./Chip"
 import { ORDERS_PER_PAGE, ORDERS_PER_PAGE_MOBILE } from "@/lib/constants"
+import type { Order } from "@open-djed/api"
 
 interface RowItem {
   columns: { content: React.ReactNode }[]
@@ -334,7 +335,7 @@ const MobileCell = ({ order }: { order: Order }) => {
           </div>
           <div className="flex w-full flex-row items-center justify-between">
             <span className="text-tertiary text-xxs">Status</span>
-            <Chip text={order.status} size="small" />
+            <Chip text={order.status ?? ""} size="small" />
           </div>
           {showCancel ? (
             <div className="grid grid-cols-2 gap-8">
@@ -440,7 +441,7 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({
           content: (
             <ExternalCell
               txHash={order.tx_hash}
-              status={order.status}
+              status={order.status ?? ""}
               outIndex={order.out_index}
             />
           ),

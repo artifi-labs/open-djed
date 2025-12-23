@@ -44,7 +44,8 @@ import {
 } from "./errors"
 import JSONbig from "json-bigint"
 import { getOrdersByAddressKeys } from "@open-djed/db"
-import type { Order } from "@open-djed/db/generated/prisma/client"
+import type { Order } from "@open-djed/db"
+export type { Order } from "@open-djed/db"
 
 //NOTE: We only need this cache for transactions, not for other requests. Using this for `protocol-data` sligltly increases the response time.
 const requestCache = new TTLCache<string, { value: Response; expiry: number }>({
@@ -426,93 +427,6 @@ const app = new Hono()
     },
   )
   .post(
-    "/orders",
-    cacheMiddleware,
-    describeRoute({
-      description: "Get the pending orders",
-      tags: ["Action"],
-      responses: {
-        200: {
-          description: "Successfully got the pending orders",
-          content: {
-            "text/plain": {
-              example: "Order",
-            },
-          },
-        },
-        400: {
-          description: "Bad Request",
-          content: {
-            "text/plain": {
-              example: "Bad Request",
-            },
-          },
-        },
-        500: {
-          description: "Internal Server Error",
-          content: {
-            "text/plain": {
-              example: "Internal Server Error",
-            },
-          },
-        },
-      },
-    }),
-    zValidator("json", z.object({ usedAddresses: z.array(z.string()) })),
-    async (c) => {
-      let json
-
-      try {
-        json = c.req.valid("json")
-        if (!json?.usedAddresses) {
-          throw new ValidationError("Missing hexAddress in request.")
-        }
-      } catch (e) {
-        console.error("Invalid or missing request payload.", e)
-        throw new ValidationError("Invalid or missing request payload.")
-      }
-
-      try {
-        const allOrders = await getOrderUTxOs()
-
-        const usedAddressesKeys = json.usedAddresses.map((addr) => {
-          try {
-            const paymentKeyHash = paymentCredentialOf(addr)
-            const stakeKeyHash = stakeCredentialOf(addr)
-            return {
-              paymentKeyHash: paymentKeyHash.hash,
-              stakeKeyHash: stakeKeyHash.hash,
-            }
-          } catch {
-            return { paymentKeyHash: "", stakeKeyHash: "" }
-          }
-        })
-
-        const filteredOrders = allOrders.filter((order) =>
-          usedAddressesKeys.some(
-            (key) =>
-              order.orderDatum.address.paymentKeyHash[0] ===
-                key.paymentKeyHash &&
-              order.orderDatum.address.stakeKeyHash[0][0][0] ===
-                key.stakeKeyHash,
-          ),
-        )
-
-        console.log("Order:", filteredOrders)
-
-        return new Response(JSONbig.stringify({ orders: filteredOrders }), {
-          headers: { "Content-Type": "application/json" },
-        })
-      } catch (err) {
-        if (err instanceof AppError) {
-          throw err
-        }
-        console.error("Unhandled error in orders endpoint:", err)
-        throw new InternalServerError()
-      }
-    },
-  )
-  .post(
     "/cancel-order",
     describeRoute({
       description: "Build a cancel-order transaction and return it as CBOR",
@@ -706,9 +620,12 @@ const app = new Hono()
         const userOrders: Order[] =
           await getOrdersByAddressKeys(usedAddressesKeys)
 
-        const sortedOrders = [...parsedPendingOrders, ...userOrders].sort(
-          (a, b) => b.orderDate.getTime() - a.orderDate.getTime(),
-        )
+        const sortedOrders = [...parsedPendingOrders, ...userOrders]
+          .sort((a, b) => b.orderDate.getTime() - a.orderDate.getTime())
+          .filter(
+            (order, index, self) =>
+              self.findIndex((o) => o.tx_hash === order.tx_hash) === index,
+          )
 
         // Calculate pagination
         const totalOrders = sortedOrders.length
