@@ -2,38 +2,35 @@
 import * as React from "react"
 import OrderHistory from "@/components/new-components/OrderHistory"
 import Button from "@/components/new-components/Button"
-import SearchInput from "@/components/new-components/input-fields/SearchInput"
-import Chip from "@/components/new-components/Chip"
-// import ButtonIcon from "@/components/new-components/ButtonIcon"
 import { useWallet } from "@/context/WalletContext"
 import { useSidebar } from "@/context/SidebarContext"
-import {
-  Pagination,
-  StatusFilters,
-  statusFiltersArray,
-  useOrders,
-} from "@/hooks/useOrders"
+import type { Pagination, StatusFilters } from "@/hooks/useOrders"
+import { useOrders } from "@/hooks/useOrders"
 import BaseCard from "@/components/new-components/card/BaseCard"
 import { useEffect, useMemo, useState } from "react"
-import { ORDERS_PER_PAGE } from "@/lib/constants"
+import { ORDERS_PER_PAGE, ORDERS_PER_PAGE_MOBILE } from "@/lib/constants"
+import { useViewport } from "@/hooks/useViewport"
 
 export default function OrderPage() {
+  const { isMobile } = useViewport()
   const { wallet } = useWallet()
   const { openWalletSidebar } = useSidebar()
-  const [selectedFilter, setSelectedFilter] = useState<StatusFilters>("All")
+  const [selectedFilter] = useState<StatusFilters>("All")
   const [page, setPage] = useState(1)
   const [pagination, setPagination] = useState<Pagination>()
   const { orders, fetchOrders } = useOrders()
 
   useEffect(() => {
-    fetchOrders(page, ORDERS_PER_PAGE)
+    fetchOrders(page, isMobile ? ORDERS_PER_PAGE_MOBILE : ORDERS_PER_PAGE)
       .then((paginationData) => {
         if (paginationData) {
           setPagination(paginationData)
         }
       })
       .catch((e) => console.error(e))
-  }, [wallet, page])
+  }, [wallet, page, isMobile])
+
+  console.log("Pag: ", pagination)
 
   const filteredOrders = useMemo(() => {
     if (selectedFilter === "All") {
@@ -74,23 +71,23 @@ export default function OrderPage() {
         </BaseCard>
       ) : (
         <>
-          <div className="flex flex-row justify-start gap-8 py-18">
+          {/*<div className="flex flex-row justify-start gap-8 py-18">
             {/* Search */}
-            <div className="flex items-center">
+          {/*<div className="flex items-center">
               <SearchInput
                 id="search-input"
                 placeholder="Search"
                 size="Small"
               />
-            </div>
+            </div>*/}
 
-            {/* Calendar */}
-            {/*{<div className="flex w-fit items-center">
+          {/* Calendar */}
+          {/*{<div className="flex w-fit items-center">
               <ButtonIcon variant="secondary" size="small" icon="Calendar" />
             </div>}*/}
 
-            {/* Filters */}
-            <div className="flex w-full flex-row justify-end gap-8">
+          {/* Filters */}
+          {/*<div className="flex w-full flex-row justify-end gap-8">
               {statusFiltersArray.map((status) => (
                 <Chip
                   key={status}
@@ -101,8 +98,8 @@ export default function OrderPage() {
                   active={selectedFilter === status}
                 />
               ))}
-            </div>
-          </div>
+            </div>*/}
+          {/*</div>*/}
 
           {/* Table */}
           <OrderHistory

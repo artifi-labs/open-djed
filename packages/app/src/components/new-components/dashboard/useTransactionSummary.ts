@@ -34,7 +34,7 @@ const formatUSDValue = (
     return "$0.00"
   }
   const usdAmount = toUSD(valueObj)
-  return `${formatNumber(usdAmount, { maximumFractionDigits: 2 })}`
+  return `$${formatNumber(usdAmount, { maximumFractionDigits: 2 })}`
 }
 
 const formatSingleValue = (

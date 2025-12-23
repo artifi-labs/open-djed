@@ -56,7 +56,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
     <th
       scope="col"
       className={clsx(
-        "text-tertiary text-xxs px-16 py-12 text-left font-normal",
+        "desktop:text-tertiary desktop:text-xxs text-md dektop:font-normal px-16 py-12 text-left font-medium",
         columnWidths[size],
         {
           "cursor-pointer": isSortable,

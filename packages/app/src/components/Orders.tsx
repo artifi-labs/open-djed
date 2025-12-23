@@ -1,7 +1,7 @@
 "use client"
 import { useEffect, useState } from "react"
 import JSONbig from "json-bigint"
-import Tooltip from "@/components/Tooltip"
+import Tooltip from "./new-components/tooltip/Tooltip"
 import Button from "@/components/Button"
 import type { OrderUTxO } from "@open-djed/txs"
 import { AppError } from "@open-djed/api/src/errors"
@@ -172,9 +172,12 @@ export default function Orders({
                     <p className="text-lg font-semibold">Order #{index + 1}</p>
                     <Button
                       className="bg-red-400"
-                      onClick={() =>
-                        handleCancelOrder(order.txHash, order.outputIndex)
-                      }
+                      onClick={() => {
+                        handleCancelOrder(
+                          order.txHash,
+                          order.outputIndex,
+                        ).catch(console.error)
+                      }}
                     >
                       Cancel
                     </Button>

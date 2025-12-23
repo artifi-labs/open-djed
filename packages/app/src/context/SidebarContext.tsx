@@ -62,7 +62,9 @@ export const SidebarProvider: React.FC<{ children: React.ReactNode }> = ({
       <WalletSidebar
         wallet={wallet}
         wallets={wallets}
-        connect={connect}
+        connect={(wallet) => {
+          connect(wallet).catch(console.error)
+        }}
         disconnect={disconnect}
         isOpen={isWalletSidebarOpen}
         onClose={closeSidebar}

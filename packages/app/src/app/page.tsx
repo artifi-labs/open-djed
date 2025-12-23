@@ -5,6 +5,7 @@ import TransactionSummary from "@/components/new-components/dashboard/Transactio
 import { useMintBurnAction } from "@/components/new-components/dashboard/useMintBurnAction"
 import React, { useState } from "react"
 import Button from "@/components/new-components/Button"
+import ReserveDetails from "@/components/new-components/ReserveDetails"
 import Modal from "@/components/Modal"
 import OpenDjedContent from "@/components/new-components/OpenDjedContent"
 
@@ -43,6 +44,7 @@ export default function DashboardPage() {
         <Actions action={action} onActionChange={action.onActionChange} />
         <TransactionSummary action={action} />
       </div>
+      <ReserveDetails />
     </div>
   )
 }

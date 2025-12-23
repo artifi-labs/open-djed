@@ -60,7 +60,7 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
   defaultValue = "",
   assetIcon,
   onValueChange,
-  onAssetClick, // TODO: CHECK THIS, should be used in Actions component
+  //onAssetClick, // TODO: CHECK THIS, should be used in Actions component
   onHalfClick,
   onMaxClick,
   ...props

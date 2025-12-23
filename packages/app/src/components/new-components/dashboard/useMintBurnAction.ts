@@ -12,7 +12,6 @@ import { useApiClient } from "@/context/ApiClientContext"
 import { AppError } from "@open-djed/api/src/errors"
 import { signAndSubmitTx } from "@/lib/signAndSubmitTx"
 import { useToast } from "@/context/ToastContext"
-import { maxReserveRatio, minReserveRatio } from "@open-djed/math"
 
 type ProtocolData = NonNullable<ReturnType<typeof useProtocolData>["data"]>
 type ActionData = ReturnType<ProtocolData["tokenActionData"]>
@@ -99,7 +98,6 @@ const calculateFromReceive = ({
 
     if (!isMint) {
       // TODO: IF burning and sourceToken is ADA we need to convert ADA or modify useProtocol to accept ada
-      console.log(sourceToken)
       token = targetToken
     }
 
@@ -242,34 +240,6 @@ export function useMintBurnAction(defaultActionType: ActionType) {
 
   const isMint = actionType === "Mint"
   const hasWalletConnected = Boolean(wallet)
-
-  const reserveDetails = React.useCallback(() => {
-    const maxRatio = maxReserveRatio.toNumber() * 100
-    const minRatio = minReserveRatio.toNumber() * 100
-    const reserveRatio = (data?.protocolData.reserve.ratio ?? 0) * 100
-
-    const reserveBounds: ReserveBoundsType =
-      reserveRatio >= minRatio && reserveRatio <= maxRatio
-        ? "in-bounds"
-        : reserveRatio <= minRatio
-          ? "below"
-          : "above"
-
-    const reserveWarning: string | null =
-      reserveBounds === "in-bounds"
-        ? null
-        : reserveBounds === "below"
-          ? `DJED minting and SHEN burning is not permitted when the reserve ratio drops below ${minRatio}%.`
-          : `SHEN minting is not permitted when the reserve ratio rises above ${maxRatio}%.`
-
-    return {
-      maxRatio,
-      minRatio,
-      reserveRatio,
-      reserveBounds,
-      reserveWarning,
-    }
-  }, [maxReserveRatio, minReserveRatio, data?.protocolData.reserve.ratio])
 
   const {
     payValues,
@@ -444,9 +414,6 @@ export function useMintBurnAction(defaultActionType: ActionType) {
       openWalletSidebar()
       return
     }
-    console.log("Button clicked for", actionType)
-    console.log("Pay values:", payValues)
-    console.log("Receive values:", receiveValues)
     //NOTE: This is a workaround to dynamically import the Cardano libraries without causing issues with SSR.
     const { Transaction, TransactionWitnessSet } =
       await import("@dcspark/cardano-multiplatform-lib-browser")
@@ -534,6 +501,5 @@ export function useMintBurnAction(defaultActionType: ActionType) {
     onMaxClick: handleMaxClick,
     linkClicked,
     onLinkClick: handleLinkClick,
-    reserveDetails,
   }
 }

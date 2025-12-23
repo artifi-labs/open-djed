@@ -2,7 +2,6 @@
 
 import Link from "next/link"
 import React, { useState } from "react"
-import { useTranslation } from "react-i18next"
 import { usePathname } from "next/navigation"
 import Button from "./Button"
 import ButtonIcon from "./ButtonIcon"
@@ -108,7 +107,6 @@ const NetworkBadge: React.FC<NetworkBadgeProps> = ({
 }
 
 export const Navbar = () => {
-  const { t } = useTranslation()
   const { network, config } = useEnv()
   const { wallet } = useWallet()
   const { openWalletSidebar, openSettingsSidebar } = useSidebar()

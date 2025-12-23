@@ -13,7 +13,7 @@ import Toast from "./Toast"
 import { formatNumber, formatValue, type Value } from "@/lib/utils"
 import { Rational } from "@open-djed/math"
 import { AppError } from "@open-djed/api/src/errors"
-import Tooltip from "./Tooltip"
+import Tooltip from "./new-components/tooltip/Tooltip"
 import { SkeletonWrapper } from "./SkeletonWrapper"
 import { useTranslation } from "react-i18next"
 import { useActionLabels } from "@/hooks/useLabels"
@@ -325,7 +325,9 @@ export const Action = ({
 
         <Button
           className="w-full"
-          onClick={handleActionClick}
+          onClick={() => {
+            handleActionClick().catch(console.error)
+          }}
           disabled={
             wallet === null ||
             amount <= 0 ||

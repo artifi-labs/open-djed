@@ -28,6 +28,7 @@ export const transactionSummaryBuilder = (): TransactionSummaryBuilder => {
       items.push({
         label,
         values: [{ topValue, bottomValue }],
+        parentIndex: 0,
       })
       return builder
     },
@@ -39,6 +40,7 @@ export const transactionSummaryBuilder = (): TransactionSummaryBuilder => {
           topValue,
           bottomValue,
         })),
+        parentIndex: 0,
       })
       return builder
     },

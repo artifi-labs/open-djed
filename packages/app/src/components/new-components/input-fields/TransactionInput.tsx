@@ -6,7 +6,6 @@ import Divider from "../Divider"
 import Icon, { type IconName } from "../Icon"
 import Tag from "../Tag"
 import Asset from "../Asset"
-import ButtonIcon from "../ButtonIcon"
 import type { AssetProps } from "../Asset"
 import Button from "../Button"
 
@@ -20,7 +19,6 @@ export type TransactionInputProps = {
   tagTrailingIcon?: IconName
   suffix?: string
   asset?: AssetProps
-  buttonIcon?: boolean
   trailingIcon?: IconName
   amount?: string
   status?: InputStatus
@@ -36,7 +34,6 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
   tagTrailingIcon,
   suffix,
   asset,
-  buttonIcon,
   trailingIcon,
   amount,
   status = "default",
@@ -113,16 +110,6 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
 
         {/* Asset */}
         {asset && <Asset {...asset} />}
-
-        {/* Button Icon */}
-        {buttonIcon && (
-          <ButtonIcon
-            variant="onlyIcon"
-            size="tiny"
-            icon="Vector"
-            disabled={disabled}
-          />
-        )}
 
         {/* Trailing Icon */}
         {trailingIcon && <Icon name={trailingIcon} />}

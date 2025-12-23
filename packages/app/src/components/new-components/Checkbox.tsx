@@ -112,7 +112,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
     >
       {ICON_BY_TYPE[currentType] && (
         <Icon
-          name={ICON_BY_TYPE[currentType]!}
+          name={ICON_BY_TYPE[currentType]}
           size={size}
           className={disabled ? "text-on-disabled" : "text-on-brand-primary"}
         />
