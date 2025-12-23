@@ -15,6 +15,7 @@ import { useToast } from "@/context/ToastContext"
 import { useEnv } from "@/context/EnvContext"
 import { registryByNetwork } from "@open-djed/registry"
 import { type InputStatus } from "../input-fields/TransactionInput"
+import { roundToDecimals } from "@/lib/utils"
 
 type ProtocolData = NonNullable<ReturnType<typeof useProtocolData>["data"]>
 type ActionData = ReturnType<ProtocolData["tokenActionData"]>
@@ -78,7 +79,7 @@ const calculateFromPay = ({
       ? (actionData.toSend["ADA"] ?? 0)
       : (actionData.toReceive[targetToken] ?? 0)
 
-    nextReceive[targetToken] = receiveAmount.toString()
+    nextReceive[targetToken] = roundToDecimals(receiveAmount, 4).toString()
     nextActionData[sourceToken] = actionData
   })
 
@@ -111,7 +112,10 @@ const calculateFromReceive = ({
       isMint,
     )
 
-    nextPay[targetToken] = (actionData.toSend[targetToken] ?? 0).toString()
+    nextPay[targetToken] = roundToDecimals(
+      actionData.toSend[targetToken] ?? 0,
+      4,
+    ).toString()
     nextActionData[token] = actionData
   })
 
@@ -316,7 +320,7 @@ export function useMintBurnAction(defaultActionType: ActionType) {
           message: `The amount added is greater than the available balance.`,
           type: "error",
         })
-      } else if (inputStatus !== "default") {
+      } else if (inputStatus !== "default" || payValues[token] === "0") {
         setInputStatus("default")
       }
     },
@@ -338,7 +342,7 @@ export function useMintBurnAction(defaultActionType: ActionType) {
           message: `The amount added is greater than the available balance.`,
           type: "error",
         })
-      } else if (inputStatus !== "default") {
+      } else if (inputStatus !== "default" || payValues[token] === "0") {
         setInputStatus("default")
       }
     },
