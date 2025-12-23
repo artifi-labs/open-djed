@@ -3,35 +3,28 @@
 
 <!-- Homepage -->
 <url>
-<loc>https://djed.artifex.finance/</loc>
+<loc>https://djed.artifi.finance/</loc>
 <changefreq>daily</changefreq>
 <priority>1.0</priority>
 </url>
 
-<!-- DJED Page -->
+<!-- Orders Page -->
 <url>
-<loc>https://djed.artifex.finance/djed</loc>
-<changefreq>daily</changefreq>
-<priority>0.9</priority>
-</url>
-
-<!-- SHEN Page -->
-<url>
-<loc>https://djed.artifex.finance/shen</loc>
+<loc>https://djed.artifi.finance/orders</loc>
 <changefreq>daily</changefreq>
 <priority>0.9</priority>
 </url>
 
 <!-- Terms of Service -->
 <url>
-<loc>https://djed.artifex.finance/terms</loc>
+<loc>https://djed.artifi.finance/terms</loc>
 <changefreq>weekly</changefreq>
 <priority>0.3</priority>
 </url>
 
 <!-- Privacy Policy -->
 <url>
-<loc>https://djed.artifex.finance/privacy</loc>
+<loc>https://djed.artifi.finance/privacy</loc>
 <changefreq>weekly</changefreq>
 <priority>0.3</priority>
 </url>

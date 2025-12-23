@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import Button from "../Button"
-import { capitalize } from "@/lib/utils"
+import { capitalize, isEmptyValue } from "@/lib/utils"
 import type { ActionType } from "./actionConfig"
 import InputAction from "./InputAction"
 import type { Token } from "@/lib/tokens"
@@ -21,19 +21,20 @@ export type ActionProps = {
   }
   bothSelected: boolean
   onBothSelectedChange: (v: boolean) => void
-  payValues: Record<Token, number>
-  receiveValues: Record<Token, number>
+  payValues: Record<Token, string>
+  receiveValues: Record<Token, string>
   activePayToken: Token
   activeReceiveToken: Token
   onPayValueChange: (t: Token, value: string) => void
   onReceiveValueChange: (t: Token, value: string) => void
   onPayTokenChange: (t: Token) => void
   onReceiveTokenChange: (t: Token) => void
-  onHalfClick?: (t: Token, maxAmount: string) => void
-  onMaxClick?: (t: Token, maxAmount: string) => void
+  onHalfClick?: (t: Token) => void
+  onMaxClick?: (t: Token) => void
   onButtonClick?: () => void
   linkClicked?: boolean
   onLinkClick?: () => void
+  maxAmount?: number
 }
 
 const Action: React.FC<ActionProps> = ({
@@ -55,11 +56,12 @@ const Action: React.FC<ActionProps> = ({
   onMaxClick,
   linkClicked,
   onLinkClick,
+  maxAmount,
 }) => {
   const actionText = capitalize(actionType)
 
-  const payEmpty = Object.values(payValues).every((v) => !v || v === 0)
-  const receiveEmpty = Object.values(receiveValues).every((v) => !v || v === 0)
+  const payEmpty = Object.values(payValues).every(isEmptyValue)
+  const receiveEmpty = Object.values(receiveValues).every(isEmptyValue)
 
   const buttonText = !hasWalletConnected
     ? `Connect Wallet to ${actionText}`
@@ -86,6 +88,7 @@ const Action: React.FC<ActionProps> = ({
       hasMaxAndHalfActions: true,
       hasAvailableAmount: false,
       hasMaxAmount: true,
+      maxAmount: maxAmount,
     },
     {
       key: "receive",
@@ -131,6 +134,7 @@ const Action: React.FC<ActionProps> = ({
           hasMaxAmount={i.hasMaxAmount}
           action={actionType}
           reserveBounds={reserveBounds}
+          maxAmount={i.maxAmount}
         />
       ))}
 

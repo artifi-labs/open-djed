@@ -2,13 +2,10 @@
 
 import * as React from "react"
 import Checkbox from "../Checkbox"
-import TransactionInput from "../TransactionInput"
+import TransactionInput from "../input-fields/TransactionInput"
 import ButtonIcon from "../ButtonIcon"
 import { useWallet } from "@/context/WalletContext"
 import type { Token } from "@/lib/tokens"
-import { registryByNetwork } from "@open-djed/registry"
-import { useEnv } from "@/context/EnvContext"
-import { useProtocolData } from "@/hooks/useProtocolData"
 import type { ActionType, TokenType } from "@open-djed/api"
 import type { ReserveBoundsType } from "./useMintBurnAction"
 
@@ -18,11 +15,11 @@ export type InputActionProps = {
   hasLeadingIcon: boolean
   showDual: boolean
   activeToken: Token
-  values: Record<Token, number>
+  values: Record<Token, string>
   onTokenChange: (t: Token) => void
   onValueChange: (t: Token, v: string) => void
-  onHalfClick?: (t: Token, maxAmount: string) => void
-  onMaxClick?: (t: Token, maxAmount: string) => void
+  onHalfClick?: (t: Token) => void
+  onMaxClick?: (t: Token) => void
   showCheckbox?: boolean
   checkboxLabel?: string
   checkboxChecked?: boolean
@@ -35,18 +32,19 @@ export type InputActionProps = {
   hasMaxAmount?: boolean
   action: ActionType
   reserveBounds: ReserveBoundsType
+  maxAmount?: number
 }
 
 export type TransactionInputGroupProps = {
   coins: Token[]
   activeToken: Token
-  values: Record<Token, number>
+  values: Record<Token, string>
   hasLeadingIcon: boolean
   showDual: boolean
   onTokenChange: (t: Token) => void
   onValueChange: (t: Token, v: string) => void
-  onHalfClick?: (t: Token, maxAmount: string) => void
-  onMaxClick?: (t: Token, maxAmount: string) => void
+  onHalfClick?: (t: Token) => void
+  onMaxClick?: (t: Token) => void
   linkClicked?: boolean
   onLinkClick?: () => void
   hasMaxAndHalfActions?: boolean
@@ -55,6 +53,7 @@ export type TransactionInputGroupProps = {
   hasMaxAmount?: boolean
   action: ActionType
   reserveBounds: ReserveBoundsType
+  maxAmount?: number
 }
 
 const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
@@ -73,14 +72,12 @@ const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
   hasAvailableAmount,
   disabled,
   hasMaxAmount,
+  maxAmount,
   action,
   reserveBounds,
 }) => {
   const { wallet } = useWallet()
   const walletConnected = wallet !== null
-  const { data } = useProtocolData()
-  const { network } = useEnv()
-  const protocolData = data?.protocolData
 
   const renderInput = (coin: Token) => {
     const handleTokenChange = () => {
@@ -94,28 +91,6 @@ const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
 
     const token: TokenType | null =
       coin === "DJED" ? "DJED" : coin === "SHEN" ? "SHEN" : null
-    const registry = registryByNetwork[network]
-    // FIXME: This is not perfect yet.
-    const maxAmount =
-      token === null
-        ? 0
-        : Math.round(
-            Math.min(
-              Math.max(
-                (action === "Burn"
-                  ? wallet?.balance[token]
-                  : ((wallet?.balance.ADA ?? 0) -
-                      (Number(registry.operatorFeeConfig.max) +
-                        (protocolData?.refundableDeposit.ADA ?? 1823130)) /
-                        1e6) /
-                    (protocolData ? protocolData[token].buyPrice.ADA : 0)) ?? 0,
-                0,
-              ),
-              (action === "Mint"
-                ? protocolData?.[token].mintableAmount[token]
-                : protocolData?.[token].burnableAmount[token]) ?? 0,
-            ) * 1e6,
-          ) / 1e6
 
     const isDisabled =
       ((token === "DJED" && action === "Mint") ||
@@ -145,16 +120,18 @@ const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
         availableAmount={balanceStr}
         hasAvailableAmount={hasAvailableAmount}
         onHalfClick={
-          onHalfClick
-            ? () => onHalfClick(coin, maxAmount.toString())
+          onHalfClick && maxAmount !== undefined
+            ? () => onHalfClick(coin)
             : undefined
         }
         onMaxClick={
-          onMaxClick ? () => onMaxClick(coin, maxAmount.toString()) : undefined
+          onMaxClick && maxAmount !== undefined
+            ? () => onMaxClick(coin)
+            : undefined
         }
         hasMaxAndHalfActions={hasMaxAndHalfActions}
         hasMaxAmount={hasMaxAmount}
-        maxAmount={maxAmount.toFixed(3).toString()}
+        maxAmount={(maxAmount ?? 0).toString()}
       />
     )
   }
@@ -208,6 +185,7 @@ const InputAction: React.FC<InputActionProps> = ({
   hasMaxAmount,
   action,
   reserveBounds,
+  maxAmount,
 }) => {
   return (
     <div className="flex flex-col gap-12">
@@ -247,6 +225,7 @@ const InputAction: React.FC<InputActionProps> = ({
         hasMaxAmount={hasMaxAmount}
         action={action}
         reserveBounds={reserveBounds}
+        maxAmount={maxAmount}
       />
     </div>
   )
