@@ -85,7 +85,10 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
   >("connectedWalletId", null)
 
   const { network } = useEnv()
-
+  const networkIds = {
+    Preprod: 0,
+    Mainnet: 1,
+  } as const
   const connect = useCallback(
     async (id: string, showConnectNotification = true) => {
       try {
@@ -93,6 +96,14 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
         if (!cardano) return
 
         let api = await cardano[id].enable()
+
+        if ((await api.getNetworkId()) !== networkIds[network]) {
+          showToast({
+            message: `Please connect to a ${network} wallet`,
+            type: "error",
+          })
+          return
+        }
         let balanceStr: string = ""
 
         try {
