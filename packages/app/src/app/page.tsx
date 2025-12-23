@@ -3,28 +3,41 @@
 import Actions from "@/components/new-components/dashboard/Actions"
 import TransactionSummary from "@/components/new-components/dashboard/TransactionSummary"
 import { useMintBurnAction } from "@/components/new-components/dashboard/useMintBurnAction"
-import LinkButton from "@/components/new-components/LinkButton"
-import React from "react"
+import React, { useState } from "react"
+import Button from "@/components/new-components/Button"
+import Modal from "@/components/Modal"
+import OpenDjedContent from "@/components/new-components/OpenDjedContent"
 
 export default function DashboardPage() {
   const action: ReturnType<typeof useMintBurnAction> = useMintBurnAction("Mint")
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   return (
-    <div className="desktop:pt-32 desktop:pb-64 mx-auto w-full max-w-[1120px] pt-16 pb-16">
+    <div className="desktop:pt-32 desktop:pb-64 mx-auto w-full max-w-280 pt-16 pb-16">
       {/* Header */}
       <div className="desktop:flex-row flex flex-col justify-between">
         <div className="flex items-center gap-6">
           <h1 className="font-bold">Open DJED</h1>
           <span className="text-secondary text-xs">Stablecoin</span>
         </div>
-        <LinkButton
-          href="#"
+
+        <Button
           variant="text"
           size="medium"
           text="What is Open DJED?"
-          className="items-center text-center"
+          onClick={() => setIsModalOpen(true)}
         />
       </div>
+
+      {/* Modal */}
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title="What is Open DJED?"
+      >
+        <OpenDjedContent />
+      </Modal>
+
       {/* Content */}
       <div className="desktop:grid-cols-2 desktop:gap-24 desktop:pt-32 grid grid-cols-1 gap-16 pt-16">
         <Actions action={action} onActionChange={action.onActionChange} />
