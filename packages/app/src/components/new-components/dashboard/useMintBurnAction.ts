@@ -12,6 +12,8 @@ import { useApiClient } from "@/context/ApiClientContext"
 import { AppError } from "@open-djed/api/src/errors"
 import { signAndSubmitTx } from "@/lib/signAndSubmitTx"
 import { useToast } from "@/context/ToastContext"
+import { useEnv } from "@/context/EnvContext"
+import { registryByNetwork } from "@open-djed/registry"
 
 type ProtocolData = NonNullable<ReturnType<typeof useProtocolData>["data"]>
 type ActionData = ReturnType<ProtocolData["tokenActionData"]>
@@ -27,9 +29,6 @@ const createInitialRecord = <T>(initialValue: T): Record<Token, T> =>
     },
     {} as Record<Token, T>,
   )
-
-const parseBalance = (balanceStr?: string): number =>
-  balanceStr ? parseFloat(balanceStr) || 0 : 0
 
 const parseValue = (value: string): number => parseFloat(value) || 0
 
@@ -116,24 +115,6 @@ const calculateFromReceive = ({
   })
 
   return { pay: nextPay, actionData: nextActionData }
-}
-
-type ApplyValueFn = (token: Token, value: string) => void
-
-interface ApplyBalanceOptions {
-  requirePositive?: boolean
-}
-
-const applyBalance = (
-  token: Token,
-  balanceStr: string | undefined,
-  applyFn: ApplyValueFn,
-  factor: number,
-  options: ApplyBalanceOptions = {},
-) => {
-  const balance = parseBalance(balanceStr)
-  if (options.requirePositive && balance <= 0) return
-  applyFn(token, (balance * factor).toString())
 }
 
 const useTokenState = (config: (typeof ACTION_CONFIG)[ActionType]) => {
@@ -236,12 +217,14 @@ export function useMintBurnAction(defaultActionType: ActionType) {
   const { wallet } = useWallet()
   const { openWalletSidebar } = useSidebar()
   const { data } = useProtocolData()
+  const { network } = useEnv()
 
   const { showToast } = useToast()
   const client = useApiClient()
 
   const isMint = actionType === "Mint"
   const hasWalletConnected = Boolean(wallet)
+  const registry = registryByNetwork[network]
 
   const {
     payValues,
@@ -273,6 +256,48 @@ export function useMintBurnAction(defaultActionType: ActionType) {
     setActionData({})
   }, [actionType, resetValues])
 
+  const maxAmount = React.useMemo(() => {
+    if (!wallet || !data || activePayToken === "ADA") return 0
+
+    const maxTokenAmount =
+      activePayToken === null
+        ? 0
+        : Math.round(
+            Math.min(
+              Math.max(
+                (actionType === "Burn"
+                  ? wallet.balance[activePayToken]
+                  : ((wallet.balance.ADA ?? 0) -
+                      (Number(registry.operatorFeeConfig.max) +
+                        (data.protocolData.refundableDeposit.ADA ?? 1823130)) /
+                        1e6) /
+                    (data.protocolData
+                      ? data.protocolData[activePayToken].buyPrice.ADA
+                      : 0)) ?? 0,
+                0,
+              ),
+              (actionType === "Mint"
+                ? data.protocolData?.[activePayToken].mintableAmount[
+                    activePayToken
+                  ]
+                : data.protocolData?.[activePayToken].burnableAmount[
+                    activePayToken
+                  ]) ?? 0,
+            ) * 1e6,
+          ) / 1e6
+
+    // Floor to 3 decimal places to avoid exceeding user balance
+    return Math.floor(maxTokenAmount * 1000) / 1000
+  }, [
+    actionType,
+    data?.protocolData,
+    registry.operatorFeeConfig.max,
+    activePayToken,
+    activeReceiveToken,
+    isMint,
+    wallet?.balance,
+  ])
+
   const handlePayValueChange = React.useCallback(
     (token: Token, value: string) => {
       setPayValues((prev) => ({ ...prev, [token]: value }))
@@ -281,6 +306,13 @@ export function useMintBurnAction(defaultActionType: ActionType) {
       const result = calculateFromPayValue(token, numValue)
       setReceiveValues(result.receive)
       setActionData(result.actionData)
+
+      if (wallet && numValue > maxAmount) {
+        showToast({
+          message: `The amount added is greater than the available balance.`,
+          type: "error",
+        })
+      }
     },
     [calculateFromPayValue, setPayValues, setReceiveValues],
   )
@@ -288,44 +320,46 @@ export function useMintBurnAction(defaultActionType: ActionType) {
   const handleReceiveValueChange = React.useCallback(
     (token: Token, value: string) => {
       setReceiveValues((prev) => ({ ...prev, [token]: value }))
-
       const numValue = parseValue(value)
-
       const result = calculateFromReceiveValue(token, numValue)
+
       setPayValues(result.pay)
       setActionData(result.actionData)
+
+      if (wallet && numValue > maxAmount) {
+        showToast({
+          message: `The amount added is greater than the available balance.`,
+          type: "error",
+        })
+      }
     },
     [calculateFromReceiveValue, setPayValues, setReceiveValues],
   )
 
   const handlePayHalf = React.useCallback(
-    (token: Token, balanceStr?: string) => {
-      applyBalance(token, balanceStr, handlePayValueChange, 0.5)
+    (token: Token) => {
+      handlePayValueChange(token, (maxAmount / 2).toString())
     },
-    [handlePayValueChange],
+    [handlePayValueChange, maxAmount],
   )
 
   const handlePayMax = React.useCallback(
-    (token: Token, balanceStr?: string) => {
-      applyBalance(token, balanceStr, handlePayValueChange, 1)
+    (token: Token) => {
+      handlePayValueChange(token, maxAmount.toString())
     },
-    [handlePayValueChange],
+    [handlePayValueChange, maxAmount],
   )
 
   const handleReceiveHalf = React.useCallback(
-    (token: Token, balanceStr?: string) => {
-      applyBalance(token, balanceStr, handleReceiveValueChange, 0.5, {
-        requirePositive: true,
-      })
+    (token: Token) => {
+      handleReceiveValueChange(token, (maxAmount / 2).toString())
     },
     [handleReceiveValueChange],
   )
 
   const handleReceiveMax = React.useCallback(
-    (token: Token, balanceStr?: string) => {
-      applyBalance(token, balanceStr, handleReceiveValueChange, 1, {
-        requirePositive: true,
-      })
+    (token: Token) => {
+      handleReceiveValueChange(token, maxAmount.toString())
     },
     [handleReceiveValueChange],
   )
@@ -389,25 +423,25 @@ export function useMintBurnAction(defaultActionType: ActionType) {
   )
 
   const handleHalfClick = React.useCallback(
-    (token: Token, balance: string) => {
+    (token: Token) => {
       if (config.pay.includes(token)) {
-        handlePayHalf(token, balance)
+        handlePayHalf(token)
       } else if (config.receive.includes(token)) {
-        handleReceiveHalf(token, balance)
+        handleReceiveHalf(token)
       }
     },
     [config, wallet, handlePayHalf, handleReceiveHalf],
   )
 
   const handleMaxClick = React.useCallback(
-    (token: Token, balance: string) => {
+    (token: Token) => {
       if (config.pay.includes(token)) {
-        handlePayMax(token, balance)
+        handlePayMax(token)
       } else if (config.receive.includes(token)) {
-        handleReceiveMax(token, balance)
+        handleReceiveMax(token)
       }
     },
-    [config, wallet, handlePayMax, handleReceiveMax],
+    [config, handlePayMax, handleReceiveMax],
   )
 
   const handleLinkClick = React.useCallback(() => {
@@ -419,22 +453,38 @@ export function useMintBurnAction(defaultActionType: ActionType) {
       openWalletSidebar()
       return
     }
-    //NOTE: This is a workaround to dynamically import the Cardano libraries without causing issues with SSR.
-    const { Transaction, TransactionWitnessSet } =
-      await import("@dcspark/cardano-multiplatform-lib-browser")
-
     if (!wallet) return
+
     if (
       payValues &&
       !Object.values(payValues).some((value) => parseFloat(value) > 0)
     )
       return
 
-    const tokenAmount = Object.entries(payValues).find(
+    const tokenAmountArray = Object.entries(payValues).find(
       ([, value]) => parseFloat(value) > 0,
     )
+    if (!tokenAmountArray) return
 
-    if (!tokenAmount) return
+    const token: TokenType | null = tokenAmountArray
+      ? (tokenAmountArray[0] as TokenType)
+      : null
+    if (!token) return
+
+    const tokenAmount = tokenAmountArray[1]
+    const tokenAmountNumber = parseFloat(tokenAmountArray[1])
+
+    if (wallet && tokenAmountNumber > maxAmount) {
+      showToast({
+        message: `The amount added is greater than the available balance.`,
+        type: "error",
+      })
+      return
+    }
+
+    //NOTE: This is a workaround to dynamically import the Cardano libraries without causing issues with SSR.
+    const { Transaction, TransactionWitnessSet } =
+      await import("@dcspark/cardano-multiplatform-lib-browser")
 
     try {
       const { address, utxos } = await getWalletData(wallet)
@@ -443,9 +493,9 @@ export function useMintBurnAction(defaultActionType: ActionType) {
         "tx"
       ].$post({
         param: {
-          token: tokenAmount[0] as TokenType,
+          token: token,
           action: actionType,
-          amount: tokenAmount[1].toString(),
+          amount: tokenAmount,
         },
         json: { hexAddress: address, utxosCborHex: utxos },
       })
@@ -511,5 +561,6 @@ export function useMintBurnAction(defaultActionType: ActionType) {
     onMaxClick: handleMaxClick,
     linkClicked,
     onLinkClick: handleLinkClick,
+    maxAmount: maxAmount,
   }
 }

@@ -21,19 +21,20 @@ export type ActionProps = {
   }
   bothSelected: boolean
   onBothSelectedChange: (v: boolean) => void
-  payValues: Record<Token, string | number>
-  receiveValues: Record<Token, string | number>
+  payValues: Record<Token, string>
+  receiveValues: Record<Token, string>
   activePayToken: Token
   activeReceiveToken: Token
   onPayValueChange: (t: Token, value: string) => void
   onReceiveValueChange: (t: Token, value: string) => void
   onPayTokenChange: (t: Token) => void
   onReceiveTokenChange: (t: Token) => void
-  onHalfClick?: (t: Token, maxAmount: string) => void
-  onMaxClick?: (t: Token, maxAmount: string) => void
+  onHalfClick?: (t: Token) => void
+  onMaxClick?: (t: Token) => void
   onButtonClick?: () => void
   linkClicked?: boolean
   onLinkClick?: () => void
+  maxAmount?: number
 }
 
 const Action: React.FC<ActionProps> = ({
@@ -55,6 +56,7 @@ const Action: React.FC<ActionProps> = ({
   onMaxClick,
   linkClicked,
   onLinkClick,
+  maxAmount,
 }) => {
   const actionText = capitalize(actionType)
 
@@ -86,6 +88,7 @@ const Action: React.FC<ActionProps> = ({
       hasMaxAndHalfActions: true,
       hasAvailableAmount: false,
       hasMaxAmount: true,
+      maxAmount: maxAmount,
     },
     {
       key: "receive",
@@ -131,6 +134,7 @@ const Action: React.FC<ActionProps> = ({
           hasMaxAmount={i.hasMaxAmount}
           action={actionType}
           reserveBounds={reserveBounds}
+          maxAmount={i.maxAmount}
         />
       ))}
 
