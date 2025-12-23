@@ -7,7 +7,11 @@ export const STATUS_URL = "https://status.artifi.finance"
 export const GITHUB_URL = "https://github.com/artifi-labs"
 export const LINKEDIN_URL = "https://www.linkedin.com/company/artifi-finance/"
 export const TWITTER_URL = "https://x.com/artifi_labs"
+export const TWITTER_HANDLE = "@artifi_labs"
 export const DJED_URL = "https://djed.xyz"
+export const OPEN_DJED_URL = "https://djed.artifi.finance"
+export const APP_NAME = "Open DJED"
+export const TEAM_NAME = "Artifi Labs"
 
 export const SUPPORTED_LANGUAGES = [
   { code: "en", label: "English" },
