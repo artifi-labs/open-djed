@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "migrate": "prisma migrate dev",
+    "migrate:deploy": "prisma migrate deploy",
     "generate": "prisma generate",
     "dev": "bun --watch src/sync/cron.ts",
     "start": "bun src/sync/sync.ts",

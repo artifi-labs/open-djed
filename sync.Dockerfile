@@ -33,4 +33,4 @@ COPY --from=builder /usr/src/app ./
 
 WORKDIR /usr/src/app/packages/db
 
-ENTRYPOINT ["bun", "run", "sync"]
+ENTRYPOINT ["bun", "run"]
