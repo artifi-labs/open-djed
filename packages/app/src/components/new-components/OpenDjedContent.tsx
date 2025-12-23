@@ -8,7 +8,7 @@ const OpenDjedContent = () => {
         Open DJED is a transparent, community-driven web app for interacting
         with the DJED algorithmic stablecoin on Cardano, built entirely open
         source by Artifi Labs. It recreates the original DJED experience with
-        full protocol compatibility-offering a more reliable, accessible, and
+        full protocol compatibility - offering a more reliable, accessible, and
         auditable alternative.
       </p>
 
@@ -48,11 +48,11 @@ const OpenDjedContent = () => {
             Open DJED was built to solve accessibility and reliability issues in
             the original app, ensuring everyone can interact with DJED
             seamlessly and transparently.
-            <p>
-              Artifi Labs creates open, permissionless tools for the Cardano
-              ecosystem-Open DJED is just the beginning. Join us in reshaping
-              DeFi on Cardano-openly, transparently, together.
-            </p>
+          </p>
+          <p>
+            Artifi Labs creates open, permissionless tools for the Cardano
+            ecosystem-Open DJED is just the beginning. Join us in reshaping DeFi
+            on Cardano - openly, transparently, together.
           </p>
         </div>
       </div>
