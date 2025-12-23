@@ -8,7 +8,6 @@ import Tag from "./Tag"
 import ButtonIcon from "./ButtonIcon"
 import Asset, { type AssetProps } from "./Asset"
 import Button from "./Button"
-import { sanitizeNumberInput } from "@/lib/utils"
 
 type InputStatus = "default" | "warning" | "error" | "success"
 
@@ -68,11 +67,17 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
   const [internalValue, setInternalValue] = React.useState(defaultValue)
   const displayedValue = value !== undefined ? value : internalValue
 
-  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const sanitized = sanitizeNumberInput(e.target.value)
-    if (sanitized === displayedValue) return
-    if (value === undefined) setInternalValue(sanitized)
-    onValueChange?.(sanitized)
+  const roundToDecimals = (value: number, decimals = 6) =>
+    Math.round(value * Math.pow(10, decimals)) / Math.pow(10, decimals)
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value
+    const parsed = parseFloat(raw)
+    if (value === undefined) setInternalValue(parsed.toString())
+    if (!isNaN(parsed) && parsed >= 0 && parsed <= 999_999_999) {
+      onValueChange?.(roundToDecimals(parsed).toString())
+    } else if (raw === "") {
+      onValueChange?.("0")
+    }
   }
 
   const baseClasses =
@@ -128,7 +133,7 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
           className={inputClasses}
           disabled={disabled || inputDisabled}
           value={displayedValue}
-          onChange={handleOnChange}
+          onChange={handleInputChange}
           {...props}
         />
 
@@ -165,7 +170,7 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
       </div>
 
       <div className="text-primary flex w-full items-center justify-between text-xs">
-        {hasMaxAndHalfActions && availableAmount && (
+        {hasMaxAndHalfActions && (availableAmount || maxAmount) && (
           <div className="flex gap-8">
             {/* Half */}
             <Button
