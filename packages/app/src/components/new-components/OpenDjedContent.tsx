@@ -17,7 +17,7 @@ const OpenDjedContent = () => {
         <h3 className="text-primary text-xl font-medium">Why Open DJED?</h3>
         <ul className="ml-3 flex list-disc flex-col pl-3">
           <li>
-            <strong>Protocol-compatible:</strong> Same overcollateralized logic
+            <strong>Protocol compatible:</strong> Same overcollateralized logic
             as DJED.
           </li>
           <li>
@@ -25,7 +25,7 @@ const OpenDjedContent = () => {
             community-owned.
           </li>
           <li>
-            <strong>Community-first:</strong> Built for and by Cardano users.
+            <strong>Community first:</strong> Built for and by Cardano users.
           </li>
           <li>
             <strong>Reliable:</strong> Works even if the COTI app is down.
