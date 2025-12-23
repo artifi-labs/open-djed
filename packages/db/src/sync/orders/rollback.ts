@@ -1,7 +1,7 @@
-import { logger } from '../../utils/logger'
-import { prisma } from '../../../lib/prisma'
-import type { Block } from '../types'
-import { blockfrostFetch } from '../utils'
+import { logger } from "../../utils/logger"
+import { prisma } from "../../../lib/prisma"
+import type { Block } from "../types"
+import { blockfrostFetch } from "../utils"
 
 /**
  * if a finalized block disappears from the blockchain, a rollback has occurred
@@ -20,7 +20,7 @@ export async function rollback() {
     })
 
   if (syncIsValid) {
-    logger.info('No rollback detected')
+    logger.info("No rollback detected")
     return
   }
 
@@ -29,12 +29,14 @@ export async function rollback() {
   const storedBlocks = await prisma.order.findMany({
     where: { slot: { lte: sync.latestSlot } },
     select: { block: true, slot: true },
-    orderBy: { slot: 'desc' },
-    distinct: ['block'],
+    orderBy: { slot: "desc" },
+    distinct: ["block"],
   })
 
   for (const b of storedBlocks) {
-    const exists = await ((await blockfrostFetch(`/blocks/${b.block}`)) as Promise<Block>)
+    const exists = await (
+      (await blockfrostFetch(`/blocks/${b.block}`)) as Promise<Block>
+    )
       .then(() => true)
       .catch(() => false)
 
@@ -53,10 +55,10 @@ export async function rollback() {
         },
       })
 
-      logger.info('Rollback completed')
+      logger.info("Rollback completed")
       return
     }
   }
 
-  throw new Error('Rollback exceeds DB history — full resync required')
+  throw new Error("Rollback exceeds DB history — full resync required")
 }
