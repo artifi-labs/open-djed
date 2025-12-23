@@ -1,0 +1,50 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Actions {
+  Mint
+  Burn
+}
+
+enum Token {
+  DJED
+  SHEN
+  BOTH
+}
+
+model Order {
+  id        Int      @id @default(autoincrement())
+  address   Json // user address, stores paymentKeyHash and stakeKeyHash
+  tx_hash   String   @unique // hash of tx
+  out_index Int // output index
+  block     String // block hash
+  slot      BigInt // block slot
+  action    Actions
+  token     Token
+  orderDate DateTime @default(now())
+  paid      BigInt? // ADA value paid for this action
+  fees      BigInt?
+  received  BigInt? // token value received
+  status    String? // Created -> still to be consumed; Completed -> already consumed
+
+  @@index([slot], name: "idx_order_slot") // index makes lookups much faster
+}
+
+model Block {
+  id          Int      @id @default(1) // only one row
+  latestBlock String   @unique // hash of the latest block synced
+  latestSlot  BigInt // slot of the latest block synced
+  updatedAt   DateTime @updatedAt @db.Timestamptz(6)
+}

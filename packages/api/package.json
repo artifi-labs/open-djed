@@ -15,6 +15,7 @@
     "@open-djed/data": "workspace:*",
     "@open-djed/registry": "workspace:*",
     "@open-djed/txs": "workspace:*",
+    "@open-djed/db": "workspace:*",
     "@scalar/hono-api-reference": "^0.8.10",
     "@t3-oss/env-core": "^0.12.0",
     "@types/json-bigint": "^1.0.4",
