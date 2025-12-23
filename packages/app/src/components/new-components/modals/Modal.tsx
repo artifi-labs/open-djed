@@ -1,8 +1,8 @@
 "use client"
-
 import React from "react"
 import Icon from "../Icon"
 import Logo from "../Logo"
+import clsx from "clsx"
 
 type ModalProps = {
   title: string
@@ -13,6 +13,7 @@ type ModalProps = {
   onClose: () => void
   children: React.ReactNode
   className?: string
+  overlayClassName?: string
 }
 
 export const Modal: React.FC<ModalProps> = ({
@@ -23,14 +24,16 @@ export const Modal: React.FC<ModalProps> = ({
   isOpen,
   onClose,
   children,
-  className = "",
+  className,
+  overlayClassName,
 }) => {
-  const CloseBtn = closeButton || (
+  if (!isOpen) return null
+
+  const CloseBtn = closeButton ?? (
     <Icon
       name="Close"
       aria-label="Close modal"
       onClick={onClose}
-      id="close-modal-button"
       className="cursor-pointer"
     />
   )
@@ -39,31 +42,35 @@ export const Modal: React.FC<ModalProps> = ({
     <>
       {/* Overlay */}
       <div
-        className={`bg-skrim fixed inset-0 z-40 cursor-pointer backdrop-blur-sm transition-opacity duration-300 ease-in-out ${
-          isOpen ? "opacity-80" : "pointer-events-none opacity-0"
-        }`}
-        onClick={onClose}
+        className={clsx(
+          "bg-skrim fixed inset-0 z-40 opacity-80 backdrop-blur-sm transition-opacity",
+          overlayClassName,
+        )}
       />
 
-      {/* Modal */}
       <div
-        className={`bg-surface-modal border-border-primary fixed z-50 flex h-full transform flex-col overflow-hidden rounded-[8px] border p-[24px] transition-transform duration-300 ease-in-out ${className}`}
+        className="fixed inset-0 z-50 flex items-center justify-center"
+        onClick={onClose}
       >
-        <div className="flex shrink-0 items-center justify-between pb-[24px]">
-          {logo ? (
-            <Logo />
-          ) : (
-            <h2 className="text-primary leading-heading-s text-xl font-semibold">
-              {title}
-            </h2>
+        <div
+          className={clsx(
+            "bg-surface-secondary border-gradient border-color-gradient rounded-8 relative flex max-h-[85vh] max-w-full min-w-xs flex-col overflow-hidden p-42 sm:max-h-[85vh] sm:max-w-200",
+            className,
           )}
-          <div className="flex flex-row items-center gap-8">
-            {headerAction && headerAction}
-            {CloseBtn}
+        >
+          <div className="sticky top-0 z-10 flex items-center justify-between pb-16">
+            {logo ? (
+              <Logo />
+            ) : (
+              <h2 className="text-primary font-bold">{title}</h2>
+            )}
+            {headerAction && <div className="mr-32">{headerAction}</div>}
           </div>
-        </div>
 
-        <div className="flex-1 overflow-y-auto">{children}</div>
+          <div className="absolute top-16 right-16 z-20">{CloseBtn}</div>
+
+          <div className="flex-1 overflow-y-auto">{children}</div>
+        </div>
       </div>
     </>
   )

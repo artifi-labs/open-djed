@@ -1,5 +1,6 @@
 import React, { type ReactNode } from "react"
 import { AnimatePresence, motion, type Variants } from "framer-motion"
+import ButtonIcon from "./new-components/ButtonIcon"
 
 type ModalProps = {
   isOpen: boolean
@@ -37,21 +38,24 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
           onClick={onClose}
         >
           <motion.div
-            className="bg-light-foreground dark:bg-dark-foreground flex max-h-full max-w-full min-w-xs flex-col overflow-auto rounded-lg p-4 sm:max-h-[85vh] sm:max-w-[800px]"
+            className="bg-surface-secondary border-gradient border-color-gradient rounded-8 dark:bg-dark-foreground bg-light-foreground relative flex max-h-full max-w-full min-w-xs flex-col overflow-auto p-42 sm:max-h-[85vh] sm:max-w-200"
             variants={modalVariants}
             initial="hidden"
             animate="visible"
             exit="exit"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="border-light-text dark:border-dark-text sticky top-0 z-10 flex items-center justify-between border-b pb-2">
-              <h2 className="text-xl font-semibold">{title}</h2>
-              <button
+            <div className="border-light-text dark:border-dark-text sticky top-0 z-10 flex items-center justify-between pb-16">
+              <h2 className="text-primary font-bold">{title}</h2>
+            </div>
+
+            <div className="absolute top-12 right-12 z-20">
+              <ButtonIcon
+                variant="onlyIcon"
+                icon="Close"
+                size="medium"
                 onClick={onClose}
-                className="hover:text-primary-hover cursor-pointer text-2xl font-semibold transition"
-              >
-                &times;
-              </button>
+              />
             </div>
 
             <div className="overflow-auto">{children}</div>

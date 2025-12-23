@@ -1,8 +1,7 @@
 "use client"
-
 import React from "react"
-import { Modal } from "./Modal"
-import { clsx } from "clsx"
+import Modal from "./Modal"
+import clsx from "clsx"
 
 type SidePanelProps = {
   title: string
@@ -25,12 +24,6 @@ export const Sidebar: React.FC<SidePanelProps> = ({
   children,
   width,
 }) => {
-  const className = clsx(
-    "right-0 top-0 h-full rounded-br-none rounded-tr-none",
-    width || "w-full sm:w-[350px] lg:w-[460px]",
-    isOpen ? "translate-x-0" : "translate-x-full",
-  )
-
   return (
     <Modal
       title={title}
@@ -39,7 +32,12 @@ export const Sidebar: React.FC<SidePanelProps> = ({
       closeButton={closeButton}
       isOpen={isOpen}
       onClose={onClose}
-      className={className}
+      className={clsx(
+        "rounded-l-8 ml-auto h-full max-h-full rounded-none sm:h-full sm:max-h-full",
+        "transform transition-transform duration-300 ease-in-out",
+        width ?? "w-full sm:w-[350px] lg:w-[460px]",
+        isOpen ? "translate-x-0" : "translate-x-full",
+      )}
     >
       {children}
     </Modal>

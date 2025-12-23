@@ -43,6 +43,10 @@ export default function OrderPage() {
     setPage(newPage)
   }
 
+  const handleClearFilters = () => {
+    // Implement filter clearing logic here
+  }
+
   return (
     <div className="desktop:pt-32 desktop:pb-64 mx-auto flex w-full max-w-280 flex-1 flex-col">
       {!wallet ? (
@@ -109,6 +113,7 @@ export default function OrderPage() {
             currentPage={page}
             onPageChange={handlePageChange}
             serverSidePagination={true}
+            handleClearFilters={handleClearFilters}
           />
         </>
       )}
