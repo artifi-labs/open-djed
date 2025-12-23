@@ -1,53 +1,62 @@
-import i18n from 'i18next'
-import { initReactI18next } from 'react-i18next'
-import LanguageDetector from 'i18next-browser-languagedetector'
-import ptTranslation from './locales/pt/translation.json'
-import enTranslation from './locales/en/translation.json'
+"use client"
 
-i18n
-  .use(LanguageDetector)
-  .use(initReactI18next)
-  .init({
-    debug: import.meta.env.MODE === 'development',
+import i18n from "i18next"
+import { initReactI18next } from "react-i18next"
+import LanguageDetector from "i18next-browser-languagedetector"
+import ptTranslation from "./locales/pt/translation.json"
+import enTranslation from "./locales/en/translation.json"
 
-    ns: ['translation'],
-    defaultNS: 'translation',
+if (!i18n.isInitialized) {
+  i18n
+    .use(LanguageDetector)
+    .use(initReactI18next)
+    .init({
+      debug: process.env.NODE_ENV === "development",
 
-    supportedLngs: ['en', 'pt'],
-    fallbackLng: 'en',
-    returnEmptyString: false,
-    returnNull: false,
+      ns: ["translation"],
+      defaultNS: "translation",
 
-    keySeparator: false,
-    nsSeparator: false,
+      supportedLngs: ["en", "pt"],
+      fallbackLng: "en",
+      returnEmptyString: false,
+      returnNull: false,
 
-    detection: {
-      order: ['localStorage', 'navigator'],
-      caches: ['localStorage'],
-      lookupLocalStorage: 'i18nextLng',
-    },
+      keySeparator: false,
+      nsSeparator: false,
 
-    resources: {
-      en: {
-        translation: enTranslation,
+      detection: {
+        order: ["localStorage", "navigator"],
+        caches: ["localStorage"],
+        lookupLocalStorage: "i18nextLng",
       },
-      pt: {
-        translation: ptTranslation,
+
+      resources: {
+        en: {
+          translation: enTranslation,
+        },
+        pt: {
+          translation: ptTranslation,
+        },
       },
-    },
 
-    interpolation: {
-      escapeValue: false,
-    },
+      interpolation: {
+        escapeValue: false,
+      },
 
-    react: {
-      useSuspense: true,
-    },
+      react: {
+        useSuspense: false,
+      },
 
-    parseMissingKeyHandler: (key) => key,
-  })
-  .catch((error) => {
-    console.error('Error initializing i18n:', error)
-  })
+      parseMissingKeyHandler: (key) => {
+        if (process.env.NODE_ENV === "development") {
+          console.warn(`Missing translation key: ${key}`)
+        }
+        return key
+      },
+    })
+    .catch((error) => {
+      console.error("Error initializing i18n:", error)
+    })
+}
 
 export default i18n

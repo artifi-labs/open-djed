@@ -1,5 +1,5 @@
-import { Data } from '@lucid-evolution/lucid'
-import { AddressSchema } from './address'
+import { Data } from "@lucid-evolution/lucid"
+import { AddressSchema } from "./address"
 
 /*
 {

@@ -1,5 +1,5 @@
-import { prisma } from '../../lib/prisma'
-import type { AddressKey } from '../sync/types'
+import { prisma } from "../../lib/prisma"
+import type { AddressKey } from "../sync/types"
 
 export const getOrdersByAddressKeys = async (keys: AddressKey[]) => {
   return await prisma.order.findMany({
@@ -8,13 +8,13 @@ export const getOrdersByAddressKeys = async (keys: AddressKey[]) => {
         AND: [
           {
             address: {
-              path: ['paymentKeyHash', '0'],
+              path: ["paymentKeyHash", "0"],
               equals: key.paymentKeyHash,
             },
           },
           {
             address: {
-              path: ['stakeKeyHash', '0', '0', '0'],
+              path: ["stakeKeyHash", "0", "0", "0"],
               equals: key.stakeKeyHash,
             },
           },
@@ -31,7 +31,7 @@ export const getFirstOrder = async () => {
 export const getLastOrder = async () => {
   return await prisma.order.findFirst({
     orderBy: {
-      id: 'desc',
+      id: "desc",
     },
   })
 }

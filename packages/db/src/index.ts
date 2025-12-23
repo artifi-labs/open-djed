@@ -1,2 +1,2 @@
-export * from './client/orders'
-export * from './sync/types'
+export * from "./client/orders"
+export * from "./sync/types"

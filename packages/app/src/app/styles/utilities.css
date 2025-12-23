@@ -1,0 +1,75 @@
+@layer utilities {
+  /* Base gradient border */
+  .border-gradient,
+  .border-gradient-b {
+    position: relative;
+  }
+
+  .border-gradient::before,
+  .border-gradient-b::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Border paddings */
+  .border-gradient::before {
+    padding: 1px;
+  }
+
+  .border-gradient-b::before {
+    padding: 0 0 1px 0;
+  }
+
+  /* Border colors */
+  .border-color-primary::before {
+    background: var(--color-border-primary);
+  }
+
+  .border-color-secondary::before {
+    background: var(--color-border-secondary);
+  }
+
+  .border-color-gradient::before,
+  .border-color-gradient-hover:hover::before,
+  .border-color-gradient-active:active::before,
+  .border-color-gradient-focus:focus-within::before {
+    background: var(--color-border-gradient);
+  }
+
+  .border-color-disabled::before,
+  .border-color-disabled-disabled:disabled::before {
+    background: var(--color-border-disabled);
+  }
+
+  .border-color-custom::before,
+  .border-color-custom-hover:hover::before,
+  .border-color-custom-active:active::before,
+  .border-color-custom-focus:focus-within::before {
+    background: var(--border-custom-color);
+  }
+}
+
+@utility bg-gradient-angular-1 {
+  background: var(--color-gradient-angular-1);
+}
+
+@utility bg-gradient-angular-2 {
+  background: var(--color-gradient-angular-2);
+}
+
+@utility bg-border-footer-gradient {
+  background: var(--color-border-footer-gradient);
+}
+
+@utility bg-gradient-badge {
+  background: var(--color-gradient-badge);
+}

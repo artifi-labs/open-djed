@@ -1,8 +1,14 @@
-import { expect, test } from 'vitest'
-import { adaInReserve, maxBurnableSHEN, maxMintableDJED, maxMintableSHEN, reserveRatio } from './reserve'
-import { registryByNetwork } from '@open-djed/registry'
+import { expect, test } from "vitest"
+import {
+  adaInReserve,
+  maxBurnableSHEN,
+  maxMintableDJED,
+  maxMintableSHEN,
+  reserveRatio,
+} from "./reserve"
+import { registryByNetwork } from "@open-djed/registry"
 
-test('adaInReserve', () => {
+test("adaInReserve", () => {
   expect(
     adaInReserve({
       adaInReserve: 31240837671805n,
@@ -10,7 +16,7 @@ test('adaInReserve', () => {
   ).toEqual({ numerator: 31240837671805n, denominator: 1n })
 })
 
-test('reserveRatio', () => {
+test("reserveRatio", () => {
   expect(
     reserveRatio(
       {
@@ -33,7 +39,7 @@ test('reserveRatio', () => {
   })
 })
 
-test('maxMintableDJED', () => {
+test("maxMintableDJED", () => {
   expect(
     maxMintableDJED(
       {
@@ -49,12 +55,12 @@ test('maxMintableDJED', () => {
           },
         },
       },
-      registryByNetwork['Mainnet'].MintDJEDFeePercentage,
+      registryByNetwork["Mainnet"].MintDJEDFeePercentage,
     ),
   ).toEqual(2472333917206n)
 })
 
-test('maxMintableSHEN', () => {
+test("maxMintableSHEN", () => {
   expect(
     maxMintableSHEN(
       {
@@ -70,12 +76,12 @@ test('maxMintableSHEN', () => {
           },
         },
       },
-      registryByNetwork['Mainnet'].MintSHENFeePercentage,
+      registryByNetwork["Mainnet"].MintSHENFeePercentage,
     ),
   ).toEqual(7271378273795n)
 })
 
-test('maxBurnableSHEN', () => {
+test("maxBurnableSHEN", () => {
   expect(
     maxBurnableSHEN(
       {
@@ -91,12 +97,12 @@ test('maxBurnableSHEN', () => {
           },
         },
       },
-      registryByNetwork['Mainnet'].BurnSHENFeePercentage,
+      registryByNetwork["Mainnet"].BurnSHENFeePercentage,
     ),
   ).toEqual(10665625097068n)
 })
 
-test('maxMintableDJED', () => {
+test("maxMintableDJED", () => {
   expect(
     maxMintableDJED(
       {
@@ -112,12 +118,12 @@ test('maxMintableDJED', () => {
           },
         },
       },
-      registryByNetwork['Preprod'].MintDJEDFeePercentage,
+      registryByNetwork["Preprod"].MintDJEDFeePercentage,
     ),
   ).toEqual(378480860484n)
 })
 
-test('maxMintableSHEN', () => {
+test("maxMintableSHEN", () => {
   expect(
     maxMintableSHEN(
       {
@@ -133,13 +139,13 @@ test('maxMintableSHEN', () => {
           },
         },
       },
-      registryByNetwork['Preprod'].MintSHENFeePercentage,
+      registryByNetwork["Preprod"].MintSHENFeePercentage,
     ),
     // NOTE: Here we work around a rounding error.
   ).toEqual(1526106388743n - 1n)
 })
 
-test('maxBurnableSHEN', () => {
+test("maxBurnableSHEN", () => {
   expect(
     maxBurnableSHEN(
       {
@@ -155,7 +161,7 @@ test('maxBurnableSHEN', () => {
           },
         },
       },
-      registryByNetwork['Preprod'].BurnSHENFeePercentage,
+      registryByNetwork["Preprod"].BurnSHENFeePercentage,
     ),
   ).toEqual(651005696037n)
 })

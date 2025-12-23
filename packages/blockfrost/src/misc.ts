@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from "zod"
 
 export type BlockfrostConfig = {
   url: string
@@ -23,12 +23,16 @@ const UTxOsByAddressWithUnitSchema = z.array(
   }),
 )
 
-export const getUTxOsByAddressWithUnit = (config: BlockfrostConfig, address: string, unit: string) =>
+export const getUTxOsByAddressWithUnit = (
+  config: BlockfrostConfig,
+  address: string,
+  unit: string,
+) =>
   fetch(`${config.url}/addresses/${address}/utxos/${unit}`, {
     headers: {
       ...(config.projectId ? { project_id: config.projectId } : {}),
-      'Content-Type': 'application/json',
-      'User-Agent': 'open-djed',
+      "Content-Type": "application/json",
+      "User-Agent": "open-djed",
     },
   }).then(async (res) => UTxOsByAddressWithUnitSchema.parse(await res.json()))
 
@@ -40,7 +44,7 @@ export const getDatumCBORByHash = (config: BlockfrostConfig, hash: string) =>
   fetch(`${config.url}/scripts/datum/${hash}/cbor`, {
     headers: {
       ...(config.projectId ? { project_id: config.projectId } : {}),
-      'Content-Type': 'application/json',
-      'User-Agent': 'open-djed',
+      "Content-Type": "application/json",
+      "User-Agent": "open-djed",
     },
   }).then(async (res) => CBORSchema.parse(await res.json()).cbor)

@@ -1,14 +1,27 @@
-import { logger } from '../../utils/logger'
-import { OrderDatum } from '@open-djed/data'
-import { Data } from '@lucid-evolution/lucid'
-import { prisma } from '../../../lib/prisma'
-import type { Block, Order, OrderUTxOWithDatumAndBlock, Transaction, TransactionData, UTxO } from '../types'
-import { processBatch, parseOrderDatum, registry, blockfrost, blockfrostFetch } from '../utils'
+import { logger } from "../../utils/logger"
+import { OrderDatum } from "@open-djed/data"
+import { Data } from "@lucid-evolution/lucid"
+import { prisma } from "../../../lib/prisma"
+import type {
+  Block,
+  Order,
+  OrderUTxOWithDatumAndBlock,
+  Transaction,
+  TransactionData,
+  UTxO,
+} from "../types"
+import {
+  processBatch,
+  parseOrderDatum,
+  registry,
+  blockfrost,
+  blockfrostFetch,
+} from "../utils"
 
 export const populateDbWithHistoricOrders = async () => {
   const start = Date.now()
 
-  logger.info('Fetching all transactions...')
+  logger.info("Fetching all transactions...")
   const everyOrderTx: Transaction[] = []
   let txPage = 1
   while (true) {
@@ -29,12 +42,12 @@ export const populateDbWithHistoricOrders = async () => {
   }
 
   if (everyOrderTx.length === 0) {
-    logger.info('No transactions found')
+    logger.info("No transactions found")
     return
   }
   logger.info(`Found ${everyOrderTx.length} transactions`)
 
-  logger.info('Fetching UTxOs...')
+  logger.info("Fetching UTxOs...")
   const everyOrderUTxO: UTxO[] = await processBatch(
     everyOrderTx,
     async (order) => {
@@ -51,7 +64,9 @@ export const populateDbWithHistoricOrders = async () => {
 
   const orderUTxOsWithUnit = everyOrderUTxO.flatMap((utxo) =>
     utxo.outputs
-      .filter((output) => output.amount.some((amt) => amt.unit === registry.orderAssetId))
+      .filter((output) =>
+        output.amount.some((amt) => amt.unit === registry.orderAssetId),
+      )
       .map((output) => ({
         ...output,
         tx_hash: utxo.hash,
@@ -59,12 +74,12 @@ export const populateDbWithHistoricOrders = async () => {
   )
 
   if (orderUTxOsWithUnit.length === 0) {
-    logger.info('No order UTxOs found')
+    logger.info("No order UTxOs found")
     return
   }
   logger.info(`Found ${orderUTxOsWithUnit.length} order UTxOs`)
 
-  logger.info('Fetching datums and transaction data...')
+  logger.info("Fetching datums and transaction data...")
   const orderUTxOWithDatumAndBlock = await processBatch(
     orderUTxOsWithUnit,
     async (utxo, idx) => {
@@ -90,29 +105,38 @@ export const populateDbWithHistoricOrders = async () => {
           block_slot: tx.slot,
         }
       } catch (error) {
-        logger.error(error, `Error processing UTxO ${idx + 1}/${orderUTxOsWithUnit.length}:`)
-        logger.debug('Skipping this UTxO and continuing...')
+        logger.error(
+          error,
+          `Error processing UTxO ${idx + 1}/${orderUTxOsWithUnit.length}:`,
+        )
+        logger.debug("Skipping this UTxO and continuing...")
         return null
       }
     },
     5,
     300,
-  ).then((results) => results.filter((utxo): utxo is OrderUTxOWithDatumAndBlock => utxo !== null))
+  ).then((results) =>
+    results.filter((utxo): utxo is OrderUTxOWithDatumAndBlock => utxo !== null),
+  )
 
   if (orderUTxOWithDatumAndBlock.length === 0) {
-    logger.info('No valid order UTxOs with datum found')
+    logger.info("No valid order UTxOs with datum found")
     return
   }
-  logger.info(`Enriched ${orderUTxOWithDatumAndBlock.length} order UTxOs with datum and block data`)
+  logger.info(
+    `Enriched ${orderUTxOWithDatumAndBlock.length} order UTxOs with datum and block data`,
+  )
 
-  logger.info('Processing order data...')
+  logger.info("Processing order data...")
 
   const ordersToInsert: Order[] = await Promise.all(
     orderUTxOWithDatumAndBlock.map(async (utxo: OrderUTxOWithDatumAndBlock) => {
       const d = utxo.orderDatum as OrderDatum
       const { action, token, paid, received } = await parseOrderDatum(utxo)
-      const totalAmountPaid = BigInt(utxo.amount.find((a) => a.unit === 'lovelace')?.quantity ?? '0')
-      const fees = action === 'Mint' ? totalAmountPaid - paid : totalAmountPaid
+      const totalAmountPaid = BigInt(
+        utxo.amount.find((a) => a.unit === "lovelace")?.quantity ?? "0",
+      )
+      const fees = action === "Mint" ? totalAmountPaid - paid : totalAmountPaid
 
       return {
         address: d.address,
@@ -126,7 +150,7 @@ export const populateDbWithHistoricOrders = async () => {
         fees,
         received,
         orderDate: new Date(Number(d.creationDate)),
-        status: utxo.consumed_by_tx ? 'Completed' : 'Created',
+        status: utxo.consumed_by_tx ? "Completed" : "Created",
       }
     }),
   )
@@ -136,7 +160,9 @@ export const populateDbWithHistoricOrders = async () => {
     data: ordersToInsert,
     skipDuplicates: true,
   })
-  logger.info(`Historic orders sync complete. Inserted ${ordersToInsert.length} orders`)
+  logger.info(
+    `Historic orders sync complete. Inserted ${ordersToInsert.length} orders`,
+  )
 
   // Fetch and store latest block
   const latestBlock = (await blockfrostFetch(`/blocks/latest`)) as Block
