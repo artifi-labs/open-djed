@@ -7,6 +7,7 @@ import type { OrderUTxOWithDatumAndBlock, UTxO } from './types'
 
 import fs from 'fs'
 import path from 'path'
+import { logger } from '../utils/logger'
 
 const blockfrostUrl = env.BLOCKFROST_URL
 const blockfrostId = env.BLOCKFROST_PROJECT_ID
@@ -51,7 +52,7 @@ export async function fetchWithRetry<T = unknown>(
         if (response.status === 429) {
           // rate limited
           const delay = delayMs * 2 ** i
-          console.log(`Rate limited, waiting ${delay}ms...`)
+          logger.warn(`Rate limited, waiting ${delay}ms...`)
           await sleep(delay)
           continue
         }
@@ -69,7 +70,7 @@ export async function fetchWithRetry<T = unknown>(
       lastError = error as Error
       if (i === retries - 1) break
       const delay = delayMs * 2 ** i
-      console.log(`Attempt ${i + 1} failed, retrying in ${delay}ms...`, error)
+      logger.error(error, `Attempt ${i + 1} failed, retrying in ${delay}ms...`)
       await sleep(delay)
     }
   }

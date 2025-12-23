@@ -3,52 +3,33 @@ import { config } from '../../../lib/env'
 import { Data } from '@lucid-evolution/lucid'
 import { OrderDatum } from '@open-djed/data'
 import { prisma } from '../../../lib/prisma'
-import type { Block, UTxO, TransactionData, OrderUTxO, OrderUTxOWithDatum, Order } from '../types'
+import type { UTxO, TransactionData, OrderUTxO, OrderUTxOWithDatum, Order } from '../types'
 import { registry, blockfrost, processBatch, parseOrderDatum, sleep, blockfrostFetch } from '../utils'
 import { populateDbWithHistoricOrders } from './initialSync'
 
 /**
- * fetches new blocks from Blockfrost starting after the latest synced block
- * @param latestBlockHash hash of the latest synced block
- * @returns every block created after the latest synced block
+ * Fetches transactions from the order address using the `/addresses/{address}/transactions` endpoint.
+ * It will also handle pagination.
+ * @param fromBlock The block number to start fetching transactions from.
+ * @returns An array of transaction hashes.
  */
-async function fetchNewBlocks(latestBlockHash: string): Promise<Block[]> {
-  const blocks: Block[] = []
+async function fetchTransactionsFromAddress(fromBlock: number): Promise<string[]> {
+  const transactions: string[] = []
   let page = 1
   while (true) {
     const pageResult = (await blockfrostFetch(
-      `/blocks/${latestBlockHash}/next?page=${page}&count=100`,
-    )) as Block[]
+      `/addresses/${registry.orderAddress}/transactions?page=${page}&count=100&from=${fromBlock}`,
+    )) as { tx_hash: string }[]
 
     if (!Array.isArray(pageResult) || pageResult.length === 0) break
 
-    blocks.push(...pageResult)
+    transactions.push(...pageResult.map((tx) => tx.tx_hash))
     page++
 
     await sleep(50)
   }
-  logger.info(`Found ${blocks.length} new blocks`)
-  return blocks
-}
-
-/**
- * get every transaction present in a given set of blocks
- * @param blockHashes array of block hashes
- * @returns array with the transaction hashes of every transaction present in the blocks
- */
-async function fetchTransactionsFromBlocks(blockHashes: string[]): Promise<string[]> {
-  const blockTxs = await processBatch(
-    blockHashes,
-    async (hash) => {
-      const txs = (await blockfrostFetch(`/blocks/${hash}/txs`)) as string[]
-      return txs
-    },
-    config.BATCH_SIZE_MEDIUM,
-    config.BATCH_DELAY_MEDIUM,
-  )
-  const allTxs = blockTxs.flat()
-  logger.info(`Found ${allTxs.length} transactions`)
-  return allTxs
+  logger.info(`Found ${transactions.length} new transactions at the order address`)
+  return transactions
 }
 
 /**
@@ -146,19 +127,22 @@ async function processOrdersToInsert(utxos: OrderUTxOWithDatum[]) {
 /**
  * update the latest block in the database
  * @param latestSyncedBlock latest synced block
- * @param newBlocks array of new blocks
+ * @param newOrders array of new orders
  * @returns latest synced block
  */
-async function updateLatestBlock(latestSyncedBlock: { id: number }, newBlocks: Block[]) {
-  if (newBlocks.length === 0) return latestSyncedBlock
+async function updateLatestBlock(latestSyncedBlock: { id: number }, newOrders: Order[]) {
+  if (newOrders.length === 0) return latestSyncedBlock
 
-  const latestBlock = newBlocks[newBlocks.length - 1]
-  if (latestBlock) {
+  const latestOrder = newOrders.reduce((latest, current) => {
+    return latest.slot > current.slot ? latest : current
+  })
+
+  if (latestOrder) {
     await prisma.block.update({
       where: { id: latestSyncedBlock.id },
-      data: { latestBlock: latestBlock.hash, latestSlot: latestBlock.slot },
+      data: { latestBlock: latestOrder.block, latestSlot: latestOrder.slot },
     })
-    logger.info(`New latest block: ${latestBlock.hash}`)
+    logger.info(`New latest block: ${latestOrder.block}`)
   }
 
   return latestSyncedBlock
@@ -173,46 +157,35 @@ async function updateLatestBlock(latestSyncedBlock: { id: number }, newBlocks: B
 export async function syncNewOrders() {
   logger.info('=== Syncing New Orders ===')
 
-  const latestSyncedBlock = await prisma.block.findFirst()
+  let latestSyncedBlock = await prisma.block.findFirst()
   if (!latestSyncedBlock) {
     logger.warn('No synced block found in database, skipping. performing initial sync...')
     await populateDbWithHistoricOrders()
-    return { id: 0, latestBlock: '', latestSlot: 0 }
+    latestSyncedBlock = await prisma.block.findFirst()
+    if (!latestSyncedBlock) {
+      logger.error('Initial sync failed to create a block record.')
+      return { id: 0, latestBlock: '', latestSlot: 0 }
+    }
   }
-  logger.info(`Latest synced block: ${latestSyncedBlock.latestBlock}`)
+  logger.info(`Latest synced block: ${latestSyncedBlock.latestBlock} at slot ${latestSyncedBlock.latestSlot}`)
 
-  const tip = (await blockfrostFetch('/blocks/latest')) as Block
-
-  const newBlocks = await fetchNewBlocks(latestSyncedBlock.latestBlock)
-  if (newBlocks.length === 0) {
-    logger.info('No new blocks to process')
-    return latestSyncedBlock
-  }
-
-  const finalizedBlocks = newBlocks.filter((b) => tip.slot - b.slot >= config.SAFETY_MARGIN)
-  if (finalizedBlocks.length === 0) {
-    logger.info('No finalized blocks to process yet')
-    return latestSyncedBlock
-  }
-
-  const blockHashes = finalizedBlocks.map((block) => block.hash)
-  const transactions = await fetchTransactionsFromBlocks(blockHashes)
+  const transactions = await fetchTransactionsFromAddress(Number(latestSyncedBlock.latestSlot) + 1)
   if (transactions.length === 0) {
     logger.info('No new transactions since last sync')
-    return updateLatestBlock(latestSyncedBlock, finalizedBlocks)
+    return latestSyncedBlock
   }
 
   const orderUTxOs = await fetchOrderUTxOs(transactions)
   if (orderUTxOs.length === 0) {
     logger.info('No order UTxOs in new blocks')
-    return updateLatestBlock(latestSyncedBlock, finalizedBlocks)
+    return latestSyncedBlock
   }
 
   const orderUTxOsWithData: OrderUTxOWithDatum[] = await enrichUTxOsWithData(orderUTxOs)
   const ordersToInsert: Order[] = await processOrdersToInsert(orderUTxOsWithData)
   if (ordersToInsert.length === 0) {
     logger.info('No orders to insert')
-    return updateLatestBlock(latestSyncedBlock, finalizedBlocks)
+    return latestSyncedBlock
   }
 
   await prisma.order.createMany({
@@ -222,13 +195,5 @@ export async function syncNewOrders() {
 
   logger.info(`Successfully inserted ${ordersToInsert.length} new orders`)
 
-  const latestBlock = finalizedBlocks[finalizedBlocks.length - 1]
-  if (latestBlock) {
-    await prisma.block.update({
-      where: { id: latestSyncedBlock.id },
-      data: { latestBlock: latestBlock.hash },
-    })
-    logger.info(`New latest block: ${latestBlock.hash}`)
-  }
-  return latestSyncedBlock
+  return updateLatestBlock(latestSyncedBlock, ordersToInsert)
 }

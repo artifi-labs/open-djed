@@ -8,7 +8,7 @@ import { processBatch, parseOrderDatum, registry, blockfrost, blockfrostFetch } 
 export const populateDbWithHistoricOrders = async () => {
   const start = Date.now()
 
-  logger.info('Fetching all transaction...')
+  logger.info('Fetching all transactions...')
   const everyOrderTx: Transaction[] = []
   let txPage = 1
   while (true) {
