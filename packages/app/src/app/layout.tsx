@@ -63,7 +63,7 @@ export const metadata: Metadata = {
     siteName: APP_NAME,
     images: [
       {
-        url: `${OPEN_DJED_URL}/logos/artifi_banner.png`,
+        url: `${OPEN_DJED_URL}/logos/opendjed-banner.png`,
         width: 512,
         height: 512,
         alt: `${APP_NAME} Banner`,
@@ -75,7 +75,7 @@ export const metadata: Metadata = {
     card: "summary",
     title: `${APP_NAME}`,
     description: `Mint and burn DJED, Cardano's overcollateralized stablecoin, with our open-source platform. Transparent alternative to DJED.xyz - accessible 24/7 anywhere.`,
-    images: [`${OPEN_DJED_URL}/logos/artifi_banner.png`],
+    images: [`${OPEN_DJED_URL}/logos/opendjed-banner.png`],
     creator: TWITTER_HANDLE,
     site: TWITTER_URL,
   },
