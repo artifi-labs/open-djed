@@ -45,7 +45,7 @@ export const Modal: React.FC<ModalProps> = ({
       >
         {/* Modal */}
         <div
-          className={`bg-surface-secondary border-gradient border-color-gradient rounded-8 flex sm:max-h-[85vh], relative max-h-[85vh] max-w-full min-w-xs flex-col overflow-auto p-42 sm:max-w-200 ${className} `}
+          className={`bg-surface-secondary border-gradient border-color-gradient rounded-8 sm:max-h-[85vh], relative flex max-h-[85vh] max-w-full min-w-xs flex-col overflow-auto p-42 sm:max-w-200 ${className} `}
           onClick={(e) => e.stopPropagation()}
         >
           <div className="sticky top-0 z-10 flex items-center justify-between pb-16">
