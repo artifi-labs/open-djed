@@ -171,4 +171,29 @@ export const sanitizeNumberInput = (v: string) =>
 
 export const formatToken = (v: number, token: Token) =>
   `${v} ${capitalize(token)}`
+
 export const formatUSD = (v: number) => `$${v}`
+
+/**
+ * Checks if a value is considered "empty" for financial inputs.
+ *
+ * A value is considered empty if it is:
+ * - null or undefined
+ * - a string that is empty, contains only whitespace, or represents the number 0
+ * - a number that is equal to 0
+ *
+ * @param val - The value to check
+ * @returns True if the value is empty, false otherwise
+ */
+export const isEmptyValue = (val: unknown) => {
+  if (val === null || val === undefined) return true
+  if (typeof val === "string") {
+    const t = val.trim()
+    if (t === "") return true
+    const n = Number(t)
+    if (!Number.isNaN(n)) return n === 0
+    return false
+  }
+  if (typeof val === "number") return val === 0
+  return false
+}

@@ -1,5 +1,4 @@
 import "./styles/globals.css"
-import "@fortawesome/fontawesome-free/css/all.min.css"
 import { Poppins } from "next/font/google"
 import { getLoaderData } from "@/lib/loader"
 import { Providers } from "./providers"
@@ -26,7 +25,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${poppins.variable} bg-[#101e2b]`}
+      className={`${poppins.variable} bg-background-primary`}
     >
       <body
         className={`${poppins.className} relative flex min-h-screen flex-col antialiased`}

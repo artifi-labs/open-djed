@@ -5,9 +5,10 @@ import clsx from "clsx"
 import Divider from "../Divider"
 import Icon, { type IconName } from "../Icon"
 import Tag from "../Tag"
-import Asset from "../Asset"
-import type { AssetProps } from "../Asset"
+import ButtonIcon from "../ButtonIcon"
+import Asset, { type AssetProps } from "../Asset"
 import Button from "../Button"
+import { sanitizeNumberInput } from "@/lib/utils"
 
 type InputStatus = "default" | "warning" | "error" | "success"
 
@@ -19,12 +20,23 @@ export type TransactionInputProps = {
   tagTrailingIcon?: IconName
   suffix?: string
   asset?: AssetProps
+  buttonIcon?: boolean
   trailingIcon?: IconName
-  amount?: string
+  availableAmount?: string
+  hasAvailableAmount?: boolean
+  maxAmount?: string
+  hasMaxAmount?: boolean
   status?: InputStatus
   disabled?: boolean
   hasMaxAndHalfActions?: boolean
-}
+  inputDisabled?: boolean
+  value?: string
+  defaultValue?: string
+  assetIcon?: IconName
+  onValueChange?: (value: string) => void
+  onHalfClick?: () => void
+  onMaxClick?: () => void
+} & React.InputHTMLAttributes<HTMLInputElement>
 
 const TransactionInput: React.FC<TransactionInputProps> = ({
   leadingIcon,
@@ -34,12 +46,36 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
   tagTrailingIcon,
   suffix,
   asset,
+  buttonIcon,
   trailingIcon,
-  amount,
+  availableAmount,
+  hasAvailableAmount = true,
+  maxAmount,
+  hasMaxAmount = false,
   status = "default",
   disabled = false,
-  hasMaxAndHalfActions = false,
+  hasMaxAndHalfActions = true,
+  inputDisabled = false,
+  value,
+  defaultValue = "",
+  assetIcon,
+  onValueChange,
+  //onAssetClick, // TODO: CHECK THIS, should be used in Actions component
+  onHalfClick,
+  onMaxClick,
+  ...props
 }) => {
+  const [internalValue, setInternalValue] = React.useState(defaultValue)
+  const displayedValue = value !== undefined ? value : internalValue
+  const inputValue = displayedValue === "0" ? "" : displayedValue
+
+  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const sanitized = sanitizeNumberInput(e.target.value)
+    if (sanitized === displayedValue) return
+    if (value === undefined) setInternalValue(sanitized)
+    onValueChange?.(sanitized)
+  }
+
   const baseClasses =
     "border-gradient-b rounded-b-4 flex w-full flex-col gap-12 p-12 bg-surface-primary"
 
@@ -72,6 +108,11 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
     disabled ? "text-standalone-text-disabled" : "text-tertiary",
   )
 
+  const amountTextClasses = clsx(
+    "text-xxs",
+    disabled ? "text-standalone-text-disabled" : "text-tertiary",
+  )
+
   const containerClasses = clsx(
     baseClasses,
     disabled
@@ -88,9 +129,13 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
         {/* Input */}
         <input
           type="text"
+          inputMode="decimal"
           placeholder={placeholder}
           className={inputClasses}
-          disabled={disabled}
+          disabled={disabled || inputDisabled}
+          value={inputValue}
+          onChange={handleOnChange}
+          {...props}
         />
 
         {/* Tag */}
@@ -109,14 +154,24 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
         {suffix && <span className="text-xxs">{suffix}</span>}
 
         {/* Asset */}
-        {asset && <Asset {...asset} />}
+        {asset && <Asset buttonIcon={assetIcon} {...asset} />}
+
+        {/* Button Icon */}
+        {buttonIcon && (
+          <ButtonIcon
+            variant="onlyIcon"
+            size="tiny"
+            icon="Arrows"
+            disabled={disabled}
+          />
+        )}
 
         {/* Trailing Icon */}
         {trailingIcon && <Icon name={trailingIcon} />}
       </div>
 
       <div className="text-primary flex w-full items-center justify-between text-xs">
-        {hasMaxAndHalfActions && (
+        {hasMaxAndHalfActions && availableAmount && (
           <div className="flex gap-8">
             {/* Half */}
             <Button
@@ -130,6 +185,7 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
                   ? "text-standalone-text-disabled"
                   : "hover:text-nocolor-text-hover",
               )}
+              onClick={onHalfClick}
             />
 
             {/* Divider */}
@@ -147,20 +203,21 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
                   ? "text-standalone-text-disabled"
                   : "hover:text-nocolor-text-hover",
               )}
+              onClick={onMaxClick}
             />
           </div>
         )}
 
-        {/* Amount */}
-        {amount && (
-          <span
-            className={clsx(
-              "text-xxs flex flex-row items-center justify-center gap-1 pr-8 leading-none",
-              disabled ? "text-standalone-text-disabled" : "text-tertiary",
-            )}
-          >
-            Available: {amount}
+        {/* Available Amount */}
+        {hasAvailableAmount && availableAmount && (
+          <span className={amountTextClasses}>
+            Available: {availableAmount}
           </span>
+        )}
+
+        {/* Max Amount */}
+        {hasMaxAmount && maxAmount && (
+          <span className={amountTextClasses}>Max: {maxAmount}</span>
         )}
       </div>
     </div>

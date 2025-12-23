@@ -21,20 +21,19 @@ export function ReserveGraph({
       label: "Min",
       value: minRatioValue,
       position: "top-full mt-1",
-      style: "w-1 h-5 bg-black dark:bg-white",
+      style: "w-1 h-5 bg-white",
     },
     {
       label: "Max",
       value: maxRatioValue,
       position: "top-full mt-1",
-      style: "w-1 h-5 bg-black dark:bg-white",
+      style: "w-1 h-5 bg-white",
     },
     {
       label: "Current",
       value: currentRatioValue,
       position: "bottom-full mb-1",
-      style:
-        "w-5 h-5 rounded-full border-2 border-black bg-white dark:bg-black dark:border-white",
+      style: "w-5 h-5 rounded-full bg-white",
       tooltipModalClass: "py-4",
     },
   ]
@@ -73,7 +72,7 @@ export function ReserveGraph({
                 <div className="relative flex flex-col items-center justify-center">
                   <div className={style} />
                   <div
-                    className={`absolute text-xs font-semibold text-black dark:text-white ${position} transition-transform group-hover:scale-110`}
+                    className={`text-primary absolute text-xs font-semibold ${position} transition-transform group-hover:scale-110`}
                   >
                     {label}
                   </div>
