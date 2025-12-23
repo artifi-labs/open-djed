@@ -11,7 +11,7 @@ export type BaseCardProps = {
 } & React.HTMLAttributes<HTMLDivElement>
 
 const BaseCard: React.FC<BaseCardProps> = ({
-  padding = "p-[24px]",
+  padding = "desktop:p-24 p-16",
   backgroundColor = "bg-surface-card",
   border = "border-gradient border-color-gradient",
   className,
