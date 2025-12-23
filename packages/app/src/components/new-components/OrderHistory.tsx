@@ -36,6 +36,7 @@ interface OrderHistoryProps {
   currentPage?: number
   onPageChange?: (page: number) => void
   serverSidePagination?: boolean
+  handleClearFilters?: () => void
 }
 
 const headersDesktop: HeaderItem[] = [
@@ -398,6 +399,7 @@ const MobileCell = ({ order }: { order: Order }) => {
 const OrderHistory: React.FC<OrderHistoryProps> = ({
   data,
   filters,
+  handleClearFilters,
   totalCount,
   currentPage,
   onPageChange,
@@ -466,19 +468,30 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({
           {/* TITLE & DESCRIPTION */}
           <div className="flex flex-col gap-6">
             <p className="text-lg font-semibold">
-              {filters ? "No orders to display." : "No orders to display yet."}
+              {filters
+                ? "No orders match your filters"
+                : "No orders to display yet"}
             </p>
 
             <p className="text-sm">
               {filters
-                ? "No orders found with the requested filter."
-                : "Looks like this wallet hasn't made any trades."}
+                ? "Try adjusting or clearing your filters to see more results"
+                : "Orders will appear here after your first trade"}
             </p>
           </div>
 
-          <Link href={"/"}>
-            <Button text="Mint & Burn Now" variant="accent" size="small" />
-          </Link>
+          {filters ? (
+            <Button
+              text="Clear all filters"
+              variant="secondary"
+              size="small"
+              onClick={handleClearFilters}
+            />
+          ) : (
+            <Link href={"/"}>
+              <Button text="Mint & Burn Now" variant="accent" size="small" />
+            </Link>
+          )}
         </div>
       </BaseCard>
     )
