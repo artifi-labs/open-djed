@@ -153,6 +153,7 @@ export const shortenString = (text: string, start = 4, end = 6): string => {
  * - Converts commas (`,`) to dots (`.`)
  * - Allows only digits (`0–9`) and a single dot (`.`)
  * - Removes any extra dots after the first one
+ * - Adds a leading zero if the value starts with a dot (e.g., ".5" becomes "0.5")
  *
  * @param {string} value - Raw input value from the user
  * @returns {string} A sanitized numeric string
@@ -160,14 +161,22 @@ export const shortenString = (text: string, start = 4, end = 6): string => {
  * @example
  * sanitizeNumberInput("1,5")   // "1.5"
  * sanitizeNumberInput("1.2.3") // "1.23"
- * sanitizeNumberInput(",5")    // ".5"
+ * sanitizeNumberInput(",5")    // "0.5"
  * sanitizeNumberInput("1a,2b") // "1.2"
+ * sanitizeNumberInput(".1231") // "0.1231"
  */
-export const sanitizeNumberInput = (v: string) =>
-  v
+export const sanitizeNumberInput = (v: string) => {
+  const sanitized = v
     .replace(/,/g, ".")
     .replace(/[^0-9.]/g, "")
     .replace(/(\..*)\./g, "$1")
+
+  if (sanitized.startsWith(".")) {
+    return "0" + sanitized
+  }
+
+  return sanitized
+}
 
 export const formatToken = (v: number, token: Token) =>
   `${v} ${capitalize(token)}`
@@ -196,4 +205,18 @@ export const isEmptyValue = (val: unknown) => {
   }
   if (typeof val === "number") return val === 0
   return false
+}
+
+/** Rounds a number to a specified number of decimal places.
+ *
+ * @param value - The number to round
+ * @param decimals - The number of decimal places to round to (default is 4)
+ * @returns The rounded number
+ */
+export const roundToDecimals = (
+  value: number,
+  decimals: number = 4,
+): number => {
+  const factor = Math.pow(10, decimals)
+  return Math.round(value * factor) / factor
 }
