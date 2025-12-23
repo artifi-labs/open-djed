@@ -8,7 +8,7 @@ type SkrimProps = {
 const Skrim: React.FC<SkrimProps> = ({ className, children }) => {
   return (
     <div
-      className={`bg-skrim fixed inset-0 flex h-full w-full opacity-80 ${className || ""} `}
+      className={`bg-skrim fixed inset-0 z-30 flex h-full w-full opacity-80 ${className || ""} `}
     >
       {children}
     </div>

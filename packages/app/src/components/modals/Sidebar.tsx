@@ -2,6 +2,7 @@
 import React from "react"
 import Modal from "./Modal"
 import clsx from "clsx"
+import ButtonIcon from "../ButtonIcon"
 
 type SidePanelProps = {
   title: string
@@ -24,11 +25,22 @@ export const Sidebar: React.FC<SidePanelProps> = ({
   children,
   width,
 }) => {
+  const baseHeaderAction = headerAction ?? (
+    <ButtonIcon
+      icon="Close"
+      size="medium"
+      variant="onlyIcon"
+      name="Close-Sidebar"
+      aria-label="Close sidebar"
+      onClick={onClose}
+    />
+  )
+
   return (
     <Modal
       title={title}
       logo={logo}
-      headerAction={headerAction}
+      headerAction={baseHeaderAction}
       closeButton={closeButton}
       isOpen={isOpen}
       onClose={onClose}
@@ -38,6 +50,8 @@ export const Sidebar: React.FC<SidePanelProps> = ({
         width ?? "w-full sm:w-[350px] lg:w-[460px]",
         isOpen ? "translate-x-0" : "translate-x-full",
       )}
+      border="border-gradient border-color-primary"
+      hasCloseButton={false}
     >
       {children}
     </Modal>

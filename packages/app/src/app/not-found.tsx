@@ -26,7 +26,21 @@ export const metadata: Metadata = {
 
 export default function NotFound() {
   return (
-    <main className="flex w-full flex-1 flex-col">
+    <main className="relative flex w-full flex-1 flex-col overflow-hidden">
+      <div className="pointer-events-none fixed inset-0 -z-10 h-full w-full">
+        <picture>
+          <source
+            srcSet="/backgrounds/not-found/illustration-mobile.svg"
+            media="(max-width: 767px)"
+          />
+          <img
+            src="/backgrounds/not-found/illustration.svg"
+            alt="404 illustration"
+            className="h-full w-full object-cover"
+          />
+        </picture>
+      </div>
+
       <PageFade>
         <ErrorPage
           statusCode={404}

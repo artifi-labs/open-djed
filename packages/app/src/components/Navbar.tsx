@@ -181,15 +181,27 @@ export const Navbar = () => {
             title="Menu"
             logo={true}
             headerAction={
-              <ButtonIcon
-                variant="outlined"
-                icon="Settings"
-                size="medium"
-                onClick={() => {
-                  openSettingsSidebar()
-                  setIsMobileSidebarOpen(false)
-                }}
-              />
+              <div className="flex gap-8">
+                <ButtonIcon
+                  variant="outlined"
+                  icon="Settings"
+                  size="medium"
+                  onClick={() => {
+                    openSettingsSidebar()
+                    setIsMobileSidebarOpen(false)
+                  }}
+                />
+                <div className="flex items-center">
+                  <ButtonIcon
+                    variant="onlyIcon"
+                    icon="Close"
+                    size="small"
+                    onClick={() => {
+                      setIsMobileSidebarOpen(false)
+                    }}
+                  />
+                </div>
+              </div>
             }
             isOpen={isMobileSidebarOpen}
             onClose={() => setIsMobileSidebarOpen(false)}

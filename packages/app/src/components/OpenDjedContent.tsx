@@ -39,23 +39,6 @@ const OpenDjedContent = () => {
           </li>
         </ul>
       </div>
-
-      {/* Our Mission */}
-      <div className="flex flex-col gap-12">
-        <h3 className="text-primary text-xl font-medium">Our Mission</h3>
-        <div className="flex flex-col gap-12">
-          <p>
-            Open DJED was built to solve accessibility and reliability issues in
-            the original app, ensuring everyone can interact with DJED
-            seamlessly and transparently.
-          </p>
-          <p>
-            Artifi Labs creates open, permissionless tools for the Cardano
-            ecosystem-Open DJED is just the beginning. Join us in reshaping DeFi
-            on Cardano - openly, transparently, together.
-          </p>
-        </div>
-      </div>
     </div>
   )
 }
