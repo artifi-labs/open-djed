@@ -4,6 +4,7 @@ import { Data } from "@lucid-evolution/lucid"
 import { OrderDatum } from "@open-djed/data"
 import { prisma } from "../../../lib/prisma"
 import type {
+  Transaction,
   UTxO,
   TransactionData,
   OrderUTxO,
@@ -34,7 +35,7 @@ async function fetchTransactionsFromAddress(
   while (true) {
     const pageResult = (await blockfrostFetch(
       `/addresses/${registry.orderAddress}/transactions?page=${page}&count=100&from=${fromBlock}`,
-    )) as { tx_hash: string }[]
+    )) as Transaction[]
 
     if (!Array.isArray(pageResult) || pageResult.length === 0) break
 
@@ -198,13 +199,12 @@ export async function syncNewOrders() {
       return { id: 0, latestBlock: "", latestSlot: 0 }
     }
   }
-  logger.info(
-    `Latest synced block: ${latestSyncedBlock.latestBlock} at slot ${latestSyncedBlock.latestSlot}`,
-  )
 
-  const transactions = await fetchTransactionsFromAddress(
-    Number(latestSyncedBlock.latestSlot) + 1,
-  )
+  const syncedBlock = (await blockfrostFetch(`/blocks/${latestSyncedBlock.latestBlock}`)) as {
+    height: number
+  }
+
+  const transactions = await fetchTransactionsFromAddress(syncedBlock.height)
   if (transactions.length === 0) {
     logger.info("No new transactions since last sync")
     return latestSyncedBlock
