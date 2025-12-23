@@ -3,11 +3,7 @@
 
 User-agent: *
 Allow: /
-
-# Main application pages
 Allow: /orders
-Allow: /terms
-Allow: /privacy
 
 # Static assets
 Allow: /*.css$

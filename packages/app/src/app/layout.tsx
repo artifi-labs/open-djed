@@ -67,7 +67,7 @@ export const metadata: Metadata = {
         url: `${OPEN_DJED_URL}/logos/artifi_banner.png`,
         width: 512,
         height: 512,
-        alt: `${APP_NAME}`,
+        alt: `${APP_NAME} Banner`,
       },
     ],
     locale: "en_US",
