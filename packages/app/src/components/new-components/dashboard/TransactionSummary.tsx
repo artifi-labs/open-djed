@@ -5,6 +5,7 @@ import { type useMintBurnAction } from "./useMintBurnAction"
 import BaseCard from "../card/BaseCard"
 import Divider from "../Divider"
 import { useTransactionSummary } from "./useTransactionSummary"
+import { isEmptyValue } from "@/lib/utils"
 
 export type TransactionSummaryProps = {
   action: ReturnType<typeof useMintBurnAction>
@@ -51,11 +52,11 @@ const TransactionSummaryItem: React.FC<TransactionItem> = ({
 
 const TransactionSummary: React.FC<TransactionSummaryProps> = ({ action }) => {
   const items = useTransactionSummary({ action })
-
   const totalPay = action.payValues[action.activePayToken]
+  const isContentBlured = isEmptyValue(totalPay)
 
   const BlurContent = React.useMemo(() => {
-    if (totalPay === 0) {
+    if (isContentBlured) {
       return (
         <div className="flex h-full flex-col justify-center gap-6 text-center">
           <p className="text-md font-semibold">Transaction Summary</p>
@@ -72,7 +73,7 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({ action }) => {
   return (
     <BaseCard
       className="desktop:p-24 p-16"
-      overlay={totalPay === 0}
+      overlay={isContentBlured}
       overlayContent={BlurContent || undefined}
     >
       <div className="desktop:gap-24 flex flex-col gap-16">

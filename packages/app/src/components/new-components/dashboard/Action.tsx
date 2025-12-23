@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import Button from "../Button"
-import { capitalize } from "@/lib/utils"
+import { capitalize, isEmptyValue } from "@/lib/utils"
 import type { ActionType } from "./actionConfig"
 import InputAction from "./InputAction"
 import type { Token } from "@/lib/tokens"
@@ -21,8 +21,8 @@ export type ActionProps = {
   }
   bothSelected: boolean
   onBothSelectedChange: (v: boolean) => void
-  payValues: Record<Token, number>
-  receiveValues: Record<Token, number>
+  payValues: Record<Token, string | number>
+  receiveValues: Record<Token, string | number>
   activePayToken: Token
   activeReceiveToken: Token
   onPayValueChange: (t: Token, value: string) => void
@@ -58,8 +58,8 @@ const Action: React.FC<ActionProps> = ({
 }) => {
   const actionText = capitalize(actionType)
 
-  const payEmpty = Object.values(payValues).every((v) => !v || v === 0)
-  const receiveEmpty = Object.values(receiveValues).every((v) => !v || v === 0)
+  const payEmpty = Object.values(payValues).every(isEmptyValue)
+  const receiveEmpty = Object.values(receiveValues).every(isEmptyValue)
 
   const buttonText = !hasWalletConnected
     ? `Connect Wallet to ${actionText}`
