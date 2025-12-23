@@ -43,8 +43,8 @@ import {
   ValidationError,
 } from "./errors"
 import JSONbig from "json-bigint"
-import { readFile } from "fs/promises"
-import { join } from "path"
+import { getOrdersByAddressKeys } from "@open-djed/db"
+import type { Order } from "@open-djed/db/generated/prisma/client"
 
 //NOTE: We only need this cache for transactions, not for other requests. Using this for `protocol-data` sligltly increases the response time.
 const requestCache = new TTLCache<string, { value: Response; expiry: number }>({
@@ -165,6 +165,77 @@ const getOrderUTxOs = async () => {
   return orderUTxOs
 }
 
+type ActionFields =
+  | { MintDJED: { djedAmount: bigint; adaAmount: bigint } }
+  | { BurnDJED: { djedAmount: bigint } }
+  | { MintSHEN: { adaAmount: bigint; shenAmount: bigint } }
+  | { BurnSHEN: { shenAmount: bigint } }
+
+const parseActionFields = (actionFields: ActionFields) => {
+  if ("MintDJED" in actionFields) {
+    return {
+      action: "Mint" as const,
+      token: "DJED" as const,
+      paid: actionFields.MintDJED.adaAmount,
+      received: actionFields.MintDJED.djedAmount,
+    }
+  }
+
+  if ("BurnDJED" in actionFields) {
+    return {
+      action: "Burn" as const,
+      token: "DJED" as const,
+      paid: actionFields.BurnDJED.djedAmount,
+      received: null,
+    }
+  }
+
+  if ("MintSHEN" in actionFields) {
+    return {
+      action: "Mint" as const,
+      token: "SHEN" as const,
+      paid: actionFields.MintSHEN.adaAmount,
+      received: actionFields.MintSHEN.shenAmount,
+    }
+  }
+
+  if ("BurnSHEN" in actionFields) {
+    return {
+      action: "Burn" as const,
+      token: "SHEN" as const,
+      paid: actionFields.BurnSHEN.shenAmount,
+      received: null,
+    }
+  }
+
+  throw new Error("Unknown actionFields variant")
+}
+
+const parseOrderUTxOsToOrder = (orderUTxO: OrderUTxO): Order => {
+  console.log("orderUTxO: ", orderUTxO)
+  const { txHash, outputIndex, orderDatum } = orderUTxO
+
+  const { action, token, paid, received } = parseActionFields(
+    orderDatum.actionFields,
+  )
+
+  return {
+    status: "Created",
+    fees: null,
+    action,
+    address: orderDatum.address,
+    paid: paid,
+    received: received,
+    token,
+    id: Number(orderDatum.creationDate),
+    tx_hash: txHash,
+    out_index: outputIndex,
+    block: "",
+    slot: 0n,
+    orderDate: new Date(Number(orderDatum.creationDate)),
+  }
+}
+
 export const getChainTime = async () => {
   const cached = chainDataCache.get<number>("now")
   if (cached) return cached
@@ -207,57 +278,6 @@ async function completeTransaction(createOrderFn: () => TxBuilder) {
     }
     throw err
   }
-}
-
-// this will be removed when db is integrated
-export type Order = {
-  id: number
-  address: {
-    paymentKeyHash: string[]
-    stakeKeyHash: string[][][]
-  }
-  tx_hash: string
-  out_index: number
-  block: string
-  slot: number
-  action: "Mint" | "Burn"
-  token: "DJED" | "SHEN"
-  paid?: bigint
-  fees?: bigint
-  received?: bigint
-  orderDate: Date
-  status: string
-}
-type OrderFromFile = Omit<Order, "orderDate" | "paid" | "fees" | "received"> & {
-  orderDate: string
-  paid?: string
-  fees?: string
-  received?: string
-}
-
-// this will be removed when db is integrated
-function parseOrder(order: OrderFromFile): Order {
-  return {
-    ...order,
-    orderDate: new Date(order.orderDate),
-    paid: order.paid ? BigInt(order.paid) : undefined,
-    fees: order.fees ? BigInt(order.fees) : undefined,
-    received: order.received ? BigInt(order.received) : undefined,
-  }
-}
-
-// this will be removed when db is integrated
-async function readOrdersFromFile<T = unknown>(): Promise<T[]> {
-  const filePath = join(__dirname, "./mock_orders.json")
-  const fileContents = await readFile(filePath, "utf-8")
-
-  const data = JSON.parse(fileContents)
-
-  if (!Array.isArray(data)) {
-    throw new Error("Invalid orders file: expected an array")
-  }
-
-  return data as T[]
 }
 
 const tokenSchema = z.enum(["DJED", "SHEN"]).openapi({ example: "DJED" })
@@ -654,9 +674,8 @@ const app = new Hono()
           )
         }
 
-        // fix this after integration with db
-        const fileOrders = await readOrdersFromFile<OrderFromFile>()
-        const allOrders: Order[] = fileOrders.map(parseOrder)
+        const pendingOrders = await getOrderUTxOs()
+
         const usedAddressesKeys = json.usedAddresses.map((addr) => {
           try {
             const paymentKeyHash = paymentCredentialOf(addr)
@@ -669,17 +688,25 @@ const app = new Hono()
             return { paymentKeyHash: "", stakeKeyHash: "" }
           }
         })
-        const filteredOrders = allOrders.filter((order) => {
-          const paymentKeyHash = order.address.paymentKeyHash?.[0]
-          const stakeKeyHash = order.address.stakeKeyHash?.[0]?.[0]?.[0]
-          if (!paymentKeyHash || !stakeKeyHash) return false
-          return usedAddressesKeys.some(
+
+        const filteredOrders = pendingOrders.filter((order) =>
+          usedAddressesKeys.some(
             (key) =>
-              key.paymentKeyHash === paymentKeyHash &&
-              key.stakeKeyHash === stakeKeyHash,
-          )
+              order.orderDatum.address.paymentKeyHash[0] ===
+                key.paymentKeyHash &&
+              order.orderDatum.address.stakeKeyHash[0][0][0] ===
+                key.stakeKeyHash,
+          ),
+        )
+
+        const parsedPendingOrders: Order[] = filteredOrders.map((order) => {
+          return parseOrderUTxOsToOrder(order)
         })
-        const sortedOrders = [...filteredOrders].sort(
+
+        const userOrders: Order[] =
+          await getOrdersByAddressKeys(usedAddressesKeys)
+
+        const sortedOrders = [...parsedPendingOrders, ...userOrders].sort(
           (a, b) => b.orderDate.getTime() - a.orderDate.getTime(),
         )
 
@@ -690,9 +717,11 @@ const app = new Hono()
         const endIndex = startIndex + limit
         const paginatedOrders = sortedOrders.slice(startIndex, endIndex)
 
+        const ordersToSend = [...paginatedOrders]
+
         return new Response(
           JSONbig.stringify({
-            orders: paginatedOrders,
+            orders: ordersToSend,
             pagination: {
               currentPage: page,
               totalPages: totalPages,
