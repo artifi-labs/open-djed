@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import React from "react"
 import clsx from "clsx"
 import Divider from "../Divider"
 import Icon, { type IconName } from "../Icon"
@@ -10,7 +10,7 @@ import Asset, { type AssetProps } from "../Asset"
 import Button from "../Button"
 import { sanitizeNumberInput } from "@/lib/utils"
 
-type InputStatus = "default" | "warning" | "error" | "success"
+export type InputStatus = "default" | "warning" | "error" | "success"
 
 export type TransactionInputProps = {
   leadingIcon?: IconName
@@ -68,19 +68,11 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
   const [internalValue, setInternalValue] = React.useState(defaultValue)
   const displayedValue = value !== undefined ? value : internalValue
   const inputValue = displayedValue === "0" ? "" : displayedValue
-  const [inputStatus, setInputStatus] = useState<InputStatus>(status)
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const sanitized = sanitizeNumberInput(e.target.value)
     if (sanitized === displayedValue) return
     if (value === undefined) setInternalValue(sanitized)
-    setInputStatus("default")
-    if (
-      (hasAvailableAmount && Number(sanitized) > Number(availableAmount)) ||
-      (hasMaxAmount && Number(sanitized) > Number(maxAmount))
-    ) {
-      setInputStatus("error")
-    }
     onValueChange?.(sanitized)
   }
 
@@ -125,7 +117,7 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
     baseClasses,
     disabled
       ? disabledClasses
-      : clsx(interactiveClasses, statusBorderClasses[inputStatus]),
+      : clsx(interactiveClasses, statusBorderClasses[status]),
   )
 
   return (
