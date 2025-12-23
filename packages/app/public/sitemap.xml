@@ -8,16 +8,9 @@
 <priority>1.0</priority>
 </url>
 
-<!-- DJED Page -->
+<!-- Orders Page -->
 <url>
-<loc>https://djed.artifex.finance/djed</loc>
-<changefreq>daily</changefreq>
-<priority>0.9</priority>
-</url>
-
-<!-- SHEN Page -->
-<url>
-<loc>https://djed.artifex.finance/shen</loc>
+<loc>https://djed.artifex.finance/orders</loc>
 <changefreq>daily</changefreq>
 <priority>0.9</priority>
 </url>

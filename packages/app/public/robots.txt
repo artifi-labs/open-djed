@@ -1,12 +1,11 @@
-# Open DJED | The open-source alternative to DJED.xyz
-# https://djed.artifex.finance/
+# Open DJED
+# https://djed.artifi.finance/
 
 User-agent: *
 Allow: /
 
 # Main application pages
-Allow: /djed
-Allow: /shen  
+Allow: /orders
 Allow: /terms
 Allow: /privacy
 
@@ -25,4 +24,4 @@ Disallow: /*?wallet=*
 Disallow: /*?address=*
 
 # Sitemaps
-Sitemap: https://djed.artifex.finance/sitemap.xml
+Sitemap: https://djed.artifi.finance/sitemap.xml
