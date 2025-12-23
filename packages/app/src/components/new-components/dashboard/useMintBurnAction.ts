@@ -14,6 +14,7 @@ import { signAndSubmitTx } from "@/lib/signAndSubmitTx"
 import { useToast } from "@/context/ToastContext"
 import { useEnv } from "@/context/EnvContext"
 import { registryByNetwork } from "@open-djed/registry"
+import { type InputStatus } from "../input-fields/TransactionInput"
 
 type ProtocolData = NonNullable<ReturnType<typeof useProtocolData>["data"]>
 type ActionData = ReturnType<ProtocolData["tokenActionData"]>
@@ -226,6 +227,8 @@ export function useMintBurnAction(defaultActionType: ActionType) {
   const hasWalletConnected = Boolean(wallet)
   const registry = registryByNetwork[network]
 
+  const [inputStatus, setInputStatus] = React.useState<InputStatus>("default")
+
   const {
     payValues,
     setPayValues,
@@ -308,10 +311,13 @@ export function useMintBurnAction(defaultActionType: ActionType) {
       setActionData(result.actionData)
 
       if (wallet && numValue > maxAmount) {
+        setInputStatus("error")
         showToast({
           message: `The amount added is greater than the available balance.`,
           type: "error",
         })
+      } else if (inputStatus !== "default") {
+        setInputStatus("default")
       }
     },
     [calculateFromPayValue, setPayValues, setReceiveValues],
@@ -327,10 +333,13 @@ export function useMintBurnAction(defaultActionType: ActionType) {
       setActionData(result.actionData)
 
       if (wallet && numValue > maxAmount) {
+        setInputStatus("error")
         showToast({
           message: `The amount added is greater than the available balance.`,
           type: "error",
         })
+      } else if (inputStatus !== "default") {
+        setInputStatus("default")
       }
     },
     [calculateFromReceiveValue, setPayValues, setReceiveValues],
@@ -562,5 +571,7 @@ export function useMintBurnAction(defaultActionType: ActionType) {
     linkClicked,
     onLinkClick: handleLinkClick,
     maxAmount: maxAmount,
+    hasMaxAmount: wallet ? true : false,
+    inputStatus,
   }
 }

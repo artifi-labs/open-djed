@@ -2,7 +2,9 @@
 
 import * as React from "react"
 import Checkbox from "../Checkbox"
-import TransactionInput from "../input-fields/TransactionInput"
+import TransactionInput, {
+  type InputStatus,
+} from "../input-fields/TransactionInput"
 import ButtonIcon from "../ButtonIcon"
 import { useWallet } from "@/context/WalletContext"
 import type { Token } from "@/lib/tokens"
@@ -33,6 +35,7 @@ export type InputActionProps = {
   action: ActionType
   reserveBounds: ReserveBoundsType
   maxAmount?: number
+  inputStatus: InputStatus
 }
 
 export type TransactionInputGroupProps = {
@@ -54,6 +57,7 @@ export type TransactionInputGroupProps = {
   action: ActionType
   reserveBounds: ReserveBoundsType
   maxAmount?: number
+  inputStatus: InputStatus
 }
 
 const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
@@ -75,6 +79,7 @@ const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
   maxAmount,
   action,
   reserveBounds,
+  inputStatus,
 }) => {
   const { wallet } = useWallet()
   const walletConnected = wallet !== null
@@ -132,6 +137,7 @@ const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
         hasMaxAndHalfActions={hasMaxAndHalfActions}
         hasMaxAmount={hasMaxAmount}
         maxAmount={(maxAmount ?? 0).toString()}
+        status={inputStatus}
       />
     )
   }
@@ -186,6 +192,7 @@ const InputAction: React.FC<InputActionProps> = ({
   action,
   reserveBounds,
   maxAmount,
+  inputStatus,
 }) => {
   return (
     <div className="flex flex-col gap-12">
@@ -226,6 +233,7 @@ const InputAction: React.FC<InputActionProps> = ({
         action={action}
         reserveBounds={reserveBounds}
         maxAmount={maxAmount}
+        inputStatus={inputStatus}
       />
     </div>
   )

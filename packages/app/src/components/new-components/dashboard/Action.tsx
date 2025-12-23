@@ -7,6 +7,7 @@ import type { ActionType } from "./actionConfig"
 import InputAction from "./InputAction"
 import type { Token } from "@/lib/tokens"
 import { useReserveDetails } from "@/hooks/useReserveDetails"
+import { type InputStatus } from "../input-fields/TransactionInput"
 
 export type ActionProps = {
   actionType: ActionType
@@ -35,6 +36,8 @@ export type ActionProps = {
   linkClicked?: boolean
   onLinkClick?: () => void
   maxAmount?: number
+  inputStatus: InputStatus
+  hasMaxAmount?: boolean
 }
 
 const Action: React.FC<ActionProps> = ({
@@ -57,6 +60,8 @@ const Action: React.FC<ActionProps> = ({
   linkClicked,
   onLinkClick,
   maxAmount,
+  hasMaxAmount,
+  inputStatus,
 }) => {
   const actionText = capitalize(actionType)
 
@@ -87,8 +92,9 @@ const Action: React.FC<ActionProps> = ({
       onMaxClick,
       hasMaxAndHalfActions: true,
       hasAvailableAmount: false,
-      hasMaxAmount: true,
+      hasMaxAmount: hasMaxAmount,
       maxAmount: maxAmount,
+      inputStatus: inputStatus,
     },
     {
       key: "receive",
@@ -135,6 +141,7 @@ const Action: React.FC<ActionProps> = ({
           action={actionType}
           reserveBounds={reserveBounds}
           maxAmount={i.maxAmount}
+          inputStatus={inputStatus}
         />
       ))}
 

@@ -10,7 +10,7 @@ import Asset, { type AssetProps } from "../Asset"
 import Button from "../Button"
 import { sanitizeNumberInput } from "@/lib/utils"
 
-type InputStatus = "default" | "warning" | "error" | "success"
+export type InputStatus = "default" | "warning" | "error" | "success"
 
 export type TransactionInputProps = {
   leadingIcon?: IconName
