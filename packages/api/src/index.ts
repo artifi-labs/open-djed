@@ -43,6 +43,7 @@ import {
   ValidationError,
 } from './errors'
 import JSONbig from 'json-bigint'
+import { getOrdersByAddressKeys, type AddressKey } from '@open-djed/db'
 
 //NOTE: We only need this cache for transactions, not for other requests. Using this for `protocol-data` sligltly increases the response time.
 const requestCache = new TTLCache<string, { value: Response; expiry: number }>({ ttl: 10_000 })
@@ -175,6 +176,16 @@ async function completeTransaction(createOrderFn: () => TxBuilder) {
       }
     }
     throw err
+  }
+}
+
+function getAddressKey(addr: string): AddressKey {
+  try {
+    const paymentKeyHash = paymentCredentialOf(addr).hash
+    const stakeKeyHash = stakeCredentialOf(addr).hash
+    return { paymentKeyHash, stakeKeyHash }
+  } catch {
+    return { paymentKeyHash: '', stakeKeyHash: '' }
   }
 }
 
@@ -354,19 +365,11 @@ const app = new Hono()
       }
 
       try {
-        const allOrders = await getOrderUTxOs()
+        const allPendingOrders = await getOrderUTxOs()
 
-        const usedAddressesKeys = json.usedAddresses.map((addr) => {
-          try {
-            const paymentKeyHash = paymentCredentialOf(addr)
-            const stakeKeyHash = stakeCredentialOf(addr)
-            return { paymentKeyHash: paymentKeyHash.hash, stakeKeyHash: stakeKeyHash.hash }
-          } catch {
-            return { paymentKeyHash: '', stakeKeyHash: '' }
-          }
-        })
+        const usedAddressesKeys = json.usedAddresses.map(getAddressKey)
 
-        const filteredOrders = allOrders.filter((order) =>
+        const filteredPendingOrders = allPendingOrders.filter((order) =>
           usedAddressesKeys.some(
             (key) =>
               order.orderDatum.address.paymentKeyHash[0] === key.paymentKeyHash &&
@@ -374,9 +377,9 @@ const app = new Hono()
           ),
         )
 
-        console.log('Order:', filteredOrders)
+        console.log('Order:', filteredPendingOrders)
 
-        return new Response(JSONbig.stringify({ orders: filteredOrders }), {
+        return new Response(JSONbig.stringify({ orders: filteredPendingOrders }), {
           headers: { 'Content-Type': 'application/json' },
         })
       } catch (err) {
@@ -472,6 +475,72 @@ const app = new Hono()
         }
         console.error('Unhandled error:', err)
         return c.json({ error: 'InternalServerError', message: 'Something went wrong.' }, 500)
+      }
+    },
+  )
+  .post(
+    '/historical-orders',
+    cacheMiddleware,
+    describeRoute({
+      description: 'Get the historical orders',
+      tags: ['Action'],
+      responses: {
+        200: {
+          description: 'Successfully got the user historical orders',
+          content: {
+            'text/plain': {
+              example: 'Order',
+            },
+          },
+        },
+        400: {
+          description: 'Bad Request',
+          content: {
+            'text/plain': {
+              example: 'Bad Request',
+            },
+          },
+        },
+        500: {
+          description: 'Internal Server Error',
+          content: {
+            'text/plain': {
+              example: 'Internal Server Error',
+            },
+          },
+        },
+      },
+    }),
+    zValidator('json', z.object({ usedAddresses: z.array(z.string()) })),
+    async (c) => {
+      let json
+
+      try {
+        json = c.req.valid('json')
+        if (!json?.usedAddresses) {
+          throw new ValidationError('Missing hexAddress in request.')
+        }
+      } catch (e) {
+        console.error('Invalid or missing request payload.', e)
+        throw new ValidationError('Invalid or missing request payload.')
+      }
+
+      try {
+        const usedAddressesKeys = json.usedAddresses.map(getAddressKey)
+
+        const orders = await getOrdersByAddressKeys(usedAddressesKeys)
+
+        console.log('Order:', orders)
+
+        return new Response(JSONbig.stringify({ orders: orders }), {
+          headers: { 'Content-Type': 'application/json' },
+        })
+      } catch (err) {
+        if (err instanceof AppError) {
+          throw err
+        }
+        console.error('Unhandled error in orders endpoint:', err)
+        throw new InternalServerError()
       }
     },
   )
