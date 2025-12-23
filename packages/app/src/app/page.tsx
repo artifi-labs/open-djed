@@ -6,7 +6,7 @@ import { useMintBurnAction } from "@/components/new-components/dashboard/useMint
 import React, { useState } from "react"
 import Button from "@/components/new-components/Button"
 import ReserveDetails from "@/components/new-components/ReserveDetails"
-import Modal from "@/components/Modal"
+import Modal from "@/components/new-components/modals/Modal"
 import OpenDjedContent from "@/components/new-components/OpenDjedContent"
 
 export default function DashboardPage() {
@@ -32,9 +32,9 @@ export default function DashboardPage() {
 
       {/* Modal */}
       <Modal
+        title="What is Open DJED?"
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title="What is Open DJED?"
       >
         <OpenDjedContent />
       </Modal>

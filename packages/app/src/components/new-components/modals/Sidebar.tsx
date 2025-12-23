@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react"
-import { Modal } from "./Modal"
+import Modal from "./Modal"
 import { clsx } from "clsx"
 
 type SidePanelProps = {

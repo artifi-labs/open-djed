@@ -46,7 +46,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="border-light-text dark:border-dark-text sticky top-0 z-10 flex items-center justify-between pb-16">
-              <h2 className="text-h2 text-primary font-bold">{title}</h2>
+              <h2 className="text-primary font-bold">{title}</h2>
             </div>
 
             <div className="absolute top-12 right-12 z-20">
