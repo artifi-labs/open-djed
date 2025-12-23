@@ -1,13 +1,13 @@
 "use client"
 
-import Actions from "@/components/new-components/dashboard/Actions"
-import TransactionSummary from "@/components/new-components/dashboard/TransactionSummary"
-import { useMintBurnAction } from "@/components/new-components/dashboard/useMintBurnAction"
+import Actions from "@/components/dashboard/Actions"
+import TransactionSummary from "@/components/dashboard/TransactionSummary"
+import { useMintBurnAction } from "@/components/dashboard/useMintBurnAction"
 import React, { useState } from "react"
-import Button from "@/components/new-components/Button"
-import ReserveDetails from "@/components/new-components/ReserveDetails"
-import Modal from "@/components/new-components/modals/Modal"
-import OpenDjedContent from "@/components/new-components/OpenDjedContent"
+import Button from "@/components/Button"
+import ReserveDetails from "@/components/ReserveDetails"
+import Modal from "@/components/modals/Modal"
+import OpenDjedContent from "@/components/OpenDjedContent"
 
 export default function DashboardPage() {
   const action: ReturnType<typeof useMintBurnAction> = useMintBurnAction("Mint")

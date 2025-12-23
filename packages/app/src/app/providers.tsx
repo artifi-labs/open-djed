@@ -1,7 +1,6 @@
 "use client"
 
 import React, { useState } from "react"
-import { ThemeProvider } from "@/context/ThemeContext"
 import { ClientProvider } from "@/context/ApiClientContext"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { EnvProvider } from "@/context/EnvContext"
@@ -34,9 +33,7 @@ export const Providers = ({
           <ToastProvider>
             <WalletProvider>
               <SidebarProvider>
-                <ThemeProvider>
-                  <I18nProvider>{children}</I18nProvider>
-                </ThemeProvider>
+                <I18nProvider>{children}</I18nProvider>
               </SidebarProvider>
             </WalletProvider>
           </ToastProvider>

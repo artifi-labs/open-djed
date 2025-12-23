@@ -1,5 +1,5 @@
-import ErrorPage from "@/components/new-components/ErroPage"
-import PageFade from "@/components/new-components/PageFade"
+import ErrorPage from "@/components/ErroPage"
+import PageFade from "@/components/PageFade"
 import { OPEN_DJED_URL, APP_NAME } from "@/lib/constants"
 import { type Metadata } from "next"
 

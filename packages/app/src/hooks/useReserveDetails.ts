@@ -1,4 +1,4 @@
-import { type ReserveBoundsType } from "@/components/new-components/dashboard/useMintBurnAction"
+import { type ReserveBoundsType } from "@/components/dashboard/useMintBurnAction"
 import { maxReserveRatio, minReserveRatio } from "@open-djed/math"
 import { useProtocolData } from "./useProtocolData"
 
