@@ -21,7 +21,7 @@ const ReserveDetails = () => {
         </div>
       </BaseCard>
       <BaseCard>
-        <div className="flex w-full flex-col desktop:gap-24 gap-16">
+        <div className="desktop:gap-24 flex w-full flex-col gap-16">
           <div className="flex w-auto justify-between">
             <div className="inline-flex items-center gap-8">
               <span className="text-secondary text-xs">Current Ratio:</span>
