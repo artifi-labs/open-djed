@@ -21,19 +21,20 @@ export function ReserveGraph({
       label: "Min",
       value: minRatioValue,
       position: "top-full mt-1",
-      style: "w-1 h-5 bg-white",
+      style: "w-2 h-18 bg-primary rounded-full",
     },
     {
       label: "Max",
       value: maxRatioValue,
       position: "top-full mt-1",
-      style: "w-1 h-5 bg-white",
+      style: "w-2 h-18 bg-primary rounded-full",
     },
     {
       label: "Current",
       value: currentRatioValue,
       position: "bottom-full mb-1",
-      style: "w-5 h-5 rounded-full bg-white",
+      style:
+        "w-5 h-5 rounded-full bg-gradient-angular-2 border border-[var(--color-border-secondary)]",
       tooltipModalClass: "py-4",
     },
   ]
@@ -43,17 +44,17 @@ export function ReserveGraph({
       <div className="relative h-6 w-full overflow-visible rounded-lg">
         <div className="absolute top-1/2 left-0 z-10 flex h-3 w-full -translate-y-1/2 overflow-hidden rounded-lg">
           <div
-            className="bg-gradient-angular-1 rounded-l-lg transition-all duration-300 ease-in-out"
+            className="bg-border-primary rounded-l-full transition-all duration-300 ease-in-out"
             style={{ width: `${(minRatioValue / 10) * 100}%` }}
           />
           <div
-            className="bg-brand-primary transition-all duration-300 ease-in-out"
+            className="bg-gradient-angular-2 transition-all duration-300 ease-in-out"
             style={{
               width: `${((maxRatioValue - minRatioValue) / 10) * 100}%`,
             }}
           />
           <div
-            className="bg-gradient-angular-2 rounded-r-lg transition-all duration-300 ease-in-out"
+            className="bg-border-primary rounded-r-full transition-all duration-300 ease-in-out"
             style={{ width: `${100 - (maxRatioValue / 10) * 100}%` }}
           />
         </div>
@@ -72,7 +73,7 @@ export function ReserveGraph({
                 <div className="relative flex flex-col items-center justify-center">
                   <div className={style} />
                   <div
-                    className={`text-primary absolute text-xs font-semibold ${position} transition-transform group-hover:scale-110`}
+                    className={`text-secondary text-xxs absolute ${position} transition-transform group-hover:scale-110`}
                   >
                     {label}
                   </div>

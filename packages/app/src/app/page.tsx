@@ -11,7 +11,7 @@ export default function DashboardPage() {
   const action: ReturnType<typeof useMintBurnAction> = useMintBurnAction("Mint")
 
   return (
-    <div className="desktop:pt-32 desktop:pb-64 mx-auto w-full max-w-[1120px] pt-16 pb-16">
+    <div className="desktop:pt-32 desktop:pb-64 mx-auto w-full max-w-280 pt-16 pb-16">
       {/* Header */}
       <div className="desktop:flex-row flex flex-col justify-between">
         <div className="flex items-center gap-6">
