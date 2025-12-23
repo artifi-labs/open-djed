@@ -478,7 +478,7 @@ const app = new Hono()
       }
     },
   )
-  .get(
+  .post(
     '/historical-orders',
     cacheMiddleware,
     describeRoute({
