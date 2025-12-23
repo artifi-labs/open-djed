@@ -21,9 +21,9 @@ RUN bun i --frozen-lockfile
 
 WORKDIR /usr/src/app/packages/db
 
-RUN bun run generate
+ARG DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy"
 
-RUN bun run migrate
+RUN bun run generate
 
 FROM oven/bun:1
 
