@@ -4,7 +4,7 @@ import cron from 'node-cron'
 import { updateOrders } from './orders/updateOrders'
 import { isLocked, lock, unlock } from './utils'
 
-// Run every 30 seconds
+// Run every 2 minutes
 cron.schedule(config.CRON_SCHEDULE, async () => {
   if (isLocked()) {
     logger.info('Cron job already running, skipping...')

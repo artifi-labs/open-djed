@@ -6,7 +6,8 @@
     "migrate": "prisma migrate dev",
     "generate": "prisma generate",
     "dev": "bun --watch src/sync/cron.ts",
-    "start": "bun src/sync/cron.ts"
+    "start": "bun src/sync/sync.ts",
+    "sync": "bun src/sync/sync.ts"
   },
   "dependencies": {
     "@lucid-evolution/lucid": "^0.4.27",
