@@ -263,6 +263,7 @@ const ExternalCell = ({
               onSecondaryButtonClick={handleCloseDialog}
               onPrimaryButtonClick={() => {
                 handleCancelOrder(txHash, outIndex).catch(console.error)
+                setIsDialogOpen(false)
               }}
             />
           )}
@@ -390,6 +391,7 @@ const MobileCell = ({ order }: { order: Order }) => {
             handleCancelOrder(order.tx_hash, order.out_index).catch(
               console.error,
             )
+            setIsDialogOpen(false)
           }}
         />
       )}
