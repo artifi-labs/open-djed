@@ -67,6 +67,7 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
 }) => {
   const [internalValue, setInternalValue] = React.useState(defaultValue)
   const displayedValue = value !== undefined ? value : internalValue
+  const inputValue = displayedValue === "0" ? "" : displayedValue
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const sanitized = sanitizeNumberInput(e.target.value)
@@ -127,7 +128,7 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
           placeholder={placeholder}
           className={inputClasses}
           disabled={disabled || inputDisabled}
-          value={displayedValue}
+          value={inputValue}
           onChange={handleOnChange}
           {...props}
         />

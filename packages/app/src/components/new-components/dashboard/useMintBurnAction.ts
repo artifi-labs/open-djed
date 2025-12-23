@@ -62,7 +62,7 @@ const calculateFromPay = ({
   targetTokens,
 }: CalculationParams) => {
   const isMint = action === "Mint"
-  const nextReceive: Record<Token, number> = createInitialRecord(0)
+  const nextReceive: Record<Token, string> = createInitialRecord("0")
   const nextActionData: ActionDataMap = {}
 
   targetTokens.forEach((targetToken) => {
@@ -74,9 +74,11 @@ const calculateFromPay = ({
       isMint,
     )
 
-    nextReceive[targetToken] = isMint
+    const receiveAmount = isMint
       ? (actionData.toSend["ADA"] ?? 0)
       : (actionData.toReceive[targetToken] ?? 0)
+
+    nextReceive[targetToken] = receiveAmount.toString()
     nextActionData[sourceToken] = actionData
   })
 
@@ -91,7 +93,7 @@ const calculateFromReceive = ({
   targetTokens,
 }: CalculationParams) => {
   const isMint = action === "Mint"
-  const nextPay: Record<Token, number> = createInitialRecord(0)
+  const nextPay: Record<Token, string> = createInitialRecord("0")
   const nextActionData: ActionDataMap = {}
   targetTokens.forEach((targetToken) => {
     let token = sourceToken
@@ -109,7 +111,7 @@ const calculateFromReceive = ({
       isMint,
     )
 
-    nextPay[targetToken] = actionData.toSend[targetToken] ?? 0
+    nextPay[targetToken] = (actionData.toSend[targetToken] ?? 0).toString()
     nextActionData[token] = actionData
   })
 
@@ -135,12 +137,12 @@ const applyBalance = (
 }
 
 const useTokenState = (config: (typeof ACTION_CONFIG)[ActionType]) => {
-  const [payValues, setPayValues] = React.useState<Record<Token, number>>(
-    createInitialRecord(0),
+  const [payValues, setPayValues] = React.useState<Record<Token, string>>(
+    createInitialRecord("0"),
   )
   const [receiveValues, setReceiveValues] = React.useState<
-    Record<Token, number>
-  >(createInitialRecord(0))
+    Record<Token, string>
+  >(createInitialRecord("0"))
   const [activePayToken, setActivePayToken] = React.useState<Token>(
     config.pay[0],
   )
@@ -149,8 +151,8 @@ const useTokenState = (config: (typeof ACTION_CONFIG)[ActionType]) => {
   )
 
   const resetValues = React.useCallback(() => {
-    setPayValues(createInitialRecord(0))
-    setReceiveValues(createInitialRecord(0))
+    setPayValues(createInitialRecord("0"))
+    setReceiveValues(createInitialRecord("0"))
     setActivePayToken(config.pay[0])
     setActiveReceiveToken(config.receive[0])
   }, [config.pay, config.receive])
@@ -189,7 +191,7 @@ const useTokenCalculations = (
   const calculateFromPayValue = React.useCallback(
     (sourceToken: Token, sourceValue: number) => {
       if (!data || sourceValue === 0) {
-        return { receive: createInitialRecord(0), actionData: {} }
+        return { receive: createInitialRecord("0"), actionData: {} }
       }
 
       return calculateFromPay({
@@ -206,7 +208,7 @@ const useTokenCalculations = (
   const calculateFromReceiveValue = React.useCallback(
     (sourceToken: Token, sourceValue: number) => {
       if (!data || sourceValue === 0) {
-        return { pay: createInitialRecord(0), actionData: {} }
+        return { pay: createInitialRecord("0"), actionData: {} }
       }
 
       return calculateFromReceive({
@@ -273,8 +275,8 @@ export function useMintBurnAction(defaultActionType: ActionType) {
 
   const handlePayValueChange = React.useCallback(
     (token: Token, value: string) => {
-      const numValue = parseValue(value)
-      setPayValues((prev) => ({ ...prev, [token]: numValue }))
+      setPayValues((prev) => ({ ...prev, [token]: value }))
+      const numValue = parseFloat(value) || 0
 
       const result = calculateFromPayValue(token, numValue)
       setReceiveValues(result.receive)
@@ -285,8 +287,9 @@ export function useMintBurnAction(defaultActionType: ActionType) {
 
   const handleReceiveValueChange = React.useCallback(
     (token: Token, value: string) => {
+      setReceiveValues((prev) => ({ ...prev, [token]: value }))
+
       const numValue = parseValue(value)
-      setReceiveValues((prev) => ({ ...prev, [token]: numValue }))
 
       const result = calculateFromReceiveValue(token, numValue)
       setPayValues(result.pay)
@@ -329,12 +332,13 @@ export function useMintBurnAction(defaultActionType: ActionType) {
 
   const handlePayTokenChange = React.useCallback(
     (newToken: Token) => {
-      const currentValue = payValues[activePayToken] || 0
+      const currentValue = payValues[activePayToken] || "0"
       setActivePayToken(newToken)
       setPayValues((prev) => ({ ...prev, [newToken]: currentValue }))
 
       if (!isMint) {
-        const result = calculateFromPayValue(newToken, currentValue)
+        const numValue = parseFloat(currentValue) || 0
+        const result = calculateFromPayValue(newToken, numValue)
         setReceiveValues(result.receive)
         setActionData(result.actionData)
       }
@@ -352,12 +356,13 @@ export function useMintBurnAction(defaultActionType: ActionType) {
 
   const handleReceiveTokenChange = React.useCallback(
     (newToken: Token) => {
-      const currentValue = receiveValues[activeReceiveToken] || 0
+      const currentValue = receiveValues[activeReceiveToken] || "0"
       setActiveReceiveToken(newToken)
       setReceiveValues((prev) => ({ ...prev, [newToken]: currentValue }))
 
       if (isMint) {
-        const result = calculateFromReceiveValue(newToken, currentValue)
+        const numValue = parseFloat(currentValue) || 0
+        const result = calculateFromReceiveValue(newToken, numValue)
         setPayValues(result.pay)
         setActionData(result.actionData)
       }
@@ -376,8 +381,8 @@ export function useMintBurnAction(defaultActionType: ActionType) {
   const handleBothSelectedChange = React.useCallback(
     (selected: boolean) => {
       setBothSelected(selected)
-      setPayValues(createInitialRecord(0))
-      setReceiveValues(createInitialRecord(0))
+      setPayValues(createInitialRecord("0"))
+      setReceiveValues(createInitialRecord("0"))
       setActionData({})
     },
     [setPayValues, setReceiveValues],
@@ -419,10 +424,15 @@ export function useMintBurnAction(defaultActionType: ActionType) {
       await import("@dcspark/cardano-multiplatform-lib-browser")
 
     if (!wallet) return
-    if (payValues && !Object.values(payValues).some((value) => value > 0))
+    if (
+      payValues &&
+      !Object.values(payValues).some((value) => parseFloat(value) > 0)
+    )
       return
 
-    const tokenAmount = Object.entries(payValues).find(([, value]) => value > 0)
+    const tokenAmount = Object.entries(payValues).find(
+      ([, value]) => parseFloat(value) > 0,
+    )
 
     if (!tokenAmount) return
 
