@@ -104,7 +104,7 @@ function Table<T>({
         </div>
       </div>
       {/* Pagination */}
-      {paginatedTable && (
+      {paginatedTable && lastPage > 1 && (
         <div className="border-border-primary bg-background-primary w-full rounded-b-lg border px-24 py-12">
           <Pagination
             currentPage={currentPage}
