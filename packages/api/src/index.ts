@@ -563,6 +563,7 @@ const app = new Hono()
       z.object({
         page: z.string().optional().default("1"),
         limit: z.string().optional().default("10"),
+        status: z.string(),
       }),
     ),
     async (c) => {
@@ -604,7 +605,7 @@ const app = new Hono()
           }
         })
 
-        let filteredOrders = pendingOrders.filter((order) =>
+        const filteredPendingOrders = pendingOrders.filter((order) =>
           usedAddressesKeys.some(
             (key) =>
               order.orderDatum.address.paymentKeyHash[0] ===
@@ -614,33 +615,37 @@ const app = new Hono()
           ),
         )
 
-        // Filter by status if provided
-        if (statusFilter) {
-          filteredOrders = filteredOrders.filter(
-            (order) => parseOrderUTxOsToOrder(order).status === statusFilter,
-          )
-        }
+        const parsedPendingOrders: Order[] = filteredPendingOrders.map(
+          (order) => {
+            return parseOrderUTxOsToOrder(order)
+          },
+        )
 
-        const parsedPendingOrders: Order[] = filteredOrders.map((order) => {
-          return parseOrderUTxOsToOrder(order)
-        })
-
-        const userOrders: Order[] =
+        const userHistoricalOrders: Order[] =
           await getOrdersByAddressKeys(usedAddressesKeys)
 
-        const sortedOrders = [...parsedPendingOrders, ...userOrders]
+        const sortedOrders = [...parsedPendingOrders, ...userHistoricalOrders]
           .sort((a, b) => b.orderDate.getTime() - a.orderDate.getTime())
           .filter(
             (order, index, self) =>
               self.findIndex((o) => o.tx_hash === order.tx_hash) === index,
           )
 
+        console.log("sortedOrders: ", sortedOrders)
+
+        const orders =
+          statusFilter !== "All"
+            ? sortedOrders.filter((order) => order.status === statusFilter)
+            : sortedOrders
+
+        console.log("orders: ", orders)
+
         // Calculate pagination
-        const totalOrders = sortedOrders.length
+        const totalOrders = orders.length
         const totalPages = Math.ceil(totalOrders / limit)
         const startIndex = (page - 1) * limit
         const endIndex = startIndex + limit
-        const paginatedOrders = sortedOrders.slice(startIndex, endIndex)
+        const paginatedOrders = orders.slice(startIndex, endIndex)
 
         const ordersToSend = [...paginatedOrders]
 
