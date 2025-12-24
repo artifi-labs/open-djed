@@ -631,14 +631,10 @@ const app = new Hono()
               self.findIndex((o) => o.tx_hash === order.tx_hash) === index,
           )
 
-        console.log("sortedOrders: ", sortedOrders)
-
         const orders =
           statusFilter !== "All"
             ? sortedOrders.filter((order) => order.status === statusFilter)
             : sortedOrders
-
-        console.log("orders: ", orders)
 
         // Calculate pagination
         const totalOrders = orders.length
