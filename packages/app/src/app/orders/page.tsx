@@ -107,7 +107,11 @@ export default function OrderPage() {
           <OrderHistory
             data={orders}
             filters={selectedFilter !== "All" && orders.length > 0}
-            totalCount={pagination && pagination.totalPages > 1 ? pagination.totalOrders : 0}            
+            totalCount={
+              pagination && pagination.totalPages > 1
+                ? pagination.totalOrders
+                : 0
+            }
             currentPage={page}
             onPageChange={handlePageChange}
             serverSidePagination={true}
