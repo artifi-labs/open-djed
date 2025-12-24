@@ -36,14 +36,6 @@ export default function OrderPage() {
       .catch((e) => console.error(e))
   }, [wallet, page, isMobile, selectedFilter])
 
-  //TODO: To delete since the API will return the filtered orders
-  // const filteredOrders = useMemo(() => {
-  //   if (selectedFilter === "All") {
-  //     return orders
-  //   }
-  //   return orders.filter((order) => order.status === selectedFilter)
-  // }, [orders, selectedFilter])
-
   const handlePageChange = (newPage: number) => {
     setPage(newPage)
   }
@@ -115,7 +107,7 @@ export default function OrderPage() {
           <OrderHistory
             data={orders}
             filters={selectedFilter !== "All" && orders.length > 0}
-            totalCount={pagination?.totalOrders}
+            totalCount={pagination && pagination.totalPages > 1 ? pagination.totalOrders : 0}            
             currentPage={page}
             onPageChange={handlePageChange}
             serverSidePagination={true}
