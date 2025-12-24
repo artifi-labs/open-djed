@@ -59,10 +59,8 @@ export type Pagination = {
 function formatRelativeDate(timestampMs: bigint): string {
   const date = new Date(Number(timestampMs))
   const now = new Date()
-
   const diffMs = now.getTime() - date.getTime()
   const diffMinutes = Math.floor(diffMs / 60000)
-  const diffDays = Math.floor(diffMs / 86400000)
 
   // if date is less than 1 hour ago → "X min(s) ago"
   if (diffMinutes < 60) {
@@ -75,12 +73,16 @@ function formatRelativeDate(timestampMs: bigint): string {
     minute: "2-digit",
   })
 
-  // if date is more than 1h ago but less than 24h → "Today, 14:30"
+  const nowDay = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+  const dateDay = new Date(date.getFullYear(), date.getMonth(), date.getDate())
+  const diffDays = Math.floor((nowDay.getTime() - dateDay.getTime()) / 86400000)
+
+  // if date is today → "Today, 14:30"
   if (diffDays === 0) {
     return `Today, ${time}`
   }
 
-  // if date is more than 24h ago but less than 48h → "Yesterday, 21:30"
+  // if date was yesterday → "Yesterday, 21:30"
   if (diffDays === 1) {
     return `Yesterday, ${time}`
   }
