@@ -2,6 +2,7 @@ import React, { useState, useMemo } from "react"
 import type { ComponentType } from "react"
 import TableHeader, { type TableHeaderSize } from "./TableHeader"
 import Pagination from "../Pagination"
+import clsx from "clsx"
 
 export interface HeaderItem {
   column: React.ReactNode
@@ -26,6 +27,7 @@ export type TableProps<T> = {
     row: T
     hasBorder?: boolean
   }>
+  totalPages: number
 }
 
 function Table<T>({
@@ -38,6 +40,7 @@ function Table<T>({
   onPageChange,
   serverSidePagination = false,
   RowComponent,
+  totalPages,
 }: TableProps<T>) {
   const [internalCurrentPage, setInternalCurrentPage] = useState(1)
 
@@ -70,7 +73,14 @@ function Table<T>({
   return (
     <div className="w-full">
       {/* Table */}
-      <div className="bg-background-primary border-border-primary max-h-fit w-full overflow-auto rounded-t-lg border border-b-0 px-2">
+      <div
+        className={clsx(
+          "bg-background-primary border-border-primary max-h-fit w-full overflow-auto px-2",
+          paginatedTable && totalPages > 1
+            ? "rounded-t-lg border border-b-0"
+            : "rounded-lg border",
+        )}
+      >
         <div className="inline-block min-w-full align-middle">
           <table className="w-full">
             {/* Header */}
@@ -104,7 +114,7 @@ function Table<T>({
         </div>
       </div>
       {/* Pagination */}
-      {paginatedTable && (
+      {paginatedTable && totalPages > 1 && (
         <div className="border-border-primary bg-background-primary w-full rounded-b-lg border px-24 py-12">
           <Pagination
             currentPage={currentPage}

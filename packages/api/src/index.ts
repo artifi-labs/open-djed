@@ -563,6 +563,7 @@ const app = new Hono()
       z.object({
         page: z.string().optional().default("1"),
         limit: z.string().optional().default("10"),
+        status: z.string().optional(),
       }),
     ),
     async (c) => {
@@ -577,9 +578,10 @@ const app = new Hono()
         throw new ValidationError("Invalid or missing request payload.")
       }
       try {
-        // Get pagination parameters from query string
+        // Get filters and pagination parameters
         const page = parseInt(c.req.query("page") || "1", 10)
         const limit = parseInt(c.req.query("limit") || "10", 10)
+        const statusFilter = c.req.query("status")
 
         // Validate pagination parameters
         if (page < 1 || limit < 1 || limit > 100) {
@@ -603,7 +605,7 @@ const app = new Hono()
           }
         })
 
-        const filteredOrders = pendingOrders.filter((order) =>
+        const filteredPendingOrders = pendingOrders.filter((order) =>
           usedAddressesKeys.some(
             (key) =>
               order.orderDatum.address.paymentKeyHash[0] ===
@@ -613,26 +615,32 @@ const app = new Hono()
           ),
         )
 
-        const parsedPendingOrders: Order[] = filteredOrders.map((order) => {
-          return parseOrderUTxOsToOrder(order)
-        })
+        const parsedPendingOrders: Order[] = filteredPendingOrders.map(
+          (order) => {
+            return parseOrderUTxOsToOrder(order)
+          },
+        )
 
-        const userOrders: Order[] =
+        const userHistoricalOrders: Order[] =
           await getOrdersByAddressKeys(usedAddressesKeys)
 
-        const sortedOrders = [...parsedPendingOrders, ...userOrders]
+        const sortedOrders = [...parsedPendingOrders, ...userHistoricalOrders]
           .sort((a, b) => b.orderDate.getTime() - a.orderDate.getTime())
           .filter(
             (order, index, self) =>
               self.findIndex((o) => o.tx_hash === order.tx_hash) === index,
           )
 
+        const orders = statusFilter
+          ? sortedOrders.filter((order) => order.status === statusFilter)
+          : sortedOrders
+
         // Calculate pagination
-        const totalOrders = sortedOrders.length
+        const totalOrders = orders.length
         const totalPages = Math.ceil(totalOrders / limit)
         const startIndex = (page - 1) * limit
         const endIndex = startIndex + limit
-        const paginatedOrders = sortedOrders.slice(startIndex, endIndex)
+        const paginatedOrders = orders.slice(startIndex, endIndex)
 
         const ordersToSend = [...paginatedOrders]
 

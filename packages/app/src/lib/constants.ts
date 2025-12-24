@@ -19,7 +19,6 @@ export const SUPPORTED_LANGUAGES = [
 ]
 
 export const ORDERS_PER_PAGE = 10
-export const ORDERS_PER_PAGE_MOBILE = 6
 export const ORDERS_SIDEBAR = 5
 
 export const ALLOWED_WALLETS = [
