@@ -66,7 +66,7 @@ export const STATUS_CONFIG: Record<
   Created: { type: "surface", text: "Created" },
   Completed: { type: "success", text: "Completed" },
   // Cancelling: { type: "warning", text: "Cancelling" },
-  // Canceled: { type: "surface", text: "Canceled" },
+  Canceled: { type: "surface", text: "Canceled" },
   // Failed: { type: "error", text: "Failed" },
   // Expired: { type: "error", text: "Expired" },
 }
