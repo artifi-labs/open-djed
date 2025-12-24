@@ -13,8 +13,9 @@ export type WalletName =
   | "LACE"
   | "VESPR"
   | "BEGIN"
-  | "GEROWALLET"
   | "PLACEHOLDER"
+  | "YOROI"
+  | "GEROWALLET"
 
 const Wallet: React.FC<WalletProps> = ({
   name,
