@@ -23,9 +23,9 @@ const ReserveDetails = () => {
 
       <BaseCard>
         <div className="desktop:gap-24 flex w-full flex-col gap-16">
-          <div className="flex w-full flex-wrap justify-between gap-y-8">
+          <div className="flex w-full flex-wrap justify-between gap-x-8 gap-y-4">
             {/* Current Ratio */}
-            <div className="flex min-w-auto flex-1 items-center gap-8">
+            <div className="flex items-center gap-8">
               <span className="text-secondary text-xs whitespace-nowrap">
                 Current Ratio:
               </span>
@@ -35,7 +35,7 @@ const ReserveDetails = () => {
             </div>
 
             {/* Min Ratio */}
-            <div className="flex min-w-auto flex-1 items-center gap-8 sm:justify-center">
+            <div className="flex items-center gap-8">
               <span className="text-secondary text-xs whitespace-nowrap">
                 Min Ratio:
               </span>
@@ -45,7 +45,7 @@ const ReserveDetails = () => {
             </div>
 
             {/* Max Ratio */}
-            <div className="flex min-w-auto flex-1 items-center justify-start gap-8 sm:justify-end">
+            <div className="flex items-center gap-8">
               <span className="text-secondary text-xs whitespace-nowrap">
                 Max Ratio:
               </span>
