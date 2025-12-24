@@ -563,7 +563,7 @@ const app = new Hono()
       z.object({
         page: z.string().optional().default("1"),
         limit: z.string().optional().default("10"),
-        status: z.string(),
+        status: z.string().optional(),
       }),
     ),
     async (c) => {
@@ -631,10 +631,9 @@ const app = new Hono()
               self.findIndex((o) => o.tx_hash === order.tx_hash) === index,
           )
 
-        const orders =
-          statusFilter !== "All"
-            ? sortedOrders.filter((order) => order.status === statusFilter)
-            : sortedOrders
+        const orders = statusFilter
+          ? sortedOrders.filter((order) => order.status === statusFilter)
+          : sortedOrders
 
         // Calculate pagination
         const totalOrders = orders.length

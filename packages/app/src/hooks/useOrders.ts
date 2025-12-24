@@ -112,7 +112,7 @@ export const useOrders = () => {
           query: {
             page: page.toString(),
             limit: limit.toString(),
-            status,
+            ...(status !== "All" && { status }),
           },
         })
 
