@@ -26,6 +26,7 @@ export type TableProps<T> = {
     row: T
     hasBorder?: boolean
   }>
+  totalPages: number
 }
 
 function Table<T>({
@@ -38,6 +39,7 @@ function Table<T>({
   onPageChange,
   serverSidePagination = false,
   RowComponent,
+  totalPages,
 }: TableProps<T>) {
   const [internalCurrentPage, setInternalCurrentPage] = useState(1)
 
@@ -104,7 +106,7 @@ function Table<T>({
         </div>
       </div>
       {/* Pagination */}
-      {paginatedTable && lastPage > 1 && (
+      {paginatedTable && totalPages > 1 && (
         <div className="border-border-primary bg-background-primary w-full rounded-b-lg border px-24 py-12">
           <Pagination
             currentPage={currentPage}

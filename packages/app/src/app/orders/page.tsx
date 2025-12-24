@@ -9,12 +9,10 @@ import { statusFiltersArray } from "@/hooks/useOrders"
 import { useOrders } from "@/hooks/useOrders"
 import BaseCard from "@/components/card/BaseCard"
 import { useEffect, useState } from "react"
-import { ORDERS_PER_PAGE, ORDERS_PER_PAGE_MOBILE } from "@/lib/constants"
-import { useViewport } from "@/hooks/useViewport"
+import { ORDERS_PER_PAGE } from "@/lib/constants"
 import Chip from "@/components/Chip"
 
 export default function OrderPage() {
-  const { isMobile } = useViewport()
   const { wallet } = useWallet()
   const { openWalletSidebar } = useSidebar()
   const [selectedFilter, setSelectedFilter] = useState<StatusFilters>("All")
@@ -23,18 +21,14 @@ export default function OrderPage() {
   const { orders, fetchOrders } = useOrders()
 
   useEffect(() => {
-    fetchOrders(
-      page,
-      isMobile ? ORDERS_PER_PAGE_MOBILE : ORDERS_PER_PAGE,
-      selectedFilter,
-    )
+    fetchOrders(page, ORDERS_PER_PAGE, selectedFilter)
       .then((paginationData) => {
         if (paginationData) {
           setPagination(paginationData)
         }
       })
       .catch((e) => console.error(e))
-  }, [wallet, page, isMobile, selectedFilter])
+  }, [wallet, page, selectedFilter])
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage)
@@ -105,6 +99,7 @@ export default function OrderPage() {
 
           {/* Table */}
           <OrderHistory
+            totalPages={pagination?.totalPages}
             data={orders}
             filters={selectedFilter !== "All" && orders.length > 0}
             totalCount={

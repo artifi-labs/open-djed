@@ -21,7 +21,7 @@ import BaseCard from "./card/BaseCard"
 import { useViewport } from "@/hooks/useViewport"
 import Asset from "./Asset"
 import Chip from "./Chip"
-import { ORDERS_PER_PAGE, ORDERS_PER_PAGE_MOBILE } from "@/lib/constants"
+import { ORDERS_PER_PAGE } from "@/lib/constants"
 import type { Order } from "@open-djed/api"
 
 interface RowItem {
@@ -38,6 +38,7 @@ interface OrderHistoryProps {
   onPageChange?: (page: number) => void
   serverSidePagination?: boolean
   handleClearFilters?: () => void
+  totalPages?: number
 }
 
 const headersDesktop: HeaderItem[] = [
@@ -407,6 +408,7 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({
   currentPage,
   onPageChange,
   serverSidePagination = false,
+  totalPages = 0,
 }) => {
   const { isMobile } = useViewport()
   const rowsDesktop: RowItem[] = useMemo(() => {
@@ -502,9 +504,10 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({
 
   return (
     <Table
+      totalPages={totalPages}
       headers={isMobile ? headersMobile : headersDesktop}
       rows={isMobile ? rowsMobile : rowsDesktop}
-      rowsPerPage={isMobile ? ORDERS_PER_PAGE_MOBILE : ORDERS_PER_PAGE}
+      rowsPerPage={ORDERS_PER_PAGE}
       totalCount={totalCount ?? data.length}
       currentPage={currentPage}
       onPageChange={onPageChange}
