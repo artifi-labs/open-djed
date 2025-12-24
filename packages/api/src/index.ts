@@ -577,9 +577,10 @@ const app = new Hono()
         throw new ValidationError("Invalid or missing request payload.")
       }
       try {
-        // Get pagination parameters from query string
+        // Get filters and pagination parameters
         const page = parseInt(c.req.query("page") || "1", 10)
         const limit = parseInt(c.req.query("limit") || "10", 10)
+        const statusFilter = c.req.query("status")
 
         // Validate pagination parameters
         if (page < 1 || limit < 1 || limit > 100) {
@@ -603,7 +604,7 @@ const app = new Hono()
           }
         })
 
-        const filteredOrders = pendingOrders.filter((order) =>
+        let filteredOrders = pendingOrders.filter((order) =>
           usedAddressesKeys.some(
             (key) =>
               order.orderDatum.address.paymentKeyHash[0] ===
@@ -612,6 +613,13 @@ const app = new Hono()
                 key.stakeKeyHash,
           ),
         )
+
+        // Filter by status if provided
+        if (statusFilter) {
+          filteredOrders = filteredOrders.filter(
+            (order) => parseOrderUTxOsToOrder(order).status === statusFilter,
+          )
+        }
 
         const parsedPendingOrders: Order[] = filteredOrders.map((order) => {
           return parseOrderUTxOsToOrder(order)
