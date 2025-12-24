@@ -14,6 +14,7 @@ import { type Cardano } from "@lucid-evolution/lucid"
 import { registryByNetwork } from "@open-djed/registry"
 import { useEnv } from "./EnvContext"
 import { useToast } from "./ToastContext"
+import { ALLOWED_WALLETS } from "@/lib/constants"
 
 export type WalletMetadata = {
   id: string
@@ -224,15 +225,13 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
   const detectWallets = useCallback(() => {
     const cardano = getCardanoFromWindowObject()
     if (!cardano) return
-
     const detected = Object.keys(cardano)
-      .filter((id) => cardano[id].icon)
+      .filter((id) => ALLOWED_WALLETS.includes(id) && cardano[id].icon)
       .map((id) => ({
         id,
-        name: cardano[id].name,
+        name: id === "begin" ? "Begin" : cardano[id].name,
         icon: cardano[id].icon,
       }))
-
     setWallets(detected)
   }, [setWallets])
 
