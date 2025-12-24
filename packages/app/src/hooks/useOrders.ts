@@ -8,7 +8,7 @@ import { signAndSubmitTx } from "@/lib/signAndSubmitTx"
 import { AppError } from "@open-djed/api/src/errors"
 import type { Order } from "@open-djed/api"
 
-// this value will be retreive from the db package when integrated
+// this value will be retrieve from the db package when integrated
 export type OrderApi = {
   id: number
   tx_hash: string
@@ -27,9 +27,10 @@ export type OrderApi = {
 
 export type OrderStatus =
   // | "Processing"
-  "Created" | "Completed"
-// | "Cancelling"
-// | "Canceled"
+  | "Created"
+  | "Completed"
+  // | "Cancelling"
+  | "Canceled"
 // | "Failed"
 // | "Expired"
 
@@ -39,7 +40,7 @@ export const statusFiltersArray = [
   "Created",
   "Completed",
   // "Cancelling",
-  // "Canceled",
+  "Canceled",
   // "Failed",
   // "Expired",
 ] as const
@@ -100,23 +101,30 @@ export const useOrders = () => {
   const [orders, setOrders] = useState<Order[]>([])
 
   const fetchOrders = useCallback(
-    async (page = 1, limit = 10) => {
+    async (page = 1, limit = 10, status: StatusFilters = "All") => {
       if (!wallet) return
+
       const usedAddress = await wallet.getUsedAddresses()
       if (!usedAddress) throw new Error("Failed to get used address")
+
       try {
         const res = await apiClient.api["historical-orders"].$post({
           json: { usedAddresses: usedAddress },
-          query: { page: page.toString(), limit: limit.toString() },
+          query: {
+            page: page.toString(),
+            limit: limit.toString(),
+            status,
+          },
         })
+
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`)
+
         const data = await res.text()
         const parsed: {
           orders: Order[]
           pagination: Pagination
-        } = JSONBig({
-          useNativeBigInt: true,
-        }).parse(data)
+        } = JSONBig({ useNativeBigInt: true }).parse(data)
+
         setOrders(parsed.orders)
         return parsed.pagination
       } catch (err) {
