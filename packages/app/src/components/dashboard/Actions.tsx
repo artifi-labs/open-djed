@@ -21,8 +21,8 @@ const Actions: React.FC<ActionsProps> = ({ action, onActionChange }) => {
   ]
 
   const descriptionText: Record<ActionType, string> = {
-    Mint: "Mint DJED, SHEN or both by depositing ADA into the protocol.",
-    Burn: "Burn DJED, SHEN or both to withdraw your ADA from the protocol.",
+    Mint: "Mint DJED, SHEN by depositing ADA into the protocol.",
+    Burn: "Burn DJED, SHEN to withdraw your ADA from the protocol.",
   }
 
   const { reserveWarning } = useReserveDetails()
