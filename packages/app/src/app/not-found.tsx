@@ -34,7 +34,7 @@ export default function NotFound() {
             media="(max-width: 767px)"
           />
           <img
-            src="/backgrounds/not-found/illustration.svg"
+            src="/backgrounds/not-found/illustration-desktop.svg"
             alt="404 illustration"
             className="h-full w-full object-cover"
           />
