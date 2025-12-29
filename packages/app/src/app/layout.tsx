@@ -23,11 +23,14 @@ const poppins = Poppins({
   fallback: ["sans-serif"],
 })
 
+const network = process.env.NEXT_PUBLIC_NETWORK || "Mainnet"
+const title = `${APP_NAME} | ${network}`
+
 export const metadata: Metadata = {
   metadataBase: new URL(OPEN_DJED_URL),
   title: {
-    default: `${APP_NAME}`,
-    template: `%s | ${APP_NAME}`,
+    default: title,
+    template: `%s | ${title}`,
   },
   applicationName: APP_NAME,
   description: `Mint and burn DJED, Cardano's overcollateralized stablecoin, with our open-source platform. Transparent alternative to DJED.xyz - accessible 24/7 anywhere.`,
@@ -57,7 +60,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: "website",
-    title: `${APP_NAME}`,
+    title: title,
     description: `Mint and burn DJED, Cardano's overcollateralized stablecoin, with our open-source platform. Transparent alternative to DJED.xyz - accessible 24/7 anywhere.`,
     url: OPEN_DJED_URL,
     siteName: APP_NAME,
@@ -73,7 +76,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary",
-    title: `${APP_NAME}`,
+    title: title,
     description: `Mint and burn DJED, Cardano's overcollateralized stablecoin, with our open-source platform. Transparent alternative to DJED.xyz - accessible 24/7 anywhere.`,
     images: [`${OPEN_DJED_URL}/logos/opendjed-banner.png`],
     creator: TWITTER_HANDLE,
@@ -83,7 +86,6 @@ export const metadata: Metadata = {
     icon: "/logos/opendjed-icon.svg",
     shortcut: "/logos/opendjed-icon.svg",
   },
-  manifest: "/manifest.json",
 }
 
 export default function RootLayout({
