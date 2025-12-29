@@ -9,7 +9,7 @@ import ButtonIcon from "../ButtonIcon"
 import { useWallet } from "@/context/WalletContext"
 import type { Token } from "@/lib/tokens"
 import type { ActionType, TokenType } from "@open-djed/api"
-import { useMintBurnAction, type ReserveBoundsType } from "./useMintBurnAction"
+import { type ReserveBoundsType } from "./useMintBurnAction"
 
 export type InputActionProps = {
   label: string
