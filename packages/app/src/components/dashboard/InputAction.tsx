@@ -9,7 +9,7 @@ import ButtonIcon from "../ButtonIcon"
 import { useWallet } from "@/context/WalletContext"
 import type { Token } from "@/lib/tokens"
 import type { ActionType, TokenType } from "@open-djed/api"
-import type { ReserveBoundsType } from "./useMintBurnAction"
+import { type ReserveBoundsType } from "./useMintBurnAction"
 
 export type InputActionProps = {
   label: string
@@ -108,7 +108,6 @@ const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
 
     return (
       <TransactionInput
-        key={coin}
         disabled={disabled || isDisabled}
         placeholder="0"
         asset={{
