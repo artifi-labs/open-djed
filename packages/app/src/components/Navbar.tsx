@@ -54,7 +54,7 @@ const NavigationItems: React.FC<NavigationItemsProps> = ({
             key={item.href}
             href={item.href}
             className={clsx(
-              "desktop:text-md relative p-6 font-medium transition-all",
+              "desktop:text-md relative p-6 font-medium",
               isActive && "border-b-2",
             )}
             style={
