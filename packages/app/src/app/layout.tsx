@@ -24,7 +24,7 @@ const poppins = Poppins({
 })
 
 const network = process.env.NEXT_PUBLIC_NETWORK || "Mainnet"
-const title = `${APP_NAME} | ${network}`
+const title = network === "Mainnet" ? APP_NAME : `${APP_NAME} | ${network}`
 
 export const metadata: Metadata = {
   metadataBase: new URL(OPEN_DJED_URL),
