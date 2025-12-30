@@ -28,7 +28,7 @@ export default function SimulatorPage() {
           />
         </div>
       </div>
-      
+
       {/* Modal */}
       <Modal
         title="What is a yield simulator?"
