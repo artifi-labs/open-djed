@@ -22,8 +22,8 @@ const poppins = Poppins({
   fallback: ["sans-serif"],
 })
 
-const network = process.env.NEXT_PUBLIC_NETWORK || "Mainnet"
-const title = network === "Mainnet" ? APP_NAME : `${APP_NAME} | ${network}`
+const { NETWORK } = env
+const title = NETWORK === "Mainnet" ? APP_NAME : `${APP_NAME} | ${NETWORK}`
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.BASE_URL),
@@ -102,12 +102,7 @@ export default function RootLayout({
         className={`${poppins.className} relative flex min-h-screen flex-col antialiased`}
       >
         <Background />
-        <Providers
-          apiUrl={env.API_URL}
-          network={env.NETWORK}
-          config={env.CONFIG}
-          posthog={env.POSTHOG_API_KEY}
-        >
+        <Providers>
           <Navbar />
           <main className="px-page-margin flex w-full flex-1 flex-col items-center">
             {children}
