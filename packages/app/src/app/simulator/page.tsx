@@ -4,6 +4,8 @@ import { useState } from "react"
 import Button from "@/components/Button"
 import Modal from "@/components/modals/Modal"
 import SimulatorContent from "@/components/SimulatorContent"
+import Results from "@/components/simulator/Results"
+import Actions from "@/components/simulator/Actions"
 
 export default function SimulatorPage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -37,6 +39,12 @@ export default function SimulatorPage() {
       >
         <SimulatorContent />
       </Modal>
+
+      {/* Content */}
+      <div className="desktop:grid-cols-2 desktop:gap-24 desktop:pt-32 grid grid-cols-1 gap-16 pt-16">
+        <Actions />
+        <Results />
+      </div>
     </div>
   )
 }
