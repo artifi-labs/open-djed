@@ -305,6 +305,12 @@ export function useMintBurnAction(defaultActionType: ActionType) {
     wallet?.balance,
   ])
 
+  const minAmount = React.useMemo(() => {
+    const minTokenAmount = Number(registryByNetwork[network].minAmount) / 1e6
+    // Floor to 3 decimal places to avoid exceeding user balance
+    return Math.floor(minTokenAmount * 1000) / 1000
+  }, [])
+
   const handlePayValueChange = React.useCallback(
     (token: Token, value: string) => {
       setPayValues((prev) => ({ ...prev, [token]: value }))
@@ -318,6 +324,12 @@ export function useMintBurnAction(defaultActionType: ActionType) {
         setInputStatus("error")
         showToast({
           message: `The amount added is greater than the available balance.`,
+          type: "error",
+        })
+      } else if (wallet && numValue < minAmount) {
+        setInputStatus("error")
+        showToast({
+          message: `The amount added is less than the minimum allowed of ${minAmount} ${token}.`,
           type: "error",
         })
       } else if (inputStatus !== "default" || payValues[token] === "0") {
@@ -342,6 +354,12 @@ export function useMintBurnAction(defaultActionType: ActionType) {
           message: `The amount added is greater than the available balance.`,
           type: "error",
         })
+      } else if (wallet && numValue < minAmount) {
+        setInputStatus("error")
+        showToast({
+          message: `The amount added is less than the minimum allowed of ${minAmount} ${token}.`,
+          type: "error",
+        })
       } else if (inputStatus !== "default" || payValues[token] === "0") {
         setInputStatus("default")
       }
@@ -363,6 +381,13 @@ export function useMintBurnAction(defaultActionType: ActionType) {
     [handlePayValueChange, maxAmount],
   )
 
+  const handlePayMin = React.useCallback(
+    (token: Token) => {
+      handlePayValueChange(token, minAmount.toString())
+    },
+    [handlePayValueChange, minAmount],
+  )
+
   const handleReceiveHalf = React.useCallback(
     (token: Token) => {
       handleReceiveValueChange(token, (maxAmount / 2).toString())
@@ -375,6 +400,13 @@ export function useMintBurnAction(defaultActionType: ActionType) {
       handleReceiveValueChange(token, maxAmount.toString())
     },
     [handleReceiveValueChange],
+  )
+
+  const handleReceiveMin = React.useCallback(
+    (token: Token) => {
+      handleReceiveValueChange(token, minAmount.toString())
+    },
+    [handleReceiveValueChange, minAmount],
   )
 
   const handlePayTokenChange = React.useCallback(
@@ -455,6 +487,17 @@ export function useMintBurnAction(defaultActionType: ActionType) {
       }
     },
     [config, handlePayMax, handleReceiveMax],
+  )
+
+  const handleMinClick = React.useCallback(
+    (token: Token) => {
+      if (config.pay.includes(token)) {
+        handlePayMin(token)
+      } else if (config.receive.includes(token)) {
+        handleReceiveMin(token)
+      }
+    },
+    [config, handlePayMin, handleReceiveMin],
   )
 
   const handleLinkClick = React.useCallback(() => {
@@ -567,11 +610,14 @@ export function useMintBurnAction(defaultActionType: ActionType) {
     onReceiveTokenChange: handleReceiveTokenChange,
     onPayHalf: handlePayHalf,
     onPayMax: handlePayMax,
+    onPayMin: handlePayMin,
     onReceiveHalf: handleReceiveHalf,
     onReceiveMax: handleReceiveMax,
+    onReceiveMin: handleReceiveMin,
     onButtonClick: handleButtonClick,
     onHalfClick: handleHalfClick,
     onMaxClick: handleMaxClick,
+    onMinClick: network === "Mainnet" ? handleMinClick : undefined,
     linkClicked,
     onLinkClick: handleLinkClick,
     maxAmount: maxAmount,

@@ -22,6 +22,7 @@ export type InputActionProps = {
   onValueChange: (t: Token, v: string) => void
   onHalfClick?: (t: Token) => void
   onMaxClick?: (t: Token) => void
+  onMinClick?: (t: Token) => void
   showCheckbox?: boolean
   checkboxLabel?: string
   checkboxChecked?: boolean
@@ -48,6 +49,7 @@ export type TransactionInputGroupProps = {
   onValueChange: (t: Token, v: string) => void
   onHalfClick?: (t: Token) => void
   onMaxClick?: (t: Token) => void
+  onMinClick?: (t: Token) => void
   linkClicked?: boolean
   onLinkClick?: () => void
   hasMaxAndHalfActions?: boolean
@@ -70,6 +72,7 @@ const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
   onValueChange,
   onHalfClick,
   onMaxClick,
+  onMinClick,
   linkClicked,
   onLinkClick,
   hasMaxAndHalfActions,
@@ -133,6 +136,7 @@ const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
             ? () => onMaxClick(coin)
             : undefined
         }
+        onMinClick={onMinClick ? () => onMinClick(coin) : undefined}
         hasMaxAndHalfActions={hasMaxAndHalfActions}
         hasMaxAmount={hasMaxAmount}
         maxAmount={(maxAmount ?? 0).toString()}
@@ -180,6 +184,7 @@ const InputAction: React.FC<InputActionProps> = ({
   onValueChange,
   onHalfClick,
   onMaxClick,
+  onMinClick,
   showCheckbox,
   checkboxLabel,
   checkboxChecked,
@@ -225,6 +230,7 @@ const InputAction: React.FC<InputActionProps> = ({
         onValueChange={onValueChange}
         onHalfClick={onHalfClick}
         onMaxClick={onMaxClick}
+        onMinClick={onMinClick}
         linkClicked={linkClicked}
         onLinkClick={onLinkClick}
         hasMaxAndHalfActions={hasMaxAndHalfActions}

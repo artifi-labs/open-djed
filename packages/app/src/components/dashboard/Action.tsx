@@ -32,6 +32,7 @@ export type ActionProps = {
   onReceiveTokenChange: (t: Token) => void
   onHalfClick?: (t: Token) => void
   onMaxClick?: (t: Token) => void
+  onMinClick?: (t: Token) => void
   onButtonClick?: () => void
   linkClicked?: boolean
   onLinkClick?: () => void
@@ -57,6 +58,7 @@ const Action: React.FC<ActionProps> = ({
   onButtonClick,
   onHalfClick,
   onMaxClick,
+  onMinClick,
   linkClicked,
   onLinkClick,
   maxAmount,
@@ -90,6 +92,7 @@ const Action: React.FC<ActionProps> = ({
       onValueChange: onPayValueChange,
       onHalfClick,
       onMaxClick,
+      onMinClick,
       hasMaxAndHalfActions: true,
       hasAvailableAmount: false,
       hasMaxAmount: hasMaxAmount,
@@ -132,6 +135,7 @@ const Action: React.FC<ActionProps> = ({
           onValueChange={i.onValueChange}
           onHalfClick={i.onHalfClick}
           onMaxClick={i.onMaxClick}
+          onMinClick={i.onMinClick}
           linkClicked={linkClicked}
           onLinkClick={onLinkClick}
           hasMaxAndHalfActions={i.hasMaxAndHalfActions}

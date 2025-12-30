@@ -38,6 +38,7 @@ export type TransactionInputProps = {
   onValueChange?: (value: string) => void
   onHalfClick?: () => void
   onMaxClick?: () => void
+  onMinClick?: () => void
 } & React.InputHTMLAttributes<HTMLInputElement>
 
 const TransactionInput: React.FC<TransactionInputProps> = ({
@@ -67,6 +68,7 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
   //onAssetClick, // TODO: CHECK THIS, should be used in Actions component
   onHalfClick,
   onMaxClick,
+  onMinClick,
   ...props
 }) => {
   const [internalValue, setInternalValue] = React.useState(defaultValue)
@@ -192,6 +194,28 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
       <div className="text-primary flex w-full items-center justify-between text-xs">
         {hasMaxAndHalfActions && availableAmount && (
           <div className="flex gap-8">
+            {onMinClick && (
+              <>
+                {/* Min */}
+                <Button
+                  text="Min"
+                  variant="text"
+                  size="small"
+                  disabled={disabled}
+                  className={clsx(
+                    "cursor-pointer",
+                    disabled
+                      ? "text-standalone-text-disabled"
+                      : "hover:text-nocolor-text-hover",
+                  )}
+                  onClick={onMinClick}
+                />
+
+                {/* Divider */}
+                <Divider orientation="vertical" />
+              </>
+            )}
+
             {/* Half */}
             <Button
               text="Half"
