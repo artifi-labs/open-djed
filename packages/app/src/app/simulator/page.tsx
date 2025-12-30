@@ -3,7 +3,7 @@
 import { useState } from "react"
 import Button from "@/components/Button"
 
-export default function DashboardPage() {
+export default function SimulatorPage() {
   const [, setIsModalOpen] = useState(false)
 
   return (
