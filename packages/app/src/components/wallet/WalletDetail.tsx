@@ -10,8 +10,8 @@ import Icon from "../Icon"
 import { useClipboard } from "@/hooks/useClipboard"
 import ButtonIcon from "../ButtonIcon"
 import Tooltip from "../tooltip/Tooltip"
-import { useEnv } from "@/context/EnvContext"
 import { useProtocolData } from "@/hooks/useProtocolData"
+import { env } from "@/lib/envLoader"
 
 type WalletDetailProps = {
   name: WalletName
@@ -33,28 +33,28 @@ const WalletDetail: React.FC<WalletDetailProps> = ({
 }) => {
   const { copy, copied } = useClipboard()
   const { data } = useProtocolData()
-  const { network } = useEnv()
+  const { NETWORK } = env
 
   const adaUSD = React.useMemo(() => {
-    if (!data || network === "Preprod") return 0
+    if (!data || NETWORK === "Preprod") return 0
 
     const value = { ADA: balance.ADA } as Value
     return data.to(value, "DJED")
-  }, [data, network, balance.ADA])
+  }, [data, NETWORK, balance.ADA])
 
   const djedUSD = React.useMemo(() => {
-    if (!data || network === "Preprod") return 0
+    if (!data || NETWORK === "Preprod") return 0
 
     const value = { DJED: balance.DJED } as Value
     return data.to(value, "DJED")
-  }, [data, network, balance.DJED])
+  }, [data, NETWORK, balance.DJED])
 
   const shenUSD = React.useMemo(() => {
-    if (!data || network === "Preprod") return 0
+    if (!data || NETWORK === "Preprod") return 0
 
     const value = { SHEN: balance.SHEN } as Value
     return data.to(value, "DJED")
-  }, [data, network, balance.SHEN])
+  }, [data, NETWORK, balance.SHEN])
 
   const totalBalance = adaUSD + djedUSD + shenUSD
 
@@ -88,7 +88,7 @@ const WalletDetail: React.FC<WalletDetailProps> = ({
           </div>
         </div>
       </div>
-      {network !== "Preprod" ? (
+      {NETWORK !== "Preprod" ? (
         <span className="text-md font-semibold">
           ${formatNumber(totalBalance, { maximumFractionDigits: 2 })}
         </span>

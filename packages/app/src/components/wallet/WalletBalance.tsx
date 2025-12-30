@@ -2,7 +2,7 @@ import React from "react"
 import Coin from "../Coin"
 import { useProtocolData } from "@/hooks/useProtocolData"
 import { formatNumber, type Value } from "@/lib/utils"
-import { useEnv } from "@/context/EnvContext"
+import { env } from "@/lib/envLoader"
 
 type WalletBalanceProps = {
   token: "ADA" | "SHEN" | "DJED"
@@ -11,17 +11,17 @@ type WalletBalanceProps = {
 
 const WalletBalance: React.FC<WalletBalanceProps> = ({ token, amount }) => {
   const { data } = useProtocolData()
-  const { network } = useEnv()
+  const { NETWORK } = env
 
   const amountUSD = React.useMemo(() => {
-    if (!data || network === "Preprod") return 0
+    if (!data || NETWORK === "Preprod") return 0
 
     const value = { [token]: amount } as Value
     return data.to(value, "DJED")
   }, [data, token, amount])
 
   const amountToken = React.useMemo(() => {
-    if (!data || network === "Preprod") return 0
+    if (!data || NETWORK === "Preprod") return 0
 
     const value = { [token]: 1 } as Value
     return data.to(value, "DJED")
@@ -38,7 +38,7 @@ const WalletBalance: React.FC<WalletBalanceProps> = ({ token, amount }) => {
           {formatNumber(amount, { maximumFractionDigits: 2 })}
         </span>
       </div>
-      {network !== "Preprod" && (
+      {NETWORK !== "Preprod" && (
         <div className="flex w-full flex-row items-center justify-between">
           <span className="text-tertiary text-[10px] md:text-xs">
             ${formatNumber(amountToken, { maximumFractionDigits: 2 })}

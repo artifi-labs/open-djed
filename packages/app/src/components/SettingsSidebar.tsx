@@ -1,7 +1,7 @@
 import Dropdown from "./Dropdown"
 import Sidebar from "./modals/Sidebar"
-import { useEnv } from "@/context/EnvContext"
 import { type ContextualMenuItem } from "./ContextualMenu"
+import { env } from "@/lib/envLoader"
 
 export default function SettingsSidebar({
   isOpen,
@@ -11,7 +11,7 @@ export default function SettingsSidebar({
   onClose: () => void
 }) {
   //const { i18n } = useTranslation()
-  const { network, config } = useEnv()
+  const { NETWORK, CONFIG } = env
 
   //const [activeLanguage, setActiveLanguage] = useState<string>("en")
   //const [_isClient, setIsClient] = useState(false)
@@ -36,19 +36,19 @@ export default function SettingsSidebar({
     (lang) => lang.key === activeLanguage,
   )
 */
-  const networkItems = Object.keys(config).map((key) => ({
+  const networkItems = Object.keys(CONFIG).map((key) => ({
     key: key,
     text: key.charAt(0).toUpperCase() + key.slice(1),
   }))
 
   const handleNetworkChange = (item: ContextualMenuItem) => {
     const selectedNetwork = item.key as string
-    if (config[selectedNetwork]) {
-      window.location.href = config[selectedNetwork]
+    if (CONFIG[selectedNetwork as keyof typeof CONFIG]) {
+      window.location.href = CONFIG[selectedNetwork as keyof typeof CONFIG]
     }
   }
 
-  const currentNetworkItem = networkItems.find((item) => item.key === network)
+  const currentNetworkItem = networkItems.find((item) => item.key === NETWORK)
 
   return (
     <Sidebar title="Settings" isOpen={isOpen} onClose={onClose}>

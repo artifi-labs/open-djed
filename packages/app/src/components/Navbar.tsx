@@ -13,9 +13,9 @@ import Wallet, { type WalletName } from "./Wallet"
 import Sidebar from "./modals/Sidebar"
 import { shortenString } from "@/lib/utils"
 import Logo from "./Logo"
-import { useEnv } from "@/context/EnvContext"
 import { useViewport } from "@/hooks/useViewport"
 import Icon from "./Icon"
+import { env } from "@/lib/envLoader"
 
 type NavigationItem = {
   label: string
@@ -107,16 +107,16 @@ const NetworkBadge: React.FC<NetworkBadgeProps> = ({
 }
 
 export const Navbar = () => {
-  const { network, config } = useEnv()
+  const { NETWORK, CONFIG } = env
   const { wallet } = useWallet()
   const { openWalletSidebar, openSettingsSidebar } = useSidebar()
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false)
   const pathname = usePathname()
 
   const handleNetworkSwitch = () => {
-    const targetNetwork = network === "Mainnet" ? "Preprod" : "Mainnet"
-    if (config[targetNetwork]) {
-      window.location.href = config[targetNetwork]
+    const targetNetwork = NETWORK === "Mainnet" ? "Preprod" : "Mainnet"
+    if (CONFIG[targetNetwork]) {
+      window.location.href = CONFIG[targetNetwork]
     }
   }
 
@@ -152,7 +152,7 @@ export const Navbar = () => {
         <div className="desktop:gap-12 flex items-center gap-10">
           {/* Desktop items */}
           <div className="desktop:flex hidden items-center gap-12">
-            <NetworkBadge network={network} />
+            <NetworkBadge network={NETWORK} />
             <ButtonIcon
               variant="outlined"
               icon="Settings"
@@ -243,7 +243,7 @@ export const Navbar = () => {
                   wallet={walletIcon}
                 />
                 <NetworkBadge
-                  network={network}
+                  network={NETWORK}
                   className="justify-center"
                   onNetworkSwitch={handleNetworkSwitch}
                 />

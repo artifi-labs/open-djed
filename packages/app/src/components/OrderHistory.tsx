@@ -16,12 +16,11 @@ import Snackbar from "./Snackbar"
 import TransactionDetails from "./TransactionDetails"
 import { type OrderStatus, useOrders } from "@/hooks/useOrders"
 
-import { useEnv } from "@/context/EnvContext"
 import BaseCard from "./card/BaseCard"
 import { useViewport } from "@/hooks/useViewport"
 import Asset from "./Asset"
 import Chip from "./Chip"
-import { ORDERS_PER_PAGE } from "@/lib/constants"
+import { CARDANOSCAN_BASE_URL, ORDERS_PER_PAGE } from "@/lib/constants"
 import type { Order } from "@open-djed/api"
 
 interface RowItem {
@@ -219,7 +218,6 @@ const ExternalCell = ({
   status?: string
   outIndex: number
 }) => {
-  const { network } = useEnv()
   const [isDialogOpen, setIsDialogOpen] = React.useState(false)
   const [showSnackbar, setShowSnackbar] = React.useState(false)
   const { handleCancelOrder } = useOrders()
@@ -271,7 +269,7 @@ const ExternalCell = ({
         </>
       )}
       <Link
-        href={`https://${network.toLowerCase()}.cardanoscan.io/transaction/${txHash}`}
+        href={`${CARDANOSCAN_BASE_URL}/transaction/${txHash}`}
         target="_blank"
       >
         <ButtonIcon size="small" variant="outlined" icon="External" />
@@ -294,7 +292,6 @@ const ExternalCell = ({
 }
 
 const MobileCell = ({ order }: { order: Order }) => {
-  const { network } = useEnv()
   const { handleCancelOrder, formatDate } = useOrders()
 
   const [isDialogOpen, setIsDialogOpen] = React.useState(false)
@@ -348,7 +345,7 @@ const MobileCell = ({ order }: { order: Order }) => {
                 onClick={() => setIsDialogOpen(true)}
               />
               <Link
-                href={`https://${network.toLowerCase()}.cardanoscan.io/transaction/${order.tx_hash}`}
+                href={`${CARDANOSCAN_BASE_URL}/transaction/${order.tx_hash}`}
                 target="_blank"
               >
                 <Button
@@ -361,7 +358,7 @@ const MobileCell = ({ order }: { order: Order }) => {
             </div>
           ) : (
             <Link
-              href={`https://${network.toLowerCase()}.cardanoscan.io/transaction/${order.tx_hash}`}
+              href={`${CARDANOSCAN_BASE_URL}/transaction/${order.tx_hash}`}
               target="_blank"
             >
               <Button

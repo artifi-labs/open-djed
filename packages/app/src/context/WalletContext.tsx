@@ -12,9 +12,10 @@ import { z } from "zod"
 import { useLocalStorage } from "usehooks-ts"
 import { type Cardano } from "@lucid-evolution/lucid"
 import { registryByNetwork } from "@open-djed/registry"
-import { useEnv } from "./EnvContext"
 import { useToast } from "./ToastContext"
 import { ALLOWED_WALLETS } from "@/lib/constants"
+import { env } from "@/lib/envLoader"
+import { capitalize } from "@/lib/utils"
 
 export type WalletMetadata = {
   id: string
@@ -85,7 +86,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
     string | null
   >("connectedWalletId", null)
 
-  const { network } = useEnv()
+  const { NETWORK } = env
   const networkIds = {
     Preprod: 0,
     Mainnet: 1,
@@ -98,9 +99,9 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
 
         let api = await cardano[id].enable()
 
-        if ((await api.getNetworkId()) !== networkIds[network]) {
+        if ((await api.getNetworkId()) !== networkIds[NETWORK]) {
           showToast({
-            message: `Please connect to a ${network} wallet`,
+            message: `Please connect to a ${capitalize(NETWORK)} wallet`,
             type: "error",
           })
           return
@@ -122,9 +123,9 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
         }
 
         const decodedBalance = decode(balanceStr)
-        const policyId = registryByNetwork[network].djedAssetId.slice(0, 56)
-        const djedTokenName = registryByNetwork[network].djedAssetId.slice(56)
-        const shenTokenName = registryByNetwork[network].shenAssetId.slice(56)
+        const policyId = registryByNetwork[NETWORK].djedAssetId.slice(0, 56)
+        const djedTokenName = registryByNetwork[NETWORK].djedAssetId.slice(56)
+        const shenTokenName = registryByNetwork[NETWORK].shenAssetId.slice(56)
         const adaHandlePolicyId =
           "f0ff48bbb7bbe9d59a40f1ce90e9e9d0ff5002ec48f232b49ca0fb9a"
 
@@ -204,7 +205,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
         })
       }
     },
-    [network, setConnectedWalletId, showToast],
+    [NETWORK, setConnectedWalletId, showToast],
   )
 
   useEffect(() => {
