@@ -1,6 +1,6 @@
 import "./styles/globals.css"
 import { Poppins } from "next/font/google"
-import { getLoaderData } from "@/lib/loader"
+import { env } from "@/lib/envLoader"
 import { Providers } from "./providers"
 import Footer from "@/components/Footer"
 import { Navbar } from "@/components/Navbar"
@@ -8,7 +8,6 @@ import Background from "@/components/Background"
 import { type Metadata } from "next"
 import {
   APP_NAME,
-  OPEN_DJED_URL,
   TEAM_NAME,
   TWITTER_HANDLE,
   TWITTER_URL,
@@ -27,7 +26,7 @@ const network = process.env.NEXT_PUBLIC_NETWORK || "Mainnet"
 const title = network === "Mainnet" ? APP_NAME : `${APP_NAME} | ${network}`
 
 export const metadata: Metadata = {
-  metadataBase: new URL(OPEN_DJED_URL),
+  metadataBase: new URL(env.BASE_URL),
   title: {
     default: title,
     template: `%s | ${title}`,
@@ -62,11 +61,11 @@ export const metadata: Metadata = {
     type: "website",
     title: title,
     description: `Mint and burn DJED, Cardano's overcollateralized stablecoin, with our open-source platform. Transparent alternative to DJED.xyz - accessible 24/7 anywhere.`,
-    url: OPEN_DJED_URL,
+    url: env.BASE_URL,
     siteName: APP_NAME,
     images: [
       {
-        url: `${OPEN_DJED_URL}/logos/opendjed-banner.png`,
+        url: `${env.BASE_URL}/logos/opendjed-banner.png`,
         width: 512,
         height: 512,
         alt: `${APP_NAME} Banner`,
@@ -78,7 +77,7 @@ export const metadata: Metadata = {
     card: "summary",
     title: title,
     description: `Mint and burn DJED, Cardano's overcollateralized stablecoin, with our open-source platform. Transparent alternative to DJED.xyz - accessible 24/7 anywhere.`,
-    images: [`${OPEN_DJED_URL}/logos/opendjed-banner.png`],
+    images: [`${env.BASE_URL}/logos/opendjed-banner.png`],
     creator: TWITTER_HANDLE,
     site: TWITTER_URL,
   },
@@ -93,8 +92,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const env = getLoaderData()
-
   return (
     <html
       lang="en"
@@ -106,10 +103,10 @@ export default function RootLayout({
       >
         <Background />
         <Providers
-          apiUrl={env.apiUrl}
-          network={env.network}
-          config={env.config}
-          posthog={env.posthog}
+          apiUrl={env.API_URL}
+          network={env.NETWORK}
+          config={env.CONFIG}
+          posthog={env.POSTHOG_API_KEY}
         >
           <Navbar />
           <main className="px-page-margin flex w-full flex-1 flex-col items-center">

@@ -1,5 +1,5 @@
 import { useApiClient } from "@/context/ApiClientContext"
-import { useEnv } from "@/context/EnvContext"
+import { env } from "@/lib/envLoader"
 import {
   type ADAValue,
   valueTo,
@@ -27,7 +27,8 @@ import { useQuery } from "@tanstack/react-query"
 
 export function useProtocolData() {
   const client = useApiClient()
-  const { network } = useEnv()
+  const { NETWORK } = env
+
   return useQuery({
     queryKey: ["protocol-data"],
     queryFn: () =>
@@ -91,7 +92,7 @@ export function useProtocolData() {
             adaInReserve: BigInt(serializedPoolDatum.adaInReserve),
             minADA: BigInt(serializedPoolDatum.minADA),
           }
-          const registry = registryByNetwork[network]
+          const registry = registryByNetwork[NETWORK]
           const refundableDeposit = { ADA: Number(poolDatum.minADA) / 1e6 }
           return {
             to: (value: Value, token: TokenType | "ADA"): number =>

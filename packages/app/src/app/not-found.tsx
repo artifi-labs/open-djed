@@ -1,6 +1,7 @@
 import ErrorPage from "@/components/ErroPage"
 import PageFade from "@/components/PageFade"
-import { OPEN_DJED_URL, APP_NAME } from "@/lib/constants"
+import { APP_NAME } from "@/lib/constants"
+import { env } from "@/lib/envLoader"
 import { type Metadata } from "next"
 
 export const metadata: Metadata = {
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
     title: `${APP_NAME} | Page Not Found`,
     images: [
       {
-        url: `${OPEN_DJED_URL}/logos/artifi_banner.png`,
+        url: `${env.BASE_URL}/logos/artifi_banner.png`,
         width: 512,
         height: 512,
         alt: `${APP_NAME} | Page Not Found`,

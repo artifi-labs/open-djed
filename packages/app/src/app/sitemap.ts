@@ -1,44 +1,32 @@
-import type { MetadataRoute } from "next"
+import { env } from "@/lib/envLoader"
+import { type MetadataRoute } from "next"
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const network = process.env.NEXT_PUBLIC_NETWORK
-  const config = process.env.NEXT_PUBLIC_CONFIG
-    ? JSON.parse(process.env.NEXT_PUBLIC_CONFIG)
-    : {}
-
-  const baseUrl = (network && config[network]) || "http://localhost:3000"
-  const lastModified = new Date()
+  const baseUrl = env.BASE_URL
 
   return [
-    // Homepage
     {
-      url: `${baseUrl}/`,
-      lastModified,
+      url: baseUrl,
+      lastModified: new Date("2024-12-24"),
       changeFrequency: "daily",
       priority: 1.0,
     },
-
-    // Orders Page
     {
       url: `${baseUrl}/orders`,
-      lastModified,
+      lastModified: new Date("2024-12-24"),
       changeFrequency: "daily",
-      priority: 0.9,
+      priority: 0.8,
     },
-
-    // Terms of Service
     {
       url: `${baseUrl}/terms`,
-      lastModified,
-      changeFrequency: "weekly",
-      priority: 0.3,
+      lastModified: new Date("2024-12-24"),
+      changeFrequency: "monthly",
+      priority: 0.4,
     },
-
-    // Privacy Policy
     {
       url: `${baseUrl}/privacy`,
-      lastModified,
-      changeFrequency: "weekly",
+      lastModified: new Date("2024-12-24"),
+      changeFrequency: "monthly",
       priority: 0.3,
     },
   ]

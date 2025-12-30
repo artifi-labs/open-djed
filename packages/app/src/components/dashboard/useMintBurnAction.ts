@@ -12,10 +12,10 @@ import { useApiClient } from "@/context/ApiClientContext"
 import { AppError } from "@open-djed/api/src/errors"
 import { signAndSubmitTx } from "@/lib/signAndSubmitTx"
 import { useToast } from "@/context/ToastContext"
-import { useEnv } from "@/context/EnvContext"
 import { registryByNetwork } from "@open-djed/registry"
 import { type InputStatus } from "../input-fields/TransactionInput"
 import { roundToDecimals } from "@/lib/utils"
+import { env } from "@/lib/envLoader"
 
 type ProtocolData = NonNullable<ReturnType<typeof useProtocolData>["data"]>
 type ActionData = ReturnType<ProtocolData["tokenActionData"]>
@@ -222,14 +222,14 @@ export function useMintBurnAction(defaultActionType: ActionType) {
   const { wallet } = useWallet()
   const { openWalletSidebar } = useSidebar()
   const { data } = useProtocolData()
-  const { network } = useEnv()
+  const { NETWORK } = env
 
   const { showToast } = useToast()
   const client = useApiClient()
 
   const isMint = actionType === "Mint"
   const hasWalletConnected = Boolean(wallet)
-  const registry = registryByNetwork[network]
+  const registry = registryByNetwork[NETWORK]
 
   const [inputStatus, setInputStatus] = React.useState<InputStatus>("default")
 

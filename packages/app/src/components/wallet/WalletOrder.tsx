@@ -2,12 +2,12 @@ import React from "react"
 import Button from "../Button"
 import Tag from "../Tag"
 import ButtonIcon from "../ButtonIcon"
-import { useEnv } from "@/context/EnvContext"
 import Coin, { type IconCoinName } from "../Coin"
 import Divider from "../Divider"
 import { type OrderStatus, useOrders } from "@/hooks/useOrders"
 import { type Order } from "@open-djed/api"
 import { STATUS_CONFIG } from "../OrderHistory"
+import { CARDANOSCAN_BASE_URL } from "@/lib/constants"
 
 type WalletOrderProps = {
   order: Order
@@ -15,7 +15,6 @@ type WalletOrderProps = {
 }
 
 const WalletOrder: React.FC<WalletOrderProps> = ({ order, divider }) => {
-  const { network } = useEnv()
   const { handleCancelOrder, formatDate } = useOrders()
 
   const formatLovelace = (amount: bigint) =>
@@ -49,7 +48,7 @@ const WalletOrder: React.FC<WalletOrderProps> = ({ order, divider }) => {
             />
           )}
           <a
-            href={`https://${network === "Preprod" ? "preprod." : ""}cardanoscan.io/transaction/${order.tx_hash}`}
+            href={`${CARDANOSCAN_BASE_URL}/transaction/${order.tx_hash}`}
             target="_blank"
             rel="noopener noreferrer"
           >
