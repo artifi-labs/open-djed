@@ -1,24 +1,12 @@
 import type { MetadataRoute } from "next"
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  let baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
+  const network = process.env.NEXT_PUBLIC_NETWORK
+  const config = process.env.NEXT_PUBLIC_CONFIG
+    ? JSON.parse(process.env.NEXT_PUBLIC_CONFIG)
+    : {}
 
-  try {
-    const network = process.env.NEXT_PUBLIC_NETWORK
-    const config = process.env.NEXT_PUBLIC_CONFIG
-      ? JSON.parse(process.env.NEXT_PUBLIC_CONFIG)
-      : {}
-
-    if (network && config[network]) {
-      baseUrl = config[network]
-    }
-  } catch (error) {
-    console.warn(
-      "Failed to parse sitemap configuration, using default base URL:",
-      error,
-    )
-  }
-
+  const baseUrl = (network && config[network]) || "http://localhost:3000"
   const lastModified = new Date()
 
   return [
