@@ -4,11 +4,11 @@ import * as React from "react"
 import InputAction from "./InputAction"
 
 export type ActionProps = {
-  amount?: string
+  amount?: number
   buyDate?: string
   sellDate?: string
-  buyPrice?: string
-  sellPrice?: string
+  buyPrice?: number
+  sellPrice?: number
 }
 
 const Action: React.FC<ActionProps> = ({

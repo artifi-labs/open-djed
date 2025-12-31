@@ -5,14 +5,14 @@ import InputField from "../input-fields/InputField"
 import Dropdown from "../Dropdown"
 
 export type InputActionProps = {
-  amount?: string
+  amount?: number
   buyDate?: string
   sellDate?: string
-  buyPrice?: string
-  sellPrice?: string
+  buyPrice?: number
+  sellPrice?: number
 }
 
-const LabelWithIcon = ({ label }: { label: string }) => (
+const Label = ({ label }: { label: string }) => (
   <div className="flex">
     <p className="text-xxs font-medium">{label}</p>
   </div>
@@ -26,12 +26,12 @@ const InputAction: React.FC<InputActionProps> = ({
   sellPrice,
 }) => {
   return (
-    <div className="flex flex-col gap-32">
+    <div className="desktop:gap-32 flex flex-col gap-14">
       {/* SHEN Amount */}
-      <div className="flex flex-col gap-12">
-        <LabelWithIcon label="SHEN Amount" />
+      <div className="desktop:gap-12 flex flex-col gap-10">
+        <Label label="SHEN Amount" />
         <InputField
-          id="input-field"
+          id="shen-amount"
           placeholder="0"
           value={amount}
           size="Medium"
@@ -39,46 +39,48 @@ const InputAction: React.FC<InputActionProps> = ({
       </div>
 
       {/* Dates */}
-      <div className="grid grid-cols-2 gap-22">
-        <div className="flex flex-col gap-12">
-          <LabelWithIcon label="Buy Date" />
+      <div className="desktop:grid-cols-2 desktop:gap-22 grid gap-14">
+        <div className="desktop:gap-12 flex flex-col gap-10">
+          <Label label="Buy Date" />
           <Dropdown
-            text={buyDate || "Date"}
-            leadingIcon="Calendar"
-            trailingIcon="Chevron-down"
-            hasTag={false}
-            menuItems={[]}
             size="medium"
+            leadingIcon="Calendar"
+            text={buyDate || "Date"}
+            hasTag={false}
+            trailingIcon="Chevron-down"
+            menuItems={[]} //TODO: Date component?
           />
         </div>
-        <div className="flex flex-col gap-12">
-          <LabelWithIcon label="Sell Date" />
+
+        <div className="desktop:gap-12 flex flex-col gap-10">
+          <Label label="Sell Date" />
           <Dropdown
-            text={sellDate || "Date"}
-            leadingIcon="Calendar"
-            trailingIcon="Chevron-down"
-            menuItems={[]}
-            hasTag={false}
             size="medium"
+            leadingIcon="Calendar"
+            text={sellDate || "Date"}
+            hasTag={false}
+            trailingIcon="Chevron-down"
+            menuItems={[]} //TODO: Date component?
           />
         </div>
       </div>
 
       {/* ADA Prices */}
-      <div className="grid grid-cols-2 gap-22">
-        <div className="flex flex-col gap-12">
-          <LabelWithIcon label="Buy ADA Price" />
+      <div className="desktop:grid-cols-2 desktop:gap-22 grid gap-14">
+        <div className="desktop:gap-12 flex flex-col gap-10">
+          <Label label="Buy ADA Price" />
           <InputField
-            id="input-field"
+            id="buy-price"
             placeholder="0"
             value={buyPrice}
             size="Medium"
           />
         </div>
-        <div className="flex flex-col gap-12">
-          <LabelWithIcon label="Sell ADA Price" />
+
+        <div className="desktop:gap-12 flex flex-col gap-10">
+          <Label label="Sell ADA" />
           <InputField
-            id="input-field"
+            id="sell-price"
             placeholder="0"
             value={sellPrice}
             size="Medium"
