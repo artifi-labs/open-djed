@@ -4,7 +4,7 @@ import Link from "next/link"
 import Image from "next/image"
 import Icon, { type IconName } from "./Icon"
 import ButtonIcon from "./ButtonIcon"
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { useViewport } from "@/hooks/useViewport"
 import {
   DISCORD_URL,
@@ -70,6 +70,11 @@ const SocialIcons: React.FC<SocialIconProps> = ({ items }) => {
 
 const Footer = () => {
   const { isMobile, isDesktop } = useViewport()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const footerItems: FooterItem[] = [
     {
@@ -175,7 +180,7 @@ const Footer = () => {
     )
   }
 
-  if (!isMobile && !isDesktop) return null
+  if (!mounted || (!isMobile && !isDesktop)) return null
 
   return (
     <>

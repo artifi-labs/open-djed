@@ -4,7 +4,6 @@ import React, { useState } from "react"
 import { ClientProvider } from "@/context/ApiClientContext"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { WalletProvider } from "@/context/WalletContext"
-import { I18nProvider } from "@/context/I18nProvider"
 import { SidebarProvider } from "@/context/SidebarContext"
 import { ToastProvider } from "@/context/ToastContext"
 import { env } from "@/lib/envLoader"
@@ -21,9 +20,7 @@ export const Providers = ({ children }: ProvidersProps) => {
       <QueryClientProvider client={queryClient}>
         <ToastProvider>
           <WalletProvider>
-            <SidebarProvider>
-              <I18nProvider>{children}</I18nProvider>
-            </SidebarProvider>
+            <SidebarProvider>{children}</SidebarProvider>
           </WalletProvider>
         </ToastProvider>
       </QueryClientProvider>
