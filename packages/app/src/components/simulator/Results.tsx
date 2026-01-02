@@ -4,8 +4,11 @@ import * as React from "react"
 import clsx from "clsx"
 import BaseCard from "../card/BaseCard"
 import { useResults } from "@/components/simulator/useResults"
+import type { ScenarioInputs } from "@/components/simulator/calculations"
 
-// export type ResultsProps = {}
+export type ResultsProps = {
+  inputs: ScenarioInputs
+}
 
 export type ValueItem = {
   topValue: string
@@ -46,8 +49,8 @@ const ResultSummaryItem: React.FC<ResultItem> = ({
   )
 }
 
-const Results: React.FC = () => {
-  const items = useResults() //TODO: data
+const Results: React.FC<ResultsProps> = ({ inputs }) => {
+  const items = useResults(inputs)
 
   return (
     <BaseCard className="desktop:p-24 flex-1 p-16">

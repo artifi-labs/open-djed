@@ -3,13 +3,11 @@
 import * as React from "react"
 import InputField from "../input-fields/InputField"
 import Dropdown from "../Dropdown"
+import type { ScenarioInputs } from "./calculations"
 
 export type InputActionProps = {
-  amount?: number
-  buyDate?: string
-  sellDate?: string
-  buyPrice?: number
-  sellPrice?: number
+  values: ScenarioInputs
+  onUpdate: (field: keyof ScenarioInputs, value: string | number) => void
 }
 
 const Label = ({ label }: { label: string }) => (
@@ -18,13 +16,20 @@ const Label = ({ label }: { label: string }) => (
   </div>
 )
 
-const InputAction: React.FC<InputActionProps> = ({
-  amount,
-  buyDate,
-  sellDate,
-  buyPrice,
-  sellPrice,
-}) => {
+const InputAction: React.FC<InputActionProps> = ({ values, onUpdate }) => {
+  const handleNumberChange = (field: keyof ScenarioInputs, val: string) => {
+    if (val === "") {
+      onUpdate(field, 0)
+      return
+    }
+
+    const parsed = parseFloat(val)
+
+    if (!isNaN(parsed)) {
+      onUpdate(field, parsed)
+    }
+  }
+
   return (
     <div className="desktop:gap-32 flex flex-col gap-14">
       {/* SHEN Amount */}
@@ -33,7 +38,8 @@ const InputAction: React.FC<InputActionProps> = ({
         <InputField
           id="shen-amount"
           placeholder="0"
-          value={amount}
+          value={values.shenAmount === 0 ? "" : values.shenAmount.toString()}
+          onValueChange={(val) => handleNumberChange("shenAmount", val)}
           size="Medium"
         />
       </div>
@@ -45,10 +51,10 @@ const InputAction: React.FC<InputActionProps> = ({
           <Dropdown
             size="medium"
             leadingIcon="Calendar"
-            text={buyDate || "Date"}
+            text={values.buyDate || "Date"}
             hasTag={false}
             trailingIcon="Chevron-down"
-            menuItems={[]} //TODO: Date component?
+            menuItems={[]}
           />
         </div>
 
@@ -57,10 +63,10 @@ const InputAction: React.FC<InputActionProps> = ({
           <Dropdown
             size="medium"
             leadingIcon="Calendar"
-            text={sellDate || "Date"}
+            text={values.sellDate || "Date"}
             hasTag={false}
             trailingIcon="Chevron-down"
-            menuItems={[]} //TODO: Date component?
+            menuItems={[]}
           />
         </div>
       </div>
@@ -72,7 +78,10 @@ const InputAction: React.FC<InputActionProps> = ({
           <InputField
             id="buy-price"
             placeholder="0"
-            value={buyPrice}
+            value={
+              values.buyAdaPrice === 0 ? "" : values.buyAdaPrice.toString()
+            }
+            onValueChange={(val) => handleNumberChange("buyAdaPrice", val)}
             size="Medium"
           />
         </div>
@@ -82,7 +91,10 @@ const InputAction: React.FC<InputActionProps> = ({
           <InputField
             id="sell-price"
             placeholder="0"
-            value={sellPrice}
+            value={
+              values.sellAdaPrice === 0 ? "" : values.sellAdaPrice.toString()
+            }
+            onValueChange={(val) => handleNumberChange("sellAdaPrice", val)}
             size="Medium"
           />
         </div>

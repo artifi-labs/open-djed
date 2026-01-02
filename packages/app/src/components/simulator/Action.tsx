@@ -2,31 +2,17 @@
 
 import * as React from "react"
 import InputAction from "./InputAction"
+import type { ScenarioInputs } from "./calculations"
 
-export type ActionProps = {
-  amount?: number
-  buyDate?: string
-  sellDate?: string
-  buyPrice?: number
-  sellPrice?: number
+export interface ActionProps {
+  values: ScenarioInputs
+  onUpdate: (field: keyof ScenarioInputs, value: string | number) => void
 }
 
-const Action: React.FC<ActionProps> = ({
-  amount,
-  buyDate,
-  sellDate,
-  buyPrice,
-  sellPrice,
-}) => {
+const Action: React.FC<ActionProps> = ({ values, onUpdate }) => {
   return (
     <div className="desktop:gap-24 flex flex-col gap-18">
-      <InputAction
-        amount={amount}
-        buyDate={buyDate}
-        sellDate={sellDate}
-        buyPrice={buyPrice}
-        sellPrice={sellPrice}
-      />
+      <InputAction values={values} onUpdate={onUpdate} />
     </div>
   )
 }

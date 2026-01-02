@@ -6,9 +6,23 @@ import Modal from "@/components/modals/Modal"
 import SimulatorContent from "@/components/SimulatorContent"
 import Results from "@/components/simulator/Results"
 import Actions from "@/components/simulator/Actions"
+import type { ScenarioInputs } from "@/components/simulator/calculations"
 
 export default function SimulatorPage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [inputs, setInputs] = useState<ScenarioInputs>({
+    shenAmount: 0,
+    buyDate: "",
+    sellDate: "",
+    buyAdaPrice: 0,
+    sellAdaPrice: 0,
+  })
+  const handleUpdate = (
+    field: keyof ScenarioInputs,
+    value: string | number,
+  ) => {
+    setInputs((prev) => ({ ...prev, [field]: value }))
+  }
 
   return (
     <div className="desktop:pt-32 desktop:pb-64 mx-auto w-full max-w-280 pt-16 pb-16">
@@ -42,8 +56,8 @@ export default function SimulatorPage() {
 
       {/* Content */}
       <div className="desktop:flex-row desktop:gap-24 desktop:pt-32 flex flex-col gap-16 pt-16">
-        <Actions />
-        <Results />
+        <Actions values={inputs} onUpdate={handleUpdate} />
+        <Results inputs={inputs} />
       </div>
     </div>
   )
