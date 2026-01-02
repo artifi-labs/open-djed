@@ -3,28 +3,28 @@ import Image from "next/image"
 const ITEMS = [
   {
     text: "Fees you pay when buying and selling",
-    icon: "/logos/5.png",
-    name: "5",
+    icon: "/components/what-is-yield/orders-5.svg",
+    name: "orders-5",
   },
   {
     text: "ADA rewards you earn while holding SHEN",
-    icon: "/logos/rewards.png",
+    icon: "/components/what-is-yield/rewards.svg",
     name: "rewards",
   },
   {
     text: "Fees earned from minting and burning activity in the protocol",
-    icon: "/logos/fees.png",
+    icon: "/components/what-is-yield/fees.svg",
     name: "fees",
   },
   {
     text: "Profit or loss from ADA price movement",
-    icon: "/logos/buying-selling.png",
+    icon: "/components/what-is-yield/buying-selling.svg",
     name: "buying-selling",
   },
   {
     text: "Your total estimated PNL",
-    icon: "/logos/1.png",
-    name: "1",
+    icon: "/components/what-is-yield/orders-1.svg",
+    name: "orders-1",
   },
 ]
 
