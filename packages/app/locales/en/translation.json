@@ -1,83 +1,83 @@
 {
   "action": {
-    "burn": "action.burn",
-    "mint": "action.mint"
+    "burn": "Burn",
+    "mint": "Mint"
   },
   "months": {
-    "june": "months.june",
-    "may": "months.may"
+    "june": "June",
+    "may": "May"
   },
   "privacy": {
-    "effectiveDate": "privacy.effectiveDate",
-    "intro": "privacy.intro",
+    "effectiveDate": "Effective Date: {{date}}",
+    "intro": "Artifi Labs is committed to privacy and transparency. This Privacy Policy outlines what data we collect and how it is used.",
     "list": {
-      "network": "privacy.list.network",
-      "theme": "privacy.list.theme"
+      "network": "Network choice (e.g., mainnet or preprod)",
+      "theme": "Light/dark theme selection"
     },
     "paragraphs": {
-      "analytics1": "privacy.paragraphs.analytics1",
-      "analytics2": "privacy.paragraphs.analytics2",
-      "analytics3": "privacy.paragraphs.analytics3",
-      "authentication": "privacy.paragraphs.authentication",
-      "contact": "privacy.paragraphs.contact",
-      "cookies": "privacy.paragraphs.cookies",
-      "cookiesDetails": "privacy.paragraphs.cookiesDetails",
-      "noPersonalData": "privacy.paragraphs.noPersonalData",
-      "openSource": "privacy.paragraphs.openSource",
-      "policy": "privacy.paragraphs.policy",
-      "sourceCode": "privacy.paragraphs.sourceCode",
-      "wallet": "privacy.paragraphs.wallet"
+      "analytics1": "We use PostHog to collect limited analytics and application telemetry. This helps us understand how the app is used and identify bugs or performance issues.",
+      "analytics2": "Data collected by PostHog does <strong>not</strong> include personally identifiable information. We do <strong>not</strong> store wallet addresses, names, emails, or any user credentials.",
+      "analytics3": "All analytics are used strictly for the purpose of improving the application experience.",
+      "authentication": "The application does not use or require any user accounts, logins, or email registration. Access is anonymous.",
+      "contact": "If you have questions about this Privacy Policy, contact us at:",
+      "cookies": " We use cookies <strong>only</strong> to store user preferences, such as:",
+      "cookiesDetails": "These cookies are <strong>not used for tracking</strong> and do <strong>not</strong> store any personally identifiable information.",
+      "noPersonalData": "We do <strong>not</strong> collect any personal data.",
+      "openSource": "This application is open source and licensed under the",
+      "policy": "We may revise this policy over time. Updates will be posted here with a new effective date.",
+      "sourceCode": "Source code:",
+      "wallet": "When users interact with the app using their Cardano wallet, we interact only with the wallet interface via the CIP-30 standard. We do not receive or store your private keys. We reserve the right to store your addresses and transactions for analytical purposes to allow us to learn from your usage of the app and to improve it based on this information."
     },
     "sections": {
-      "analytics": "privacy.sections.analytics",
-      "authentication": "privacy.sections.authentication",
-      "contact": "privacy.sections.contact",
-      "cookies": "privacy.sections.cookies",
-      "dataCollection": "privacy.sections.dataCollection",
-      "openSource": "privacy.sections.openSource",
-      "policy": "privacy.sections.policy",
-      "wallets": "privacy.sections.wallets"
+      "analytics": "3. Analytics and Telemetry",
+      "authentication": "5. No Authentication",
+      "contact": "7. Contact",
+      "cookies": "2. Cookies",
+      "dataCollection": "1. Data Collection",
+      "openSource": "4. Open Source",
+      "policy": "6. Updates to This Policy",
+      "wallets": "Wallets"
     },
-    "title": "privacy.title"
+    "title": "Privacy Policy"
   },
   "terms": {
-    "effectiveDate": "terms.effectiveDate",
+    "effectiveDate": "Effective Date: {{date}}",
     "sections": {
       "changes": {
-        "content": "terms.sections.changes.content",
-        "title": "terms.sections.changes.title"
+        "content": "We may revise these Terms from time to time. Any changes will be reflected on this page with an updated effective date.",
+        "title": "6. Changes"
       },
       "contact": {
-        "content": "terms.sections.contact.content",
-        "title": "terms.sections.contact.title"
+        "content": "For questions about these Terms, contact us at:",
+        "title": "7. Contact"
       },
       "description": {
-        "content": "terms.sections.description.content",
-        "title": "terms.sections.description.title"
+        "content": "Open Djed is an open-source web application that interacts with the Cardano blockchain. Users can connect their Cardano wallets via the CIP-30 standard to interact with the app.",
+        "title": "1. Description"
       },
       "disclaimers": {
-        "item1": "terms.sections.disclaimers.item1",
-        "item2": "terms.sections.disclaimers.item2",
-        "item3": "terms.sections.disclaimers.item3",
-        "title": "terms.sections.disclaimers.title"
+        "item1": "This application is provided \"as is\", without warranty of any kind.",
+        "item2": "We make no guarantees regarding uptime, correctness, or suitability for any purpose.",
+        "item3": "Users are responsible for any transactions they submit using their wallet.",
+        "title": "5. Disclaimers"
       },
       "license": {
-        "linkText": "terms.sections.license.linkText",
-        "part1": "terms.sections.license.part1",
-        "part2": "terms.sections.license.part2",
-        "part3": "terms.sections.license.part3",
-        "title": "terms.sections.license.title"
+        "linkText": "GNU General Public License v3.0 (GPL-3.0)",
+        "part1": "This application is open source and licensed under the",
+        "part2": "You are free to use, modify, and redistribute the software, provided that any modifications or derivative works are also licensed under the GPL-3.0 license. You must include a copy of the GPL license when redistributing.",
+        "part3": "View the source code on GitHub:",
+        "title": "3. Open Source License"
       },
       "use": {
-        "content": "terms.sections.use.content",
-        "title": "terms.sections.use.title"
+        "content": " You agree to use the application in compliance with all applicable laws and regulations. You may not use the application in any manner that could harm, disable, or impair the application or interfere with others’ use of it",
+        "title": "2. Use of the Application"
       },
       "wallet": {
-        "content": "terms.sections.wallet.content",
-        "title": "terms.sections.wallet.title"
+        "content": "The application uses the Cardano CIP-30 wallet integration standard to enable users to connect supported wallets. We do not control, store, or transmit wallet private keys. All interactions with the blockchain occur via the user's wallet provider.",
+        "title": "4. Wallet Interactions"
       }
     },
-    "title": "terms.title",
-    "welcome": "terms.welcome"
+    "title": "Terms of Service",
+    "welcome": "Welcome to Open Djed! By accessing or using our application, you agree to be bound by these Terms of Service (\"Terms\"). If you do not agree with any part of these Terms, you may not use the application."
   }
 }

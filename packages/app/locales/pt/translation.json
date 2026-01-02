@@ -1,83 +1,83 @@
 {
   "action": {
-    "burn": "",
-    "mint": ""
+    "burn": "Burn",
+    "mint": "Mint"
   },
   "months": {
-    "june": "",
-    "may": ""
+    "june": "Junho",
+    "may": "Maio"
   },
   "privacy": {
-    "effectiveDate": "",
-    "intro": "",
+    "effectiveDate": "Data Efetiva: {{date}}",
+    "intro": "A Artifi Labs está comprometida com a privacidade e a transparência. Esta Política de Privacidade descreve quais dados recolhidos e como eles são utilizados.",
     "list": {
-      "network": "",
-      "theme": ""
+      "network": "Escolha da rede (exemplo: mainnet ou pré-produção)",
+      "theme": "Seleção do tema claro/escuro"
     },
     "paragraphs": {
-      "analytics1": "",
-      "analytics2": "",
-      "analytics3": "",
-      "authentication": "",
-      "contact": "",
-      "cookies": "",
-      "cookiesDetails": "",
-      "noPersonalData": "",
-      "openSource": "",
-      "policy": "",
-      "sourceCode": "",
-      "wallet": ""
+      "analytics1": "Utilizamos o PostHog para recolher análises limitadas e telemetria da aplicação. Isso ajuda-nos a compreender como a aplicação é utilizada e a identificar erros ou problemas de desempenho.",
+      "analytics2": "Os dados recolhidos pela PostHog <strong>não</strong> incluem informações de identificação pessoal. <strong>Não</strong> armazenamos endereços de carteiras, nomes, e-mails ou quaisquer credenciais de utilizadores.",
+      "analytics3": "Todas as análises são utilizadas estritamente com o objetivo de melhorar a experiência da aplicação.",
+      "authentication": "A aplicação não utiliza nem requer quaisquer contas de utilizador, inícios de sessão ou registo de e-mail. O acesso é anónimo.",
+      "contact": "Se tiver dúvidas sobre esta Política de Privacidade, entre em contacto connosco através do seguinte endereço:",
+      "cookies": "Utilizamos cookies <strong>apenas</strong> para armazenar as preferências do utilizador, tais como:",
+      "cookiesDetails": "Esses cookies <strong>não são usados para rastreamento</strong> e <strong>não</strong> armazenam nenhuma informação pessoal identificável.",
+      "noPersonalData": "<strong>Não</strong> recolhemos quaisquer dados pessoais.",
+      "openSource": "Esta aplicação é de código aberto e licenciada sob a",
+      "policy": "Podemos rever esta política ao longo do tempo. As atualizações serão publicadas aqui com uma nova data de efetiva.",
+      "sourceCode": "Código-fonte:",
+      "wallet": "Quando os utilizadores interagem com a aplicação utilizando a sua carteira Cardano, interagimos apenas com a interface da carteira através do padrão CIP-30. Não recebemos nem armazenamos as suas chaves privadas. Reservamo-nos o direito de armazenar os seus endereços e transações para fins analíticos, para nos permitir aprender com a sua utilização da aplicação e melhorá-la com base nessas informações."
     },
     "sections": {
-      "analytics": "",
-      "authentication": "",
-      "contact": "",
-      "cookies": "",
-      "dataCollection": "",
-      "openSource": "",
-      "policy": "",
-      "wallets": ""
+      "analytics": "3. Analíses e Telemetrias",
+      "authentication": "5. Sem Autenticação",
+      "contact": "7. Contacto",
+      "cookies": "2. Cookies",
+      "dataCollection": "1. Recolha de Dados",
+      "openSource": "4. Código Aberto",
+      "policy": "6. Atualizações da Política",
+      "wallets": "Carteiras"
     },
-    "title": ""
+    "title": "Política de Privacidade"
   },
   "terms": {
-    "effectiveDate": "",
+    "effectiveDate": "Data de Efetiva: {{date}}",
     "sections": {
       "changes": {
-        "content": "",
-        "title": ""
+        "content": "Podemos atualizar estes Termos periodicamente. Quaisquer alterações serão refletidas nesta página com uma data efetiva atualizada.",
+        "title": "6. Alterações"
       },
       "contact": {
-        "content": "",
-        "title": ""
+        "content": "Para questões relacionadas com estes Termos, entre em contacto connosco através de:",
+        "title": "7. Contacto"
       },
       "description": {
-        "content": "",
-        "title": ""
+        "content": "O Open Djed é uma aplicação web de código aberto que interage com a blockchain Cardano. Os utilizadores podem ligar as suas carteiras Cardano através do padrão CIP-30 para interagir com a aplicação.",
+        "title": "1. Descrição"
       },
       "disclaimers": {
-        "item1": "",
-        "item2": "",
-        "item3": "",
-        "title": ""
+        "item1": "Esta aplicação é fornecida \"tal como está\", sem qualquer tipo de garantia.",
+        "item2": "Não oferecemos garantias quanto à disponibilidade, exatidão ou adequação para qualquer finalidade.",
+        "item3": "Os utilizadores são responsáveis por quaisquer transações que realizem através da sua carteira.",
+        "title": "5. Avisos Legais"
       },
       "license": {
-        "linkText": "",
-        "part1": "",
-        "part2": "",
-        "part3": "",
-        "title": ""
+        "linkText": "Licença Pública Geral GNU v3.0 (GPL-3.0)",
+        "part1": "Esta aplicação é de código aberto e está licenciada sob a",
+        "part2": "É permitido usar, modificar e redistribuir o software, desde que quaisquer modificações ou trabalhos derivados também estejam licenciados sob a licença GPL-3.0. Deve incluir uma cópia da licença GPL ao redistribuir.",
+        "part3": "Veja o código-fonte no GitHub:",
+        "title": "3. Licença de Código Aberto"
       },
       "use": {
-        "content": "",
-        "title": ""
+        "content": "Você concorda em utilizar a aplicação em conformidade com todas as leis e regulamentos aplicáveis. Não pode utilizar a aplicação de forma a prejudicar, desativar ou danificar a aplicação ou interferir com o uso por parte de outros utilizadores.",
+        "title": "2. Utilização da Aplicação"
       },
       "wallet": {
-        "content": "",
-        "title": ""
+        "content": "A aplicação utiliza o padrão de integração de carteiras CIP-30 da Cardano para permitir que os utilizadores liguem carteiras compatíveis. Não controlamos, armazenamos ou transmitimos chaves privadas de carteiras. Todas as interações com a blockchain ocorrem através do fornecedor da carteira do utilizador.",
+        "title": "4. Interações com Carteiras"
       }
     },
-    "title": "",
-    "welcome": ""
+    "title": "Termos de Serviço",
+    "welcome": "Bem-vindo ao Open Djed! Ao aceder ou utilizar a nossa aplicação, você concorda em ficar vinculado a estes Termos de Serviço (\"Termos\"). Se não concordar com qualquer parte destes Termos, não poderá utilizar a aplicação."
   }
 }

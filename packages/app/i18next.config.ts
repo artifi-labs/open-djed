@@ -1,8 +1,12 @@
+// Extractor tool configuration file
+import { fallbackLng, languages } from "@/i18n/settings"
 import { defineConfig } from "i18next-cli"
 
 export default defineConfig({
-  locales: ["en", "pt"],
+  locales: languages,
   extract: {
+    primaryLanguage: fallbackLng,
+
     input: "src/**/*.{js,jsx,ts,tsx}",
     output: "locales/{{language}}/{{namespace}}.json",
 
@@ -12,27 +16,13 @@ export default defineConfig({
     transComponents: ["Trans", "Translation"],
     transKeepBasicHtmlNodesFor: ["br", "strong", "i", "p"],
 
+    defaultValue: "",
+
     nsSeparator: ":",
     keySeparator: ".",
     contextSeparator: "_",
     pluralSeparator: "_",
 
     indentation: 2,
-    primaryLanguage: "en",
-  },
-  lint: {
-    // CHECK THIS
-    acceptedAttributes: ["title"],
-    acceptedTags: ["p"],
-    ignoredAttributes: ["data-testid", "aria-label"],
-    ignoredTags: ["pre"],
-    ignore: ["additional/stuff/**"],
-  },
-  types: {
-    // CHECK THIS
-    input: ["locales/en/*.json"],
-    output: "src/types/i18next.d.ts",
-    resourcesFile: "src/types/resources.d.ts",
-    enableSelector: true,
   },
 })
