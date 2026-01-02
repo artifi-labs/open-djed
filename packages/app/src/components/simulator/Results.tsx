@@ -50,7 +50,7 @@ const Results: React.FC = () => {
   const items = useResults() //TODO: data
 
   return (
-    <BaseCard className="desktop:p-24 p-16">
+    <BaseCard className="desktop:p-24 flex-1 p-16">
       <div className="desktop:gap-24 flex flex-col gap-16">
         <p className="text-md font-medium">Results</p>
         <div className="desktop:gap-16 flex flex-col gap-14 font-medium">

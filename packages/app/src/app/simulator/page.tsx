@@ -14,14 +14,14 @@ export default function SimulatorPage() {
     <div className="desktop:pt-32 desktop:pb-64 mx-auto w-full max-w-280 pt-16 pb-16">
       {/* Header */}
       <div className="desktop:flex-row desktop:items-end flex flex-col justify-between gap-12">
-        <div className="flex flex-col gap-6">
+        <div className="desktop:gap-6 flex flex-col gap-4">
           <h2 className="text font-bold">SHEN Yield Simulator</h2>
           <span className="text-secondary text-sm">
             Check the yield outcomes quickly and clearly
           </span>
         </div>
 
-        <div>
+        <div className="desktop:pb-0 pb-16">
           <Button
             variant="text"
             size="medium"
@@ -41,7 +41,7 @@ export default function SimulatorPage() {
       </Modal>
 
       {/* Content */}
-      <div className="desktop:grid-cols-2 desktop:gap-24 desktop:pt-32 grid grid-cols-1 gap-16 pt-16">
+      <div className="desktop:flex-row desktop:gap-24 desktop:pt-32 flex flex-col gap-16 pt-16">
         <Actions />
         <Results />
       </div>

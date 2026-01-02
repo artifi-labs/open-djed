@@ -8,7 +8,7 @@ import Action from "./Action"
 
 const Actions: React.FC = () => {
   return (
-    <BaseCard className="desktop:p-24 w-160 p-16">
+    <BaseCard className="desktop:p-24 desktop:w-160 p-16">
       <div className="desktop:gap-24 flex flex-col gap-16">
         <div className="flex flex-col font-medium">Scenario</div>
         <Action />
