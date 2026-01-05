@@ -1,0 +1,39 @@
+name: TypeScript CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  ts-checks:
+    name: TypeScript Tests and Linting
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Set up Bun
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      # Install dependencies
+      - name: Install Dependencies
+        run: bun install --frozen-lockfile
+
+      # Format check at the root level
+      - name: Check Formatting
+        run: bun run format:check
+
+      # Lint
+      - name: Lint
+        run: bun run lint
+
+      # Run tests
+      - name: Run Tests
+        run: bun run test
