@@ -79,9 +79,7 @@ const Dropdown: React.FC<DropdownProps> = ({
   const interactiveClasses = clsx(
     "hover:bg-surface-primary-hover focus:bg-surface-primary-focused active:bg-surface-primary-pressed",
     "border-color-gradient-hover border-color-gradient-focus",
-    {
-      "border-color-gradient": isOpen, // To keeps the gradient active while the menu is open
-    },
+    isOpen && "border-color-gradient", // To keeps the gradient active while the menu is open
   )
 
   const dropdownClasses = clsx(
