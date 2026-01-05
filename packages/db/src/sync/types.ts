@@ -57,12 +57,12 @@ export type Order = {
   tx_hash: string
   out_index: number
   block: string
-  slot: number
+  slot: bigint | number
   action: Actions
   token: Token
   paid: bigint | null
   fees: bigint | null
-  received: bigint | undefined
+  received: bigint | undefined | null
   orderDate: Date
   status: string | null
 }
