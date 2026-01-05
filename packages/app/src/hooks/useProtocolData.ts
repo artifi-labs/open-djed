@@ -23,13 +23,13 @@ import {
   shenADARate,
 } from "@open-djed/math"
 import { registryByNetwork } from "@open-djed/registry"
-import { useQuery } from "@tanstack/react-query"
+import { useSuspenseQuery } from "@tanstack/react-query"
 
 export function useProtocolData() {
   const client = useApiClient()
   const { NETWORK } = env
 
-  return useQuery({
+  return useSuspenseQuery({
     queryKey: ["protocol-data"],
     queryFn: () =>
       client.api["protocol-data"].$get().then(
