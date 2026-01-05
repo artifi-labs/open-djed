@@ -9,6 +9,7 @@ import {
 } from "./calculations"
 
 export type ResultValueItem = {
+  name: string
   topValue: string
   bottomValue: string
   isTotal?: boolean
@@ -24,6 +25,7 @@ type DisplayValue = [string, string]
 type ToUSDConverter = (value: Value) => number
 
 interface SectionConfig {
+  name: string
   label: string
   isTotal?: boolean
   read: (data: Partial<ResultsData>) => { main: number; sub: number }
@@ -69,6 +71,7 @@ const formatSHENLabel = (value: number, isReady: boolean): string => {
 
 const createSectionConfigs = (): SectionConfig[] => [
   {
+    name: "buyFee",
     label: "Buy Fee",
     read: (d) => ({ main: d.buyFee ?? 0, sub: d.buyFee ?? 0 }),
     format: (main, sub, toUSD, isReady) => [
@@ -77,6 +80,7 @@ const createSectionConfigs = (): SectionConfig[] => [
     ],
   },
   {
+    name: "sellFee",
     label: "Sell Fee",
     read: (d) => ({ main: d.sellFee ?? 0, sub: d.sellFee ?? 0 }),
     format: (main, sub, toUSD, isReady) => [
@@ -85,6 +89,7 @@ const createSectionConfigs = (): SectionConfig[] => [
     ],
   },
   {
+    name: "stakingRewards",
     label: "ADA Staking Rewards",
     read: (d) => ({ main: d.stakingRewards ?? 0, sub: d.stakingRewards ?? 0 }),
     format: (main, sub, toUSD, isReady) => [
@@ -93,6 +98,7 @@ const createSectionConfigs = (): SectionConfig[] => [
     ],
   },
   {
+    name: "feesEarned",
     label: "Buy/Sell Fees Earned",
     read: (d) => ({ main: d.feesEarned ?? 0, sub: d.feesEarned ?? 0 }),
     format: (main, sub, toUSD, isReady) => [
@@ -101,6 +107,7 @@ const createSectionConfigs = (): SectionConfig[] => [
     ],
   },
   {
+    name: "adaPnl",
     label: "ADA PNL",
     read: (d) => ({ main: d.adaPnl ?? 0, sub: d.adaPnlPercent ?? 0 }),
     format: (main, sub, toUSD, isReady) => [
@@ -109,6 +116,7 @@ const createSectionConfigs = (): SectionConfig[] => [
     ],
   },
   {
+    name: "totalPnl",
     label: "Total PNL",
     isTotal: true,
     read: (d) => ({ main: d.totalPnl ?? 0, sub: d.totalPnlPercent ?? 0 }),
@@ -143,6 +151,7 @@ export function useResults(
         label: section.label,
         values: [
           {
+            name: section.name,
             topValue: top,
             bottomValue: bottom,
             isTotal: section.isTotal,

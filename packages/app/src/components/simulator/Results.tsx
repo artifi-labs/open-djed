@@ -11,6 +11,7 @@ export type ResultsProps = {
 }
 
 export type ValueItem = {
+  name: string
   topValue: string
   bottomValue: string
 }
@@ -18,14 +19,12 @@ export type ValueItem = {
 export type ResultItem = {
   label: string
   values: ValueItem[]
-  parentIndex: number
   className?: string
 }
 
 const ResultSummaryItem: React.FC<ResultItem> = ({
   label,
   values,
-  parentIndex,
   className,
 }) => {
   return (
@@ -33,17 +32,22 @@ const ResultSummaryItem: React.FC<ResultItem> = ({
       <p className="text-secondary flex-1 text-sm">{label}</p>
 
       <div className="flex flex-row gap-12">
-        {values &&
-          values.map((item, index) => (
-            <React.Fragment key={parentIndex + "-" + index}>
-              <div className="flex flex-col items-end">
-                <p className="text-primary text-xs font-medium">
-                  {item.topValue}
-                </p>
-                <p className="text-secondary text-xxs">{item.bottomValue}</p>
-              </div>
-            </React.Fragment>
-          ))}
+        {values.map((item) => {
+          const testID = `${item.name}-result`
+
+          return (
+            <div
+              key={testID}
+              data-testid={testID}
+              className="flex flex-col items-end"
+            >
+              <p className="text-primary text-xs font-medium">
+                {item.topValue}
+              </p>
+              <p className="text-secondary text-xxs">{item.bottomValue}</p>
+            </div>
+          )
+        })}
       </div>
     </div>
   )
@@ -57,8 +61,8 @@ const Results: React.FC<ResultsProps> = ({ inputs }) => {
       <div className="desktop:gap-24 flex flex-col gap-16">
         <p className="text-md font-medium">Results</p>
         <div className="desktop:gap-16 flex flex-col gap-14 font-medium">
-          {items.map((item, index) => (
-            <ResultSummaryItem key={item.label} {...item} parentIndex={index} />
+          {items.map((item) => (
+            <ResultSummaryItem key={item.label} {...item} />
           ))}
         </div>
       </div>
