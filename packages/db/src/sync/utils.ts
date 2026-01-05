@@ -2,12 +2,26 @@ import type { Actions, Token } from "../../generated/prisma/enums"
 import { env } from "../../lib/env"
 import { Blockfrost } from "@open-djed/blockfrost"
 import { registryByNetwork } from "@open-djed/registry"
-import { credentialToAddress } from "@lucid-evolution/lucid"
-import type { OrderUTxOWithDatumAndBlock, UTxO } from "./types"
+import { credentialToAddress, getAddressDetails } from "@lucid-evolution/lucid"
+import {
+  OrderStatus,
+  RedeemerPurpose,
+  type AddressDatum,
+  type Order,
+  type OrderUTxOWithDatum,
+  type OrderUTxOWithDatumAndBlock,
+  type TransactionRedeemer,
+  type UTxO,
+} from "./types"
 
 import fs from "fs"
 import path from "path"
 import { logger } from "../utils/logger"
+import {
+  CancelOrderSpendRedeemerHash,
+  type OrderDatum,
+  ProcessOrderSpendOrderRedeemerHash,
+} from "@open-djed/data"
 
 const blockfrostUrl = env.BLOCKFROST_URL
 const blockfrostId = env.BLOCKFROST_PROJECT_ID
@@ -166,32 +180,8 @@ export async function parseOrderDatum(orderUTxO: OrderUTxOWithDatumAndBlock) {
     if (typeof orderUTxO.consumed_by_tx !== "string")
       return { action, token, paid, received: undefined }
 
-    const userAddr = constructAddress(
-      d.address.paymentKeyHash[0],
-      d.address.stakeKeyHash[0][0][0],
-      network,
-    )
-
-    const utxosOfConsumingTx = (await blockfrostFetch(
-      `/txs/${orderUTxO.consumed_by_tx}/utxos`,
-    )) as UTxO
-    if (!utxosOfConsumingTx || !utxosOfConsumingTx.outputs) {
-      return { action, token, paid, received: undefined }
-    }
-
-    const outputUTxOToUserAddr = utxosOfConsumingTx.outputs.find(
-      (utxo) => utxo.address === userAddr,
-    )
-    if (!outputUTxOToUserAddr) {
-      throw new Error(
-        "Could not find output UTxO to user address in consuming transaction",
-      )
-    }
-
-    received = BigInt(
-      outputUTxOToUserAddr.amount.find((a) => a.unit === "lovelace")
-        ?.quantity ?? "0",
-    )
+    const addr = d.address as AddressDatum
+    received = await getBurnReceivedValue(addr, orderUTxO.consumed_by_tx)
   }
 
   return {
@@ -232,4 +222,157 @@ export const unlock = () => {
   if (fs.existsSync(lockFile)) {
     fs.unlinkSync(lockFile)
   }
+}
+
+/**
+ * process the order UTxOs to the suitable Order type to insert in the database
+ * @param utxos array of Order UTxOs, with decoded datum
+ * @returns array of Order objects to be inserted in the database
+ */
+export async function processOrdersToInsert(utxos: OrderUTxOWithDatum[]) {
+  return Promise.all(
+    utxos.map(async (utxo) => {
+      const d = utxo.orderDatum as OrderDatum
+      const { action, token, paid, received } = await parseOrderDatum(utxo)
+      const totalAmountPaid = BigInt(
+        utxo.amount.find((a) => a.unit === "lovelace")?.quantity ?? "0",
+      )
+      const fees = action === "Mint" ? totalAmountPaid - paid : totalAmountPaid
+      const status = await handleOrderStatus(
+        utxo.consumed_by_tx,
+        utxo.tx_hash,
+        utxo.output_index,
+      )
+
+      return {
+        address: d.address,
+        tx_hash: utxo.tx_hash,
+        out_index: utxo.output_index,
+        block: utxo.block_hash,
+        slot: utxo.block_slot,
+        action,
+        token,
+        paid,
+        fees,
+        received,
+        orderDate: new Date(Number(d.creationDate)),
+        status: status,
+      } as unknown as Order
+    }),
+  )
+}
+
+/**
+ * Check the status of an order based on its consuming transaction.
+ * Map the inputs of the consuming transaction, in search of the matching order UTxO coming from the script.
+ * Get the index of the matching input and proceed to get the transaction redeemers (we only need those with purpose 'spend').
+ * Match the input to the redeemer by the index and match the redeemer_data_hash to the known redeemers for 'ProcessOrderSpendOrderHash' and 'CancelOrderSpendHash'.
+ * If found, return the corresponding status.
+ * @param consumedBy the tx hash of the consuming transaction
+ * @param orderTxHash the tx hash of the order transaction
+ * @param orderOutIndex the output_index of order UTxO
+ * @returns the status of the order
+ */
+export async function handleOrderStatus(
+  consumedBy: string | undefined | null,
+  orderTxHash: string,
+  orderOutIndex: number,
+): Promise<OrderStatus> {
+  if (!consumedBy) {
+    return OrderStatus.Created
+  }
+
+  // get inputs of the consuming transaction
+  const consumingTx = (await blockfrostFetch(
+    `/txs/${consumedBy}/utxos`,
+  )) as UTxO
+  const consumingTxInputs = consumingTx.inputs
+  if (consumingTxInputs.length === 0) {
+    return OrderStatus.Created
+  }
+
+  // get spendable inputs
+  const spendableInputs = consumingTxInputs.filter(
+    (input) => !input.reference && !input.collateral,
+  )
+  if (spendableInputs.length === 0) {
+    return OrderStatus.Created
+  }
+
+  // get the inputs that match the order UTxO
+  const matchingInputIndex = spendableInputs.findIndex((input) => {
+    const isScriptAddress =
+      getAddressDetails(input.address).paymentCredential?.type === "Script"
+    return (
+      isScriptAddress &&
+      input.tx_hash === orderTxHash &&
+      input.output_index === orderOutIndex
+    )
+  })
+  if (matchingInputIndex === -1) {
+    return OrderStatus.Created
+  }
+
+  // get the redeemers of the consuming transaction
+  const redeemersData = (await blockfrostFetch(
+    `/txs/${consumedBy}/redeemers`,
+  )) as TransactionRedeemer[]
+  if (redeemersData.length === 0) {
+    return OrderStatus.Created
+  }
+
+  const spendRedeemers = redeemersData.filter(
+    (redeemer) => redeemer.purpose === RedeemerPurpose.Spend,
+  )
+  const matchingRedeemer = spendRedeemers.find((redeemer) => {
+    return redeemer.tx_index === matchingInputIndex
+  })
+
+  if (!matchingRedeemer) {
+    return OrderStatus.Created
+  }
+
+  return matchingRedeemer.redeemer_data_hash === CancelOrderSpendRedeemerHash
+    ? OrderStatus.Cancelled
+    : matchingRedeemer.redeemer_data_hash === ProcessOrderSpendOrderRedeemerHash
+      ? OrderStatus.Completed
+      : OrderStatus.Created
+}
+
+/**
+ * Gets the value received by the user after a burn order is successful
+ * @param address the user address
+ * @param consumingTx the tx hash of the consuming transaction
+ * @returns the value received
+ */
+export async function getBurnReceivedValue(
+  address: AddressDatum,
+  consumingTx: string | null,
+): Promise<bigint> {
+  if (!consumingTx) {
+    throw new Error(`No consuming tx`)
+  }
+
+  const paymentKeyHash = address.paymentKeyHash[0]
+  const stakeKeyHash = address.stakeKeyHash[0]?.[0]?.[0]
+  if (!paymentKeyHash || !stakeKeyHash) {
+    throw new Error(`Invalid address structure`)
+  }
+  const userAddr = constructAddress(paymentKeyHash, stakeKeyHash, network)
+  const utxosOfConsumingTx = (await blockfrostFetch(
+    `/txs/${consumingTx}/utxos`,
+  )) as UTxO
+  const outputUTxOToUserAddr = utxosOfConsumingTx.outputs.find(
+    (utxo) => utxo.address === userAddr,
+  )
+  if (!outputUTxOToUserAddr) {
+    throw new Error(
+      "Could not find output UTxO to user address in consuming transaction",
+    )
+  }
+  const received = BigInt(
+    outputUTxOToUserAddr.amount.find((a) => a.unit === "lovelace")?.quantity ??
+      "0",
+  )
+  return received
 }
