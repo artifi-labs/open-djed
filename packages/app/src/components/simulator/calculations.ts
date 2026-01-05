@@ -1,4 +1,4 @@
-import { type Value } from "@/lib/utils"
+// import { type Value } from "@/lib/utils"
 
 export interface ScenarioInputs {
   shenAmount: number
@@ -19,10 +19,9 @@ export interface ResultsData {
   totalPnlPercent: number
 }
 
-export const calculateSimulatorResults = (
-  inputs: ScenarioInputs,
-): ResultsData => {
-  const { shenAmount, buyAdaPrice, sellAdaPrice } = inputs
+export const calculateSimulatorResults = () // inputs: ScenarioInputs,
+: ResultsData => {
+  //const { shenAmount, buyAdaPrice, sellAdaPrice } = inputs
   //TODO: calculations logic
 
   return {
