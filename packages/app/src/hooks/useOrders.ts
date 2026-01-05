@@ -27,9 +27,10 @@ export type OrderApi = {
 
 export type OrderStatus =
   // | "Processing"
-  "Created" | "Completed"
-// | "Cancelling"
-// | "Canceled"
+  | "Created"
+  | "Completed"
+  // | "Cancelling"
+  | "Canceled"
 // | "Failed"
 // | "Expired"
 
@@ -39,7 +40,7 @@ export const statusFiltersArray = [
   "Created",
   "Completed",
   // "Cancelling",
-  // "Canceled",
+  "Canceled",
   // "Failed",
   // "Expired",
 ] as const
