@@ -264,11 +264,12 @@ export function useMintBurnAction(defaultActionType: ActionType) {
   }, [actionType, resetValues])
 
   const maxAmount = React.useMemo(() => {
-    if (!wallet || !data ) return 0
+    if (!wallet || !data) return 0
 
-    const currentToken = actionType === 'Mint' ? activeReceiveToken : activePayToken
+    const currentToken =
+      actionType === "Mint" ? activeReceiveToken : activePayToken
 
-    if(currentToken === 'ADA') return 0
+    if (currentToken === "ADA") return 0
 
     const maxTokenAmount =
       currentToken === null
@@ -288,9 +289,7 @@ export function useMintBurnAction(defaultActionType: ActionType) {
                 0,
               ),
               (actionType === "Mint"
-                ? data.protocolData?.[currentToken].mintableAmount[
-                    currentToken
-                  ]
+                ? data.protocolData?.[currentToken].mintableAmount[currentToken]
                 : data.protocolData?.[currentToken].burnableAmount[
                     currentToken
                   ]) ?? 0,
@@ -472,7 +471,7 @@ export function useMintBurnAction(defaultActionType: ActionType) {
     }
     if (!wallet) return
 
-    const valuesToUse = actionType === 'Mint' ? receiveValues : payValues
+    const valuesToUse = actionType === "Mint" ? receiveValues : payValues
 
     if (
       valuesToUse &&

@@ -86,7 +86,7 @@ const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
 }) => {
   const { wallet } = useWallet()
   const walletConnected = wallet !== null
-    const {data} = useProtocolData()
+  const { data } = useProtocolData()
 
   const renderInput = (coin: Token) => {
     const handleTokenChange = () => {
@@ -95,7 +95,7 @@ const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
       onTokenChange(coins[nextIndex])
     }
     const balanceStr = walletConnected
-      ? `${formatNumber(Number(wallet?.balance[coin as keyof typeof wallet.balance]) ?? 0, {maximumFractionDigits: 3})}`
+      ? `${formatNumber(Number(wallet?.balance[coin as keyof typeof wallet.balance]), { maximumFractionDigits: 3 })}`
       : undefined
 
     const token: TokenType | null =
@@ -110,20 +110,24 @@ const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
           ? true
           : false
 
-    const valueToUSD = `$${formatNumber(data?.to({[coin]: values[coin].toString()}, 'DJED') ?? 0, {maximumFractionDigits: 2})}`
+    const valueToUSD = `$${formatNumber(data?.to({ [coin]: values[coin].toString() }, "DJED") ?? 0, { maximumFractionDigits: 2 })}`
 
-    return coin === 'ADA' ? (<ValueShowcase token={coin} asset={{
+    return coin === "ADA" ? (
+      <ValueShowcase
+        asset={{
           coin: coin,
           coins,
           size: "small",
           checked: false,
           hasLeadingIcon,
           onCoinChange: handleTokenChange,
-        }} 
+        }}
         value={values[coin] ? values[coin].toString() : ""}
-        suffix={valueToUSD} 
+        suffix={valueToUSD}
         availableAmount={balanceStr}
-        hasAvailableAmount={hasAvailableAmount} />) : (
+        hasAvailableAmount={hasAvailableAmount}
+      />
+    ) : (
       <TransactionInput
         disabled={disabled || isDisabled}
         placeholder="0"

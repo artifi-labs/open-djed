@@ -1,14 +1,10 @@
-import React from 'react'
-import Asset, { type AssetProps } from '../Asset'
-import { type IconName } from '../Icon'
-import Tag from '../Tag'
-import Divider from '../Divider'
-import { useProtocolData } from '@/hooks/useProtocolData'
-import { Token } from '@/lib/tokens'
-import { formatNumber } from '@/lib/utils'
+import React from "react"
+import Asset, { type AssetProps } from "../Asset"
+import { type IconName } from "../Icon"
+import Tag from "../Tag"
+import Divider from "../Divider"
 
 type ValueShowcaseProps = {
-  token: Token
   asset: AssetProps
   availableAmount?: string
   hasAvailableAmount?: boolean
@@ -20,11 +16,23 @@ type ValueShowcaseProps = {
   suffix: string
 }
 
-const ValueShowcase: React.FC<ValueShowcaseProps> = ({token, asset, availableAmount, hasAvailableAmount, value, defaultValue= '0.00', hasTag = false, tagLeadingIcon, tagTrailingIcon, suffix}) => {
+const ValueShowcase: React.FC<ValueShowcaseProps> = ({
+  asset,
+  availableAmount,
+  hasAvailableAmount,
+  value,
+  defaultValue = "0.00",
+  hasTag = false,
+  tagLeadingIcon,
+  tagTrailingIcon,
+  suffix,
+}) => {
   return (
-    <div className='flex flex-row w-full justify-between items-center'>
-      <span className='text-tertiary font-medium text-sm leading-5'>{value || defaultValue}</span>
-      <div className='flex flex-row justify-center items-center w-fit gap-10'>
+    <div className="flex w-full flex-row items-center justify-between">
+      <span className="text-tertiary text-sm leading-5 font-medium">
+        {value || defaultValue}
+      </span>
+      <div className="flex w-fit flex-row items-center justify-center gap-10">
         {hasTag && (
           <>
             <Tag
@@ -35,20 +43,18 @@ const ValueShowcase: React.FC<ValueShowcaseProps> = ({token, asset, availableAmo
               leadingIcon={tagLeadingIcon}
               trailingIcon={tagTrailingIcon}
             />
-            <Divider orientation='vertical'/>
+            <Divider orientation="vertical" />
           </>
         )}
         {hasAvailableAmount && availableAmount && (
           <>
-            <span className='text-tertiary text-xxs leading-4'>
+            <span className="text-tertiary text-xxs leading-4">
               Available: {availableAmount}
             </span>
-            <Divider orientation='vertical'/>
+            <Divider orientation="vertical" />
           </>
         )}
-        <span className='text-tertiary text-xxs leading-4'>
-          {suffix}
-        </span>
+        <span className="text-tertiary text-xxs leading-4">{suffix}</span>
         <Asset {...asset} />
       </div>
     </div>

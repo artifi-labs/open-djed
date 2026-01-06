@@ -91,11 +91,11 @@ const Action: React.FC<ActionProps> = ({
       onHalfClick,
       onMaxClick,
       hasMaxAndHalfActions: true,
-      hasAvailableAmount: actionType === 'Mint' ? true : false,
+      hasAvailableAmount: actionType === "Mint" ? true : false,
       hasMaxAmount: hasMaxAmount,
       maxAmount: maxAmount,
       inputStatus: inputStatus,
-      disable: false
+      disable: false,
     },
     {
       key: "receive",
@@ -111,11 +111,11 @@ const Action: React.FC<ActionProps> = ({
       onHalfClick,
       onMaxClick,
       hasMaxAndHalfActions: true,
-      hasAvailableAmount: actionType === 'Mint' ? false : true,
+      hasAvailableAmount: actionType === "Mint" ? false : true,
       hasMaxAmount: hasMaxAmount,
       maxAmount: maxAmount,
       inputStatus: inputStatus,
-      disabled: false
+      disabled: false,
     },
   ]
 
