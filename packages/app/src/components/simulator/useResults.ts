@@ -137,7 +137,7 @@ export function useResults(
     const configs = createSectionConfigs()
     const isReady =
       inputs.shenAmount > 0 && inputs.buyAdaPrice > 0 && inputs.sellAdaPrice > 0 //TODO: Add dates conditions
-    const data = isReady ? calculateSimulatorResults(inputs) : {}
+    const data = isReady ? calculateSimulatorResults() : {}
 
     const toUSD: ToUSDConverter | undefined = priceData
       ? (value: Value) => priceData.to(value, "DJED")
