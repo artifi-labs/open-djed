@@ -16,10 +16,10 @@ export const ACTION_CONFIG: Record<
   }
 > = {
   Mint: {
-    pay: ["DJED", "SHEN"],
-    receive: ["ADA"],
-    payHasLeadingIcon: true,
-    receiveHasLeadingIcon: false,
+    pay: ["ADA"],
+    receive: ["DJED", "SHEN"],
+    payHasLeadingIcon: false,
+    receiveHasLeadingIcon: true,
     payShowDual: false,
     receiveShowDual: false, // TODO: change to true when dual values are available for Mint
   },

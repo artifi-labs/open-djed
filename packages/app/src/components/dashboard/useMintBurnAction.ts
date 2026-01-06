@@ -264,31 +264,35 @@ export function useMintBurnAction(defaultActionType: ActionType) {
   }, [actionType, resetValues])
 
   const maxAmount = React.useMemo(() => {
-    if (!wallet || !data || activePayToken === "ADA") return 0
+    if (!wallet || !data ) return 0
+
+    const currentToken = actionType === 'Mint' ? activeReceiveToken : activePayToken
+
+    if(currentToken === 'ADA') return 0
 
     const maxTokenAmount =
-      activePayToken === null
+      currentToken === null
         ? 0
         : Math.round(
             Math.min(
               Math.max(
                 (actionType === "Burn"
-                  ? wallet.balance[activePayToken]
+                  ? wallet.balance[currentToken]
                   : ((wallet.balance.ADA ?? 0) -
                       (Number(registry.operatorFeeConfig.max) +
                         (data.protocolData.refundableDeposit.ADA ?? 1823130)) /
                         1e6) /
                     (data.protocolData
-                      ? data.protocolData[activePayToken].buyPrice.ADA
+                      ? data.protocolData[currentToken].buyPrice.ADA
                       : 0)) ?? 0,
                 0,
               ),
               (actionType === "Mint"
-                ? data.protocolData?.[activePayToken].mintableAmount[
-                    activePayToken
+                ? data.protocolData?.[currentToken].mintableAmount[
+                    currentToken
                   ]
-                : data.protocolData?.[activePayToken].burnableAmount[
-                    activePayToken
+                : data.protocolData?.[currentToken].burnableAmount[
+                    currentToken
                   ]) ?? 0,
             ) * 1e6,
           ) / 1e6
@@ -330,7 +334,7 @@ export function useMintBurnAction(defaultActionType: ActionType) {
   const handleReceiveValueChange = React.useCallback(
     (token: Token, value: string) => {
       setReceiveValues((prev) => ({ ...prev, [token]: value }))
-      const numValue = parseValue(value)
+      const numValue = parseValue(value) || 0
       const result = calculateFromReceiveValue(token, numValue)
 
       setPayValues(result.pay)
@@ -468,13 +472,15 @@ export function useMintBurnAction(defaultActionType: ActionType) {
     }
     if (!wallet) return
 
+    const valuesToUse = actionType === 'Mint' ? receiveValues : payValues
+
     if (
-      payValues &&
-      !Object.values(payValues).some((value) => parseFloat(value) > 0)
+      valuesToUse &&
+      !Object.values(valuesToUse).some((value) => parseFloat(value) > 0)
     )
       return
 
-    const tokenAmountArray = Object.entries(payValues).find(
+    const tokenAmountArray = Object.entries(valuesToUse).find(
       ([, value]) => parseFloat(value) > 0,
     )
     if (!tokenAmountArray) return
