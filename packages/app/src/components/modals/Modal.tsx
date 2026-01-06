@@ -59,7 +59,7 @@ export const Modal: React.FC<ModalProps> = ({
         className="fixed inset-0 z-50 flex items-center justify-center"
         onClick={onClose}
       >
-        <div className={baseClassName}>
+        <div className={baseClassName} onClick={(e) => e.stopPropagation()}>
           <div className="sticky top-0 z-10 flex items-center justify-between pb-16">
             {logo ? (
               <Logo />
