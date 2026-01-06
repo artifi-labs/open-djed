@@ -19,16 +19,7 @@ const Label = ({ label }: { label: string }) => (
 
 const InputAction: React.FC<InputActionProps> = ({ values, onUpdate }) => {
   const handleNumberChange = (field: keyof ScenarioInputs, val: string) => {
-    if (val === "") {
-      onUpdate(field, 0)
-      return
-    }
-
-    const parsed = parseFloat(val)
-
-    if (!isNaN(parsed)) {
-      onUpdate(field, parsed)
-    }
+    onUpdate(field, val)
   }
 
   return (
@@ -45,7 +36,9 @@ const InputAction: React.FC<InputActionProps> = ({ values, onUpdate }) => {
                 id="shen-amount"
                 placeholder="0"
                 value={
-                  values.shenAmount === 0 ? "" : values.shenAmount.toString()
+                  values.shenAmount.toString() === "0"
+                    ? ""
+                    : values.shenAmount.toString()
                 }
                 onValueChange={(val) => handleNumberChange("shenAmount", val)}
                 size="Medium"
@@ -87,7 +80,7 @@ const InputAction: React.FC<InputActionProps> = ({ values, onUpdate }) => {
                   id="buy-price"
                   placeholder="0"
                   value={
-                    values.buyAdaPrice === 0
+                    values.buyAdaPrice.toString() === "0"
                       ? ""
                       : values.buyAdaPrice.toString()
                   }
@@ -99,12 +92,12 @@ const InputAction: React.FC<InputActionProps> = ({ values, onUpdate }) => {
               </div>
 
               <div className="desktop:gap-12 flex flex-col gap-10">
-                <Label label="Sell ADA" />
+                <Label label="Sell ADA Price" />
                 <InputField
                   id="sell-price"
                   placeholder="0"
                   value={
-                    values.sellAdaPrice === 0
+                    values.sellAdaPrice.toString() === "0"
                       ? ""
                       : values.sellAdaPrice.toString()
                   }

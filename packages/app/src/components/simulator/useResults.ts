@@ -3,9 +3,9 @@
 import { useMemo } from "react"
 import { formatNumber, type Value } from "@/lib/utils"
 import {
-  calculateSimulatorResults,
   type ScenarioInputs,
   type ResultsData,
+  useSimulatorResults,
 } from "./calculations"
 
 export type ResultValueItem = {
@@ -22,7 +22,7 @@ export type ResultItem = {
 }
 
 type DisplayValue = [string, string]
-type ToUSDConverter = (value: Value) => number
+type ToUSDConverter = (value: Value, price: number) => string
 
 interface SectionConfig {
   name: string
@@ -32,26 +32,25 @@ interface SectionConfig {
   format: (
     main: number,
     sub: number,
-    toUSD?: ToUSDConverter,
-    isReady?: boolean,
+    toUSD: ToUSDConverter,
+    prices: { buy: number; sell: number },
+    isReady: boolean,
   ) => DisplayValue
   className?: string
 }
 
-interface PriceDataProvider {
-  to: (value: Value, target: string) => number
-}
-
 const formatUSDValue = (
-  toUSD: ToUSDConverter | undefined,
-  valueObj: Value,
+  value: number,
+  toUSD: ToUSDConverter,
+  price: number,
+  token: "ADA" | "SHEN",
   isReady: boolean,
+  hideSymbolIfZero: boolean,
 ): string => {
-  if (!isReady) return "0"
-  if (!toUSD) return "$0.00"
+  if (!isReady) return hideSymbolIfZero ? "0" : "$0"
+  if (value === 0 && hideSymbolIfZero) return "0"
 
-  const usdAmount = toUSD(valueObj)
-  return `$${formatNumber(usdAmount, { maximumFractionDigits: 2 })}`
+  return toUSD({ [token]: value }, price)
 }
 
 const formatPercentValue = (value: number, isReady: boolean): string => {
@@ -74,45 +73,45 @@ const createSectionConfigs = (): SectionConfig[] => [
     name: "buyFee",
     label: "Buy Fee",
     read: (d) => ({ main: d.buyFee ?? 0, sub: d.buyFee ?? 0 }),
-    format: (main, sub, toUSD, isReady) => [
-      formatADALabel(main, isReady ?? false),
-      isReady ? formatUSDValue(toUSD, { ADA: sub }, true) : "$0",
+    format: (main, sub, toUSD, prices, isReady) => [
+      formatADALabel(main, isReady),
+      formatUSDValue(sub, toUSD, prices.buy, "ADA", isReady, false),
     ],
   },
   {
     name: "sellFee",
     label: "Sell Fee",
     read: (d) => ({ main: d.sellFee ?? 0, sub: d.sellFee ?? 0 }),
-    format: (main, sub, toUSD, isReady) => [
-      formatSHENLabel(main, isReady ?? false),
-      isReady ? formatUSDValue(toUSD, { SHEN: sub }, true) : "$0",
+    format: (main, sub, toUSD, prices, isReady) => [
+      formatSHENLabel(main, isReady),
+      formatUSDValue(sub, toUSD, prices.sell, "SHEN", isReady, false),
     ],
   },
   {
     name: "stakingRewards",
     label: "ADA Staking Rewards",
     read: (d) => ({ main: d.stakingRewards ?? 0, sub: d.stakingRewards ?? 0 }),
-    format: (main, sub, toUSD, isReady) => [
-      formatADALabel(main, isReady ?? false),
-      isReady ? formatUSDValue(toUSD, { ADA: sub }, true) : "$0",
+    format: (main, sub, toUSD, prices, isReady) => [
+      formatADALabel(main, isReady),
+      formatUSDValue(sub, toUSD, prices.sell, "ADA", isReady, false),
     ],
   },
   {
     name: "feesEarned",
     label: "Buy/Sell Fees Earned",
     read: (d) => ({ main: d.feesEarned ?? 0, sub: d.feesEarned ?? 0 }),
-    format: (main, sub, toUSD, isReady) => [
-      formatADALabel(main, isReady ?? false),
-      isReady ? formatUSDValue(toUSD, { ADA: sub }, true) : "$0",
+    format: (main, sub, toUSD, prices, isReady) => [
+      formatADALabel(main, isReady),
+      formatUSDValue(sub, toUSD, prices.sell, "ADA", isReady, false),
     ],
   },
   {
     name: "adaPnl",
     label: "ADA PNL",
     read: (d) => ({ main: d.adaPnl ?? 0, sub: d.adaPnlPercent ?? 0 }),
-    format: (main, sub, toUSD, isReady) => [
-      formatUSDValue(toUSD, { ADA: main }, isReady ?? false),
-      formatPercentValue(sub, isReady ?? false),
+    format: (main, sub, toUSD, prices, isReady) => [
+      formatUSDValue(main, toUSD, prices.sell, "ADA", isReady, true),
+      formatPercentValue(sub, isReady),
     ],
   },
   {
@@ -120,32 +119,40 @@ const createSectionConfigs = (): SectionConfig[] => [
     label: "Total PNL",
     isTotal: true,
     read: (d) => ({ main: d.totalPnl ?? 0, sub: d.totalPnlPercent ?? 0 }),
-    format: (main, sub, toUSD, isReady) => [
-      formatUSDValue(toUSD, { ADA: main }, isReady ?? false),
-      formatPercentValue(sub, isReady ?? false),
+    format: (main, sub, toUSD, prices, isReady) => [
+      formatUSDValue(main, toUSD, prices.sell, "ADA", isReady, true),
+      formatPercentValue(sub, isReady),
     ],
     className:
       "p-12 bg-supportive-2-800 rounded-4 flex flex-row justify-between items-center w-full",
   },
 ]
 
-export function useResults(
-  inputs: ScenarioInputs,
-  priceData?: PriceDataProvider,
-) {
+export function useResults(inputs: ScenarioInputs) {
+  const { results: simulatorData } = useSimulatorResults(inputs)
+
   return useMemo((): ResultItem[] => {
     const configs = createSectionConfigs()
     const isReady =
-      inputs.shenAmount > 0 && inputs.buyAdaPrice > 0 && inputs.sellAdaPrice > 0 //TODO: Add dates conditions
-    const data = isReady ? calculateSimulatorResults() : {}
+      inputs.shenAmount > 0 && inputs.buyAdaPrice > 0 && inputs.sellAdaPrice > 0
+    const data = isReady && simulatorData ? simulatorData : {}
 
-    const toUSD: ToUSDConverter | undefined = priceData
-      ? (value: Value) => priceData.to(value, "DJED")
-      : undefined
+    const toUSD: ToUSDConverter = (value: Value, price: number) => {
+      const adaAmount = value.ADA ?? 0
+      const shenAmount = value.SHEN ?? 0
+      const totalAmount = adaAmount + shenAmount
+      const usdValue = totalAmount * price
+      return `$${formatNumber(usdValue, { maximumFractionDigits: 2 })}`
+    }
+
+    const prices = {
+      buy: inputs.buyAdaPrice,
+      sell: inputs.sellAdaPrice,
+    }
 
     return configs.map((section) => {
-      const { main, sub } = section.read(data)
-      const [top, bottom] = section.format(main, sub, toUSD, isReady)
+      const { main, sub } = section.read(data as Partial<ResultsData>)
+      const [top, bottom] = section.format(main, sub, toUSD, prices, isReady)
 
       return {
         label: section.label,
@@ -160,5 +167,5 @@ export function useResults(
         className: section.className,
       }
     })
-  }, [inputs, priceData])
+  }, [inputs, simulatorData])
 }
