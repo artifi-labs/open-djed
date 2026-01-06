@@ -45,7 +45,7 @@ export const Modal: React.FC<ModalProps> = ({
   )
 
   const baseClassName = clsx(
-    "bg-surface-secondary rounded-8 relative flex max-h-[85vh] max-w-full min-w-xs flex-col overflow-hidden desktop:p-42 p-32 sm:max-h-[85vh] sm:max-w-200 mx-16",
+    "bg-surface-secondary rounded-8 relative flex max-h-[85vh] max-w-full min-w-xs flex-col overflow-hidden desktop:p-42 p-32 sm:max-h-[85vh] sm:max-w-200",
     border,
     className,
   )

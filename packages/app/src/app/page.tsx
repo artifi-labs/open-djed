@@ -36,6 +36,7 @@ export default function DashboardPage() {
         title="What is Open DJED?"
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
+        className="mx-16"
       >
         <OpenDjedContent />
       </Modal>

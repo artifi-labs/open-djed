@@ -34,6 +34,7 @@ export default function SimulatorPage() {
         title="What is a yield simulator?"
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
+        className="mx-16"
       >
         <SimulatorContent />
       </Modal>
