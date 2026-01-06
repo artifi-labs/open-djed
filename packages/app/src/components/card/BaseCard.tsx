@@ -21,7 +21,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
   ...props
 }) => {
   const baseCardClassNames = clsx(
-    "flex w-full flex-1 flex-col rounded-card",
+    "flex flex-col rounded-card",
     border,
     backgroundColor,
     padding,

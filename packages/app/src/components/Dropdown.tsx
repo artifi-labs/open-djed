@@ -1,3 +1,5 @@
+"use client"
+
 import * as React from "react"
 import clsx from "clsx"
 import ContextualMenu, { type ContextualMenuItem } from "./ContextualMenu"
@@ -70,13 +72,14 @@ const Dropdown: React.FC<DropdownProps> = ({
   }
 
   const baseClasses = clsx(
-    "border-gradient border-color-gradient bg-surface-primary",
-    "inline-flex w-full items-center justify-between rounded-full text-primary",
+    "border-gradient border-color-primary bg-surface-primary",
+    "inline-flex w-full items-center justify-between rounded-input-dropdown text-primary",
   )
 
   const interactiveClasses = clsx(
     "hover:bg-surface-primary-hover focus:bg-surface-primary-focused active:bg-surface-primary-pressed",
-    "hover:border-gradient focus:border-gradient active:border-gradient",
+    "border-color-gradient-hover border-color-gradient-focus",
+    isOpen && "border-color-gradient", // To keeps the gradient active while the menu is open
   )
 
   const dropdownClasses = clsx(
