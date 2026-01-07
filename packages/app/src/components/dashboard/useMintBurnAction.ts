@@ -475,8 +475,6 @@ export function useMintBurnAction(defaultActionType: ActionType) {
     const tokenAmount = tokenAmountArray[1]
     const tokenAmountNumber = parseFloat(tokenAmountArray[1])
 
-
-
     if (wallet && tokenAmountNumber > maxAmount) {
       setInputStatus("error")
       showToast({
