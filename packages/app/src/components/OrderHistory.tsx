@@ -19,7 +19,6 @@ import { type OrderStatus, useOrders } from "@/hooks/useOrders"
 import BaseCard from "./card/BaseCard"
 import { useViewport } from "@/hooks/useViewport"
 import Asset from "./Asset"
-import Chip from "./Chip"
 import { CARDANOSCAN_BASE_URL, ORDERS_PER_PAGE } from "@/lib/constants"
 import type { Order } from "@open-djed/api"
 
@@ -66,7 +65,7 @@ export const STATUS_CONFIG: Record<
   Created: { type: "surface", text: "Created" },
   Completed: { type: "success", text: "Completed" },
   // Cancelling: { type: "warning", text: "Cancelling" },
-  // Canceled: { type: "surface", text: "Canceled" },
+  Canceled: { type: "surface", text: "Canceled" },
   // Failed: { type: "error", text: "Failed" },
   // Expired: { type: "error", text: "Expired" },
 }
@@ -301,6 +300,8 @@ const MobileCell = ({ order }: { order: Order }) => {
   const showAdaPaid = shouldShowAda(order.token, order.action, "paid")
   const showAdaReceived = shouldShowAda(order.token, order.action, "received")
 
+  const statusConfig = STATUS_CONFIG[order.status as OrderStatus]
+
   return (
     <>
       <div className="flex w-full flex-col gap-16 p-8">
@@ -334,7 +335,12 @@ const MobileCell = ({ order }: { order: Order }) => {
           </div>
           <div className="flex w-full flex-row items-center justify-between">
             <span className="text-tertiary text-xxs">Status</span>
-            <Chip text={order.status ?? ""} size="small" />
+            <Tag
+              type={statusConfig.type}
+              role="Secondary"
+              size="small"
+              text={statusConfig.text}
+            />
           </div>
           {showCancel ? (
             <div className="grid grid-cols-2 gap-8">

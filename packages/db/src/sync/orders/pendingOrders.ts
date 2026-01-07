@@ -6,8 +6,8 @@ import {
   registry,
   processBatch,
   blockfrostFetch,
-  constructAddress,
-  network,
+  handleOrderStatus,
+  getBurnReceivedValue,
 } from "../utils"
 
 /**
@@ -44,45 +44,35 @@ export async function updatePendingOrders() {
 
         const isConsumed = typeof orderUTxOWithUnit?.consumed_by_tx === "string"
         let received = order.received
+        let status = order.status
 
-        if (order.action === "Burn" && isConsumed) {
-          const address = order.address as AddressDatum
-          const paymentKeyHash = address.paymentKeyHash[0]
-          const stakeKeyHash = address.stakeKeyHash[0]?.[0]?.[0]
-          if (!paymentKeyHash || !stakeKeyHash) {
-            throw new Error(
-              `Invalid address structure for order ${order.tx_hash}`,
+        if (isConsumed) {
+          status = await handleOrderStatus(
+            orderUTxOWithUnit.consumed_by_tx,
+            order.tx_hash,
+            order.out_index,
+          )
+          if (order.action === "Burn") {
+            const addr = order.address as AddressDatum
+            received = await getBurnReceivedValue(
+              addr,
+              orderUTxOWithUnit.consumed_by_tx,
             )
           }
-          const userAddr = constructAddress(
-            paymentKeyHash,
-            stakeKeyHash,
-            network,
-          )
-
-          const utxosOfConsumingTx = (await blockfrostFetch(
-            `/txs/${orderUTxOWithUnit.consumed_by_tx}/utxos`,
-          )) as UTxO
-          const outputUTxOToUserAddr = utxosOfConsumingTx.outputs.find(
-            (utxo) => utxo.address === userAddr,
-          )
-          if (!outputUTxOToUserAddr) {
-            throw new Error(
-              "Could not find output UTxO to user address in consuming transaction",
-            )
-          }
-          received = BigInt(
-            outputUTxOToUserAddr.amount.find((a) => a.unit === "lovelace")
-              ?.quantity ?? "0",
-          )
         }
 
-        return { tx_hash: order.tx_hash, isConsumed, received: received }
+        return {
+          tx_hash: order.tx_hash,
+          isConsumed,
+          status: status,
+          received: received,
+        }
       } catch (error) {
         logger.error(error, `Error checking order ${order.tx_hash}:`)
         return {
           tx_hash: order.tx_hash,
           isConsumed: false,
+          status: order.status,
           received: order.received,
         }
       }
@@ -94,18 +84,16 @@ export async function updatePendingOrders() {
   const completedOrders = orderStatusUpdates.filter((o) => o.isConsumed)
 
   if (completedOrders.length > 0) {
-    logger.info(`Marking ${completedOrders.length} orders as completed`)
-
     await Promise.all(
       completedOrders.map((order) =>
         prisma.order.update({
           where: { tx_hash: order.tx_hash },
-          data: { status: "Completed", received: order.received },
+          data: { status: order.status, received: order.received },
         }),
       ),
     )
 
-    logger.info(`Updated ${completedOrders.length} orders to Completed status`)
+    logger.info(`Updated ${completedOrders.length} orders.`)
   } else {
     logger.info("No pending orders were completed")
   }

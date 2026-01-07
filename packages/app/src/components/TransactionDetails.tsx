@@ -6,6 +6,7 @@ import clsx from "clsx"
 import ButtonIcon from "./ButtonIcon"
 import { type Order } from "@open-djed/api"
 import { useViewport } from "@/hooks/useViewport"
+import { type OrderStatus } from "@/hooks/useOrders"
 
 interface TransactionDetailsProps {
   row: {
@@ -24,9 +25,10 @@ const TransactionDetails: React.FC<TransactionDetailsProps> = ({
   const [isOpen, setIsOpen] = React.useState(false)
 
   const { raw } = row
-  const isProcessing = raw.status === "Processing"
-  const isCreated = raw.status === "Created"
-  const isCompleted = raw.status === "Completed"
+  const hasStatus = (raw.status as OrderStatus) !== undefined
+  const isCanceled = hasStatus && raw.status === "Canceled"
+  const isCreated = hasStatus && raw.status === "Created"
+  const isCompleted = hasStatus && raw.status === "Completed"
 
   return (
     <>
@@ -49,7 +51,7 @@ const TransactionDetails: React.FC<TransactionDetailsProps> = ({
                 <div className="flex items-center justify-end gap-8 px-16 py-12">
                   {column.content}
 
-                  {(isProcessing || isCreated || isCompleted) &&
+                  {hasStatus &&
                     (isMobile ? (
                       <ButtonIcon
                         size="tiny"
@@ -95,7 +97,7 @@ const TransactionDetails: React.FC<TransactionDetailsProps> = ({
         <tr className="bg-background-primary-pressed border-border-tertiary border-b">
           <td colSpan={row.columns.length + 1} className="p-8">
             <div className="border-border-tertiary rounded-8 border">
-              {(isProcessing || isCreated) && (
+              {isCreated && (
                 <div className="flex flex-col gap-2 px-16 py-12 text-xs">
                   <span className="text-tertiary text-xxs">
                     Estimated Execution Fee:
@@ -106,7 +108,7 @@ const TransactionDetails: React.FC<TransactionDetailsProps> = ({
                 </div>
               )}
 
-              {isCompleted && (
+              {(isCompleted || isCanceled) && (
                 <div className="grid grid-cols-1 text-xs">
                   {/* TODO: Batched */}
                   {/* <div className="flex flex-col gap-2 px-16 py-12">

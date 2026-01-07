@@ -15,9 +15,9 @@ import {
   registry,
   blockfrost,
   processBatch,
-  parseOrderDatum,
   sleep,
   blockfrostFetch,
+  processOrdersToInsert,
 } from "../utils"
 import { populateDbWithHistoricOrders } from "./initialSync"
 
@@ -115,39 +115,6 @@ async function enrichUTxOsWithData(orderUTxOs: OrderUTxO[]) {
     },
     config.BATCH_SIZE_SMALL,
     config.BATCH_DELAY_SMALL,
-  )
-}
-
-/**
- * process the order UTxOs to the suitable Order type to insert in the database
- * @param utxos array of Order UTxOs, with decoded datum
- * @returns array of Order objects to be inserted in the database
- */
-async function processOrdersToInsert(utxos: OrderUTxOWithDatum[]) {
-  return Promise.all(
-    utxos.map(async (utxo) => {
-      const d = utxo.orderDatum as OrderDatum
-      const { action, token, paid, received } = await parseOrderDatum(utxo)
-      const totalAmountPaid = BigInt(
-        utxo.amount.find((a) => a.unit === "lovelace")?.quantity ?? "0",
-      )
-      const fees = action === "Mint" ? totalAmountPaid - paid : totalAmountPaid
-
-      return {
-        address: d.address,
-        tx_hash: utxo.tx_hash,
-        out_index: utxo.output_index,
-        block: utxo.block_hash,
-        slot: utxo.block_slot,
-        action,
-        token,
-        paid,
-        fees,
-        received,
-        orderDate: new Date(Number(d.creationDate)),
-        status: utxo.consumed_by_tx ? "Completed" : "Created",
-      } as unknown as Order
-    }),
   )
 }
 
