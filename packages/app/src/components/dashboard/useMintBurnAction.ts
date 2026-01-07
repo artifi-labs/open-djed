@@ -395,13 +395,6 @@ export function useMintBurnAction(defaultActionType: ActionType) {
     [handleReceiveValueChange],
   )
 
-  const handleReceiveMin = React.useCallback(
-    (token: Token) => {
-      handleReceiveValueChange(token, minAmount.toString())
-    },
-    [handleReceiveValueChange, minAmount],
-  )
-
   const handlePayTokenChange = React.useCallback(
     (newToken: Token) => {
       const currentValue = payValues[activePayToken] || "0"
@@ -594,7 +587,6 @@ export function useMintBurnAction(defaultActionType: ActionType) {
     onPayMax: handlePayMax,
     onReceiveHalf: handleReceiveHalf,
     onReceiveMax: handleReceiveMax,
-    onReceiveMin: handleReceiveMin,
     onButtonClick: handleButtonClick,
     onHalfClick: handleHalfClick,
     onMaxClick: handleMaxClick,
