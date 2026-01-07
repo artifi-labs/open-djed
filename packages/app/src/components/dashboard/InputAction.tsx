@@ -48,7 +48,6 @@ export type TransactionInputGroupProps = {
   onValueChange: (t: Token, v: string) => void
   onHalfClick?: (t: Token) => void
   onMaxClick?: (t: Token) => void
-  onMinClick?: (t: Token) => void
   linkClicked?: boolean
   onLinkClick?: () => void
   hasMaxAndHalfActions?: boolean
