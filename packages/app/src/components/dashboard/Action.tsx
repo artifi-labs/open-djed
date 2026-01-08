@@ -38,6 +38,8 @@ export type ActionProps = {
   maxAmount?: number
   inputStatus: InputStatus
   hasMaxAmount?: boolean
+  minWarningMessage?: string
+  minMessage?: string
 }
 
 const Action: React.FC<ActionProps> = ({
@@ -62,6 +64,8 @@ const Action: React.FC<ActionProps> = ({
   maxAmount,
   hasMaxAmount,
   inputStatus,
+  minWarningMessage,
+  minMessage,
 }) => {
   const actionText = capitalize(actionType)
 
@@ -72,7 +76,7 @@ const Action: React.FC<ActionProps> = ({
     ? `Connect Wallet to ${actionText}`
     : payEmpty || receiveEmpty
       ? `Fill in the Amount to ${actionText}`
-      : actionText
+      : `${actionText} ${minMessage}`
 
   const { reserveBounds } = useReserveDetails()
 
@@ -148,6 +152,7 @@ const Action: React.FC<ActionProps> = ({
           reserveBounds={reserveBounds}
           maxAmount={i.maxAmount}
           inputStatus={inputStatus}
+          minWarningMessage={minWarningMessage}
         />
       ))}
 

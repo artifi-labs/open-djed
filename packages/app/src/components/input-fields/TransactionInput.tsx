@@ -38,6 +38,7 @@ export type TransactionInputProps = {
   onValueChange?: (value: string) => void
   onHalfClick?: () => void
   onMaxClick?: () => void
+  minWarningMessage?: string
 } & React.InputHTMLAttributes<HTMLInputElement>
 
 const TransactionInput: React.FC<TransactionInputProps> = ({
@@ -67,6 +68,7 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
   //onAssetClick, // TODO: CHECK THIS, should be used in Actions component
   onHalfClick,
   onMaxClick,
+  minWarningMessage,
   ...props
 }) => {
   const [internalValue, setInternalValue] = React.useState(defaultValue)
@@ -140,106 +142,109 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
   )
 
   return (
-    <div className={containerClasses} aria-disabled={disabled}>
-      <div className={topRowClasses}>
-        {/* Leading Icon */}
-        {leadingIcon && <Icon name={leadingIcon} />}
+    <>
+      <div className={containerClasses} aria-disabled={disabled}>
+        <div className={topRowClasses}>
+          {/* Leading Icon */}
+          {leadingIcon && <Icon name={leadingIcon} />}
 
-        {/* Input */}
-        <input
-          type="text"
-          inputMode="decimal"
-          placeholder={placeholder}
-          className={inputClasses}
-          disabled={disabled || inputDisabled}
-          value={inputValue}
-          onChange={handleOnChange}
-          {...props}
-        />
-
-        {/* Tag */}
-        {hasTag && (
-          <Tag
-            type="surface"
-            role="Primary"
-            size="small"
-            text="Tag"
-            leadingIcon={tagLeadingIcon}
-            trailingIcon={tagTrailingIcon}
+          {/* Input */}
+          <input
+            type="text"
+            inputMode="decimal"
+            placeholder={placeholder}
+            className={inputClasses}
+            disabled={disabled || inputDisabled}
+            value={inputValue}
+            onChange={handleOnChange}
+            {...props}
           />
-        )}
 
-        {/* Suffix */}
-        {suffix && <span className="text-xxs">{suffix}</span>}
-
-        {/* Asset */}
-        {asset && <Asset buttonIcon={assetIcon} {...asset} />}
-
-        {/* Button Icon */}
-        {buttonIcon && (
-          <ButtonIcon
-            variant="onlyIcon"
-            size="tiny"
-            icon="Arrows"
-            disabled={disabled}
-          />
-        )}
-
-        {/* Trailing Icon */}
-        {trailingIcon && <Icon name={trailingIcon} />}
-      </div>
-
-      <div className="text-primary flex w-full items-center justify-between text-xs">
-        {hasMaxAndHalfActions && availableAmount && (
-          <div className="flex gap-8">
-            {/* Half */}
-            <Button
-              text="Half"
-              variant="text"
+          {/* Tag */}
+          {hasTag && (
+            <Tag
+              type="surface"
+              role="Primary"
               size="small"
-              disabled={disabled}
-              className={clsx(
-                "cursor-pointer",
-                disabled
-                  ? "text-standalone-text-disabled"
-                  : "hover:text-nocolor-text-hover",
-              )}
-              onClick={onHalfClick}
+              text="Tag"
+              leadingIcon={tagLeadingIcon}
+              trailingIcon={tagTrailingIcon}
             />
+          )}
 
-            {/* Divider */}
-            <Divider orientation="vertical" />
+          {/* Suffix */}
+          {suffix && <span className="text-xxs">{suffix}</span>}
 
-            {/* Max */}
-            <Button
-              text="Max"
-              variant="text"
-              size="small"
+          {/* Asset */}
+          {asset && <Asset buttonIcon={assetIcon} {...asset} />}
+
+          {/* Button Icon */}
+          {buttonIcon && (
+            <ButtonIcon
+              variant="onlyIcon"
+              size="tiny"
+              icon="Arrows"
               disabled={disabled}
-              className={clsx(
-                "cursor-pointer",
-                disabled
-                  ? "text-standalone-text-disabled"
-                  : "hover:text-nocolor-text-hover",
-              )}
-              onClick={onMaxClick}
             />
-          </div>
-        )}
+          )}
 
-        {/* Available Amount */}
-        {hasAvailableAmount && availableAmount && (
-          <span className={amountTextClasses}>
-            Available: {availableAmount}
-          </span>
-        )}
+          {/* Trailing Icon */}
+          {trailingIcon && <Icon name={trailingIcon} />}
+        </div>
 
-        {/* Max Amount */}
-        {hasMaxAmount && maxAmount && (
-          <span className={amountTextClasses}>Max: {maxAmount}</span>
-        )}
+        <div className="text-primary flex w-full items-center justify-between text-xs">
+          {hasMaxAndHalfActions && availableAmount && (
+            <div className="flex gap-8">
+              {/* Half */}
+              <Button
+                text="Half"
+                variant="text"
+                size="small"
+                disabled={disabled}
+                className={clsx(
+                  "cursor-pointer",
+                  disabled
+                    ? "text-standalone-text-disabled"
+                    : "hover:text-nocolor-text-hover",
+                )}
+                onClick={onHalfClick}
+              />
+
+              {/* Divider */}
+              <Divider orientation="vertical" />
+
+              {/* Max */}
+              <Button
+                text="Max"
+                variant="text"
+                size="small"
+                disabled={disabled}
+                className={clsx(
+                  "cursor-pointer",
+                  disabled
+                    ? "text-standalone-text-disabled"
+                    : "hover:text-nocolor-text-hover",
+                )}
+                onClick={onMaxClick}
+              />
+            </div>
+          )}
+
+          {/* Available Amount */}
+          {hasAvailableAmount && availableAmount && (
+            <span className={amountTextClasses}>
+              Available: {availableAmount}
+            </span>
+          )}
+
+          {/* Max Amount */}
+          {hasMaxAmount && maxAmount && (
+            <span className={amountTextClasses}>Max: {maxAmount}</span>
+          )}
+        </div>
       </div>
-    </div>
+      <span className="text-xxs">{minWarningMessage}</span>
+    </>
   )
 }
 

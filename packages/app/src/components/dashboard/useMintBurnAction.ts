@@ -232,6 +232,7 @@ export function useMintBurnAction(defaultActionType: ActionType) {
   const registry = registryByNetwork[NETWORK]
 
   const [inputStatus, setInputStatus] = React.useState<InputStatus>("default")
+  const [minWarningMessage, setMinWarningMessage] = React.useState<string>("")
 
   const {
     payValues,
@@ -308,8 +309,19 @@ export function useMintBurnAction(defaultActionType: ActionType) {
     wallet?.balance,
   ])
 
+  const minAmount = React.useMemo(() => {
+    const minTokenAmount = Number(registryByNetwork[network].minAmount) / 1e6
+    // Floor to 3 decimal places to avoid exceeding user balance
+    return Math.floor(minTokenAmount * 1000) / 1000
+  }, [])
+  const minMessage = React.useMemo(() => {
+    return minAmount > 1 ? `(minimum ${minAmount})` : ""
+  }, [])
+
   const handlePayValueChange = React.useCallback(
     (token: Token, value: string) => {
+      setInputStatus("default")
+      setMinWarningMessage("")
       setPayValues((prev) => ({ ...prev, [token]: value }))
       const numValue = parseFloat(value) || 0
 
@@ -317,14 +329,9 @@ export function useMintBurnAction(defaultActionType: ActionType) {
       setReceiveValues(result.receive)
       setActionData(result.actionData)
 
-      if (wallet && numValue > maxAmount) {
-        setInputStatus("error")
-        showToast({
-          message: `The amount added is greater than the available balance.`,
-          type: "error",
-        })
-      } else if (inputStatus !== "default" || payValues[token] === "0") {
-        setInputStatus("default")
+      if (wallet && numValue < minAmount && numValue > 0) {
+        setInputStatus("warning")
+        setMinWarningMessage(`Minimum amount is ${minAmount} ${token}`)
       }
     },
     [calculateFromPayValue, setPayValues, setReceiveValues],
@@ -332,6 +339,8 @@ export function useMintBurnAction(defaultActionType: ActionType) {
 
   const handleReceiveValueChange = React.useCallback(
     (token: Token, value: string) => {
+      setInputStatus("default")
+      setMinWarningMessage("")
       setReceiveValues((prev) => ({ ...prev, [token]: value }))
       const numValue = parseValue(value) || 0
       const result = calculateFromReceiveValue(token, numValue)
@@ -339,14 +348,9 @@ export function useMintBurnAction(defaultActionType: ActionType) {
       setPayValues(result.pay)
       setActionData(result.actionData)
 
-      if (wallet && numValue > maxAmount) {
-        setInputStatus("error")
-        showToast({
-          message: `The amount added is greater than the available balance.`,
-          type: "error",
-        })
-      } else if (inputStatus !== "default" || payValues[token] === "0") {
-        setInputStatus("default")
+      if (wallet && numValue < minAmount) {
+        setInputStatus("warning")
+        setMinWarningMessage(`Minimum amount is ${minAmount} ${token}`)
       }
     },
     [calculateFromReceiveValue, setPayValues, setReceiveValues],
@@ -493,8 +497,16 @@ export function useMintBurnAction(defaultActionType: ActionType) {
     const tokenAmountNumber = parseFloat(tokenAmountArray[1])
 
     if (wallet && tokenAmountNumber > maxAmount) {
+      setInputStatus("error")
       showToast({
         message: `The amount added is greater than the available balance.`,
+        type: "error",
+      })
+      return
+    } else if (wallet && tokenAmountNumber < minAmount) {
+      setInputStatus("error")
+      showToast({
+        message: `The amount added is less than the minimum allowed of ${minAmount} ${token}.`,
         type: "error",
       })
       return
@@ -582,5 +594,7 @@ export function useMintBurnAction(defaultActionType: ActionType) {
     maxAmount: maxAmount,
     hasMaxAmount: wallet ? true : false,
     inputStatus,
+    minWarningMessage,
+    minMessage,
   }
 }
