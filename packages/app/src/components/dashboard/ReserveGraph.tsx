@@ -1,5 +1,5 @@
 import { formatNumber } from "@/lib/utils"
-import Tooltip from "./tooltip/Tooltip"
+import Tooltip from "../tooltip/Tooltip"
 
 interface ReserveGraphProps {
   currentRatio: number

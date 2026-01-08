@@ -1,7 +1,7 @@
 "use client"
 import { useTranslation } from "react-i18next"
 
-const Terms = () => {
+const Term = () => {
   const { t } = useTranslation()
 
   const month = t("months.may")
@@ -110,4 +110,4 @@ const Terms = () => {
     </div>
   )
 }
-export default Terms
+export default Term

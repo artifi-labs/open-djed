@@ -5,7 +5,7 @@ import TransactionSummary from "@/components/dashboard/TransactionSummary"
 import { useMintBurnAction } from "@/components/dashboard/useMintBurnAction"
 import React, { useState } from "react"
 import Button from "@/components/Button"
-import ReserveDetails from "@/components/ReserveDetails"
+import ReserveDetails from "@/components/dashboard/ReserveDetails"
 import Modal from "@/components/modals/Modal"
 import OpenDjedContent from "@/components/OpenDjedContent"
 

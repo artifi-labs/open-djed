@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import OrderHistory from "@/components/OrderHistory"
+import OrderHistory from "@/components/order/OrderHistory"
 import Button from "@/components/Button"
 import { useWallet } from "@/context/WalletContext"
 import { useSidebar } from "@/context/SidebarContext"
