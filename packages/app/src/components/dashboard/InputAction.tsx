@@ -36,6 +36,7 @@ export type InputActionProps = {
   reserveBounds: ReserveBoundsType
   maxAmount?: number
   inputStatus: InputStatus
+  minWarningMessage?: string
 }
 
 export type TransactionInputGroupProps = {
@@ -58,6 +59,7 @@ export type TransactionInputGroupProps = {
   reserveBounds: ReserveBoundsType
   maxAmount?: number
   inputStatus: InputStatus
+  minWarningMessage?: string
 }
 
 const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
@@ -80,6 +82,7 @@ const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
   action,
   reserveBounds,
   inputStatus,
+  minWarningMessage,
 }) => {
   const { wallet } = useWallet()
   const walletConnected = wallet !== null
@@ -139,6 +142,7 @@ const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
         status={inputStatus}
         maxValue={Number.MAX_SAFE_INTEGER}
         maxDecimalPlaces={4}
+        minWarningMessage={minWarningMessage}
       />
     )
   }
@@ -194,6 +198,7 @@ const InputAction: React.FC<InputActionProps> = ({
   reserveBounds,
   maxAmount,
   inputStatus,
+  minWarningMessage,
 }) => {
   return (
     <div className="flex flex-col gap-12">
@@ -235,6 +240,7 @@ const InputAction: React.FC<InputActionProps> = ({
         reserveBounds={reserveBounds}
         maxAmount={maxAmount}
         inputStatus={inputStatus}
+        minWarningMessage={minWarningMessage}
       />
     </div>
   )

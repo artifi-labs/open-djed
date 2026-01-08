@@ -232,6 +232,7 @@ export function useMintBurnAction(defaultActionType: ActionType) {
   const registry = registryByNetwork[network]
 
   const [inputStatus, setInputStatus] = React.useState<InputStatus>("default")
+  const [minWarningMessage, setMinWarningMessage] = React.useState<string>("")
 
   const {
     payValues,
@@ -310,16 +311,25 @@ export function useMintBurnAction(defaultActionType: ActionType) {
     // Floor to 3 decimal places to avoid exceeding user balance
     return Math.floor(minTokenAmount * 1000) / 1000
   }, [])
+  const minMessage = React.useMemo(() => {
+    return minAmount > 1 ? `(minimum ${minAmount})` : ""
+  }, [])
 
   const handlePayValueChange = React.useCallback(
     (token: Token, value: string) => {
       setInputStatus("default")
+      setMinWarningMessage("")
       setPayValues((prev) => ({ ...prev, [token]: value }))
       const numValue = parseFloat(value) || 0
 
       const result = calculateFromPayValue(token, numValue)
       setReceiveValues(result.receive)
       setActionData(result.actionData)
+
+      if (wallet && numValue < minAmount && numValue > 0) {
+        setInputStatus("warning")
+        setMinWarningMessage(`Minimum amount is ${minAmount} ${token}`)
+      }
     },
     [calculateFromPayValue, setPayValues, setReceiveValues],
   )
@@ -327,12 +337,18 @@ export function useMintBurnAction(defaultActionType: ActionType) {
   const handleReceiveValueChange = React.useCallback(
     (token: Token, value: string) => {
       setInputStatus("default")
+      setMinWarningMessage("")
       setReceiveValues((prev) => ({ ...prev, [token]: value }))
       const numValue = parseValue(value)
       const result = calculateFromReceiveValue(token, numValue)
 
       setPayValues(result.pay)
       setActionData(result.actionData)
+
+      if (wallet && numValue < minAmount) {
+        setInputStatus("warning")
+        setMinWarningMessage(`Minimum amount is ${minAmount} ${token}`)
+      }
     },
     [calculateFromReceiveValue, setPayValues, setReceiveValues],
   )
@@ -573,5 +589,7 @@ export function useMintBurnAction(defaultActionType: ActionType) {
     maxAmount: maxAmount,
     hasMaxAmount: wallet ? true : false,
     inputStatus,
+    minWarningMessage,
+    minMessage,
   }
 }
