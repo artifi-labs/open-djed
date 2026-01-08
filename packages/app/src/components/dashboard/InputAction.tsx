@@ -8,8 +8,6 @@ import TransactionInput, {
 import ButtonIcon from "../ButtonIcon"
 import { useWallet } from "@/context/WalletContext"
 import type { Token } from "@/lib/tokens"
-import type { ActionType, TokenType } from "@open-djed/api"
-import { type ReserveBoundsType } from "./useMintBurnAction"
 import ValueShowcase from "./ValueShowcase"
 import { formatNumber } from "@/lib/utils"
 import { useProtocolData } from "@/hooks/useProtocolData"
@@ -35,8 +33,6 @@ export type InputActionProps = {
   hasAvailableAmount?: boolean
   disabled?: boolean
   hasMaxAmount?: boolean
-  action: ActionType
-  reserveBounds: ReserveBoundsType
   maxAmount?: number
   inputStatus: InputStatus
   minWarningMessage?: string
@@ -58,8 +54,6 @@ export type TransactionInputGroupProps = {
   hasAvailableAmount?: boolean
   disabled?: boolean
   hasMaxAmount?: boolean
-  action: ActionType
-  reserveBounds: ReserveBoundsType
   maxAmount?: number
   inputStatus: InputStatus
   minWarningMessage?: string
@@ -82,8 +76,6 @@ const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
   disabled,
   hasMaxAmount,
   maxAmount,
-  action,
-  reserveBounds,
   inputStatus,
   minWarningMessage,
 }) => {
@@ -100,18 +92,6 @@ const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
     const balanceStr = walletConnected
       ? `${formatNumber(Number(wallet?.balance[coin as keyof typeof wallet.balance]), { maximumFractionDigits: 3 })}`
       : undefined
-
-    const token: TokenType | null =
-      coin === "DJED" ? "DJED" : coin === "SHEN" ? "SHEN" : null
-
-    const isDisabled =
-      ((token === "DJED" && action === "Mint") ||
-        (token === "SHEN" && action === "Burn")) &&
-      reserveBounds === "below"
-        ? true
-        : token === "SHEN" && action === "Mint" && reserveBounds === "above"
-          ? true
-          : false
 
     const valueToUSD = `$${formatNumber(data?.to({ [coin]: values[coin].toString() }, "DJED") ?? 0, { maximumFractionDigits: 2 })}`
 
@@ -133,7 +113,7 @@ const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
     ) : (
       <div className="relative">
         <TransactionInput
-          disabled={disabled || isDisabled}
+          disabled={disabled}
           placeholder="0"
           asset={{
             coin: coin,
@@ -222,8 +202,6 @@ const InputAction: React.FC<InputActionProps> = ({
   hasAvailableAmount,
   disabled,
   hasMaxAmount,
-  action,
-  reserveBounds,
   maxAmount,
   inputStatus,
   minWarningMessage,
@@ -264,8 +242,6 @@ const InputAction: React.FC<InputActionProps> = ({
         hasAvailableAmount={hasAvailableAmount}
         disabled={disabled}
         hasMaxAmount={hasMaxAmount}
-        action={action}
-        reserveBounds={reserveBounds}
         maxAmount={maxAmount}
         inputStatus={inputStatus}
         minWarningMessage={minWarningMessage}
