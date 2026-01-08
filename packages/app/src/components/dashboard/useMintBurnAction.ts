@@ -232,7 +232,14 @@ export function useMintBurnAction(defaultActionType: ActionType) {
   const registry = registryByNetwork[NETWORK]
 
   const [inputStatus, setInputStatus] = React.useState<InputStatus>("default")
-  const [minWarningMessage, setMinWarningMessage] = React.useState<string>("")
+  const [minWarningMessage, setMinWarningMessage] = React.useState<
+    string | null
+  >(null)
+
+  React.useEffect(() => {
+    setInputStatus("default")
+    setMinWarningMessage(null)
+  }, [actionType])
 
   const {
     payValues,
@@ -310,7 +317,7 @@ export function useMintBurnAction(defaultActionType: ActionType) {
   ])
 
   const minAmount = React.useMemo(() => {
-    const minTokenAmount = Number(registryByNetwork[network].minAmount) / 1e6
+    const minTokenAmount = Number(registryByNetwork[NETWORK].minAmount) / 1e6
     // Floor to 3 decimal places to avoid exceeding user balance
     return Math.floor(minTokenAmount * 1000) / 1000
   }, [])
@@ -321,7 +328,7 @@ export function useMintBurnAction(defaultActionType: ActionType) {
   const handlePayValueChange = React.useCallback(
     (token: Token, value: string) => {
       setInputStatus("default")
-      setMinWarningMessage("")
+      setMinWarningMessage(null)
       setPayValues((prev) => ({ ...prev, [token]: value }))
       const numValue = parseFloat(value) || 0
 
@@ -340,7 +347,7 @@ export function useMintBurnAction(defaultActionType: ActionType) {
   const handleReceiveValueChange = React.useCallback(
     (token: Token, value: string) => {
       setInputStatus("default")
-      setMinWarningMessage("")
+      setMinWarningMessage(null)
       setReceiveValues((prev) => ({ ...prev, [token]: value }))
       const numValue = parseValue(value) || 0
       const result = calculateFromReceiveValue(token, numValue)
@@ -348,7 +355,7 @@ export function useMintBurnAction(defaultActionType: ActionType) {
       setPayValues(result.pay)
       setActionData(result.actionData)
 
-      if (wallet && numValue < minAmount) {
+      if (wallet && numValue < minAmount && numValue > 0) {
         setInputStatus("warning")
         setMinWarningMessage(`Minimum amount is ${minAmount} ${token}`)
       }

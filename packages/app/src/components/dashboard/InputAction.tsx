@@ -131,41 +131,47 @@ const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
         hasAvailableAmount={hasAvailableAmount}
       />
     ) : (
-      <TransactionInput
-        disabled={disabled || isDisabled}
-        placeholder="0"
-        asset={{
-          coin: coin,
-          coins,
-          size: "small",
-          checked: false,
-          hasLeadingIcon,
-          onCoinChange: handleTokenChange,
-        }}
-        assetIcon="Switch"
-        value={values[coin] ? values[coin].toString() : ""}
-        suffix={valueToUSD}
-        onValueChange={(v) => onValueChange(coin, v)}
-        availableAmount={balanceStr}
-        hasAvailableAmount={hasAvailableAmount}
-        onHalfClick={
-          onHalfClick && maxAmount !== undefined
-            ? () => onHalfClick(coin)
-            : undefined
-        }
-        onMaxClick={
-          onMaxClick && maxAmount !== undefined
-            ? () => onMaxClick(coin)
-            : undefined
-        }
-        hasMaxAndHalfActions={hasMaxAndHalfActions}
-        hasMaxAmount={hasMaxAmount}
-        maxAmount={(maxAmount ?? 0).toString()}
-        status={inputStatus}
-        maxValue={Number.MAX_SAFE_INTEGER}
-        maxDecimalPlaces={4}
-        minWarningMessage={minWarningMessage}
-      />
+      <div className="relative">
+        <TransactionInput
+          disabled={disabled || isDisabled}
+          placeholder="0"
+          asset={{
+            coin: coin,
+            coins,
+            size: "small",
+            checked: false,
+            hasLeadingIcon,
+            onCoinChange: handleTokenChange,
+          }}
+          assetIcon="Switch"
+          value={values[coin] ? values[coin].toString() : ""}
+          suffix={valueToUSD}
+          onValueChange={(v) => onValueChange(coin, v)}
+          availableAmount={balanceStr}
+          hasAvailableAmount={hasAvailableAmount}
+          onHalfClick={
+            onHalfClick && maxAmount !== undefined
+              ? () => onHalfClick(coin)
+              : undefined
+          }
+          onMaxClick={
+            onMaxClick && maxAmount !== undefined
+              ? () => onMaxClick(coin)
+              : undefined
+          }
+          hasMaxAndHalfActions={hasMaxAndHalfActions}
+          hasMaxAmount={hasMaxAmount}
+          maxAmount={(maxAmount ?? 0).toString()}
+          status={inputStatus}
+          maxValue={Number.MAX_SAFE_INTEGER}
+          maxDecimalPlaces={4}
+        />
+        {minWarningMessage && (
+          <span className="text-xxs absolute -bottom-18 left-0">
+            {minWarningMessage}
+          </span>
+        )}
+      </div>
     )
   }
 

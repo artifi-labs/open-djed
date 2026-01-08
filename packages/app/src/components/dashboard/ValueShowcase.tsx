@@ -29,9 +29,16 @@ const ValueShowcase: React.FC<ValueShowcaseProps> = ({
 }) => {
   return (
     <div className="flex w-full flex-row items-center justify-between">
-      <span className="text-tertiary text-sm leading-5 font-medium">
-        {value || defaultValue}
-      </span>
+      <div className="flex flex-col gap-6">
+        <span className="text-tertiary text-sm leading-5 font-medium">
+          {value || defaultValue}
+        </span>
+        {hasAvailableAmount && availableAmount && (
+          <span className="text-tertiary text-xxs leading-4">
+            Available: {availableAmount}
+          </span>
+        )}
+      </div>
       <div className="flex w-fit flex-row items-center justify-center gap-10">
         {hasTag && (
           <>
@@ -43,14 +50,6 @@ const ValueShowcase: React.FC<ValueShowcaseProps> = ({
               leadingIcon={tagLeadingIcon}
               trailingIcon={tagTrailingIcon}
             />
-            <Divider orientation="vertical" />
-          </>
-        )}
-        {hasAvailableAmount && availableAmount && (
-          <>
-            <span className="text-tertiary text-xxs leading-4">
-              Available: {availableAmount}
-            </span>
             <Divider orientation="vertical" />
           </>
         )}
