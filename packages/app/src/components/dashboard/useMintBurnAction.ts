@@ -233,12 +233,12 @@ export function useMintBurnAction(defaultActionType: ActionType) {
 
   const [inputStatus, setInputStatus] = React.useState<InputStatus>("default")
   const [minWarningMessage, setMinWarningMessage] = React.useState<
-    string | null
-  >(null)
+    string | undefined
+  >(undefined)
 
   React.useEffect(() => {
     setInputStatus("default")
-    setMinWarningMessage(null)
+    setMinWarningMessage(undefined)
   }, [actionType])
 
   const {
@@ -328,7 +328,7 @@ export function useMintBurnAction(defaultActionType: ActionType) {
   const handlePayValueChange = React.useCallback(
     (token: Token, value: string) => {
       setInputStatus("default")
-      setMinWarningMessage(null)
+      setMinWarningMessage(undefined)
       setPayValues((prev) => ({ ...prev, [token]: value }))
       const numValue = parseFloat(value) || 0
 
@@ -347,7 +347,7 @@ export function useMintBurnAction(defaultActionType: ActionType) {
   const handleReceiveValueChange = React.useCallback(
     (token: Token, value: string) => {
       setInputStatus("default")
-      setMinWarningMessage(null)
+      setMinWarningMessage(undefined)
       setReceiveValues((prev) => ({ ...prev, [token]: value }))
       const numValue = parseValue(value) || 0
       const result = calculateFromReceiveValue(token, numValue)
