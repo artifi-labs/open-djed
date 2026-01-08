@@ -4,7 +4,6 @@ import * as React from "react"
 import { useProtocolData } from "@/hooks/useProtocolData"
 import { registryByNetwork } from "@open-djed/registry"
 import { env } from "@/lib/envLoader"
-import { Rational } from "@open-djed/math"
 
 export interface ScenarioInputs {
   shenAmount: number
@@ -41,7 +40,6 @@ const calculateStakingRewards = (
   //One year = 31,536,000,000 ms
   const msPerYear = 1000 * 60 * 60 * 24 * 365
   const yearsHeld = diffInMs / msPerYear
-  console.log(yearsHeld)
   return amount * apy * yearsHeld
 }
 
@@ -49,7 +47,7 @@ const calculateFeesEarned = (
   amount: number,
   startDate: string,
   endDate: string,
-  apy: number = 0.035, //3.5% annual APY
+  apy: number = 0.01, //1% annual APR
 ): number => {
   const start = new Date(startDate).getTime()
   const end = new Date(endDate).getTime()
@@ -72,12 +70,28 @@ export function useSimulatorResults(inputs: ScenarioInputs) {
       return null
     }
 
-    return calculateSimulatorResults(
-      inputs,
-      new Rational(registry.MintSHENFeePercentage),
-      new Rational(registry.BurnSHENFeePercentage),
-      new Rational(registry.operatorFeeConfig.percentage),
+    const buyActionData = protocolData.tokenActionData(
+      "SHEN",
+      "Mint",
+      inputs.shenAmount,
     )
+    const sellActionData = protocolData.tokenActionData(
+      "SHEN",
+      "Burn",
+      inputs.shenAmount,
+    )
+
+    const buyProtocolFees = {
+      actionFee: buyActionData.actionFee.ADA ?? 0,
+      operatorFee: buyActionData.operatorFee.ADA ?? 0,
+    }
+
+    const sellProtocolFees = {
+      actionFee: sellActionData.actionFee.ADA ?? 0,
+      operatorFee: sellActionData.operatorFee.ADA ?? 0,
+    }
+
+    return calculateSimulatorResults(inputs, buyProtocolFees, sellProtocolFees)
   }, [inputs, protocolData, registry])
 
   return {
@@ -89,18 +103,16 @@ export function useSimulatorResults(inputs: ScenarioInputs) {
 
 export const calculateSimulatorResults = (
   inputs: ScenarioInputs,
-  mintFeeRate: Rational,
-  burnFeeRate: Rational,
-  operatorFee: Rational,
+  buyProtocolFees: { actionFee: number; operatorFee: number },
+  sellProtocolFees: { actionFee: number; operatorFee: number },
 ): ResultsData => {
-  const { shenAmount, buyAdaPrice, sellAdaPrice } = inputs //Add buyDate and sellDate after
+  const { shenAmount, buyAdaPrice, sellAdaPrice } = inputs
 
-  const mintRate = mintFeeRate.toNumber()
-  const burnRate = burnFeeRate.toNumber()
-  const operatorFeeRate = operatorFee.toNumber()
+  const buyFee =
+    (buyProtocolFees.actionFee + buyProtocolFees.operatorFee) * buyAdaPrice
+  const sellFee =
+    (sellProtocolFees.actionFee + sellProtocolFees.operatorFee) * sellAdaPrice
 
-  const buyFee = shenAmount * buyAdaPrice * (mintRate + operatorFeeRate)
-  const sellFee = shenAmount * sellAdaPrice * (burnRate + operatorFeeRate)
   const stakingRewards = calculateStakingRewards(
     shenAmount,
     "2025-01-07",
