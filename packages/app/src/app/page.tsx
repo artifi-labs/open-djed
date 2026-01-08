@@ -8,8 +8,6 @@ import Button from "@/components/Button"
 import ReserveDetails from "@/components/ReserveDetails"
 import Modal from "@/components/modals/Modal"
 import OpenDjedContent from "@/components/OpenDjedContent"
-import { Skeleton } from "@/components/Skeleton"
-import { Suspense } from "react"
 
 export default function DashboardPage() {
   const action: ReturnType<typeof useMintBurnAction> = useMintBurnAction("Mint")
@@ -48,9 +46,7 @@ export default function DashboardPage() {
         <TransactionSummary action={action} />
       </div>
 
-      <Suspense fallback={<Skeleton width="w-full" height="h-32" />}>
-        <ReserveDetails />
-      </Suspense>
+      <ReserveDetails />
     </div>
   )
 }
