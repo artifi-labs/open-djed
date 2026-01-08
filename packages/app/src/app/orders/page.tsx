@@ -1,8 +1,5 @@
-import Order from "@/components/order/Order";
+import Order from "@/components/order/Order"
 
 export default function OrderPage() {
-  
-  return (
-    <Order />
-  )
+  return <Order />
 }

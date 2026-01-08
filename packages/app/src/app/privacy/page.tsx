@@ -1,8 +1,5 @@
-import Privacy from "@/components/privacy/Privacy";
+import Privacy from "@/components/privacy/Privacy"
 
 export default function PrivacyPage() {
-
-  return (
-    <Privacy />
-  )
+  return <Privacy />
 }
