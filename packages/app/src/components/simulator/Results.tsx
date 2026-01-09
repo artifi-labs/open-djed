@@ -4,7 +4,8 @@ import * as React from "react"
 import clsx from "clsx"
 import BaseCard from "../card/BaseCard"
 import { useResults, type ResultItem } from "@/components/simulator/useResults"
-import type { ScenarioInputs } from "@/components/simulator/calculations"
+import { type ScenarioInputs, useSimulatorResults } from "./calculations"
+
 import Tooltip from "../tooltip/Tooltip"
 import Icon from "../Icon"
 import { isEmptyValue } from "@/lib/utils"
@@ -77,6 +78,8 @@ const ResultSummaryItem: React.FC<ResultItem> = ({
 
 const Results: React.FC<ResultsProps> = ({ inputs }) => {
   const { totals, details } = useResults(inputs)
+  const { results: simulatorData } = useSimulatorResults(inputs)
+
   const isContentBlurred =
     isEmptyValue(inputs.shenAmount) ||
     isEmptyValue(inputs.buyAdaPrice) ||
@@ -122,21 +125,26 @@ const Results: React.FC<ResultsProps> = ({ inputs }) => {
 
         {/* Chart - To be Update */}
         <ShenYieldChart
-          buyDate="2024-01-01"
-          sellDate="2024-06-01"
-          initialHoldings={10000}
-          finalHoldings={11500}
-          buyPrice={0.45}
-          sellPrice={0.75}
-          buyFees={200}
-          sellFees={150}
-          stakingRewards={Array.from({ length: 150 }, (_, i) => ({
+          buyDate="2025-01-07"
+          sellDate="2025-02-07"
+          initialHoldings={simulatorData?.initialAdaHoldings ?? 0}
+          finalHoldings={
+            simulatorData?.initialAdaHoldings ??
+            0 + (simulatorData?.stakingRewards ?? 0)
+          }
+          buyPrice={inputs.buyAdaPrice}
+          sellPrice={inputs.sellAdaPrice}
+          buyFees={simulatorData?.buyFee ?? 0}
+          sellFees={simulatorData?.sellFee ?? 0}
+          stakingRewards={Array.from({ length: 30 }, (_, i) => ({
             date: new Date(
-              new Date("2024-01-01").getTime() + i * 24 * 60 * 60 * 1000,
+              new Date("2025-01-07").getTime() + i * 24 * 60 * 60 * 1000,
             ).toISOString(),
-            reward: Math.random() * 5 + 1, // Between 1 a 6 ADA per day
+            reward: (simulatorData?.stakingRewards ?? 0) / 30,
             daysSinceLastCredit: 1,
-            balanceAfter: 10000 + i * 3,
+            balanceAfter:
+              inputs.shenAmount +
+              i * ((simulatorData?.stakingRewards ?? 0) / 30),
             credited: true,
           }))}
         />

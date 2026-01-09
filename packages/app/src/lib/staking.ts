@@ -24,9 +24,8 @@ export function expectedStakingReturn(
   finishDate: Date | string,
   opts: { aprPercent?: number; includePending?: boolean } = {},
 ): StakingResult {
-  const aprPercent = opts.aprPercent ?? Math.random() * (3 - 2) + 2 // 2% - 3% default
+  const aprPercent = opts.aprPercent ?? 2.5 //2.4%-2.5% annual APY
   const includePending = opts.includePending ?? false
-
   const start = new Date(initialDate)
   const end = new Date(finishDate)
 
