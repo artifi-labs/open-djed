@@ -310,7 +310,7 @@ export function useMintBurnAction(defaultActionType: ActionType) {
   ])
 
   const minAmount = React.useMemo(() => {
-    const minTokenAmount = Number(registryByNetwork[network].minAmount) / 1e6
+    const minTokenAmount = Number(registryByNetwork[NETWORK].minAmount) / 1e6
     // Floor to 3 decimal places to avoid exceeding user balance
     return Math.floor(minTokenAmount * 1000) / 1000
   }, [])
