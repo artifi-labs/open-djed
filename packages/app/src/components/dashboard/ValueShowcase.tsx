@@ -30,11 +30,11 @@ const ValueShowcase: React.FC<ValueShowcaseProps> = ({
   return (
     <div className="flex w-full flex-row items-center justify-between">
       <div className="flex flex-col gap-6">
-        <span className="text-tertiary text-sm leading-5 font-medium">
+        <span className="text-tertiary text-sm font-medium">
           {value || defaultValue}
         </span>
         {hasAvailableAmount && availableAmount && (
-          <span className="text-tertiary text-xxs leading-4">
+          <span className="text-tertiary text-xxs">
             Available: {availableAmount}
           </span>
         )}
@@ -53,7 +53,7 @@ const ValueShowcase: React.FC<ValueShowcaseProps> = ({
             <Divider orientation="vertical" />
           </>
         )}
-        <span className="text-tertiary text-xxs leading-4">{suffix}</span>
+        <span className="text-tertiary text-xxs">{suffix}</span>
         <Asset {...asset} />
       </div>
     </div>
