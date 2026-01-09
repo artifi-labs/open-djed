@@ -1,8 +1,8 @@
 import { useReserveDetails } from "@/hooks/useReserveDetails"
-import BaseCard from "./card/BaseCard"
+import BaseCard from "../card/BaseCard"
 import { ReserveGraph } from "./ReserveGraph"
 import { formatNumber, formatValue } from "@/lib/utils"
-import Divider from "./Divider"
+import Divider from "../Divider"
 
 const ReserveDetails = () => {
   const {

@@ -6,7 +6,7 @@ import Coin, { type IconCoinName } from "../Coin"
 import Divider from "../Divider"
 import { type OrderStatus, useOrders } from "@/hooks/useOrders"
 import { type Order } from "@open-djed/api"
-import { STATUS_CONFIG } from "../OrderHistory"
+import { STATUS_CONFIG } from "../order/OrderHistory"
 import { CARDANOSCAN_BASE_URL } from "@/lib/constants"
 
 type WalletOrderProps = {

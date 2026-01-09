@@ -213,7 +213,6 @@ const parseActionFields = (actionFields: ActionFields) => {
 }
 
 const parseOrderUTxOsToOrder = (orderUTxO: OrderUTxO): Order => {
-  console.log("orderUTxO: ", orderUTxO)
   const { txHash, outputIndex, orderDatum } = orderUTxO
 
   const { action, token, paid, received } = parseActionFields(

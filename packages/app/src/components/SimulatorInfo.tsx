@@ -28,7 +28,7 @@ const ITEMS = [
   },
 ]
 
-const SimulatorContent = () => {
+const SimulatorInfo = () => {
   return (
     <div className="text-secondary flex flex-col gap-16 text-sm">
       <div className="flex flex-col gap-16">
@@ -62,4 +62,4 @@ const SimulatorContent = () => {
   )
 }
 
-export default SimulatorContent
+export default SimulatorInfo

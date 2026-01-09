@@ -38,6 +38,8 @@ export type ActionProps = {
   maxAmount?: number
   inputStatus: InputStatus
   hasMaxAmount?: boolean
+  minWarningMessage?: string
+  minMessage?: string
 }
 
 const Action: React.FC<ActionProps> = ({
@@ -62,6 +64,8 @@ const Action: React.FC<ActionProps> = ({
   maxAmount,
   hasMaxAmount,
   inputStatus,
+  minWarningMessage,
+  minMessage,
 }) => {
   const actionText = capitalize(actionType)
 
@@ -72,14 +76,14 @@ const Action: React.FC<ActionProps> = ({
     ? `Connect Wallet to ${actionText}`
     : payEmpty || receiveEmpty
       ? `Fill in the Amount to ${actionText}`
-      : actionText
+      : `${actionText} ${minMessage}`
 
   const { reserveBounds } = useReserveDetails()
 
   const inputs = [
     {
       key: "pay",
-      label: actionType === "Mint" ? "You Mint" : "You Burn",
+      label: "You Pay",
       coins: config.pay,
       hasLeadingIcon: !bothSelected && config.payHasLeadingIcon,
       showDual: config.payShowDual && bothSelected,
@@ -91,14 +95,15 @@ const Action: React.FC<ActionProps> = ({
       onHalfClick,
       onMaxClick,
       hasMaxAndHalfActions: true,
-      hasAvailableAmount: false,
+      hasAvailableAmount: actionType === "Mint" ? true : false,
       hasMaxAmount: hasMaxAmount,
       maxAmount: maxAmount,
       inputStatus: inputStatus,
+      disable: false,
     },
     {
       key: "receive",
-      label: actionType === "Mint" ? "You Pay" : "You Receive",
+      label: "You Receive",
       coins: config.receive,
       hasLeadingIcon: !bothSelected && config.receiveHasLeadingIcon,
       showDual: config.receiveShowDual && bothSelected,
@@ -107,9 +112,14 @@ const Action: React.FC<ActionProps> = ({
       values: receiveValues,
       onTokenChange: onReceiveTokenChange,
       onValueChange: onReceiveValueChange,
-      hasMaxAndHalfActions: false,
-      hasAvailableAmount: false,
-      disabled: true,
+      onHalfClick,
+      onMaxClick,
+      hasMaxAndHalfActions: true,
+      hasAvailableAmount: actionType === "Mint" ? false : true,
+      hasMaxAmount: hasMaxAmount,
+      maxAmount: maxAmount,
+      inputStatus: inputStatus,
+      disabled: false,
     },
   ]
 
@@ -142,6 +152,7 @@ const Action: React.FC<ActionProps> = ({
           reserveBounds={reserveBounds}
           maxAmount={i.maxAmount}
           inputStatus={inputStatus}
+          minWarningMessage={minWarningMessage}
         />
       ))}
 
