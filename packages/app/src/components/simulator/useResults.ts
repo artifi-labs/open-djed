@@ -1,11 +1,11 @@
 "use client"
 
 import { useMemo } from "react"
-import { formatNumber, type Value } from "@/lib/utils"
+import { formatNumber, type Value, isEmptyValue } from "@/lib/utils"
 import {
-  calculateSimulatorResults,
   type ScenarioInputs,
   type ResultsData,
+  useSimulatorResults,
 } from "./calculations"
 
 export type ValueItem = {
@@ -14,7 +14,7 @@ export type ValueItem = {
   secondaryAmount: string
   isTotal?: boolean
   pnlColorClass?: string
-  pnlIconName: "Arrow-Top" | "Arrow-Down"
+  pnlIconName?: "Arrow-Top" | "Arrow-Down"
 }
 
 export type ResultItem = {
@@ -29,11 +29,16 @@ export type Results = {
   details: ResultItem[]
 }
 
-type ToUSDConverter = (value: Value) => number
+type ToUSDConverter = (value: Value, price: number) => string
 
-const formatUSD = (toUSD: ToUSDConverter | undefined, val: number): string => {
-  if (!toUSD) return "$0.00"
-  return `$${formatNumber(Math.abs(toUSD({ ADA: val })), { maximumFractionDigits: 2 })}`
+const formatUSD = (
+  toUSD: ToUSDConverter | undefined,
+  val: number,
+  price: number,
+  isReady: boolean,
+): string => {
+  if (!toUSD || !isReady) return "$0.00"
+  return toUSD({ ADA: val }, price)
 }
 
 const formatPercent = (val: number) =>
@@ -53,10 +58,13 @@ const createSectionConfigs = () => [
       main: d.totalPnl ?? 0,
       sub: d.totalPnlPercent ?? 0,
     }),
-    format: (main: number, sub: number, toUSD?: ToUSDConverter) => [
-      formatUSD(toUSD, main),
-      formatPercent(sub),
-    ],
+    format: (
+      main: number,
+      sub: number,
+      toUSD: ToUSDConverter,
+      prices: { buy: number; sell: number },
+      isReady: boolean,
+    ) => [formatUSD(toUSD, main, prices.sell, isReady), formatPercent(sub)],
     className: "text-supportive-2-500",
   },
   {
@@ -68,10 +76,13 @@ const createSectionConfigs = () => [
       main: d.adaPnl ?? 0,
       sub: d.adaPnlPercent ?? 0,
     }),
-    format: (main: number, sub: number, toUSD?: ToUSDConverter) => [
-      formatUSD(toUSD, main),
-      formatPercent(sub),
-    ],
+    format: (
+      main: number,
+      sub: number,
+      toUSD: ToUSDConverter,
+      prices: { buy: number; sell: number },
+      isReady: boolean,
+    ) => [formatUSD(toUSD, main, prices.sell, isReady), formatPercent(sub)],
     className: "text-supportive-2-500",
   },
   {
@@ -83,10 +94,13 @@ const createSectionConfigs = () => [
       main: d.buyFee ?? 0,
       sub: d.buyFee ?? 0,
     }),
-    format: (main: number, sub: number, toUSD?: ToUSDConverter) => [
-      formatADA(main),
-      formatUSD(toUSD, sub),
-    ],
+    format: (
+      main: number,
+      sub: number,
+      toUSD: ToUSDConverter,
+      prices: { buy: number; sell: number },
+      isReady: boolean,
+    ) => [formatADA(main), formatUSD(toUSD, sub, prices.buy, isReady)],
   },
   {
     name: "sellFee",
@@ -97,10 +111,13 @@ const createSectionConfigs = () => [
       main: d.sellFee ?? 0,
       sub: d.sellFee ?? 0,
     }),
-    format: (main: number, sub: number, toUSD?: ToUSDConverter) => [
-      formatSHEN(main),
-      formatUSD(toUSD, sub),
-    ],
+    format: (
+      main: number,
+      sub: number,
+      toUSD: ToUSDConverter,
+      prices: { buy: number; sell: number },
+      isReady: boolean,
+    ) => [formatSHEN(main), formatUSD(toUSD, sub, prices.sell, isReady)],
   },
   {
     name: "stakingRewards",
@@ -111,10 +128,13 @@ const createSectionConfigs = () => [
       main: d.stakingRewards ?? 0,
       sub: d.stakingRewards ?? 0,
     }),
-    format: (main: number, sub: number, toUSD?: ToUSDConverter) => [
-      formatADA(main),
-      formatUSD(toUSD, sub),
-    ],
+    format: (
+      main: number,
+      sub: number,
+      toUSD: ToUSDConverter,
+      prices: { buy: number; sell: number },
+      isReady: boolean,
+    ) => [formatADA(main), formatUSD(toUSD, sub, prices.sell, isReady)],
     className: "text-primary",
   },
   {
@@ -126,10 +146,13 @@ const createSectionConfigs = () => [
       main: d.feesEarned ?? 0,
       sub: d.feesEarned ?? 0,
     }),
-    format: (main: number, sub: number, toUSD?: ToUSDConverter) => [
-      formatADA(main),
-      formatUSD(toUSD, sub),
-    ],
+    format: (
+      main: number,
+      sub: number,
+      toUSD: ToUSDConverter,
+      prices: { buy: number; sell: number },
+      isReady: boolean,
+    ) => [formatADA(main), formatUSD(toUSD, sub, prices.sell, isReady)],
   },
 ]
 
@@ -137,17 +160,38 @@ export function useResults(
   inputs: ScenarioInputs,
   priceData?: { to: (v: Value, t: string) => number },
 ): Results {
+  const { results: simulatorData } = useSimulatorResults(inputs)
+
   return useMemo(() => {
     const configs = createSectionConfigs()
-    const isReady = inputs.shenAmount > 0
-    const data = isReady ? calculateSimulatorResults() : {}
-    const toUSD = priceData
-      ? (value: Value) => priceData.to(value, "DJED")
-      : undefined
+    const isReady =
+      !isEmptyValue(inputs.shenAmount) &&
+      !isEmptyValue(inputs.buyAdaPrice) &&
+      !isEmptyValue(inputs.sellAdaPrice)
+    const data = isReady && simulatorData ? simulatorData : {}
+
+    const toUSD: ToUSDConverter = (value: Value, price: number) => {
+      const adaAmount = value.ADA ?? 0
+      const shenAmount = value.SHEN ?? 0
+      const totalAmount = adaAmount + shenAmount
+      const usdValue = totalAmount * price
+      return `$${formatNumber(usdValue, { maximumFractionDigits: 2 })}`
+    }
+
+    const prices = {
+      buy: inputs.buyAdaPrice,
+      sell: inputs.sellAdaPrice,
+    }
 
     const allItems: ResultItem[] = configs.map((section) => {
       const { main, sub } = section.read(data)
-      const [primary, secondary] = section.format(main, sub, toUSD)
+      const [primary, secondary] = section.format(
+        main,
+        sub,
+        toUSD,
+        prices,
+        isReady,
+      )
       const isPositive = main >= 0
       const sign = isPositive ? "+" : "-"
 
@@ -174,5 +218,5 @@ export function useResults(
       totals: allItems.filter((item) => item.values[0].isTotal),
       details: allItems.filter((item) => !item.values[0].isTotal),
     }
-  }, [inputs, priceData])
+  }, [inputs, priceData, simulatorData])
 }

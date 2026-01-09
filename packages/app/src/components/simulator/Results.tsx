@@ -77,7 +77,12 @@ const ResultSummaryItem: React.FC<ResultItem> = ({
 
 const Results: React.FC<ResultsProps> = ({ inputs }) => {
   const { totals, details } = useResults(inputs)
-  const isContentBlurred = isEmptyValue(inputs.shenAmount)
+  const isContentBlurred =
+    isEmptyValue(inputs.shenAmount) ||
+    isEmptyValue(inputs.buyAdaPrice) ||
+    isEmptyValue(inputs.sellAdaPrice)
+  // isEmptyValue(inputs.buyDate) ||
+  // isEmptyValue(inputs.sellDate)
 
   const BlurContent = React.useMemo(
     () =>
@@ -115,7 +120,7 @@ const Results: React.FC<ResultsProps> = ({ inputs }) => {
           ))}
         </div>
 
-        {/* Chart */}
+        {/* Chart - To be Update */}
         <ShenYieldChart
           buyDate="2024-01-01"
           sellDate="2024-06-01"
