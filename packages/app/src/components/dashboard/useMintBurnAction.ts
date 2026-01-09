@@ -232,7 +232,14 @@ export function useMintBurnAction(defaultActionType: ActionType) {
   const registry = registryByNetwork[NETWORK]
 
   const [inputStatus, setInputStatus] = React.useState<InputStatus>("default")
-  const [minWarningMessage, setMinWarningMessage] = React.useState<string>("")
+  const [minWarningMessage, setMinWarningMessage] = React.useState<
+    string | undefined
+  >(undefined)
+
+  React.useEffect(() => {
+    setInputStatus("default")
+    setMinWarningMessage(undefined)
+  }, [actionType])
 
   const {
     payValues,
@@ -321,7 +328,7 @@ export function useMintBurnAction(defaultActionType: ActionType) {
   const handlePayValueChange = React.useCallback(
     (token: Token, value: string) => {
       setInputStatus("default")
-      setMinWarningMessage("")
+      setMinWarningMessage(undefined)
       setPayValues((prev) => ({ ...prev, [token]: value }))
       const numValue = parseFloat(value) || 0
 
@@ -340,7 +347,7 @@ export function useMintBurnAction(defaultActionType: ActionType) {
   const handleReceiveValueChange = React.useCallback(
     (token: Token, value: string) => {
       setInputStatus("default")
-      setMinWarningMessage("")
+      setMinWarningMessage(undefined)
       setReceiveValues((prev) => ({ ...prev, [token]: value }))
       const numValue = parseValue(value) || 0
       const result = calculateFromReceiveValue(token, numValue)
@@ -348,7 +355,7 @@ export function useMintBurnAction(defaultActionType: ActionType) {
       setPayValues(result.pay)
       setActionData(result.actionData)
 
-      if (wallet && numValue < minAmount) {
+      if (wallet && numValue < minAmount && numValue > 0) {
         setInputStatus("warning")
         setMinWarningMessage(`Minimum amount is ${minAmount} ${token}`)
       }
