@@ -219,6 +219,7 @@
   --color-skrim: var(--color-neutral-925);
   --color-link: var(--color-supportive-2-700);
 
+  --color-error-text: var(--color-red-300);
   --color-error-primary: var(--color-red-700);
   --color-on-error-primary: var(--color-red-25);
   --color-error-primary-hover: var(--color-red-600);
@@ -227,13 +228,15 @@
   --color-error-secondary: var(--color-red-800);
   --color-on-error-secondary: var(--color-red-150);
 
-  --color-on-success-primary: var(--color-green-50);
+  --color-success-text: var(--color-green-400);
   --color-success-primary: var(--color-green-800);
+  --color-on-success-primary: var(--color-green-50);
   --color-success-secondary: var(--color-green-900);
   --color-on-success-secondary: var(--color-green-400);
 
-  --color-on-warning-primary: var(--color-yellow-25);
+  --color-warning-text: var(--color-yellow-400);
   --color-warning-primary: var(--color-yellow-700);
+  --color-on-warning-primary: var(--color-yellow-25);
   --color-warning-secondary: var(--color-yellow-900);
   --color-on-warning-secondary: var(--color-yellow-400);
 
@@ -315,6 +318,13 @@
       var(--Gradients-Gradient1-supportiveColor3_500, #15a2b7) 71.62%,
       var(--Gradients-Gradient1-supportiveColor1_500, #2cc399) 118.71%
     )
+  );
+
+  --color-gradient-radial: radial-gradient(
+    circle,
+    var(--color-supportive-3-25, #f3f4f6) 0%,
+    var(--color-supportive-3-500, #15a2b7) 50%,
+    var(--color-supportive-3-25, #f3f4f6) 100%
   );
 
   /* Spacing */

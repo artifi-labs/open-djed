@@ -9,6 +9,8 @@ export type IconProps = {
 } & React.HTMLAttributes<HTMLDivElement>
 
 export type IconName =
+  | "Arrow-Down"
+  | "Arrow-Top"
   | "Arrow-Left"
   | "Arrow-Right"
   | "Arrows"
