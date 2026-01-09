@@ -5,23 +5,30 @@ import { formatNumber, formatValue } from "@/lib/utils"
 import Divider from "../Divider"
 
 const ReserveDetails = () => {
-  const { reserveValueADA, reserveValueUSD, reserveRatio, minRatio, maxRatio } =
-    useReserveDetails()
+  const {
+    reserveValueADA,
+    reserveValueUSD,
+    reserveRatio,
+    minRatio,
+    maxRatio,
+    isLoading,
+    hasData,
+  } = useReserveDetails()
 
   return (
     <div className="desktop:grid-cols-2 desktop:gap-24 desktop:pt-32 grid grid-cols-1 gap-16 pt-16">
-      <BaseCard>
+      <BaseCard overlay={isLoading || !hasData}>
         <div className="desktop:pb-0 flex w-full flex-col justify-between gap-24 pb-12">
           <span className="mb-1 text-sm font-medium">Reserve Ratio</span>
           <ReserveGraph
-            currentRatio={reserveRatio}
+            currentRatio={!hasData ? undefined : reserveRatio}
             minRatio={minRatio}
             maxRatio={maxRatio}
           />
         </div>
       </BaseCard>
 
-      <BaseCard>
+      <BaseCard overlay={isLoading || !hasData}>
         <div className="desktop:gap-24 flex w-full flex-col gap-16">
           <div className="flex w-full flex-wrap justify-between gap-x-8 gap-y-4">
             {/* Current Ratio */}
