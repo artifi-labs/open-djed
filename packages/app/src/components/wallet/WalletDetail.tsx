@@ -6,7 +6,7 @@ import {
   shortenString,
   type Value,
 } from "@/lib/utils"
-import Icon from "../Icon"
+import Icon from "../icons/Icon"
 import { useClipboard } from "@/hooks/useClipboard"
 import ButtonIcon from "../ButtonIcon"
 import Tooltip from "../tooltip/Tooltip"

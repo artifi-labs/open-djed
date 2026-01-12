@@ -1,7 +1,7 @@
 "use client"
 import * as React from "react"
 import Button from "./Button"
-import Icon, { type IconName } from "./Icon"
+import Icon, { type IconName } from "./icons/Icon"
 import clsx from "clsx"
 import Loading from "./loading/Loading"
 import Skrim from "./Skrim"

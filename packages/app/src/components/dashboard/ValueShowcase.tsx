@@ -1,6 +1,6 @@
 import React from "react"
 import Asset, { type AssetProps } from "../Asset"
-import { type IconName } from "../Icon"
+import { type IconName } from "../icons/Icon"
 import Tag from "../Tag"
 import Divider from "../Divider"
 

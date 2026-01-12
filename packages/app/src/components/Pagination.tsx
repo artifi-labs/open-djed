@@ -1,5 +1,5 @@
 import PageLink from "./PageLink"
-import Icon from "./Icon"
+import Icon from "./icons/Icon"
 
 type PaginationProps = {
   currentPage: number
