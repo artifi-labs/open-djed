@@ -1,5 +1,5 @@
 import * as React from "react"
-import Icon, { type IconName } from "./Icon"
+import Icon, { type IconName } from "./icons/Icon"
 import type Button from "./Button"
 import Divider from "./Divider"
 import Mask from "./Mask"

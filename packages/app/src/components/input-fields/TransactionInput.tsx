@@ -3,7 +3,7 @@
 import React from "react"
 import clsx from "clsx"
 import Divider from "../Divider"
-import Icon, { type IconName } from "../Icon"
+import Icon, { type IconName } from "../icons/Icon"
 import Tag from "../Tag"
 import ButtonIcon from "../ButtonIcon"
 import Asset, { type AssetProps } from "../Asset"

@@ -1,6 +1,6 @@
 import React from "react"
 import clsx from "clsx"
-import Icon from "../Icon"
+import Icon from "../icons/Icon"
 
 export type TableHeaderSize = "small" | "medium" | "full" | "auto"
 interface TableHeaderProps {

@@ -14,7 +14,7 @@ import Sidebar from "./modals/Sidebar"
 import { shortenString } from "@/lib/utils"
 import Logo from "./Logo"
 import { useViewport } from "@/hooks/useViewport"
-import Icon from "./Icon"
+import Icon from "./icons/Icon"
 import { env } from "@/lib/envLoader"
 
 type NavigationItem = {

@@ -19,11 +19,13 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@icons/*": ["./public/icons/*"]
     },
     "types": ["node"]
   },
   "include": [
+    "svgr.d.ts",
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",

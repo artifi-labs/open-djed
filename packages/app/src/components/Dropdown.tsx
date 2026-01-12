@@ -3,7 +3,7 @@
 import * as React from "react"
 import clsx from "clsx"
 import ContextualMenu, { type ContextualMenuItem } from "./ContextualMenu"
-import Icon, { type IconName } from "./Icon"
+import Icon, { type IconName } from "./icons/Icon"
 import Tag from "./Tag"
 
 type Size = "small" | "medium" | "large"
