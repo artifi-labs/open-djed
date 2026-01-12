@@ -120,7 +120,7 @@ const ButtonIcon: React.FC<ButtonIconProps> = ({
       disabled={disabled}
       {...props}
     >
-      <Icon name={icon} size={IconSize[size]} color={iconColor} />
+      <Icon name={icon} size={IconSize[size]} iconColor={iconColor} />
     </button>
   )
 }
