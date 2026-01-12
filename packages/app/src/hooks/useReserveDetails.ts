@@ -27,6 +27,7 @@ export const useReserveDetails = () => {
         : `SHEN minting is not permitted when the reserve ratio rises above ${maxRatio}%.`
 
   return {
+    hasData: !!data,
     reserveValueADA,
     reserveValueUSD,
     maxRatio,

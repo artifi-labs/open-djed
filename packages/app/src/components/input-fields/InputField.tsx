@@ -7,8 +7,8 @@ import {
   type InputHTMLAttributes,
 } from "react"
 import clsx from "clsx"
-import type { IconName } from "../Icon"
-import Icon from "../Icon"
+import type { IconName } from "../icons/Icon"
+import Icon from "../icons/Icon"
 import { sanitizeNumberInput } from "@/lib/utils"
 
 type Size = "Small" | "Medium" | "Large"

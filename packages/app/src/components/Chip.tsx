@@ -1,7 +1,7 @@
 "use client"
 import clsx from "clsx"
 import React from "react"
-import Icon, { type IconName } from "./Icon"
+import Icon, { type IconName } from "./icons/Icon"
 
 type Variant = "filled" | "outlined"
 

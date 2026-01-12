@@ -1,7 +1,7 @@
 "use client"
 import React from "react"
 import clsx from "clsx"
-import Icon, { type IconName } from "./Icon"
+import Icon, { type IconName } from "./icons/Icon"
 import Coin, { type IconCoinName } from "./Coin"
 
 export type Variant = "primary" | "secondary" | "outlined"
