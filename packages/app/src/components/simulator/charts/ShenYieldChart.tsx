@@ -18,6 +18,7 @@ type ShenYieldChartProps = {
   sellPrice: number
   buyFees: number
   sellFees: number
+  feesEarned: number
   stakingRewards: CreditEntry[]
 }
 
@@ -27,11 +28,14 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
   initialHoldings,
   buyPrice,
   sellPrice,
+  buyFees,
+  sellFees,
+  feesEarned,
   stakingRewards,
 }) => {
   const aggregations: AggregationConfig = {
-    ADA: ["avg"],
-    usdValue: ["avg"],
+    earnings: ["avg"],
+    usdEarningsValue: ["avg"],
   }
 
   const { results, yDomain } = useMemo(() => {
@@ -57,17 +61,19 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
     )
 
     const data: DataRow[] = []
-    let currentHoldings = initialHoldings
+    let cumulativeEarnings = 0
+    const dailyFeesEarned = totalDays > 0 ? feesEarned / totalDays : 0
 
     for (let i = 0; i < totalDays; i++) {
       const currentDate = new Date(startDate.getTime() + i * dayInMs)
-      currentHoldings += rewardsMap[currentDate.toDateString()] || 0
+      cumulativeEarnings += rewardsMap[currentDate.toDateString()] || 0
+      cumulativeEarnings += dailyFeesEarned
       const priceForDay = buyPrice + i * priceStep
 
       data.push({
         date: currentDate.toISOString(),
-        ADA: currentHoldings,
-        usdValue: currentHoldings * priceForDay,
+        earnings: cumulativeEarnings,
+        usdEarningsValue: cumulativeEarnings * priceForDay,
       } as unknown as DataRow)
     }
 
@@ -75,32 +81,42 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
     const chartData = aggregateByBucket(data, interval, startDate, aggregations)
 
     if (chartData.length > 0) {
-      chartData[0].ADA_avg_buy_fees = chartData[0].ADA_avg
-      chartData[chartData.length - 1].ADA_avg_sell_fees =
-        chartData[chartData.length - 1].ADA_avg
+      chartData[0].buyFee = buyFees
+      chartData[0].usdBuyFeeValue = buyFees * buyPrice
+      chartData[chartData.length - 1].sellFee = sellFees
+      chartData[chartData.length - 1].usdSellFeeValue = sellFees * sellPrice
     }
 
-    const allValues = data.map((d) => d.ADA as number)
+    const allValues = data.map((d) => d.earnings as number)
     const minY = Math.floor(Math.min(...allValues) * 0.98)
     const maxY = Math.ceil(Math.max(...allValues) * 1.02)
 
     return { results: chartData, yDomain: [minY, maxY] as [number, number] }
-  }, [buyDate, sellDate, initialHoldings, buyPrice, sellPrice, stakingRewards])
+  }, [
+    buyDate,
+    sellDate,
+    initialHoldings,
+    buyPrice,
+    sellPrice,
+    buyFees,
+    sellFees,
+    feesEarned,
+    stakingRewards,
+  ])
 
   const areas = [
     {
-      dataKey: "ADA_avg_buy_fees",
+      dataKey: "buyFee",
       name: "Fees",
       tooltipLabel: "ADA (Buy Fee)",
-      strokeColor: "var(--color-supportive-3-500)",
-      fillColor: "var(--color-supportive-3-500)",
-      fillOpacity: 0.2,
-      hideOnDuplicate: true,
-      tag: "fees",
+      strokeColor: "transparent",
+      fillColor: "transparent",
+      fillOpacity: 0,
     },
     {
-      dataKey: "ADA_avg",
-      name: "ADA Holdings",
+      dataKey: "earnings_avg",
+      name: "ADA Earnings",
+      tooltipLabel: "ADA Earnings",
       strokeColor: "var(--color-supportive-3-500)",
       fillColor: "var(---color-gradient-radial-shen)",
       fillOpacity: 0.1,
@@ -118,28 +134,44 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
       },
     },
     {
-      dataKey: "ADA_avg_sell_fees",
+      dataKey: "sellFee",
       name: "Fees",
       tooltipLabel: "ADA (Sell Fee)",
-      strokeColor: "var(--color-supportive-3-500)",
-      fillColor: "var(--color-supportive-3-500)",
-      fillOpacity: 0.2,
-      hideOnDuplicate: true,
-      tag: "fees",
+      strokeColor: "transparent",
+      fillColor: "transparent",
+      fillOpacity: 0,
     },
   ]
 
   return (
     <div className="w-full">
       <MultiAreaChart
+        title="ADA Holdings"
         data={results as { [key: string]: string | number | undefined }[]}
         xKey="date"
         yDomain={yDomain}
         areas={areas}
-        tickFormatter={(val) => `₳${val.toLocaleString()}`}
-        tooltipFormatter={(val, name, payload) => {
-          const usd = payload[`usdValue_avg`] as number
-          return `₳${val.toFixed(2)} ($${usd?.toLocaleString(undefined, { minimumFractionDigits: 2 })})`
+        tooltipFormatter={(val, dataKey, payload) => {
+          const usdKey =
+            dataKey === "buyFee"
+              ? "usdBuyFeeValue"
+              : dataKey === "sellFee"
+                ? "usdSellFeeValue"
+                : "usdEarningsValue_avg"
+          const usd = payload[usdKey] as number | undefined
+          const ada = Number.isFinite(val) ? val : 0
+          const adaFormatted =
+            Math.abs(ada) >= 1000
+              ? `${(ada / 1000).toFixed(1)}K`
+              : ada.toFixed(4)
+          const usdFormatted =
+            typeof usd === "number" && Number.isFinite(usd)
+              ? usd.toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })
+              : "0.00"
+          return `${adaFormatted} ($${usdFormatted})`
         }}
       />
     </div>

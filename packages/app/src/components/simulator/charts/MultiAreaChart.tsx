@@ -130,7 +130,7 @@ const CustomTooltip = ({
             </div>
             <p className="text-sm">
               {tooltipFormatter
-                ? tooltipFormatter(entry.value, entry.name, entry.payload)
+                ? tooltipFormatter(entry.value, entry.dataKey, entry.payload)
                 : tickFormatter
                   ? tickFormatter(entry.value)
                   : entry.value}
@@ -144,6 +144,7 @@ const CustomTooltip = ({
 }
 
 export function MultiAreaChart({
+  title,
   data,
   width = "100%",
   graphWidth = 24,
@@ -158,7 +159,9 @@ export function MultiAreaChart({
   tooltipFormatter,
 }: MultiAreaChartProps) {
   return (
-    <div className="flex h-full w-full flex-col gap-24">
+    <div className="flex h-full w-full flex-col gap-6">
+      {/* Title */}
+      <div className="flex1 text-xs">{title}</div>
       {/* Chart Container */}
       <ResponsiveContainer width={width} height={height}>
         <AreaChart data={data} margin={margin}>
@@ -243,12 +246,17 @@ export function MultiAreaChart({
             tickLine={false}
             tick={{
               dy: 12,
-              fontSize: 12,
+              fontSize: 10,
               fontFamily: "Poppins",
-              fill: "#D0D0D0",
+              fill: "var(--color-tertiary)",
               fontWeight: 400,
             }}
-            tickFormatter={(value) => new Date(value).toLocaleDateString()}
+            tickFormatter={(value) => {
+              const date = new Date(value)
+              const month = date.toLocaleString(undefined, { month: "short" })
+              const year = date.getFullYear()
+              return `${month}, ${year}`
+            }}
           />
 
           <YAxis
@@ -256,7 +264,11 @@ export function MultiAreaChart({
             domain={yDomain}
             ticks={yTicks}
             interval={0}
-            tickFormatter={tickFormatter}
+            tickFormatter={
+              tickFormatter
+                ? (value) => tickFormatter(value)
+                : (value) => `${(value / 1000).toFixed(1)}K`
+            }
             axisLine={false}
             tickLine={false}
             tick={{

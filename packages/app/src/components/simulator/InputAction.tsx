@@ -5,7 +5,7 @@ import BaseCard from "@/components/card/BaseCard"
 import InputField from "../input-fields/InputField"
 import Dropdown from "../Dropdown"
 import type { ScenarioInputs } from "./calculations"
-import Icon from "../Icon"
+import Icon from "../icons/Icon"
 import Tooltip from "../tooltip/Tooltip"
 
 export type InputActionProps = {

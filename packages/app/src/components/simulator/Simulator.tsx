@@ -6,7 +6,7 @@ import Modal from "@/components/modals/Modal"
 import SimulatorInfo from "@/components/SimulatorInfo"
 import Results from "@/components/simulator/Results"
 import InputAction from "@/components/simulator/InputAction"
-import { useSimulatorActions } from './useSimulatorActions';
+import { useSimulatorActions } from "./useSimulatorActions"
 
 export default function Simulator() {
   const [isModalOpen, setIsModalOpen] = useState(false)

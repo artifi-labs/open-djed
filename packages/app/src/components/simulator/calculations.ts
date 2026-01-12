@@ -4,7 +4,7 @@ import * as React from "react"
 import { useProtocolData } from "@/hooks/useProtocolData"
 import { registryByNetwork } from "@open-djed/registry"
 import { env } from "@/lib/envLoader"
-// import { expectedStakingReturn } from "@/lib/staking"
+import { expectedStakingReturn, type CreditEntry } from "@/lib/staking"
 
 export interface ScenarioInputs {
   shenAmount: number
@@ -18,29 +18,34 @@ export interface ResultsData {
   buyFee: number
   sellFee: number
   stakingRewards: number
+  stakingCredits: CreditEntry[]
   feesEarned: number
   adaPnl: number
   adaPnlPercent: number
   totalPnl: number
   totalPnlPercent: number
   initialAdaHoldings: number
+  finalAdaHoldings: number
 }
 
+// const MIN_FEES_SHARE_PERCENT = 2
+// const MAX_FEES_SHARE_PERCENT = 3
+
 const calculateFeesEarned = (
-  amount: number,
-  startDate: string,
-  endDate: string,
-  apy: number = 0.01, //1% annual APR
+  protocolData: ReturnType<typeof useProtocolData>["data"],
+  shenAmount: number,
 ): number => {
-  const start = new Date(startDate).getTime()
-  const end = new Date(endDate).getTime()
+  if (!protocolData || shenAmount <= 0) return 0
 
-  if (isNaN(start) || isNaN(end)) return 0
-  const diffInMs = end - start
-  if (diffInMs <= 0) return 0
+  // Random entre 2% e 3%
+  // const feeSharePercent =
+  //   Math.random() * (MAX_FEES_SHARE_PERCENT - MIN_FEES_SHARE_PERCENT) +
+  //   MIN_FEES_SHARE_PERCENT
 
-  const msPerYear = 1000 * 60 * 60 * 24 * 365
-  return amount * apy * (diffInMs / msPerYear)
+  ///1% annual APR
+  const feeSharePercent = 0.1
+
+  return protocolData.to({ SHEN: shenAmount * (feeSharePercent / 100) }, "ADA")
 }
 
 export function useSimulatorResults(inputs: ScenarioInputs) {
@@ -83,6 +88,7 @@ export function useSimulatorResults(inputs: ScenarioInputs) {
       initialAdaHoldings,
       buyProtocolFees,
       sellProtocolFees,
+      protocolData,
     )
   }, [inputs, protocolData, registry])
 
@@ -98,29 +104,30 @@ export const calculateSimulatorResults = (
   initialAdaHoldings: number,
   buyProtocolFees: { actionFee: number; operatorFee: number },
   sellProtocolFees: { actionFee: number; operatorFee: number },
+  protocolData: ReturnType<typeof useProtocolData>["data"],
 ): ResultsData => {
   const { shenAmount, buyAdaPrice, sellAdaPrice } = inputs
 
+  //Paid fees
   const buyFee =
     (buyProtocolFees.actionFee + buyProtocolFees.operatorFee) * buyAdaPrice
   const sellFee =
     (sellProtocolFees.actionFee + sellProtocolFees.operatorFee) * sellAdaPrice
 
-  const stakingRewards = 0
-  // const stakingInfo = expectedStakingReturn(
-  //   shenAmount,
-  //   inputs.buyDate || "2025-01-07",
-  //   inputs.sellDate || "2025-02-07",
-  //   { aprPercent: 2.5 },
-  // )
-  // const stakingRewards =
-  //   stakingInfo.totalCreditedRewards + stakingInfo.totalPendingRewards
-  //   console.log("stakingInfo.credits", stakingInfo.credits)
-  //   console.log("stakingInfo.totalCreditedRewards", stakingInfo.totalCreditedRewards)
-  //   console.log("stakingInfo.totalPendingRewards", stakingInfo.totalPendingRewards)
-  //   console.log("stakingRewards", stakingRewards)
+  //Staking
+  const stakingInfo = expectedStakingReturn(
+    shenAmount,
+    inputs.buyDate || "2025-01-07",
+    inputs.sellDate || "2025-02-07",
+    { aprPercent: 2.5 },
+  )
+  const stakingRewards =
+    stakingInfo.totalCreditedRewards + stakingInfo.totalPendingRewards
 
-  const feesEarned = calculateFeesEarned(shenAmount, "2025-01-07", "2025-02-07")
+  //Fees earned
+  const feesEarned = calculateFeesEarned(protocolData, shenAmount)
+
+  const finalAdaHoldings = initialAdaHoldings + stakingRewards + feesEarned
 
   //ADA PNL
   const adaPnl = (sellAdaPrice - buyAdaPrice) * shenAmount
@@ -137,11 +144,13 @@ export const calculateSimulatorResults = (
     buyFee,
     sellFee,
     stakingRewards,
+    stakingCredits: stakingInfo.credits,
     feesEarned,
     adaPnl,
     adaPnlPercent,
     totalPnl,
     totalPnlPercent,
     initialAdaHoldings,
+    finalAdaHoldings,
   }
 }

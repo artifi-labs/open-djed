@@ -121,6 +121,7 @@ const InputField: FC<InputFieldProps> = ({
         onBlur={() => setIsTyping(false)}
         value={inputValue}
         {...props}
+        autoComplete="off"
       />
 
       {/* Clear Input Button */}

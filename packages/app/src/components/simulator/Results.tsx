@@ -5,9 +5,8 @@ import clsx from "clsx"
 import BaseCard from "../card/BaseCard"
 import { useResults, type ResultItem } from "@/components/simulator/useResults"
 import { type ScenarioInputs, useSimulatorResults } from "./calculations"
-
 import Tooltip from "../tooltip/Tooltip"
-import Icon from "../Icon"
+import Icon from "../icons/Icon"
 import { isEmptyValue } from "@/lib/utils"
 import { ShenYieldChart } from "./charts/ShenYieldChart"
 
@@ -64,7 +63,11 @@ const ResultSummaryItem: React.FC<ResultItem> = ({
           )}
         >
           {isTotal && item.pnlIconName && (
-            <Icon name={item.pnlIconName} size={18} />
+            <Icon
+              name={item.pnlIconName}
+              size={18}
+              iconColor={item.pnlColorClass}
+            />
           )}
 
           <span className={!isTotal ? "text-secondary" : undefined}>
@@ -123,30 +126,18 @@ const Results: React.FC<ResultsProps> = ({ inputs }) => {
           ))}
         </div>
 
-        {/* Chart - To be Update */}
+        {/* Chart */}
         <ShenYieldChart
-          buyDate="2025-01-07"
-          sellDate="2025-02-07"
+          buyDate={inputs.buyDate || "2025-01-07"}
+          sellDate={inputs.sellDate || "2025-02-07"}
           initialHoldings={simulatorData?.initialAdaHoldings ?? 0}
-          finalHoldings={
-            simulatorData?.initialAdaHoldings ??
-            0 + (simulatorData?.stakingRewards ?? 0)
-          }
+          finalHoldings={simulatorData?.finalAdaHoldings ?? 0}
           buyPrice={inputs.buyAdaPrice}
           sellPrice={inputs.sellAdaPrice}
           buyFees={simulatorData?.buyFee ?? 0}
           sellFees={simulatorData?.sellFee ?? 0}
-          stakingRewards={Array.from({ length: 30 }, (_, i) => ({
-            date: new Date(
-              new Date("2025-01-07").getTime() + i * 24 * 60 * 60 * 1000,
-            ).toISOString(),
-            reward: (simulatorData?.stakingRewards ?? 0) / 30,
-            daysSinceLastCredit: 1,
-            balanceAfter:
-              inputs.shenAmount +
-              i * ((simulatorData?.stakingRewards ?? 0) / 30),
-            credited: true,
-          }))}
+          feesEarned={simulatorData?.feesEarned ?? 0}
+          stakingRewards={simulatorData?.stakingCredits ?? []}
         />
       </div>
     </BaseCard>

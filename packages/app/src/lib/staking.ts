@@ -44,7 +44,7 @@ export function expectedStakingReturn(
   const firstCreditDate = new Date(start.getTime() + WAIT_DAYS * DAY_MS)
 
   const credits: CreditEntry[] = []
-  let currentBalance = initialBalance
+  let currentBalance = Number(initialBalance)
   let lastCreditDate = start
 
   // Check if first rewards are accredited after finish date

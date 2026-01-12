@@ -1,5 +1,7 @@
 import ArrowLeft from "@icons/Arrow-Left.svg"
 import ArrowRight from "@icons/Arrow-Right.svg"
+import ArrowTop from "@icons/Arrow-Top.svg"
+import ArrowDown from "@icons/Arrow-Down.svg"
 import Arrows from "@icons/Arrows.svg"
 import Ascending from "@icons/Ascending.svg"
 import Burn from "@icons/Burn.svg"
@@ -47,6 +49,8 @@ import Warning from "@icons/Warning.svg"
 export const icons = {
   "Arrow-Left": ArrowLeft,
   "Arrow-Right": ArrowRight,
+  "Arrow-Top": ArrowTop,
+  "Arrow-Down": ArrowDown,
   Arrows: Arrows,
   Ascending: Ascending,
   Burn: Burn,
