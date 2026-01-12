@@ -67,18 +67,35 @@ const Action: React.FC<ActionProps> = ({
   minWarningMessage,
   minMessage,
 }) => {
+  const { reserveBounds } = useReserveDetails()
+
   const actionText = capitalize(actionType)
 
   const payEmpty = Object.values(payValues).every(isEmptyValue)
   const receiveEmpty = Object.values(receiveValues).every(isEmptyValue)
 
-  const buttonText = !hasWalletConnected
-    ? `Connect Wallet to ${actionText}`
-    : payEmpty || receiveEmpty
-      ? `Fill in the Amount to ${actionText}`
-      : `${actionText} ${minMessage}`
+  const buttonControls = React.useMemo(() => {
+    const token = actionType === "Mint" ? activeReceiveToken : activePayToken
 
-  const { reserveBounds } = useReserveDetails()
+    const disabledDueToReserve =
+      ((token === "DJED" && actionType === "Mint") ||
+        (token === "SHEN" && actionType === "Burn")) &&
+      reserveBounds === "below"
+        ? true
+        : token === "SHEN" && actionType === "Mint" && reserveBounds === "above"
+          ? true
+          : false
+
+    const isDisabled =
+      (hasWalletConnected && (payEmpty || receiveEmpty)) || disabledDueToReserve
+
+    const text = !hasWalletConnected
+      ? `Connect Wallet to ${actionText}`
+      : payEmpty || receiveEmpty
+        ? `Fill in the Amount to ${actionText}`
+        : `${actionText} ${minMessage}`
+    return { isDisabled, text }
+  }, [hasWalletConnected, actionType, payValues, receiveValues])
 
   const inputs = [
     {
@@ -148,8 +165,6 @@ const Action: React.FC<ActionProps> = ({
           hasAvailableAmount={i.hasAvailableAmount}
           disabled={i.disabled}
           hasMaxAmount={i.hasMaxAmount}
-          action={actionType}
-          reserveBounds={reserveBounds}
           maxAmount={i.maxAmount}
           inputStatus={inputStatus}
           minWarningMessage={minWarningMessage}
@@ -159,8 +174,8 @@ const Action: React.FC<ActionProps> = ({
       <Button
         variant="secondary"
         size="medium"
-        text={buttonText}
-        disabled={hasWalletConnected && (payEmpty || receiveEmpty)}
+        text={buttonControls.text}
+        disabled={buttonControls.isDisabled}
         onClick={onButtonClick}
       />
     </div>
