@@ -14,7 +14,7 @@ import Sidebar from "./modals/Sidebar"
 import { shortenString } from "@/lib/utils"
 import Logo from "./Logo"
 import { useViewport } from "@/hooks/useViewport"
-import Icon from "./Icon"
+import Icon from "./icons/Icon"
 import { env } from "@/lib/envLoader"
 
 type NavigationItem = {
@@ -123,7 +123,7 @@ export const Navbar = () => {
   const navLinks: { label: string; href: string }[] = [
     { label: "Dashboard", href: "/" },
     // { label: "Analytics", href: "/analytics" },
-    { label: "YIELD Simulator", href: "/simulator" },
+    //{ label: "YIELD Simulator", href: "/simulator" },
     { label: "Orders", href: "/orders" },
   ]
   const getWalletButtonText = () => {

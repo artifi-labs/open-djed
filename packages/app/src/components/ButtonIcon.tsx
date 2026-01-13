@@ -1,7 +1,7 @@
 "use client"
 import * as React from "react"
 import clsx from "clsx"
-import Icon, { type IconName } from "./Icon"
+import Icon, { type IconName } from "./icons/Icon"
 
 export type Variant =
   | "primary"
@@ -120,7 +120,7 @@ const ButtonIcon: React.FC<ButtonIconProps> = ({
       disabled={disabled}
       {...props}
     >
-      <Icon name={icon} size={IconSize[size]} color={iconColor} />
+      <Icon name={icon} size={IconSize[size]} iconColor={iconColor} />
     </button>
   )
 }

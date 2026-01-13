@@ -232,6 +232,14 @@ export function useMintBurnAction(defaultActionType: ActionType) {
   const registry = registryByNetwork[NETWORK]
 
   const [inputStatus, setInputStatus] = React.useState<InputStatus>("default")
+  const [minWarningMessage, setMinWarningMessage] = React.useState<
+    string | undefined
+  >(undefined)
+
+  React.useEffect(() => {
+    setInputStatus("default")
+    setMinWarningMessage(undefined)
+  }, [actionType])
 
   const {
     payValues,
@@ -264,31 +272,34 @@ export function useMintBurnAction(defaultActionType: ActionType) {
   }, [actionType, resetValues])
 
   const maxAmount = React.useMemo(() => {
-    if (!wallet || !data || activePayToken === "ADA") return 0
+    if (!wallet || !data) return 0
+
+    const currentToken =
+      actionType === "Mint" ? activeReceiveToken : activePayToken
+
+    if (currentToken === "ADA") return 0
 
     const maxTokenAmount =
-      activePayToken === null
+      currentToken === null
         ? 0
         : Math.round(
             Math.min(
               Math.max(
                 (actionType === "Burn"
-                  ? wallet.balance[activePayToken]
+                  ? wallet.balance[currentToken]
                   : ((wallet.balance.ADA ?? 0) -
                       (Number(registry.operatorFeeConfig.max) +
                         (data.protocolData.refundableDeposit.ADA ?? 1823130)) /
                         1e6) /
                     (data.protocolData
-                      ? data.protocolData[activePayToken].buyPrice.ADA
+                      ? data.protocolData[currentToken].buyPrice.ADA
                       : 0)) ?? 0,
                 0,
               ),
               (actionType === "Mint"
-                ? data.protocolData?.[activePayToken].mintableAmount[
-                    activePayToken
-                  ]
-                : data.protocolData?.[activePayToken].burnableAmount[
-                    activePayToken
+                ? data.protocolData?.[currentToken].mintableAmount[currentToken]
+                : data.protocolData?.[currentToken].burnableAmount[
+                    currentToken
                   ]) ?? 0,
             ) * 1e6,
           ) / 1e6
@@ -305,8 +316,19 @@ export function useMintBurnAction(defaultActionType: ActionType) {
     wallet?.balance,
   ])
 
+  const minAmount = React.useMemo(() => {
+    const minTokenAmount = Number(registryByNetwork[NETWORK].minAmount) / 1e6
+    // Floor to 3 decimal places to avoid exceeding user balance
+    return Math.floor(minTokenAmount * 1000) / 1000
+  }, [])
+  const minMessage = React.useMemo(() => {
+    return minAmount > 1 ? `(minimum ${minAmount})` : ""
+  }, [])
+
   const handlePayValueChange = React.useCallback(
     (token: Token, value: string) => {
+      setInputStatus("default")
+      setMinWarningMessage(undefined)
       setPayValues((prev) => ({ ...prev, [token]: value }))
       const numValue = parseFloat(value) || 0
 
@@ -314,14 +336,9 @@ export function useMintBurnAction(defaultActionType: ActionType) {
       setReceiveValues(result.receive)
       setActionData(result.actionData)
 
-      if (wallet && numValue > maxAmount) {
-        setInputStatus("error")
-        showToast({
-          message: `The amount added is greater than the available balance.`,
-          type: "error",
-        })
-      } else if (inputStatus !== "default" || payValues[token] === "0") {
-        setInputStatus("default")
+      if (wallet && numValue < minAmount && numValue > 0) {
+        setInputStatus("warning")
+        setMinWarningMessage(`Minimum amount is ${minAmount} ${token}`)
       }
     },
     [calculateFromPayValue, setPayValues, setReceiveValues],
@@ -329,21 +346,18 @@ export function useMintBurnAction(defaultActionType: ActionType) {
 
   const handleReceiveValueChange = React.useCallback(
     (token: Token, value: string) => {
+      setInputStatus("default")
+      setMinWarningMessage(undefined)
       setReceiveValues((prev) => ({ ...prev, [token]: value }))
-      const numValue = parseValue(value)
+      const numValue = parseValue(value) || 0
       const result = calculateFromReceiveValue(token, numValue)
 
       setPayValues(result.pay)
       setActionData(result.actionData)
 
-      if (wallet && numValue > maxAmount) {
-        setInputStatus("error")
-        showToast({
-          message: `The amount added is greater than the available balance.`,
-          type: "error",
-        })
-      } else if (inputStatus !== "default" || payValues[token] === "0") {
-        setInputStatus("default")
+      if (wallet && numValue < minAmount && numValue > 0) {
+        setInputStatus("warning")
+        setMinWarningMessage(`Minimum amount is ${minAmount} ${token}`)
       }
     },
     [calculateFromReceiveValue, setPayValues, setReceiveValues],
@@ -468,13 +482,15 @@ export function useMintBurnAction(defaultActionType: ActionType) {
     }
     if (!wallet) return
 
+    const valuesToUse = actionType === "Mint" ? receiveValues : payValues
+
     if (
-      payValues &&
-      !Object.values(payValues).some((value) => parseFloat(value) > 0)
+      valuesToUse &&
+      !Object.values(valuesToUse).some((value) => parseFloat(value) > 0)
     )
       return
 
-    const tokenAmountArray = Object.entries(payValues).find(
+    const tokenAmountArray = Object.entries(valuesToUse).find(
       ([, value]) => parseFloat(value) > 0,
     )
     if (!tokenAmountArray) return
@@ -488,8 +504,16 @@ export function useMintBurnAction(defaultActionType: ActionType) {
     const tokenAmountNumber = parseFloat(tokenAmountArray[1])
 
     if (wallet && tokenAmountNumber > maxAmount) {
+      setInputStatus("error")
       showToast({
         message: `The amount added is greater than the available balance.`,
+        type: "error",
+      })
+      return
+    } else if (wallet && tokenAmountNumber < minAmount) {
+      setInputStatus("error")
+      showToast({
+        message: `The amount added is less than the minimum allowed of ${minAmount} ${token}.`,
         type: "error",
       })
       return
@@ -577,5 +601,7 @@ export function useMintBurnAction(defaultActionType: ActionType) {
     maxAmount: maxAmount,
     hasMaxAmount: wallet ? true : false,
     inputStatus,
+    minWarningMessage,
+    minMessage,
   }
 }

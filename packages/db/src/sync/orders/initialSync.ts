@@ -2,20 +2,20 @@ import { logger } from "../../utils/logger"
 import { OrderDatum } from "@open-djed/data"
 import { Data } from "@lucid-evolution/lucid"
 import { prisma } from "../../../lib/prisma"
-import type {
-  Block,
-  Order,
-  OrderUTxOWithDatumAndBlock,
-  Transaction,
-  TransactionData,
-  UTxO,
+import {
+  type Block,
+  type Order,
+  type OrderUTxOWithDatumAndBlock,
+  type Transaction,
+  type TransactionData,
+  type UTxO,
 } from "../types"
 import {
   processBatch,
-  parseOrderDatum,
   registry,
   blockfrost,
   blockfrostFetch,
+  processOrdersToInsert,
 } from "../utils"
 
 export const populateDbWithHistoricOrders = async () => {
@@ -129,30 +129,8 @@ export const populateDbWithHistoricOrders = async () => {
 
   logger.info("Processing order data...")
 
-  const ordersToInsert: Order[] = await Promise.all(
-    orderUTxOWithDatumAndBlock.map(async (utxo: OrderUTxOWithDatumAndBlock) => {
-      const d = utxo.orderDatum as OrderDatum
-      const { action, token, paid, received } = await parseOrderDatum(utxo)
-      const totalAmountPaid = BigInt(
-        utxo.amount.find((a) => a.unit === "lovelace")?.quantity ?? "0",
-      )
-      const fees = action === "Mint" ? totalAmountPaid - paid : totalAmountPaid
-
-      return {
-        address: d.address,
-        tx_hash: utxo.tx_hash,
-        out_index: utxo.output_index,
-        block: utxo.block_hash,
-        slot: utxo.block_slot,
-        action,
-        token,
-        paid,
-        fees,
-        received,
-        orderDate: new Date(Number(d.creationDate)),
-        status: utxo.consumed_by_tx ? "Completed" : "Created",
-      }
-    }),
+  const ordersToInsert: Order[] = await processOrdersToInsert(
+    orderUTxOWithDatumAndBlock,
   )
 
   logger.info(`Inserting ${ordersToInsert.length} orders into database...`)

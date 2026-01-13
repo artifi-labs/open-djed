@@ -12,7 +12,7 @@ export const TWITTER_HANDLE = "@artifi_labs"
 export const DJED_URL = "https://djed.xyz"
 export const APP_NAME = "Open Djed"
 export const TEAM_NAME = "Artifi Labs"
-export const CARDANOSCAN_BASE_URL = `https://${env.NETWORK.toLowerCase()}.cardanoscan.io`
+export const CARDANOSCAN_BASE_URL = `https://${env.NETWORK === "Preprod" ? env.NETWORK.toLowerCase() + "." : ""}cardanoscan.io`
 
 export const SUPPORTED_LANGUAGES = [
   { code: "en", label: "English" },

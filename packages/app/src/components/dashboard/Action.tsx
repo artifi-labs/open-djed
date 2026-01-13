@@ -38,6 +38,8 @@ export type ActionProps = {
   maxAmount?: number
   inputStatus: InputStatus
   hasMaxAmount?: boolean
+  minWarningMessage?: string
+  minMessage?: string
 }
 
 const Action: React.FC<ActionProps> = ({
@@ -62,24 +64,43 @@ const Action: React.FC<ActionProps> = ({
   maxAmount,
   hasMaxAmount,
   inputStatus,
+  minWarningMessage,
+  minMessage,
 }) => {
+  const { reserveBounds } = useReserveDetails()
+
   const actionText = capitalize(actionType)
 
   const payEmpty = Object.values(payValues).every(isEmptyValue)
   const receiveEmpty = Object.values(receiveValues).every(isEmptyValue)
 
-  const buttonText = !hasWalletConnected
-    ? `Connect Wallet to ${actionText}`
-    : payEmpty || receiveEmpty
-      ? `Fill in the Amount to ${actionText}`
-      : actionText
+  const buttonControls = React.useMemo(() => {
+    const token = actionType === "Mint" ? activeReceiveToken : activePayToken
 
-  const { reserveBounds } = useReserveDetails()
+    const disabledDueToReserve =
+      ((token === "DJED" && actionType === "Mint") ||
+        (token === "SHEN" && actionType === "Burn")) &&
+      reserveBounds === "below"
+        ? true
+        : token === "SHEN" && actionType === "Mint" && reserveBounds === "above"
+          ? true
+          : false
+
+    const isDisabled =
+      (hasWalletConnected && (payEmpty || receiveEmpty)) || disabledDueToReserve
+
+    const text = !hasWalletConnected
+      ? `Connect Wallet to ${actionText}`
+      : payEmpty || receiveEmpty
+        ? `Fill in the Amount to ${actionText}`
+        : `${actionText} ${minMessage}`
+    return { isDisabled, text }
+  }, [hasWalletConnected, actionType, payValues, receiveValues])
 
   const inputs = [
     {
       key: "pay",
-      label: actionType === "Mint" ? "You Mint" : "You Burn",
+      label: "You Pay",
       coins: config.pay,
       hasLeadingIcon: !bothSelected && config.payHasLeadingIcon,
       showDual: config.payShowDual && bothSelected,
@@ -91,14 +112,15 @@ const Action: React.FC<ActionProps> = ({
       onHalfClick,
       onMaxClick,
       hasMaxAndHalfActions: true,
-      hasAvailableAmount: false,
+      hasAvailableAmount: actionType === "Mint" ? true : false,
       hasMaxAmount: hasMaxAmount,
       maxAmount: maxAmount,
       inputStatus: inputStatus,
+      disable: false,
     },
     {
       key: "receive",
-      label: actionType === "Mint" ? "You Pay" : "You Receive",
+      label: "You Receive",
       coins: config.receive,
       hasLeadingIcon: !bothSelected && config.receiveHasLeadingIcon,
       showDual: config.receiveShowDual && bothSelected,
@@ -107,9 +129,14 @@ const Action: React.FC<ActionProps> = ({
       values: receiveValues,
       onTokenChange: onReceiveTokenChange,
       onValueChange: onReceiveValueChange,
-      hasMaxAndHalfActions: false,
-      hasAvailableAmount: false,
-      disabled: true,
+      onHalfClick,
+      onMaxClick,
+      hasMaxAndHalfActions: true,
+      hasAvailableAmount: actionType === "Mint" ? false : true,
+      hasMaxAmount: hasMaxAmount,
+      maxAmount: maxAmount,
+      inputStatus: inputStatus,
+      disabled: false,
     },
   ]
 
@@ -138,18 +165,17 @@ const Action: React.FC<ActionProps> = ({
           hasAvailableAmount={i.hasAvailableAmount}
           disabled={i.disabled}
           hasMaxAmount={i.hasMaxAmount}
-          action={actionType}
-          reserveBounds={reserveBounds}
           maxAmount={i.maxAmount}
           inputStatus={inputStatus}
+          minWarningMessage={minWarningMessage}
         />
       ))}
 
       <Button
         variant="secondary"
         size="medium"
-        text={buttonText}
-        disabled={hasWalletConnected && (payEmpty || receiveEmpty)}
+        text={buttonControls.text}
+        disabled={buttonControls.isDisabled}
         onClick={onButtonClick}
       />
     </div>

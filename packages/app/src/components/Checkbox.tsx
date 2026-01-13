@@ -1,6 +1,6 @@
 import * as React from "react"
 import clsx from "clsx"
-import Icon, { type IconName } from "./Icon"
+import Icon, { type IconName } from "./icons/Icon"
 
 export type CheckboxType = "Deselected" | "Selected" | "Indeterminate"
 

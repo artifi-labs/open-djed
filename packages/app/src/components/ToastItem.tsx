@@ -2,7 +2,7 @@ import React from "react"
 import clsx from "clsx"
 import Button from "./Button"
 import ButtonIcon from "./ButtonIcon"
-import Icon, { type IconName } from "./Icon"
+import Icon, { type IconName } from "./icons/Icon"
 
 type Type = "success" | "error" | "attention"
 

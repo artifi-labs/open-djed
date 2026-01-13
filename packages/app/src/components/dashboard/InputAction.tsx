@@ -8,8 +8,9 @@ import TransactionInput, {
 import ButtonIcon from "../ButtonIcon"
 import { useWallet } from "@/context/WalletContext"
 import type { Token } from "@/lib/tokens"
-import type { ActionType, TokenType } from "@open-djed/api"
-import { type ReserveBoundsType } from "./useMintBurnAction"
+import ValueShowcase from "./ValueShowcase"
+import { formatNumber } from "@/lib/utils"
+import { useProtocolData } from "@/hooks/useProtocolData"
 
 export type InputActionProps = {
   label: string
@@ -32,10 +33,9 @@ export type InputActionProps = {
   hasAvailableAmount?: boolean
   disabled?: boolean
   hasMaxAmount?: boolean
-  action: ActionType
-  reserveBounds: ReserveBoundsType
   maxAmount?: number
   inputStatus: InputStatus
+  minWarningMessage?: string
 }
 
 export type TransactionInputGroupProps = {
@@ -54,10 +54,9 @@ export type TransactionInputGroupProps = {
   hasAvailableAmount?: boolean
   disabled?: boolean
   hasMaxAmount?: boolean
-  action: ActionType
-  reserveBounds: ReserveBoundsType
   maxAmount?: number
   inputStatus: InputStatus
+  minWarningMessage?: string
 }
 
 const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
@@ -77,12 +76,12 @@ const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
   disabled,
   hasMaxAmount,
   maxAmount,
-  action,
-  reserveBounds,
   inputStatus,
+  minWarningMessage,
 }) => {
   const { wallet } = useWallet()
   const walletConnected = wallet !== null
+  const { data } = useProtocolData()
 
   const renderInput = (coin: Token) => {
     const handleTokenChange = () => {
@@ -91,25 +90,13 @@ const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
       onTokenChange(coins[nextIndex])
     }
     const balanceStr = walletConnected
-      ? wallet?.balance[coin as keyof typeof wallet.balance]?.toString()
+      ? `${formatNumber(Number(wallet?.balance[coin as keyof typeof wallet.balance]), { maximumFractionDigits: 3 })}`
       : undefined
 
-    const token: TokenType | null =
-      coin === "DJED" ? "DJED" : coin === "SHEN" ? "SHEN" : null
+    const valueToUSD = `$${formatNumber(data?.to({ [coin]: values[coin].toString() }, "DJED") ?? 0, { maximumFractionDigits: 2 })}`
 
-    const isDisabled =
-      ((token === "DJED" && action === "Mint") ||
-        (token === "SHEN" && action === "Burn")) &&
-      reserveBounds === "below"
-        ? true
-        : token === "SHEN" && action === "Mint" && reserveBounds === "above"
-          ? true
-          : false
-
-    return (
-      <TransactionInput
-        disabled={disabled || isDisabled}
-        placeholder="0"
+    return coin === "ADA" ? (
+      <ValueShowcase
         asset={{
           coin: coin,
           coins,
@@ -118,28 +105,53 @@ const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
           hasLeadingIcon,
           onCoinChange: handleTokenChange,
         }}
-        assetIcon="Switch"
         value={values[coin] ? values[coin].toString() : ""}
-        onValueChange={(v) => onValueChange(coin, v)}
+        suffix={valueToUSD}
         availableAmount={balanceStr}
         hasAvailableAmount={hasAvailableAmount}
-        onHalfClick={
-          onHalfClick && maxAmount !== undefined
-            ? () => onHalfClick(coin)
-            : undefined
-        }
-        onMaxClick={
-          onMaxClick && maxAmount !== undefined
-            ? () => onMaxClick(coin)
-            : undefined
-        }
-        hasMaxAndHalfActions={hasMaxAndHalfActions}
-        hasMaxAmount={hasMaxAmount}
-        maxAmount={(maxAmount ?? 0).toString()}
-        status={inputStatus}
-        maxValue={Number.MAX_SAFE_INTEGER}
-        maxDecimalPlaces={4}
       />
+    ) : (
+      <div className="relative">
+        <TransactionInput
+          disabled={disabled}
+          placeholder="0"
+          asset={{
+            coin: coin,
+            coins,
+            size: "small",
+            checked: false,
+            hasLeadingIcon,
+            onCoinChange: handleTokenChange,
+          }}
+          assetIcon="Switch"
+          value={values[coin] ? values[coin].toString() : ""}
+          suffix={valueToUSD}
+          onValueChange={(v) => onValueChange(coin, v)}
+          availableAmount={balanceStr}
+          hasAvailableAmount={hasAvailableAmount}
+          onHalfClick={
+            onHalfClick && maxAmount !== undefined
+              ? () => onHalfClick(coin)
+              : undefined
+          }
+          onMaxClick={
+            onMaxClick && maxAmount !== undefined
+              ? () => onMaxClick(coin)
+              : undefined
+          }
+          hasMaxAndHalfActions={hasMaxAndHalfActions}
+          hasMaxAmount={hasMaxAmount}
+          maxAmount={(maxAmount ?? 0).toString()}
+          status={inputStatus}
+          maxValue={Number.MAX_SAFE_INTEGER}
+          maxDecimalPlaces={4}
+        />
+        {minWarningMessage && (
+          <span className="text-xxs absolute -bottom-18 left-0">
+            {minWarningMessage}
+          </span>
+        )}
+      </div>
     )
   }
 
@@ -190,10 +202,9 @@ const InputAction: React.FC<InputActionProps> = ({
   hasAvailableAmount,
   disabled,
   hasMaxAmount,
-  action,
-  reserveBounds,
   maxAmount,
   inputStatus,
+  minWarningMessage,
 }) => {
   return (
     <div className="flex flex-col gap-12">
@@ -231,10 +242,9 @@ const InputAction: React.FC<InputActionProps> = ({
         hasAvailableAmount={hasAvailableAmount}
         disabled={disabled}
         hasMaxAmount={hasMaxAmount}
-        action={action}
-        reserveBounds={reserveBounds}
         maxAmount={maxAmount}
         inputStatus={inputStatus}
+        minWarningMessage={minWarningMessage}
       />
     </div>
   )

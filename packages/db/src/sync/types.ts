@@ -51,18 +51,18 @@ export type AddressDatum = {
 }
 
 export type Order = {
-  id: number
+  id?: number
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   address: any
   tx_hash: string
   out_index: number
   block: string
-  slot: bigint
+  slot: bigint | number
   action: Actions
   token: Token
   paid: bigint | null
   fees: bigint | null
-  received: bigint | null
+  received: bigint | undefined | null
   orderDate: Date
   status: string | null
 }
@@ -173,4 +173,27 @@ export type OrderUTxOWithDatumAndBlock = {
   output_index: number
   reference_script_hash: string | null
   consumed_by_tx: string | null
+}
+
+export enum OrderStatus {
+  Created = "Created",
+  Completed = "Completed",
+  Cancelled = "Canceled",
+}
+
+export enum RedeemerPurpose {
+  Spend = "spend",
+  Mint = "mint",
+  Cert = "cert",
+  Reward = "reward",
+}
+
+export type TransactionRedeemer = {
+  tx_index: number
+  purpose: RedeemerPurpose
+  script_hash: string
+  redeemer_data_hash: string
+  unit_mem: string
+  unit_steps: string
+  fee: string
 }

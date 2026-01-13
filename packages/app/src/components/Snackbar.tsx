@@ -1,7 +1,7 @@
 import React from "react"
 import clsx from "clsx"
-import type { IconName } from "./Icon"
-import Icon from "./Icon"
+import type { IconName } from "./icons/Icon"
+import Icon from "./icons/Icon"
 import ButtonIcon from "./ButtonIcon"
 import Button from "./Button"
 
