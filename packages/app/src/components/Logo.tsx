@@ -8,8 +8,8 @@ const Logo = () => {
       <Image
         src="/logos/opendjed-logo.svg"
         alt="Open Djed Logo"
-        width={123}
-        height={28}
+        width={158}
+        height={36}
       />
     </Link>
   )
