@@ -221,7 +221,6 @@ export const roundToDecimals = (
   return Math.round(value * factor) / factor
 }
 
-
 export const toISODate = (date: Date) => {
   const year = date.getFullYear()
   const month = `${date.getMonth() + 1}`.padStart(2, "0")

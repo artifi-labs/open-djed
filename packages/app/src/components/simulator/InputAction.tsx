@@ -153,12 +153,12 @@ const InputAction: React.FC<InputActionProps> = ({ values, onUpdate }) => {
 }
 
 export default InputAction
-  const formatDateLabel = (value?: string) => {
-    if (!value) return "Select"
-    const date = new Date(value)
-    if (Number.isNaN(date.getTime())) return "Select"
-    const day = `${date.getDate()}`.padStart(2, "0")
-    const month = date.toLocaleString("en-US", { month: "short" })
-    const year = date.getFullYear()
-    return `${day} ${month}, ${year}`
-  }
+const formatDateLabel = (value?: string) => {
+  if (!value) return "Select"
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return "Select"
+  const day = `${date.getDate()}`.padStart(2, "0")
+  const month = date.toLocaleString("en-US", { month: "short" })
+  const year = date.getFullYear()
+  return `${day} ${month}, ${year}`
+}
