@@ -20,6 +20,7 @@ export type DropdownProps = {
   menuItems: ContextualMenuItem[]
   defaultItem?: ContextualMenuItem
   onChange?: (item: ContextualMenuItem) => void
+  renderMenu?: (close: () => void) => React.ReactNode
 }
 
 const Dropdown: React.FC<DropdownProps> = ({
@@ -34,6 +35,7 @@ const Dropdown: React.FC<DropdownProps> = ({
   menuItems,
   defaultItem,
   onChange,
+  renderMenu,
 }) => {
   const [isOpen, setIsOpen] = React.useState(false)
   const [itemSelected, setItemSelected] =
@@ -143,7 +145,11 @@ const Dropdown: React.FC<DropdownProps> = ({
           className="absolute right-0 left-0 z-10 mt-8"
           onClick={(e) => e.stopPropagation()}
         >
-          <ContextualMenu items={menuItems} onClick={handleItemClick} />
+          {renderMenu ? (
+            renderMenu(() => setIsOpen(false))
+          ) : (
+            <ContextualMenu items={menuItems} onClick={handleItemClick} />
+          )}
         </div>
       )}
     </div>

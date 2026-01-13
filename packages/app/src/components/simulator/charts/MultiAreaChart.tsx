@@ -8,6 +8,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts"
+import Icon from "../../icons/Icon"
 
 interface AreaSeries {
   name?: string
@@ -43,8 +44,8 @@ interface TooltipPayloadEntry {
 interface CustomTooltipProps {
   active?: boolean
   payload?: TooltipPayloadEntry[]
-  label?: string
-  xKey: string
+  label: string
+  // xKey: string
   tickFormatter?: (value: number) => string
   tooltipFormatter?: (
     value: number,
@@ -64,8 +65,10 @@ type MultiAreaChartProps = {
   xKey: string
   yDomain: [number, number]
   yTicks?: number[]
+  xTicks?: Array<string | number>
   interval?: number
   areas: AreaSeries[]
+  xTickFormatter?: (value: string | number) => string
   tickFormatter?: (value: number) => string
   tooltipFormatter?: (
     value: number,
@@ -78,14 +81,14 @@ const CustomTooltip = ({
   active,
   payload,
   label,
-  xKey,
+  // xKey,
   areas,
   tickFormatter,
   tooltipFormatter,
 }: CustomTooltipProps) => {
   if (active && payload && payload.length) {
     // filter payload based on hideOnDuplicate flag and tag,
-    // avoinding showing multiple labels on tooltip
+    // avoiding showing multiple labels on tooltip
     const filteredPayload = payload.filter((entry: TooltipPayloadEntry) => {
       if (payload.length === 1) return true
 
@@ -105,13 +108,22 @@ const CustomTooltip = ({
       return true
     })
 
+    const formatTooltipDate = (label: string) => {
+      if (!label) return ""
+      const d = new Date(label)
+      if (Number.isNaN(d.getTime())) return String(label)
+
+      return d.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      })
+    }
+
     return (
-      <div className="rounded-4 flex w-fit flex-col gap-4 border p-8">
+      <div className="rounded-4 border-border-primary bg-surface-secondary flex w-fit flex-col gap-12 border p-12">
         <div className="flex flex-row">
-          <p className="flex-1 text-sm capitalize">{xKey}</p>
-          <p className="text-sm">
-            {label ? new Date(label).toLocaleDateString() : ""}
-          </p>
+          <p className="text-sm">{formatTooltipDate(label)}</p>
         </div>
         {filteredPayload.map((entry: TooltipPayloadEntry, index: number) => (
           <div
@@ -119,10 +131,7 @@ const CustomTooltip = ({
             className="flex w-full items-center justify-between gap-8"
           >
             <div className="flex items-center gap-2">
-              <div
-                className="h-2 w-2 rounded-full"
-                style={{ backgroundColor: entry.stroke }}
-              />
+              <div style={{ backgroundColor: entry.stroke }} />
               <p className="text-sm">
                 {areas.find((area) => area.dataKey === entry.dataKey)
                   ?.tooltipLabel || entry.name}
@@ -143,6 +152,22 @@ const CustomTooltip = ({
   return null
 }
 
+const DotMarker = ({ cx, cy }: { cx?: number; cy?: number }) => {
+  const size = 6
+  if (!Number.isFinite(cx) || !Number.isFinite(cy)) return null
+
+  return (
+    <foreignObject
+      x={(cx as number) - size / 2}
+      y={(cy as number) - size / 2}
+      width={size}
+      height={size}
+    >
+      <Icon name="Ellipse" size={size} />
+    </foreignObject>
+  )
+}
+
 export function MultiAreaChart({
   title,
   data,
@@ -153,8 +178,10 @@ export function MultiAreaChart({
   xKey,
   yDomain,
   yTicks,
+  // xTicks,
   interval = 1,
   areas,
+  // xTickFormatter,
   tickFormatter,
   tooltipFormatter,
 }: MultiAreaChartProps) {
@@ -170,7 +197,28 @@ export function MultiAreaChart({
               const gradientType = area.gradientType || "linear"
               const radialColors = area.radialGradientColors
 
-              if (gradientType === "radial" && radialColors) {
+              if (gradientType === "radial") {
+                const color1 =
+                  radialColors?.color1 ||
+                  "var(--color-supportive-3-25, #f3f4f6)"
+                const color2 =
+                  radialColors?.color2 ||
+                  area.fillColor ||
+                  "var(--color-supportive-3-500, #15a2b7)"
+                const color3 =
+                  radialColors?.color3 ||
+                  radialColors?.color1 ||
+                  "var(--color-supportive-3-25, #f3f4f6)"
+                const stop1 = radialColors?.stop1 ?? 0
+                const stop2 = radialColors?.stop2 ?? 50
+                const stop3 = radialColors?.stop3 ?? 100
+                const opacity1 =
+                  radialColors?.opacity1 ?? area.fillOpacity ?? 0.1
+                const opacity2 =
+                  radialColors?.opacity2 ?? area.fillOpacity ?? 0.1
+                const opacity3 =
+                  radialColors?.opacity3 ?? area.fillOpacity ?? 0.1
+
                 return (
                   <radialGradient
                     id={`grad-${idx}`}
@@ -180,29 +228,19 @@ export function MultiAreaChart({
                     r="100%"
                   >
                     <stop
-                      offset={`${radialColors.stop1 || 0}%`}
-                      stopColor={radialColors.color1 || area.fillColor}
-                      stopOpacity={
-                        radialColors.opacity1 ?? area.fillOpacity ?? 0.1
-                      }
+                      offset={`${stop1}%`}
+                      stopColor={color1}
+                      stopOpacity={opacity1}
                     />
                     <stop
-                      offset={`${radialColors.stop2 || 50}%`}
-                      stopColor={radialColors.color2 || area.fillColor}
-                      stopOpacity={
-                        radialColors.opacity2 ?? area.fillOpacity ?? 0.1
-                      }
+                      offset={`${stop2}%`}
+                      stopColor={color2}
+                      stopOpacity={opacity2}
                     />
                     <stop
-                      offset={`${radialColors.stop3 || 100}%`}
-                      stopColor={
-                        radialColors.color3 ||
-                        radialColors.color1 ||
-                        area.fillColor
-                      }
-                      stopOpacity={
-                        radialColors.opacity3 ?? area.fillOpacity ?? 0.1
-                      }
+                      offset={`${stop3}%`}
+                      stopColor={color3}
+                      stopOpacity={opacity3}
                     />
                   </radialGradient>
                 )
@@ -242,6 +280,7 @@ export function MultiAreaChart({
           <XAxis
             dataKey={xKey}
             interval={interval}
+            // ticks={xTicks}
             axisLine={false}
             tickLine={false}
             tick={{
@@ -252,6 +291,7 @@ export function MultiAreaChart({
               fontWeight: 400,
             }}
             tickFormatter={(value) => {
+              // if (xTickFormatter) return xTickFormatter(value)
               const date = new Date(value)
               const month = date.toLocaleString(undefined, { month: "short" })
               const year = date.getFullYear()
@@ -282,7 +322,8 @@ export function MultiAreaChart({
           <Tooltip
             content={
               <CustomTooltip
-                xKey={xKey}
+                // xKey={xKey}
+                label=""
                 tickFormatter={tickFormatter}
                 tooltipFormatter={tooltipFormatter}
                 areas={areas}
@@ -301,6 +342,8 @@ export function MultiAreaChart({
               fill={`url(#grad-${index})`}
               fillOpacity={1}
               connectNulls
+              dot={false}
+              activeDot={<DotMarker />}
             />
           ))}
         </AreaChart>

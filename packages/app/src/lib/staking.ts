@@ -30,7 +30,11 @@ export function expectedStakingReturn(
   const end = new Date(finishDate)
 
   if (isNaN(start.getTime()) || isNaN(end.getTime())) {
-    throw new Error("Dates are not valid ISO format")
+    return {
+      credits: [],
+      totalCreditedRewards: 0,
+      totalPendingRewards: 0,
+    }
   }
 
   if (end <= start) {

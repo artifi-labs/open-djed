@@ -1,8 +1,5 @@
-//import Simulator from "@/components/simulator/Simulator"
-
-import NotFound from "../not-found"
+import Simulator from "@/components/simulator/Simulator"
 
 export default function SimulatorPage() {
-  //return <Simulator />
-  return <NotFound />
+  return <Simulator />
 }

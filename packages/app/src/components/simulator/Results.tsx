@@ -86,9 +86,9 @@ const Results: React.FC<ResultsProps> = ({ inputs }) => {
   const isContentBlurred =
     isEmptyValue(inputs.shenAmount) ||
     isEmptyValue(inputs.buyAdaPrice) ||
-    isEmptyValue(inputs.sellAdaPrice)
-  // isEmptyValue(inputs.buyDate) ||
-  // isEmptyValue(inputs.sellDate)
+    isEmptyValue(inputs.sellAdaPrice) ||
+    isEmptyValue(inputs.buyDate) ||
+    isEmptyValue(inputs.sellDate)
 
   const BlurContent = React.useMemo(
     () =>
@@ -128,8 +128,8 @@ const Results: React.FC<ResultsProps> = ({ inputs }) => {
 
         {/* Chart */}
         <ShenYieldChart
-          buyDate={inputs.buyDate || "2025-01-07"}
-          sellDate={inputs.sellDate || "2025-02-07"}
+          buyDate={inputs.buyDate}
+          sellDate={inputs.sellDate}
           initialHoldings={simulatorData?.initialAdaHoldings ?? 0}
           finalHoldings={simulatorData?.finalAdaHoldings ?? 0}
           buyPrice={inputs.buyAdaPrice}

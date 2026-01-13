@@ -20,6 +20,7 @@ import Dot from "@icons/Dot.svg"
 import Error from "@icons/Error.svg"
 import Export from "@icons/Export.svg"
 import External from "@icons/External.svg"
+import Ellipse from "@icons/Ellipse.svg"
 import Github from "@icons/Github.svg"
 import Group from "@icons/Group.svg"
 import Hide from "@icons/Hide.svg"
@@ -69,6 +70,7 @@ export const icons = {
   Error: Error,
   Export: Export,
   External: External,
+  Ellipse: Ellipse,
   Github: Github,
   Group: Group,
   Hide: Hide,

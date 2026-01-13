@@ -22,6 +22,7 @@ export type BaseInputFieldProps = {
   maxValue?: number
   maxDecimalPlaces?: number
   onValueChange?: (value: string) => void
+  inputClassName?: string
 } & Omit<InputHTMLAttributes<HTMLInputElement>, "size">
 
 type AtLeastOneIdOrName =
@@ -56,6 +57,7 @@ const InputField: FC<InputFieldProps> = ({
   maxValue,
   maxDecimalPlaces,
   onValueChange,
+  inputClassName,
   ...props
 }) => {
   const [internalValue, setInternalValue] = useState(defaultValue)
@@ -106,6 +108,7 @@ const InputField: FC<InputFieldProps> = ({
     "text-primary placeholder:text-tertiary font-medium outline-none",
     "flex-1",
     sizeClasses[size].text,
+    inputClassName,
   )
 
   return (

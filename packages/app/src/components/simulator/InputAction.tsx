@@ -4,6 +4,8 @@ import * as React from "react"
 import BaseCard from "@/components/card/BaseCard"
 import InputField from "../input-fields/InputField"
 import Dropdown from "../Dropdown"
+import Calendar, { type CalendarValue } from "../calendar/Calendar"
+import { toISODate } from "@/lib/utils"
 import type { ScenarioInputs } from "./calculations"
 import Icon from "../icons/Icon"
 import Tooltip from "../tooltip/Tooltip"
@@ -98,10 +100,28 @@ const InputAction: React.FC<InputActionProps> = ({ values, onUpdate }) => {
                   <Dropdown
                     size="medium"
                     leadingIcon="Calendar"
-                    text={values[id] || "Date"}
+                    text={formatDateLabel(values[id])}
                     hasTag={false}
                     trailingIcon="Chevron-down"
                     menuItems={[]}
+                    renderMenu={(close) => (
+                      <Calendar
+                        canMultipleSelect={false}
+                        hasTimeSelection={false}
+                        defaultSelectedDays={
+                          values[id]
+                            ? { start: new Date(values[id]) }
+                            : undefined
+                        }
+                        onChange={(value: CalendarValue) => {
+                          if (!value.range.start) return
+                          const nextValue = toISODate(value.range.start)
+                          if (nextValue === values[id]) return
+                          onUpdate(id, nextValue)
+                          close()
+                        }}
+                      />
+                    )}
                   />
                 </div>
               ))}
@@ -133,3 +153,12 @@ const InputAction: React.FC<InputActionProps> = ({ values, onUpdate }) => {
 }
 
 export default InputAction
+  const formatDateLabel = (value?: string) => {
+    if (!value) return "Select"
+    const date = new Date(value)
+    if (Number.isNaN(date.getTime())) return "Select"
+    const day = `${date.getDate()}`.padStart(2, "0")
+    const month = date.toLocaleString("en-US", { month: "short" })
+    const year = date.getFullYear()
+    return `${day} ${month}, ${year}`
+  }
