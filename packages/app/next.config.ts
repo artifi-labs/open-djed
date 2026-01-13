@@ -14,6 +14,20 @@ const nextConfig: NextConfig = {
       type: "webassembly/async",
     })
 
+    // Add SVGR loader for React components
+    config.module.rules.unshift({
+      test: /\.svg$/i,
+      issuer: /\.[jt]sx?$/,
+      use: [
+        {
+          loader: "@svgr/webpack",
+          options: {
+            icon: true,
+          },
+        },
+      ],
+    })
+
     return config
   },
   turbopack: {
