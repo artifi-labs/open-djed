@@ -3,11 +3,11 @@ import type { ScenarioInputs } from "@/components/simulator/calculations"
 
 export function useSimulatorActions() {
   const [inputs, setInputs] = useState<ScenarioInputs>({
-    shenAmount: 0,
-    buyDate: "",
-    sellDate: "",
-    buyAdaPrice: 0,
-    sellAdaPrice: 0,
+    shenAmount: 1000,
+    buyDate: "2025-01-07",
+    sellDate: "2026-05-08",
+    buyAdaPrice: 0.4,
+    sellAdaPrice: 0.8,
   })
 
   const onUpdate = useCallback(

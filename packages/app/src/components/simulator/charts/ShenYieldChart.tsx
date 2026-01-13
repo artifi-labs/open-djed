@@ -26,6 +26,7 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
   buyDate,
   sellDate,
   initialHoldings,
+  finalHoldings,
   buyPrice,
   sellPrice,
   buyFees,
@@ -34,8 +35,8 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
   stakingRewards,
 }) => {
   const aggregations: AggregationConfig = {
-    earnings: ["avg"],
-    usdEarningsValue: ["avg"],
+    ADA: ["avg"],
+    usdValue: ["avg"],
   }
 
   const { results, yDomain } = useMemo(() => {
@@ -45,57 +46,136 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
     const dayInMs = 24 * 60 * 60 * 1000
     const startDate = new Date(buyDate)
     const endDate = new Date(sellDate)
+
+    // calculate total days of holding
     const totalDays =
       Math.round((endDate.getTime() - startDate.getTime()) / dayInMs) + 1
 
-    const priceStep =
-      totalDays > 1 ? (sellPrice - buyPrice) / (totalDays - 1) : 0
+    // price step over the total duration (totalDays - 1 intervals)
+    const priceDifference = sellPrice - buyPrice
+    const priceStep = totalDays > 1 ? priceDifference / (totalDays - 1) : 0
 
+    // dynamically define x-axis interval for aggregation
+    let newInterval: number
+
+    if (totalDays <= 60) {
+      //2 months
+      newInterval = 7 * dayInMs
+    } else if (totalDays <= 365) {
+      //1 year
+      newInterval = 30 * dayInMs
+    } else if (totalDays <= 730) {
+      //2 years
+      newInterval = 60 * dayInMs
+    } else if (totalDays < 3653) {
+      // 10 years
+      newInterval = 365 * dayInMs
+    } else {
+      // over 10 years
+      newInterval = 730 * dayInMs
+    }
+
+    const data: DataRow[] = []
+
+    // create a record with staking rewards date and value for easy lookup
     const rewardsMap = stakingRewards.reduce(
       (acc, entry) => {
-        const d = new Date(entry.date).toDateString()
-        acc[d] = (acc[d] || 0) + entry.reward
+        const date = new Date(entry.date).toISOString()
+        acc[date] = (acc[date] || 0) + entry.reward
         return acc
       },
       {} as Record<string, number>,
     )
 
-    const data: DataRow[] = []
-    let cumulativeEarnings = 0
+    // Calculate daily protocol fees earned
     const dailyFeesEarned = totalDays > 0 ? feesEarned / totalDays : 0
 
+    // Start with initial holdings (this is the ADA value of SHEN at purchase)
+    let currentHoldings = initialHoldings
+
     for (let i = 0; i < totalDays; i++) {
-      const currentDate = new Date(startDate.getTime() + i * dayInMs)
-      cumulativeEarnings += rewardsMap[currentDate.toDateString()] || 0
-      cumulativeEarnings += dailyFeesEarned
-      const priceForDay = buyPrice + i * priceStep
+      const d = new Date(startDate.getTime() + i * dayInMs).toISOString()
+
+      // Accumulate staking rewards for this day
+      const rewardToday = rewardsMap[d] || 0
+      currentHoldings += rewardToday
+
+      // Accumulate protocol fees earned (distributed daily)
+      currentHoldings += dailyFeesEarned
+
+      // Calculate ADA price for this day (linear interpolation)
+      const priceForDay: number = buyPrice + i * priceStep
+      
+      // Current holdings in ADA
+      const holdingsForDay: number = currentHoldings
+      
+      // USD value at current day's price
+      const usdValueForDay: number = holdingsForDay * priceForDay
 
       data.push({
-        date: currentDate.toISOString(),
-        earnings: cumulativeEarnings,
-        usdEarningsValue: cumulativeEarnings * priceForDay,
+        date: d,
+        ADA: holdingsForDay,
+        usdValue: usdValueForDay,
       } as unknown as DataRow)
     }
 
-    const interval = totalDays > 365 ? 30 * dayInMs : 7 * dayInMs
-    const chartData = aggregateByBucket(data, interval, startDate, aggregations)
+    // Aggregate the daily data into buckets
+    const results = aggregateByBucket(
+      data,
+      newInterval,
+      new Date(data[0].date),
+      aggregations,
+    )
 
-    if (chartData.length > 0) {
-      chartData[0].buyFee = buyFees
-      chartData[0].usdBuyFeeValue = buyFees * buyPrice
-      chartData[chartData.length - 1].sellFee = sellFees
-      chartData[chartData.length - 1].usdSellFeeValue = sellFees * sellPrice
+    // Add point showing initial investment BEFORE buy fees
+    results.unshift({
+      date: new Date(startDate.getTime() - dayInMs).toISOString(),
+      ADA_avg: initialHoldings + buyFees,
+      usdValue_avg: (initialHoldings + buyFees) * buyPrice,
+    } as unknown as DataRow)
+
+    // Add point showing final value AFTER sell fees
+    results.push({
+      date: new Date(endDate.getTime() + dayInMs).toISOString(),
+      ADA_avg: finalHoldings - sellFees,
+      usdValue_avg: (finalHoldings - sellFees) * sellPrice,
+    } as unknown as DataRow)
+
+    if (results.length > 1) {
+      // First element - show as buy fees (red area)
+      results[0].ADA_avg_buy_fees = results[0].ADA_avg
+      delete results[0].ADA_avg
+
+      // Second element - transition from buy fees to holdings
+      results[1].ADA_avg_buy_fees = results[1].ADA_avg
+      // Keep results[1].ADA_avg as well for smooth transition
+
+      // Second-to-last element - transition from holdings to sell fees
+      const secondLastIndex = results.length - 2
+      results[secondLastIndex].ADA_avg_sell_fees =
+        results[secondLastIndex].ADA_avg
+      // Keep results[secondLastIndex].ADA_avg as well for smooth transition
+
+      // Last element - show as sell fees (red area)
+      const lastIndex = results.length - 1
+      results[lastIndex].ADA_avg_sell_fees = results[lastIndex].ADA_avg
+      delete results[lastIndex].ADA_avg
     }
 
-    const allValues = data.map((d) => d.earnings as number)
-    const minY = Math.floor(Math.min(...allValues) * 0.98)
-    const maxY = Math.ceil(Math.max(...allValues) * 1.02)
+    // Calculate y-axis domain with padding
+    const minY = Math.floor((initialHoldings + buyFees) * 0.95)
+    const maxY = Math.ceil(Math.max(finalHoldings * 1.05, finalHoldings + 1))
 
-    return { results: chartData, yDomain: [minY, maxY] as [number, number] }
+    // Ensure valid y-axis domain
+    const finalYDomain: [number, number] =
+      minY < maxY ? [minY, maxY] : [0, finalHoldings + 10]
+
+    return { results, yDomain: finalYDomain }
   }, [
     buyDate,
     sellDate,
     initialHoldings,
+    finalHoldings,
     buyPrice,
     sellPrice,
     buyFees,
@@ -106,74 +186,65 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
 
   const areas = [
     {
-      dataKey: "buyFee",
-      name: "Fees",
-      tooltipLabel: "ADA (Buy Fee)",
-      strokeColor: "transparent",
-      fillColor: "transparent",
-      fillOpacity: 0,
+      dataKey: "ADA_avg_buy_fees",
+      name: "Buy Fees",
+      tooltipLabel: "ADA (before buy fees)",
+      strokeColor: "#fb2b2b",
+      fillColor: "#fb2b2b",
+      fillOpacity: 0.8,
+      hideOnDuplicate: true,
+      tag: "remove_duplicate_label_on_tooltip",
     },
     {
-      dataKey: "earnings_avg",
-      name: "ADA Earnings",
-      tooltipLabel: "ADA Earnings",
-      strokeColor: "var(--color-supportive-3-500)",
-      fillColor: "var(---color-gradient-radial-shen)",
-      fillOpacity: 0.1,
-      gradientType: "radial" as const,
-      radialGradientColors: {
-        color1: "var(--color-supportive-3-25)",
-        color2: "var(--color-supportive-3-500)",
-        color3: "var(--color-supportive-3-25)",
-        stop1: 0,
-        stop2: 50,
-        stop3: 100,
-        opacity1: 0.1,
-        opacity2: 0.1,
-        opacity3: 0.1,
-      },
+      dataKey: "ADA_avg",
+      name: "ADA Holdings",
+      tooltipLabel: "ADA Holdings",
+      strokeColor: "#897ECB",
+      fillColor: "#897ECB",
+      fillOpacity: 0.8,
+      tag: "remove_duplicate_label_on_tooltip",
     },
     {
-      dataKey: "sellFee",
-      name: "Fees",
-      tooltipLabel: "ADA (Sell Fee)",
-      strokeColor: "transparent",
-      fillColor: "transparent",
-      fillOpacity: 0,
+      dataKey: "ADA_avg_sell_fees",
+      name: "Sell Fees",
+      tooltipLabel: "ADA (after sell fees)",
+      strokeColor: "#fb2b2b",
+      fillColor: "#fb2b2b",
+      fillOpacity: 0.8,
+      hideOnDuplicate: true,
+      tag: "remove_duplicate_label_on_tooltip",
     },
   ]
 
+  // format y-axis ticks as ADA units
+  const yTickFormatter = (value: number) => `₳${value.toFixed(0)}`
+
+  // formats tooltip to always show ADA holdings and equivalent USD value
+  const tooltipFormatter = (
+    value: number,
+    name: string,
+    payload: Record<string, unknown>,
+  ) => {
+    const usd = (payload[`usdValue_${aggregations.usdValue[0]}`] as number) ?? 0
+    if (name.toLowerCase().includes("ada") || name.toLowerCase().includes("fees")) {
+      return `₳${value.toFixed(4)} ($${usd.toFixed(2)})`
+    }
+
+    return value.toFixed(4)
+  }
+
   return (
-    <div className="w-full">
-      <MultiAreaChart
-        title="ADA Holdings"
-        data={results as { [key: string]: string | number | undefined }[]}
-        xKey="date"
-        yDomain={yDomain}
-        areas={areas}
-        tooltipFormatter={(val, dataKey, payload) => {
-          const usdKey =
-            dataKey === "buyFee"
-              ? "usdBuyFeeValue"
-              : dataKey === "sellFee"
-                ? "usdSellFeeValue"
-                : "usdEarningsValue_avg"
-          const usd = payload[usdKey] as number | undefined
-          const ada = Number.isFinite(val) ? val : 0
-          const adaFormatted =
-            Math.abs(ada) >= 1000
-              ? `${(ada / 1000).toFixed(1)}K`
-              : ada.toFixed(4)
-          const usdFormatted =
-            typeof usd === "number" && Number.isFinite(usd)
-              ? usd.toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })
-              : "0.00"
-          return `${adaFormatted} ($${usdFormatted})`
-        }}
-      />
-    </div>
+    <MultiAreaChart
+      title="ADA Holdings Value Over Time"
+      data={results as DataRow[]}
+      xKey="date"
+      yDomain={yDomain}
+      interval={0}
+      areas={areas}
+      tickFormatter={yTickFormatter}
+      tooltipFormatter={tooltipFormatter}
+      height={400}
+      margin={{ top: 10, right: 40, left: 24, bottom: 10 }}
+    />
   )
 }
