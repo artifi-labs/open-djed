@@ -12,3 +12,5 @@ build
 .dev.vars*
 log
 dist
+
+!.env.example
