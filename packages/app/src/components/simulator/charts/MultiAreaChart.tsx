@@ -269,7 +269,7 @@ export function MultiAreaChart({
           <CartesianGrid
             strokeDasharray="3"
             vertical={false}
-            stroke="#434055"
+            stroke="var(--color-border-secondary)"
             opacity={0.4}
           />
 

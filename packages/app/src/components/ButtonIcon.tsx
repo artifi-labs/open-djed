@@ -14,6 +14,8 @@ export type Variant =
 export type Size = "tiny" | "small" | "medium" | "large"
 
 type BaseButtonIconProps = {
+  id?: string
+  name?: string
   variant?: Variant
   size?: Size
   disabled?: boolean
