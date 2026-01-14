@@ -40,54 +40,56 @@ const ButtonIcon: React.FC<BaseButtonIconProps> = ({
   const baseClasses = clsx(
     "inline-flex items-center justify-center",
     "rounded-button transition focus:outline-none",
-    disabled ? "cursor-not-allowed" : "cursor-pointer"
+    disabled ? "cursor-not-allowed" : "cursor-pointer",
   )
 
   const disabledClasses = clsx(
     "bg-disabled border-gradient border-color-disabled-disabled",
   )
 
-  const variantClasses: Record<Variant, { active: string; className: string, disabled: string }> =
-    {
-      primary: {
-        active: "bg-brand-primary-pressed",
-        className:
-          "bg-brand-primary hover:bg-brand-primary-hover active:bg-brand-primary-pressed",
-        disabled: disabledClasses,
-      },
-      secondary: {
-        active: "bg-brand-secondary-pressed",
-        className:
-          "bg-brand-secondary hover:bg-brand-secondary-hover active:bg-brand-secondary-pressed",
-        disabled: disabledClasses,
-      },
-      outlined: {
-        active: "bg-no-color-pressed",
-        className: clsx(
-          "bg-transparent border-gradient border-color-gradient",
-          "hover:bg-no-color-hover active:bg-no-color-pressed",
-        ),
-        disabled: disabledClasses,
-      },
-      accent: {
-        active: "bg-gradient-angular-1",
-        className:
-          "bg-gradient-angular-2 hover:bg-gradient-angular-1 active:bg-gradient-angular-1",
-        disabled: disabledClasses,
-      },
-      destructive: {
-        active: "bg-error-primary-pressed",
-        className:
-          "bg-error-primary hover:bg-error-primary-hover active:bg-error-primary-pressed",
-        disabled: disabledClasses,
-      },
-      onlyIcon: {
-        active: "bg-no-color-pressed",
-        className:
-          "bg-transparent hover:bg-no-color-hover active:bg-no-color-pressed",
-        disabled: "",
-      },
-    }
+  const variantClasses: Record<
+    Variant,
+    { active: string; className: string; disabled: string }
+  > = {
+    primary: {
+      active: "bg-brand-primary-pressed",
+      className:
+        "bg-brand-primary hover:bg-brand-primary-hover active:bg-brand-primary-pressed",
+      disabled: disabledClasses,
+    },
+    secondary: {
+      active: "bg-brand-secondary-pressed",
+      className:
+        "bg-brand-secondary hover:bg-brand-secondary-hover active:bg-brand-secondary-pressed",
+      disabled: disabledClasses,
+    },
+    outlined: {
+      active: "bg-no-color-pressed",
+      className: clsx(
+        "bg-transparent border-gradient border-color-gradient",
+        "hover:bg-no-color-hover active:bg-no-color-pressed",
+      ),
+      disabled: disabledClasses,
+    },
+    accent: {
+      active: "bg-gradient-angular-1",
+      className:
+        "bg-gradient-angular-2 hover:bg-gradient-angular-1 active:bg-gradient-angular-1",
+      disabled: disabledClasses,
+    },
+    destructive: {
+      active: "bg-error-primary-pressed",
+      className:
+        "bg-error-primary hover:bg-error-primary-hover active:bg-error-primary-pressed",
+      disabled: disabledClasses,
+    },
+    onlyIcon: {
+      active: "bg-no-color-pressed",
+      className:
+        "bg-transparent hover:bg-no-color-hover active:bg-no-color-pressed",
+      disabled: "",
+    },
+  }
 
   const sizeClasses: Record<Size, string> = {
     tiny: "p-6",
@@ -106,7 +108,7 @@ const ButtonIcon: React.FC<BaseButtonIconProps> = ({
   const classes = clsx(
     baseClasses,
     !disabled && variantClasses[variant].className,
-    (!disabled && active) && variantClasses[variant].active,
+    !disabled && active && variantClasses[variant].active,
     disabled && variantClasses[variant].disabled,
     sizeClasses[size],
     className,
@@ -126,14 +128,22 @@ const ButtonIcon: React.FC<BaseButtonIconProps> = ({
         onClick={handleClick}
         {...rest}
       >
-        <Icon name={icon} size={iconSize[size]} iconColor={disabled ? "text-standalone-text-disabled" : iconColor} />
+        <Icon
+          name={icon}
+          size={iconSize[size]}
+          iconColor={disabled ? "text-standalone-text-disabled" : iconColor}
+        />
       </button>
     )
   }
 
   return (
     <div className={classes}>
-      <Icon name={icon} size={iconSize[size]} iconColor={disabled ? "text-standalone-text-disabled" : iconColor} />
+      <Icon
+        name={icon}
+        size={iconSize[size]}
+        iconColor={disabled ? "text-standalone-text-disabled" : iconColor}
+      />
     </div>
   )
 }
