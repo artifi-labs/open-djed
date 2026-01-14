@@ -17,7 +17,7 @@
   "dependencies": {
     "@dcspark/cardano-multiplatform-lib-browser": "^6.2.0",
     "@fortawesome/fontawesome-free": "^6.7.2",
-    "@lucid-evolution/lucid": "^0.4.27",
+    "@lucid-evolution/lucid": "^0.4.29",
     "@open-djed/api": "workspace:*",
     "@open-djed/math": "workspace:*",
     "@open-djed/registry": "workspace:*",
