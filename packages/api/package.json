@@ -10,7 +10,7 @@
     "@hono/node-server": "^1.14.2",
     "@hono/zod-validator": "^0.5.0",
     "@isaacs/ttlcache": "^1.4.1",
-    "@lucid-evolution/lucid": "^0.4.27",
+    "@lucid-evolution/lucid": "^0.4.29",
     "@open-djed/blockfrost": "workspace:*",
     "@open-djed/data": "workspace:*",
     "@open-djed/registry": "workspace:*",
