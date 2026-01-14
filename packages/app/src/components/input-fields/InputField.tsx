@@ -58,6 +58,7 @@ const InputField: FC<InputFieldProps> = ({
   maxDecimalPlaces,
   onValueChange,
   inputClassName,
+  autoComplete = "on",
   ...props
 }) => {
   const [internalValue, setInternalValue] = useState(defaultValue)
@@ -123,8 +124,8 @@ const InputField: FC<InputFieldProps> = ({
         onFocus={() => setIsTyping(true)}
         onBlur={() => setIsTyping(false)}
         value={inputValue}
+        autoComplete={autoComplete}
         {...props}
-        autoComplete="off"
       />
 
       {/* Clear Input Button */}

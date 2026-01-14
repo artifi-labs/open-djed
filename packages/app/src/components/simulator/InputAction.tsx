@@ -86,6 +86,7 @@ const InputAction: React.FC<InputActionProps> = ({ values, onUpdate }) => {
                 }
                 onValueChange={(val) => handleValueChange("shenAmount", val)}
                 size="Medium"
+                autoComplete="off"
               />
             </div>
 
@@ -141,6 +142,7 @@ const InputAction: React.FC<InputActionProps> = ({ values, onUpdate }) => {
                     value={values[id] === 0 ? "" : values[id].toString()}
                     onValueChange={(val) => handleValueChange(id, val)}
                     size="Medium"
+                    autoComplete="off"
                   />
                 </div>
               ))}
