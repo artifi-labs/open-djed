@@ -75,7 +75,7 @@ const InputAction: React.FC<InputActionProps> = ({ values, onUpdate }) => {
   }
 
   return (
-    <BaseCard className="desktop:p-24 p-16">
+    <BaseCard className="desktop:p-24 h-full p-16">
       <div className="desktop:gap-24 flex flex-col gap-16">
         <div className="flex flex-col font-medium">Scenario</div>
         {/* Content */}

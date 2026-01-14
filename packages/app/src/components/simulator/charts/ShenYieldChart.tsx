@@ -317,8 +317,8 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
       areas={areas}
       tickFormatter={yTickFormatter}
       tooltipFormatter={tooltipFormatter}
-      height={400}
-      margin={{ top: 10, right: 40, left: 24, bottom: 10 }}
+      height={308}
+      margin={{ top: 6, right: 12, left: 12, bottom: 6 }}
     />
   )
 }

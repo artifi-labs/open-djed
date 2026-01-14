@@ -107,7 +107,7 @@ const Results: React.FC<ResultsProps> = ({ inputs }) => {
 
   return (
     <BaseCard
-      className="desktop:p-24 desktop:flex-none desktop:w-160 p-16"
+      className="desktop:p-24 desktop:flex-none desktop:w-160 h-full p-16"
       overlay={isContentBlurred}
       overlayContent={BlurContent || undefined}
     >
