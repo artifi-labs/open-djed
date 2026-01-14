@@ -64,9 +64,18 @@ const InputAction: React.FC<InputActionProps> = ({ values, onUpdate }) => {
   const handleValueChange = (field: keyof ScenarioInputs, val: string) => {
     onUpdate(field, val)
   }
+  const formatDateLabel = (value?: string) => {
+    if (!value) return "Select"
+    const date = new Date(value)
+    if (Number.isNaN(date.getTime())) return "Select"
+    const day = `${date.getDate()}`.padStart(2, "0")
+    const month = date.toLocaleString("en-US", { month: "short" })
+    const year = date.getFullYear()
+    return `${day} ${month}, ${year}`
+  }
 
   return (
-    <BaseCard className="desktop:p-24 p-16">
+    <BaseCard className="desktop:p-24 h-full p-16">
       <div className="desktop:gap-24 flex flex-col gap-16">
         <div className="flex flex-col font-medium">Scenario</div>
         {/* Content */}
@@ -155,12 +164,3 @@ const InputAction: React.FC<InputActionProps> = ({ values, onUpdate }) => {
 }
 
 export default InputAction
-const formatDateLabel = (value?: string) => {
-  if (!value) return "Select"
-  const date = new Date(value)
-  if (Number.isNaN(date.getTime())) return "Select"
-  const day = `${date.getDate()}`.padStart(2, "0")
-  const month = date.toLocaleString("en-US", { month: "short" })
-  const year = date.getFullYear()
-  return `${day} ${month}, ${year}`
-}
