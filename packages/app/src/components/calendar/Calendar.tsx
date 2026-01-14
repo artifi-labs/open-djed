@@ -6,174 +6,26 @@ import ButtonIcon from "../ButtonIcon"
 import Divider from "../Divider"
 import InputField from "../input-fields/InputField"
 import { useState, useCallback } from "react"
-import DropdownCalendar from "./DropdownCalendar"
+import DropdownButton from "../DropdownButton"
 import type { ContextualMenuItem } from "../ContextualMenu"
-import { capitalizeLower } from "../../lib/utils"
-
-type BaseCalendarProps = {
-  defaultDay?: Date
-  defaultSelectedDays?: DateRange
-  draftMode?: boolean
-  defaultStartTime?: string
-  defaultEndTime?: string
-  minYear?: number
-  maxYear?: number
-  hasTimeSelection?: boolean
-  hasPeriodSelection?: boolean
-  canMultipleSelect?: boolean
-  className?: string
-  onChange?: (value: CalendarValue) => void
-}
-
-type SingleSelectCalendarProps = BaseCalendarProps & {
-  canMultipleSelect?: false
-  draftMode?: never
-  hasPeriodSelection?: never
-}
-
-type MultiSelectCalendarProps = BaseCalendarProps & {
-  canMultipleSelect: true
-  draftMode: true
-  hasPeriodSelection?: boolean
-}
-
-export type CalendarProps = MultiSelectCalendarProps | SingleSelectCalendarProps
-
-export type CalendarValue = {
-  range: {
-    start?: Date
-    end?: Date
-  }
-}
-
-type DayCell = {
-  date: Date
-  enable: boolean
-}
-
-type DateRange = {
-  start?: Date
-  end?: Date
-}
-
-type TimeString = `${number}${number}:${number}${number}`
-
-type ShortcutProps = {
-  itemKey: string | number
-  text: string
-  active?: boolean
-  onClick: (item: { key: string | number; text: string }) => void
-}
-
-type ShortcutsProps = {
-  items: ContextualMenuItem[]
-  onClick: (item: ContextualMenuItem) => void
-  activeKey?: string | number
-}
-
-type NumberInputProps = {
-  text: number
-  active?: boolean
-  currentDate: boolean
-  canMultipleSelect?: boolean
-  onClick: () => void
-  isFocused?: boolean
-  onMouseEnter?: () => void
-  onMouseLeave?: () => void
-}
-
-// Constants
-const months = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-]
-
-const shortWeekDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-
-const periodItems: ContextualMenuItem[] = [
-  { key: "today", text: "Today" },
-  { key: "thisWeek", text: "This week" },
-  { key: "thisMonth", text: "This month" },
-  { key: "thisQuarter", text: "This quarter" },
-  { key: "thisYear", text: "This year" },
-  { key: "lastWeek", text: "Last week" },
-  { key: "lastMonth", text: "Last month" },
-]
-
-const isSameDay = (a: Date, b: Date) =>
-  a.getFullYear() === b.getFullYear() &&
-  a.getMonth() === b.getMonth() &&
-  a.getDate() === b.getDate()
-
-const applyTimeToDay = (day: Date, time: TimeString): Date => {
-  const result = new Date(day)
-  const [startHours, startMinutes] = time.split(":").map(Number)
-  result.setHours(startHours, startMinutes, 0, 0)
-  return result
-}
-
-const segmentIntoWeeks = (date: Date): DayCell[][] => {
-  const weeks: DayCell[][] = []
-  const firstDay = new Date(date.getFullYear(), date.getMonth(), 1)
-  const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0)
-  const startIndex = (firstDay.getDay() + 6) % 7
-  const days: DayCell[] = []
-
-  const prevMonthLastDay = new Date(
-    date.getFullYear(),
-    date.getMonth(),
-    0,
-  ).getDate()
-  for (let i = 0; i < startIndex; i++) {
-    days.push({
-      date: new Date(
-        date.getFullYear(),
-        date.getMonth() - 1,
-        prevMonthLastDay - startIndex + i + 1,
-      ),
-      enable: false,
-    })
-  }
-
-  for (let d = 1; d <= lastDay.getDate(); d++) {
-    days.push({
-      date: new Date(date.getFullYear(), date.getMonth(), d),
-      enable: true,
-    })
-  }
-
-  const endIndex = (lastDay.getDay() + 6) % 7
-  for (let i = 1; i <= 6 - endIndex; i++) {
-    days.push({
-      date: new Date(date.getFullYear(), date.getMonth() + 1, i),
-      enable: false,
-    })
-  }
-
-  for (let i = 0; i < days.length; i += 7) {
-    weeks.push(days.slice(i, i + 7))
-  }
-
-  return weeks
-}
-
-const normalizedDay = (day: Date): Date =>
-  new Date(day.getFullYear(), day.getMonth(), day.getDate())
-
-const isInRange = (day: Date, range: DateRange) =>
-  range.start &&
-  day >= normalizedDay(range.start) &&
-  (range.end ? day <= normalizedDay(range.end) : true)
+import { capitalizeLower } from "@/lib/utils"
+import type {
+  CalendarProps,
+  DateRange,
+  NumberInputProps,
+  ShortcutProps,
+  ShortcutsProps,
+  TimeString,
+} from "./Calendar.types"
+import { months, periodItems, shortWeekDays } from "./Calendar.constants"
+import {
+  applyTimeToDay,
+  isInRange,
+  isSameDay,
+  isWithinRange,
+  normalizedDay,
+  segmentIntoWeeks,
+} from "./Calendar.utils"
 
 const Shortcut: React.FC<ShortcutProps> = ({
   itemKey,
@@ -220,6 +72,7 @@ const NumberInput: React.FC<NumberInputProps> = ({
   active = false,
   currentDate,
   onClick,
+  disabled = false,
   isFocused = false,
   onMouseEnter,
   onMouseLeave,
@@ -229,9 +82,10 @@ const NumberInput: React.FC<NumberInputProps> = ({
     active && "bg-brand-primary",
     isFocused && "bg-no-color-focused",
     currentDate && "text-secondary",
-    !currentDate && "text-standalone-text-disabled",
-    "hover:bg-brand-primary-hover active:bg-brand-primary",
-    "text-sm text-center cursor-pointer select-none",
+    (!currentDate || disabled) && "text-standalone-text-disabled",
+    !disabled && "hover:bg-brand-primary-hover active:bg-brand-primary",
+    disabled && "cursor-not-allowed",
+    "text-sm text-center  select-none",
   )
 
   return (
@@ -249,6 +103,7 @@ const NumberInput: React.FC<NumberInputProps> = ({
 const Calendar: React.FC<CalendarProps> = ({
   defaultDay,
   defaultSelectedDays,
+  disabledDates,
   draftMode = false,
   hasTimeSelection = true,
   defaultStartTime = "00:00",
@@ -259,14 +114,33 @@ const Calendar: React.FC<CalendarProps> = ({
   maxYear = new Date().getFullYear() + 100,
   onChange,
 }) => {
-  const [range, setRange] = useState<DateRange>(() => ({
-    start: defaultSelectedDays?.start
+  const isDateDisabledFn = (date: Date, disabled?: DateRange[]): boolean => {
+    if (!disabled?.length) return false
+
+    const day = normalizedDay(date).getTime()
+
+    return disabled.some(({ start, end }) => {
+      return isWithinRange(day, start, end)
+    })
+  }
+
+  const [range, setRange] = useState<DateRange>(() => {
+    const start = defaultSelectedDays?.start
       ? normalizedDay(defaultSelectedDays.start)
-      : undefined,
-    end: defaultSelectedDays?.end
+      : undefined
+    const end = defaultSelectedDays?.end
       ? normalizedDay(defaultSelectedDays.end)
-      : undefined,
-  }))
+      : undefined
+
+    const isStartDisabled = start && isDateDisabledFn(start, disabledDates)
+    const isEndDisabled = end && isDateDisabledFn(end, disabledDates)
+
+    if (isStartDisabled || isEndDisabled) {
+      return { start: undefined, end: undefined }
+    }
+
+    return { start, end }
+  })
 
   const [currentDate, setCurrentDate] = useState(
     defaultSelectedDays?.start ?? defaultDay ?? new Date(),
@@ -286,6 +160,10 @@ const Calendar: React.FC<CalendarProps> = ({
   )
   const resolvedHasPeriodSelection = canMultipleSelect && hasPeriodSelection
 
+  const isDateDisabled = (date: Date): boolean => {
+    return isDateDisabledFn(date, disabledDates)
+  }
+
   const emitRange = useCallback(
     (r: DateRange) => {
       if (!r.start) return
@@ -304,6 +182,7 @@ const Calendar: React.FC<CalendarProps> = ({
   }, [range, startTime, endTime, emitRange])
 
   const handleSelectDay = (day: Date) => {
+    if (isDateDisabled(day)) return
     const d = normalizedDay(day)
     setRange((prev) => {
       if (!prev.start || !canMultipleSelect || prev.end) return { start: d }
@@ -421,7 +300,7 @@ const Calendar: React.FC<CalendarProps> = ({
           onClick={() => changeMonth(-1)}
         />
         <div className="flex items-center gap-8">
-          <DropdownCalendar
+          <DropdownButton
             text={capitalizeLower(months[currentDate.getMonth()])}
             activeItem={{
               key: currentDate.getMonth(),
@@ -436,7 +315,7 @@ const Calendar: React.FC<CalendarProps> = ({
             onChange={handleMonthChange}
             menuWidth="w-[200px]"
           />
-          <DropdownCalendar
+          <DropdownButton
             text={currentDate.getFullYear().toString()}
             activeItem={{
               key: currentDate.getFullYear(),
@@ -483,6 +362,7 @@ const Calendar: React.FC<CalendarProps> = ({
           ))}
 
           {weeks.flat().map(({ date, enable }, i) => {
+            const disabled = isDateDisabled(date)
             const active =
               (range.start && isSameDay(date, range.start)) ||
               (range.end && isSameDay(date, range.end))
@@ -505,7 +385,8 @@ const Calendar: React.FC<CalendarProps> = ({
                 text={date.getDate()}
                 currentDate={enable}
                 active={active}
-                isFocused={!!between || !!draftActive}
+                isFocused={(!!between || !!draftActive) && !disabled}
+                disabled={disabled}
                 onClick={() => handleSelectDay(date)}
                 onMouseEnter={() => draftMode && setDraftDay(date)}
               />

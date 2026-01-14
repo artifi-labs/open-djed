@@ -2,14 +2,13 @@
 
 import * as React from "react"
 import clsx from "clsx"
-import ContextualMenu, { type ContextualMenuItem } from "../ContextualMenu"
-import { type IconName } from "../icons/index"
-import ButtonIcon from "../ButtonIcon"
-import Icon from "../icons/Icon"
+import ContextualMenu, { type ContextualMenuItem } from "./ContextualMenu"
+import { type IconName } from "./icons/index"
+import ButtonIcon from "./ButtonIcon"
 
 type Size = "small" | "medium" | "large"
 
-export type DropdownProps = {
+export type DropdownButtonProps = {
   leadingIcon?: IconName
   text: string
   size?: Size
@@ -18,18 +17,15 @@ export type DropdownProps = {
   activeItem?: ContextualMenuItem
   menuWidth?: string
   onChange?: (item: ContextualMenuItem) => void
-  renderMenu?: (close: () => void) => React.ReactNode
 }
 
-const DropdownCalendar: React.FC<DropdownProps> = ({
+const DropdownButton: React.FC<DropdownButtonProps> = ({
   size = "large",
-  leadingIcon,
   text,
   menuItems,
   menuWidth,
   activeItem,
   onChange,
-  renderMenu,
 }) => {
   const [isOpen, setIsOpen] = React.useState(false)
   const dropdownRef = React.useRef<HTMLDivElement>(null)
@@ -73,19 +69,16 @@ const DropdownCalendar: React.FC<DropdownProps> = ({
 
   const dropdownClasses = clsx(baseClasses, sizeClasses[size], "cursor-pointer")
 
-  const handleClose = () => setIsOpen(false)
-
   return (
     <div ref={dropdownRef} className="relative inline-block">
       <button
         ref={buttonRef}
-        className={clsx(dropdownClasses, "inline-flex items-center gap-8")}
+        className={clsx(dropdownClasses, "inline-flex items-center gap-2")}
         onClick={handleToggle}
         aria-expanded={isOpen}
         aria-haspopup="menu"
         type="button"
       >
-        {leadingIcon && <Icon name={leadingIcon} />}
         <span className="text-primary text-md font-medium">{text}</span>
 
         <ButtonIcon
@@ -106,20 +99,16 @@ const DropdownCalendar: React.FC<DropdownProps> = ({
           className="absolute top-full left-0 z-50 mt-8"
           onClick={(e) => e.stopPropagation()}
         >
-          {renderMenu ? (
-            renderMenu(handleClose)
-          ) : (
-            <ContextualMenu
-              items={menuItems}
-              onClick={handleItemClick}
-              activeItem={activeItem}
-              width={menuWidth}
-            />
-          )}
+          <ContextualMenu
+            items={menuItems}
+            onClick={handleItemClick}
+            activeItem={activeItem}
+            width={menuWidth}
+          />
         </div>
       )}
     </div>
   )
 }
 
-export default DropdownCalendar
+export default DropdownButton

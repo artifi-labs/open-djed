@@ -24,12 +24,12 @@ const ResultSummaryItem: React.FC<ResultItem> = ({
   const isTotal = item.isTotal
 
   return (
-    <div className="desktop:flex-col desktop:items-start desktop:justify-start desktop:gap-4 flex flex-row items-center justify-between gap-4">
+    <div className="desktop:flex-col desktop:items-start desktop:justify-start desktop:gap-4 flex min-w-auto flex-row items-center justify-between gap-4">
       {/* Label + Tooltip */}
-      <div className="flex items-center gap-6">
+      <div className="flex min-w-auto items-center gap-6">
         <p
           className={clsx(
-            "text-secondary",
+            "text-secondary min-w-auto",
             isTotal ? "text-sm font-medium" : "font-regular text-xs",
           )}
         >
@@ -43,11 +43,17 @@ const ResultSummaryItem: React.FC<ResultItem> = ({
       </div>
 
       {/* Values */}
-      <div className={clsx("flex items-baseline", isTotal ? "gap-8" : "gap-4")}>
+      <div
+        className={clsx(
+          "flex min-w-auto flex-wrap items-baseline",
+          isTotal ? "gap-8" : "gap-4",
+        )}
+      >
         {/* Primary value */}
         <p
           className={clsx(
             isTotal ? "text-xl font-bold" : "text-sm font-medium",
+            "min-w-auto break-all",
             className,
           )}
         >
@@ -57,7 +63,7 @@ const ResultSummaryItem: React.FC<ResultItem> = ({
         {/* Secondary value */}
         <div
           className={clsx(
-            "flex items-center gap-2",
+            "flex min-w-auto items-center gap-2",
             isTotal ? "text-sm" : "text-xxs",
             item.pnlColorClass,
           )}
@@ -70,7 +76,12 @@ const ResultSummaryItem: React.FC<ResultItem> = ({
             />
           )}
 
-          <span className={!isTotal ? "text-secondary" : undefined}>
+          <span
+            className={clsx(
+              "min-w-auto break-all",
+              !isTotal ? "text-secondary" : undefined,
+            )}
+          >
             {item.secondaryAmount}
           </span>
         </div>
@@ -107,7 +118,7 @@ const Results: React.FC<ResultsProps> = ({ inputs }) => {
 
   return (
     <BaseCard
-      className="desktop:p-24 desktop:flex-none desktop:w-160 h-full p-16"
+      className="desktop:p-24 desktop:flex-none desktop:w-160 desktop:self-stretch p-16"
       overlay={isContentBlurred}
       overlayContent={BlurContent || undefined}
     >

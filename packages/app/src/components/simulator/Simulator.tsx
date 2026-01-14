@@ -43,7 +43,7 @@ export default function Simulator() {
       </Modal>
 
       {/* Content */}
-      <div className="desktop:flex-row desktop:gap-24 desktop:pt-32 flex flex-col gap-16 pt-16">
+      <div className="desktop:flex-row desktop:items-stretch desktop:gap-24 desktop:pt-32 flex flex-col gap-16 pt-16">
         <InputAction values={inputs} onUpdate={onUpdate} />
         <Results inputs={inputs} />
       </div>

@@ -64,6 +64,10 @@ const InputAction: React.FC<InputActionProps> = ({ values, onUpdate }) => {
   const handleValueChange = (field: keyof ScenarioInputs, val: string) => {
     onUpdate(field, val)
   }
+  const buyDate = values.buyDate ? new Date(values.buyDate) : undefined
+  const today = new Date()
+  const yesterday = new Date(today)
+  yesterday.setDate(today.getDate() - 1)
   const formatDateLabel = (value?: string) => {
     if (!value) return "Select"
     const date = new Date(value)
@@ -75,7 +79,7 @@ const InputAction: React.FC<InputActionProps> = ({ values, onUpdate }) => {
   }
 
   return (
-    <BaseCard className="desktop:p-24 h-full p-16">
+    <BaseCard className="desktop:p-24 desktop:self-stretch p-16">
       <div className="desktop:gap-24 flex flex-col gap-16">
         <div className="flex flex-col font-medium">Scenario</div>
         {/* Content */}
@@ -96,6 +100,7 @@ const InputAction: React.FC<InputActionProps> = ({ values, onUpdate }) => {
                 onValueChange={(val) => handleValueChange("shenAmount", val)}
                 size="Medium"
                 autoComplete="off"
+                maxValue={Number.MAX_SAFE_INTEGER}
               />
             </div>
 
@@ -118,6 +123,13 @@ const InputAction: React.FC<InputActionProps> = ({ values, onUpdate }) => {
                       <Calendar
                         canMultipleSelect={false}
                         hasTimeSelection={false}
+                        disabledDates={
+                          id === "buyDate"
+                            ? [{ end: yesterday }]
+                            : buyDate
+                              ? [{ end: buyDate }]
+                              : undefined
+                        }
                         defaultSelectedDays={
                           values[id]
                             ? { start: new Date(values[id]) }
@@ -152,6 +164,7 @@ const InputAction: React.FC<InputActionProps> = ({ values, onUpdate }) => {
                     onValueChange={(val) => handleValueChange(id, val)}
                     size="Medium"
                     autoComplete="off"
+                    maxValue={Number.MAX_SAFE_INTEGER}
                   />
                 </div>
               ))}

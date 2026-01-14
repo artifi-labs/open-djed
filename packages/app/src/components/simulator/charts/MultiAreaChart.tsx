@@ -45,7 +45,6 @@ interface CustomTooltipProps {
   active?: boolean
   payload?: TooltipPayloadEntry[]
   label: string
-  // xKey: string
   tickFormatter?: (value: number) => string
   tooltipFormatter?: (
     value: number,
@@ -81,7 +80,6 @@ const CustomTooltip = ({
   active,
   payload,
   label,
-  // xKey,
   areas,
   tickFormatter,
   tooltipFormatter,
@@ -173,15 +171,13 @@ export function MultiAreaChart({
   data,
   width = "100%",
   graphWidth = 24,
-  height = 392,
-  margin = { top: 10, right: 5, left: 24, bottom: 5 },
+  height = 304,
+  margin = { top: 6, right: 12, left: 12, bottom: 6 },
   xKey,
   yDomain,
   yTicks,
-  // xTicks,
   interval = 1,
   areas,
-  // xTickFormatter,
   tickFormatter,
   tooltipFormatter,
 }: MultiAreaChartProps) {
@@ -271,7 +267,7 @@ export function MultiAreaChart({
           </defs>
 
           <CartesianGrid
-            strokeDasharray="4"
+            strokeDasharray="3"
             vertical={false}
             stroke="#434055"
             opacity={0.4}
@@ -280,7 +276,6 @@ export function MultiAreaChart({
           <XAxis
             dataKey={xKey}
             interval={interval}
-            // ticks={xTicks}
             axisLine={false}
             tickLine={false}
             tick={{
@@ -291,7 +286,6 @@ export function MultiAreaChart({
               fontWeight: 400,
             }}
             tickFormatter={(value) => {
-              // if (xTickFormatter) return xTickFormatter(value)
               const date = new Date(value)
               const month = date.toLocaleString(undefined, { month: "short" })
               const year = date.getFullYear()
@@ -322,7 +316,6 @@ export function MultiAreaChart({
           <Tooltip
             content={
               <CustomTooltip
-                // xKey={xKey}
                 label=""
                 tickFormatter={tickFormatter}
                 tooltipFormatter={tooltipFormatter}
