@@ -1,5 +1,7 @@
 import ArrowLeft from "@icons/Arrow-Left.svg"
 import ArrowRight from "@icons/Arrow-Right.svg"
+import ArrowTop from "@icons/Arrow-Top.svg"
+import ArrowDown from "@icons/Arrow-Down.svg"
 import Arrows from "@icons/Arrows.svg"
 import Ascending from "@icons/Ascending.svg"
 import Burn from "@icons/Burn.svg"
@@ -18,6 +20,7 @@ import Dot from "@icons/Dot.svg"
 import Error from "@icons/Error.svg"
 import Export from "@icons/Export.svg"
 import External from "@icons/External.svg"
+import Ellipse from "@icons/Ellipse.svg"
 import Github from "@icons/Github.svg"
 import Group from "@icons/Group.svg"
 import Hide from "@icons/Hide.svg"
@@ -47,6 +50,8 @@ import Warning from "@icons/Warning.svg"
 export const icons = {
   "Arrow-Left": ArrowLeft,
   "Arrow-Right": ArrowRight,
+  "Arrow-Top": ArrowTop,
+  "Arrow-Down": ArrowDown,
   Arrows: Arrows,
   Ascending: Ascending,
   Burn: Burn,
@@ -65,6 +70,7 @@ export const icons = {
   Error: Error,
   Export: Export,
   External: External,
+  Ellipse: Ellipse,
   Github: Github,
   Group: Group,
   Hide: Hide,

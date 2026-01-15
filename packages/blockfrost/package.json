@@ -5,7 +5,7 @@
   "main": "src/index.ts",
   "scripts": {},
   "dependencies": {
-    "@lucid-evolution/lucid": "^0.4.29",
+    "@lucid-evolution/lucid": "^0.4.27",
     "zod": "^3.24.3"
   }
 }

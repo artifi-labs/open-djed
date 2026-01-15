@@ -8,8 +8,8 @@ import { expectedStakingReturn, type CreditEntry } from "@/lib/staking"
 
 export interface ScenarioInputs {
   shenAmount: number
-  buyDate: string //TODO: update to when calendar component is ready
-  sellDate: string //TODO: update to when calendar component is ready
+  buyDate: string
+  sellDate: string
   buyAdaPrice: number
   sellAdaPrice: number
 }
@@ -117,8 +117,8 @@ export const calculateSimulatorResults = (
   //Staking
   const stakingInfo = expectedStakingReturn(
     shenAmount,
-    inputs.buyDate || "2025-01-07",
-    inputs.sellDate || "2025-02-07",
+    inputs.buyDate,
+    inputs.sellDate,
     { aprPercent: 2.5 },
   )
   const stakingRewards =

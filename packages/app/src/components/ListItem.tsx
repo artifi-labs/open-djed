@@ -58,7 +58,7 @@ const ListItem: React.FC<ListItemProps> = ({
   className,
 }) => {
   return (
-    <div className="inline-block w-full max-w-[362px]">
+    <div className="inline-block w-full max-w-90.5">
       <div
         className={`hover:bg-no-color-hover active:bg-no-color-pressed focus:bg-no-color-focused border-border-primary inline-flex w-full items-center justify-between gap-8 bg-transparent p-8 ${className || ""}`}
         onClick={onClick}
@@ -94,7 +94,7 @@ const ListItem: React.FC<ListItemProps> = ({
             )}
           </div>
         )}
-        {icon && <Icon name={icon} size={24} />}
+        {icon && <Icon name={icon} size={18} />}
       </div>
 
       {divider && <Divider />}

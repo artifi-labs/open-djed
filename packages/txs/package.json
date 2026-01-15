@@ -5,7 +5,7 @@
   "scripts": {},
   "type": "module",
   "dependencies": {
-    "@lucid-evolution/lucid": "^0.4.27",
+    "@lucid-evolution/lucid": "^0.4.29",
     "@open-djed/math": "workspace:*",
     "@open-djed/data": "workspace:*",
     "@open-djed/registry": "workspace:*"
