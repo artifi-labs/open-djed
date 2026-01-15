@@ -96,7 +96,7 @@ const Tooltip = ({
   return (
     <div className={tooltipClass} style={style} ref={wrapperRef}>
       <div className={tooltipModalStyle} ref={tooltipRef}>
-        <div className="bg-lilac-900 text-primary wrap-break-words rounded-lg border border-neutral-800 p-3 text-left text-sm">
+        <div className="bg-lilac-900 text-primary wrap-break-words w-max max-w-79 rounded-lg border border-neutral-800 p-3 text-left text-xs font-normal">
           {text}
         </div>
       </div>

@@ -1,164 +1,222 @@
 "use client"
 
 import { useMemo } from "react"
-import { formatNumber, type Value } from "@/lib/utils"
+import { formatNumber, type Value, isEmptyValue } from "@/lib/utils"
 import {
-  calculateSimulatorResults,
   type ScenarioInputs,
   type ResultsData,
+  useSimulatorResults,
 } from "./calculations"
 
-export type ResultValueItem = {
+export type ValueItem = {
   name: string
-  topValue: string
-  bottomValue: string
+  primaryAmount: string
+  secondaryAmount: string
   isTotal?: boolean
+  pnlColorClass?: string
+  pnlIconName?: "Arrow-Top" | "Arrow-Down"
 }
 
 export type ResultItem = {
   label: string
-  values: ResultValueItem[]
+  tooltip: string
+  values: ValueItem[]
   className?: string
 }
 
-type DisplayValue = [string, string]
-type ToUSDConverter = (value: Value) => number
-
-interface SectionConfig {
-  name: string
-  label: string
-  isTotal?: boolean
-  read: (data: Partial<ResultsData>) => { main: number; sub: number }
-  format: (
-    main: number,
-    sub: number,
-    toUSD?: ToUSDConverter,
-    isReady?: boolean,
-  ) => DisplayValue
-  className?: string
+export type Results = {
+  totals: ResultItem[]
+  details: ResultItem[]
 }
 
-interface PriceDataProvider {
-  to: (value: Value, target: string) => number
-}
+type ToUSDConverter = (value: Value, price: number) => string
 
-const formatUSDValue = (
+const formatUSD = (
   toUSD: ToUSDConverter | undefined,
-  valueObj: Value,
+  val: number,
+  price: number,
   isReady: boolean,
 ): string => {
-  if (!isReady) return "0"
-  if (!toUSD) return "$0.00"
-
-  const usdAmount = toUSD(valueObj)
-  return `$${formatNumber(usdAmount, { maximumFractionDigits: 2 })}`
+  if (!toUSD || !isReady) return "$0.00"
+  return toUSD({ ADA: val }, price)
 }
 
-const formatPercentValue = (value: number, isReady: boolean): string => {
-  if (!isReady) return "0%"
-  return `${formatNumber(value, { maximumFractionDigits: 2 })}%`
-}
+const formatPercent = (val: number) =>
+  `${formatNumber(Math.abs(val), { maximumFractionDigits: 2 })}%`
+const formatADA = (val: number) =>
+  `${formatNumber(val, { maximumFractionDigits: 4 })} ADA`
+const formatSHEN = (val: number) =>
+  `${formatNumber(val, { maximumFractionDigits: 4 })} SHEN`
 
-const formatADALabel = (value: number, isReady: boolean): string => {
-  if (!isReady) return "0"
-  return `${formatNumber(value, { maximumFractionDigits: 4 })} ADA`
-}
-
-const formatSHENLabel = (value: number, isReady: boolean): string => {
-  if (!isReady) return "0"
-  return `${formatNumber(value, { maximumFractionDigits: 4 })} SHEN`
-}
-
-const createSectionConfigs = (): SectionConfig[] => [
+const createSectionConfigs = () => [
   {
-    name: "buyFee",
-    label: "Buy Fee",
-    read: (d) => ({ main: d.buyFee ?? 0, sub: d.buyFee ?? 0 }),
-    format: (main, sub, toUSD, isReady) => [
-      formatADALabel(main, isReady ?? false),
-      isReady ? formatUSDValue(toUSD, { ADA: sub }, true) : "$0",
-    ],
-  },
-  {
-    name: "sellFee",
-    label: "Sell Fee",
-    read: (d) => ({ main: d.sellFee ?? 0, sub: d.sellFee ?? 0 }),
-    format: (main, sub, toUSD, isReady) => [
-      formatSHENLabel(main, isReady ?? false),
-      isReady ? formatUSDValue(toUSD, { SHEN: sub }, true) : "$0",
-    ],
-  },
-  {
-    name: "stakingRewards",
-    label: "ADA Staking Rewards",
-    read: (d) => ({ main: d.stakingRewards ?? 0, sub: d.stakingRewards ?? 0 }),
-    format: (main, sub, toUSD, isReady) => [
-      formatADALabel(main, isReady ?? false),
-      isReady ? formatUSDValue(toUSD, { ADA: sub }, true) : "$0",
-    ],
-  },
-  {
-    name: "feesEarned",
-    label: "Buy/Sell Fees Earned",
-    read: (d) => ({ main: d.feesEarned ?? 0, sub: d.feesEarned ?? 0 }),
-    format: (main, sub, toUSD, isReady) => [
-      formatADALabel(main, isReady ?? false),
-      isReady ? formatUSDValue(toUSD, { ADA: sub }, true) : "$0",
-    ],
+    name: "totalPnl",
+    label: "Total PNL",
+    tooltip: "Your total profit or loss from buying SHEN, including all fees",
+    isTotal: true,
+    read: (d: Partial<ResultsData>) => ({
+      main: d.totalPnl ?? 0,
+      sub: d.totalPnlPercent ?? 0,
+    }),
+    format: (
+      main: number,
+      sub: number,
+      toUSD: ToUSDConverter,
+      prices: { buy: number; sell: number },
+      isReady: boolean,
+    ) => [formatUSD(toUSD, main, prices.sell, isReady), formatPercent(sub)],
+    className: "text-supportive-2-500",
   },
   {
     name: "adaPnl",
     label: "ADA PNL",
-    read: (d) => ({ main: d.adaPnl ?? 0, sub: d.adaPnlPercent ?? 0 }),
-    format: (main, sub, toUSD, isReady) => [
-      formatUSDValue(toUSD, { ADA: main }, isReady ?? false),
-      formatPercentValue(sub, isReady ?? false),
-    ],
+    tooltip: "Your profit or loss from buying SHEN expressed in ADA",
+    isTotal: true,
+    read: (d: Partial<ResultsData>) => ({
+      main: d.adaPnl ?? 0,
+      sub: d.adaPnlPercent ?? 0,
+    }),
+    format: (
+      main: number,
+      sub: number,
+      toUSD: ToUSDConverter,
+      prices: { buy: number; sell: number },
+      isReady: boolean,
+    ) => [formatUSD(toUSD, main, prices.sell, isReady), formatPercent(sub)],
+    className: "text-supportive-2-500",
   },
   {
-    name: "totalPnl",
-    label: "Total PNL",
-    isTotal: true,
-    read: (d) => ({ main: d.totalPnl ?? 0, sub: d.totalPnlPercent ?? 0 }),
-    format: (main, sub, toUSD, isReady) => [
-      formatUSDValue(toUSD, { ADA: main }, isReady ?? false),
-      formatPercentValue(sub, isReady ?? false),
-    ],
-    className:
-      "p-12 bg-supportive-2-800 rounded-4 flex flex-row justify-between items-center w-full",
+    name: "buyFee",
+    label: "Buy Fee",
+    tooltip:
+      "A fee applied when purchasing Djed/Shen. This helps maintain the protocol and is shared with SHEN holders",
+    read: (d: Partial<ResultsData>) => ({
+      main: d.buyFee ?? 0,
+      sub: d.buyFee ?? 0,
+    }),
+    format: (
+      main: number,
+      sub: number,
+      toUSD: ToUSDConverter,
+      prices: { buy: number; sell: number },
+      isReady: boolean,
+    ) => [formatADA(main), formatUSD(toUSD, sub, prices.buy, isReady)],
+  },
+  {
+    name: "sellFee",
+    label: "Sell Fee",
+    tooltip:
+      "A fee applied when selling Djed/Shen. This helps maintain the protocol and is shared with SHEN holders",
+    read: (d: Partial<ResultsData>) => ({
+      main: d.sellFee ?? 0,
+      sub: d.sellFee ?? 0,
+    }),
+    format: (
+      main: number,
+      sub: number,
+      toUSD: ToUSDConverter,
+      prices: { buy: number; sell: number },
+      isReady: boolean,
+    ) => [formatSHEN(main), formatUSD(toUSD, sub, prices.sell, isReady)],
+  },
+  {
+    name: "stakingRewards",
+    label: "ADA Staking Rewards",
+    tooltip:
+      "The rewards you earn on the staked ADA backing your SHEN. Staked ADA helps secure the Cardano network and generates passive income",
+    read: (d: Partial<ResultsData>) => ({
+      main: d.stakingRewards ?? 0,
+      sub: d.stakingRewards ?? 0,
+    }),
+    format: (
+      main: number,
+      sub: number,
+      toUSD: ToUSDConverter,
+      prices: { buy: number; sell: number },
+      isReady: boolean,
+    ) => [formatADA(main), formatUSD(toUSD, sub, prices.sell, isReady)],
+    className: "text-primary",
+  },
+  {
+    name: "feesEarned",
+    label: "Buy/Sell Fees Earned",
+    tooltip:
+      "The total fees collected from buy and sell transactions. These are distributed to SHEN Holders. This is the sum of the two above during a given period or projected for a period in the future",
+    read: (d: Partial<ResultsData>) => ({
+      main: d.feesEarned ?? 0,
+      sub: d.feesEarned ?? 0,
+    }),
+    format: (
+      main: number,
+      sub: number,
+      toUSD: ToUSDConverter,
+      prices: { buy: number; sell: number },
+      isReady: boolean,
+    ) => [formatADA(main), formatUSD(toUSD, sub, prices.sell, isReady)],
   },
 ]
 
 export function useResults(
   inputs: ScenarioInputs,
-  priceData?: PriceDataProvider,
-) {
-  return useMemo((): ResultItem[] => {
+  priceData?: { to: (v: Value, t: string) => number },
+): Results {
+  const { results: simulatorData } = useSimulatorResults(inputs)
+
+  return useMemo(() => {
     const configs = createSectionConfigs()
     const isReady =
-      inputs.shenAmount > 0 && inputs.buyAdaPrice > 0 && inputs.sellAdaPrice > 0 //TODO: Add dates conditions
-    const data = isReady ? calculateSimulatorResults() : {}
+      !isEmptyValue(inputs.shenAmount) &&
+      !isEmptyValue(inputs.buyAdaPrice) &&
+      !isEmptyValue(inputs.sellAdaPrice)
+    const data = isReady && simulatorData ? simulatorData : {}
 
-    const toUSD: ToUSDConverter | undefined = priceData
-      ? (value: Value) => priceData.to(value, "DJED")
-      : undefined
+    const toUSD: ToUSDConverter = (value: Value, price: number) => {
+      const adaAmount = value.ADA ?? 0
+      const shenAmount = value.SHEN ?? 0
+      const totalAmount = adaAmount + shenAmount
+      const usdValue = totalAmount * price
+      return `$${formatNumber(usdValue, { maximumFractionDigits: 2 })}`
+    }
 
-    return configs.map((section) => {
+    const prices = {
+      buy: inputs.buyAdaPrice,
+      sell: inputs.sellAdaPrice,
+    }
+
+    const allItems: ResultItem[] = configs.map((section) => {
       const { main, sub } = section.read(data)
-      const [top, bottom] = section.format(main, sub, toUSD, isReady)
+      const [primary, secondary] = section.format(
+        main,
+        sub,
+        toUSD,
+        prices,
+        isReady,
+      )
+      const isPositive = main >= 0
+      const sign = isPositive ? "+" : "-"
 
       return {
         label: section.label,
+        tooltip: section.tooltip,
+        className: section.className,
         values: [
           {
             name: section.name,
-            topValue: top,
-            bottomValue: bottom,
+            primaryAmount: primary,
+            secondaryAmount: section.isTotal
+              ? `${sign}${secondary}`
+              : secondary,
             isTotal: section.isTotal,
+            pnlColorClass: isPositive ? "text-success-text" : "text-error-text",
+            pnlIconName: isPositive ? "Arrow-Top" : "Arrow-Down",
           },
         ],
-        className: section.className,
       }
     })
-  }, [inputs, priceData])
+
+    return {
+      totals: allItems.filter((item) => item.values[0].isTotal),
+      details: allItems.filter((item) => !item.values[0].isTotal),
+    }
+  }, [inputs, priceData, simulatorData])
 }

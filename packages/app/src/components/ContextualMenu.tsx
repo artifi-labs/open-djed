@@ -7,6 +7,8 @@ import ListItem, { type ListItemProps } from "./ListItem"
 export type ContextualMenuProps = {
   items?: ContextualMenuItem[]
   hideAmount?: boolean
+  activeItem?: ContextualMenuItem
+  width?: string
   onClick?: (item: ContextualMenuItem) => void
 }
 
@@ -52,8 +54,31 @@ function normalizeItem(
 const ContextualMenu: React.FC<ContextualMenuProps> = ({
   items = [],
   hideAmount = false,
+  activeItem,
+  width,
   onClick = () => {},
 }) => {
+  const scrollContainerRef = React.useRef<HTMLDivElement>(null)
+  const itemRefs = React.useRef<Record<string | number, HTMLDivElement>>({})
+
+  // Center active item
+  React.useEffect(() => {
+    if (activeItem && itemRefs.current[activeItem.key]) {
+      const activeElement = itemRefs.current[activeItem.key]
+      const container = scrollContainerRef.current
+
+      if (container) {
+        const itemOffset = activeElement.offsetTop
+        const itemHeight = activeElement.offsetHeight
+        const containerHeight = container.clientHeight
+
+        // Center the active item in the visible area
+        const scrollTarget = itemOffset - (containerHeight - itemHeight) / 2
+        container.scrollTop = Math.max(0, scrollTarget)
+      }
+    }
+  }, [activeItem])
+
   const handleItemClick: (item: ContextualMenuItem) => void = React.useCallback(
     (item: ContextualMenuItem) => {
       onClick(item)
@@ -62,25 +87,36 @@ const ContextualMenu: React.FC<ContextualMenuProps> = ({
   )
 
   const baseClassName = clsx(
-    "w-full",
+    "max-w-[331px] p-4",
     "border-gradient border-color-gradient",
     "bg-surface-tertiary rounded-4 shadow-[0_14px_34px_0_rgba(0,0,0,0.4)]",
-    "overflow-y-auto",
+    width,
   )
 
   return (
     <div className={baseClassName}>
-      <div className="flex max-h-[320px] flex-col items-start overflow-y-auto p-4">
+      <div
+        ref={scrollContainerRef}
+        className="flex max-h-39 flex-col items-start"
+        style={{ overflowY: "overlay" }}
+      >
         {items.map((item, index) => (
-          <ListItem
+          <div
             key={item.key}
-            {...normalizeItem(
-              item,
-              index < items.length - 1,
-              handleItemClick,
-              hideAmount,
-            )}
-          />
+            ref={(el) => {
+              if (el) itemRefs.current[item.key] = el
+            }}
+            className="w-full"
+          >
+            <ListItem
+              {...normalizeItem(
+                item,
+                index < items.length - 1,
+                handleItemClick,
+                hideAmount,
+              )}
+            />
+          </div>
         ))}
       </div>
     </div>

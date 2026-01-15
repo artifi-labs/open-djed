@@ -6,7 +6,7 @@
   "type": "module",
   "dependencies": {
     "@open-djed/math": "workspace:*",
-    "@lucid-evolution/lucid": "^0.4.29",
+    "@lucid-evolution/lucid": "^0.4.27",
     "zod": "^3.24.3"
   }
 }
