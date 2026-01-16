@@ -45,8 +45,6 @@ const formatPercent = (val: number) =>
   `${formatNumber(Math.abs(val), { maximumFractionDigits: 2 })}%`
 const formatADA = (val: number) =>
   `${formatNumber(val, { maximumFractionDigits: 4 })} ADA`
-const formatSHEN = (val: number) =>
-  `${formatNumber(val, { maximumFractionDigits: 4 })} SHEN`
 
 const createSectionConfigs = () => [
   {
@@ -76,13 +74,10 @@ const createSectionConfigs = () => [
       main: d.adaPnl ?? 0,
       sub: d.adaPnlPercent ?? 0,
     }),
-    format: (
-      main: number,
-      sub: number,
-      toUSD: ToUSDConverter,
-      prices: { buy: number; sell: number },
-      isReady: boolean,
-    ) => [formatUSD(toUSD, main, prices.sell, isReady), formatPercent(sub)],
+    format: (main: number, sub: number) => [
+      formatADA(main),
+      formatPercent(sub),
+    ],
     className: "text-supportive-2-500",
   },
   {
@@ -117,7 +112,7 @@ const createSectionConfigs = () => [
       toUSD: ToUSDConverter,
       prices: { buy: number; sell: number },
       isReady: boolean,
-    ) => [formatSHEN(main), formatUSD(toUSD, sub, prices.sell, isReady)],
+    ) => [formatADA(main), formatUSD(toUSD, sub, prices.sell, isReady)],
   },
   {
     name: "stakingRewards",

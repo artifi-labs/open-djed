@@ -96,7 +96,9 @@ const InputAction: React.FC<InputActionProps> = ({ values, onUpdate }) => {
                 id="shen-amount"
                 placeholder="0"
                 value={
-                  values.shenAmount === 0 ? "" : values.shenAmount.toString()
+                  values.shenAmount.toString() === "0"
+                    ? ""
+                    : values.shenAmount.toString()
                 }
                 onValueChange={(val) => handleValueChange("shenAmount", val)}
                 size="Medium"
