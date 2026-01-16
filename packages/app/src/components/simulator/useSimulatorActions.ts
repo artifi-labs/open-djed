@@ -30,7 +30,7 @@ export function useSimulatorActions() {
     (field: keyof ScenarioInputs, value: string | number) => {
       setInputs((prev) => ({
         ...prev,
-        [field]:value,
+        [field]: value,
       }))
     },
     [],
