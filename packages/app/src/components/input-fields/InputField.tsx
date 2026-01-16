@@ -126,7 +126,6 @@ const InputField: FC<InputFieldProps> = ({
         value={inputValue}
         autoComplete={autoComplete}
         {...props}
-        autoComplete="off"
       />
 
       {/* Clear Input Button */}
