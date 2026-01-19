@@ -15,13 +15,12 @@ export function useSimulatorActions() {
 
   useEffect(() => {
     if (!protocolData || hasInitializedPrices.current) return
-    const adaUsdPrice = protocolData.to({ ADA: 1 }, "DJED")
-    if (adaUsdPrice <= 0) return
+    const currentAdaPrice = protocolData.to({ ADA: 1 }, "DJED")
 
     setInputs((prev) => ({
       ...prev,
-      buyAdaPrice: Number(adaUsdPrice.toFixed(4)),
-      sellAdaPrice: Number((adaUsdPrice * 1.1).toFixed(4)),
+      buyAdaPrice: Number(currentAdaPrice.toFixed(4)),
+      sellAdaPrice: Number((currentAdaPrice * 1.1).toFixed(4)),
     }))
     hasInitializedPrices.current = true
   }, [protocolData])

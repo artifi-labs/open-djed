@@ -37,6 +37,17 @@ export function useProtocolData() {
           r,
         ): Promise<{
           to: (value: Value, token: TokenType | "ADA") => number
+          oracleDatum: {
+            oracleFields: {
+              adaUSDExchangeRate: { numerator: bigint; denominator: bigint }
+            }
+          }
+          poolDatum: {
+            djedInCirculation: bigint
+            shenInCirculation: bigint
+            adaInReserve: bigint
+            minADA: bigint
+          }
           protocolData: Record<
             TokenType,
             {
@@ -57,6 +68,19 @@ export function useProtocolData() {
             token: TokenType,
             action: ActionType,
             amount: number,
+            overrides?: {
+              oracleDatum?: {
+                oracleFields: {
+                  adaUSDExchangeRate: { numerator: bigint; denominator: bigint }
+                }
+              }
+              poolDatum?: {
+                djedInCirculation: bigint
+                shenInCirculation: bigint
+                adaInReserve: bigint
+                minADA: bigint
+              }
+            },
           ) => {
             baseCost: Value
             actionFee: Value
@@ -97,6 +121,8 @@ export function useProtocolData() {
           return {
             to: (value: Value, token: TokenType | "ADA"): number =>
               valueTo(value, poolDatum, oracleDatum, token),
+            oracleDatum,
+            poolDatum,
             protocolData: {
               DJED: {
                 buyPrice: {
@@ -177,7 +203,10 @@ export function useProtocolData() {
               token: TokenType,
               action: ActionType,
               amount: number,
+              overrides,
             ) => {
+              const activeOracleDatum = overrides?.oracleDatum ?? oracleDatum
+              const activePoolDatum = overrides?.poolDatum ?? poolDatum
               const actionFeeRatio = new Rational(
                 registry[`${action}${token}FeePercentage`],
               )
@@ -185,8 +214,8 @@ export function useProtocolData() {
               const amountBigInt = BigInt(Math.floor(amount * 1e6))
               const exchangeRate =
                 token === "DJED"
-                  ? djedADARate(oracleDatum)
-                  : shenADARate(poolDatum, oracleDatum)
+                  ? djedADARate(activeOracleDatum)
+                  : shenADARate(activePoolDatum, activeOracleDatum)
               if (action === "Mint") {
                 const baseCostRational = exchangeRate.mul(amountBigInt)
                 const baseCost = {
@@ -216,7 +245,12 @@ export function useProtocolData() {
                   toSend: sumValues(totalCost, refundableDeposit),
                   toReceive: sumValues({ [token]: amount }, refundableDeposit),
                   price: {
-                    ADA: valueToADA(totalCost, poolDatum, oracleDatum) / amount,
+                    ADA:
+                      valueToADA(
+                        totalCost,
+                        activePoolDatum,
+                        activeOracleDatum,
+                      ) / amount,
                   },
                 }
               }
@@ -267,8 +301,13 @@ export function useProtocolData() {
                 toReceive,
                 price: {
                   ADA:
-                    valueToADA(toReceive, poolDatum, oracleDatum) /
-                    valueTo(totalCost, poolDatum, oracleDatum, token),
+                    valueToADA(toReceive, activePoolDatum, activeOracleDatum) /
+                    valueTo(
+                      totalCost,
+                      activePoolDatum,
+                      activeOracleDatum,
+                      token,
+                    ),
                 },
               }
             },
