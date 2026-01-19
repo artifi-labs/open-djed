@@ -85,6 +85,7 @@ export function calculateSimulatorResults(
   ): ProtocolData["oracleDatum"] => {
     const adaUsdExchangeRate = toAdaUsdExchangeRate(adaUsd)
     if (!adaUsdExchangeRate) return baseOracleDatum
+
     return {
       oracleFields: {
         adaUSDExchangeRate: adaUsdExchangeRate,
@@ -99,14 +100,14 @@ export function calculateSimulatorResults(
     "SHEN",
     "Mint",
     shenAmount,
-    { oracleDatum: buyOracleDatum, poolDatum },
+    { oracleDatum: buyOracleDatum },
   )
 
   const sellActionData = protocolData.tokenActionData(
     "SHEN",
     "Burn",
     shenAmount,
-    { oracleDatum: sellOracleDatum, poolDatum },
+    { oracleDatum: sellOracleDatum },
   )
 
   const buyFeeAda =

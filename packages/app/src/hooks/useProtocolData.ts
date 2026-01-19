@@ -74,12 +74,6 @@ export function useProtocolData() {
                   adaUSDExchangeRate: { numerator: bigint; denominator: bigint }
                 }
               }
-              poolDatum?: {
-                djedInCirculation: bigint
-                shenInCirculation: bigint
-                adaInReserve: bigint
-                minADA: bigint
-              }
             },
           ) => {
             baseCost: Value
@@ -206,7 +200,6 @@ export function useProtocolData() {
               overrides,
             ) => {
               const activeOracleDatum = overrides?.oracleDatum ?? oracleDatum
-              const activePoolDatum = overrides?.poolDatum ?? poolDatum
               const actionFeeRatio = new Rational(
                 registry[`${action}${token}FeePercentage`],
               )
@@ -215,7 +208,7 @@ export function useProtocolData() {
               const exchangeRate =
                 token === "DJED"
                   ? djedADARate(activeOracleDatum)
-                  : shenADARate(activePoolDatum, activeOracleDatum)
+                  : shenADARate(poolDatum, activeOracleDatum)
               if (action === "Mint") {
                 const baseCostRational = exchangeRate.mul(amountBigInt)
                 const baseCost = {
@@ -246,11 +239,8 @@ export function useProtocolData() {
                   toReceive: sumValues({ [token]: amount }, refundableDeposit),
                   price: {
                     ADA:
-                      valueToADA(
-                        totalCost,
-                        activePoolDatum,
-                        activeOracleDatum,
-                      ) / amount,
+                      valueToADA(totalCost, poolDatum, activeOracleDatum) /
+                      amount,
                   },
                 }
               }
@@ -301,13 +291,8 @@ export function useProtocolData() {
                 toReceive,
                 price: {
                   ADA:
-                    valueToADA(toReceive, activePoolDatum, activeOracleDatum) /
-                    valueTo(
-                      totalCost,
-                      activePoolDatum,
-                      activeOracleDatum,
-                      token,
-                    ),
+                    valueToADA(toReceive, poolDatum, activeOracleDatum) /
+                    valueTo(totalCost, poolDatum, activeOracleDatum, token),
                 },
               }
             },
