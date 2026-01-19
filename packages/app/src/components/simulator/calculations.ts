@@ -79,7 +79,7 @@ export function calculateSimulatorResults(
   }
 
   // Build a new oracle datum using a user-provided ADA/USD price.
-  const withAdaUsd = (
+  const newOracleDatum = (
     baseOracleDatum: ProtocolData["oracleDatum"],
     adaUsd: number,
   ): ProtocolData["oracleDatum"] => {
@@ -93,8 +93,8 @@ export function calculateSimulatorResults(
     }
   }
 
-  const buyOracleDatum = withAdaUsd(oracleDatum, buyAdaPrice)
-  const sellOracleDatum = withAdaUsd(oracleDatum, sellAdaPrice)
+  const buyOracleDatum = newOracleDatum(oracleDatum, buyAdaPrice)
+  const sellOracleDatum = newOracleDatum(oracleDatum, sellAdaPrice)
 
   const buyActionData = protocolData.tokenActionData(
     "SHEN",
