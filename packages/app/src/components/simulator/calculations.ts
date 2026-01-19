@@ -55,12 +55,26 @@ export function useSimulatorResults(inputs: ScenarioInputs) {
   const { data: protocolData } = useProtocolData()
 
   const results = React.useMemo(() => {
-    if (!protocolData || inputs.shenAmount <= 0) return null
-    return calculateSimulatorResults(inputs, protocolData)
+    if (!protocolData || inputs.shenAmount <= 0) {
+      return { data: null, error: null }
+    }
+
+    try {
+      return {
+        data: calculateSimulatorResults(inputs, protocolData),
+        error: null,
+      }
+    } catch (err) {
+      return {
+        data: null,
+        error: err instanceof Error ? err.message : "Invalid ADA price.",
+      }
+    }
   }, [inputs, protocolData])
 
   return {
-    results,
+    results: results.data,
+    error: results.error,
     isLoading: !protocolData,
   }
 }
@@ -70,7 +84,7 @@ export function calculateSimulatorResults(
   protocolData: ProtocolData,
 ): ResultsData {
   const { shenAmount, buyDate, sellDate, buyAdaPrice, sellAdaPrice } = inputs
-  const { oracleDatum, poolDatum } = protocolData
+  const { poolDatum } = protocolData
 
   const toAdaUsdExchangeRate = (adaUsd: number) => {
     if (!Number.isFinite(adaUsd) || adaUsd <= 0) return null
@@ -79,12 +93,11 @@ export function calculateSimulatorResults(
   }
 
   // Build a new oracle datum using a user-provided ADA/USD price.
-  const newOracleDatum = (
-    baseOracleDatum: ProtocolData["oracleDatum"],
-    adaUsd: number,
-  ): ProtocolData["oracleDatum"] => {
+  const newOracleDatum = (adaUsd: number): ProtocolData["oracleDatum"] => {
     const adaUsdExchangeRate = toAdaUsdExchangeRate(adaUsd)
-    if (!adaUsdExchangeRate) return baseOracleDatum
+    if (!adaUsdExchangeRate) {
+      throw new Error("ADA price must be greater than 0.")
+    }
 
     return {
       oracleFields: {
@@ -93,8 +106,8 @@ export function calculateSimulatorResults(
     }
   }
 
-  const buyOracleDatum = newOracleDatum(oracleDatum, buyAdaPrice)
-  const sellOracleDatum = newOracleDatum(oracleDatum, sellAdaPrice)
+  const buyOracleDatum = newOracleDatum(buyAdaPrice)
+  const sellOracleDatum = newOracleDatum(sellAdaPrice)
 
   const buyActionData = protocolData.tokenActionData(
     "SHEN",
