@@ -8,6 +8,7 @@ import {
   djedADAMintRate,
   djedADABurnRate,
   adaDJEDRate,
+  toAdaUsdExchangeRate,
 } from "./rate"
 
 test("adaSHENRate", () => {
@@ -210,5 +211,12 @@ test("djedADABurnRate", () => {
   ).toEqual({
     numerator: 24625n,
     denominator: 15838n,
+  })
+})
+
+test("toAdaUsdExchangeRate", () => {
+  expect(toAdaUsdExchangeRate(0.637341)).toEqual({
+    numerator: 637341n,
+    denominator: 1000000n,
   })
 })

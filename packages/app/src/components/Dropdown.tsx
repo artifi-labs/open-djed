@@ -142,7 +142,7 @@ const Dropdown: React.FC<DropdownProps> = ({
 
       {isOpen && (
         <div
-          className="absolute right-0 left-0 z-10 mt-8"
+          className="absolute right-0 left-0 z-30 mt-8"
           onClick={(e) => e.stopPropagation()}
         >
           {renderMenu ? (

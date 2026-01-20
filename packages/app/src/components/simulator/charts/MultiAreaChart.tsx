@@ -144,6 +144,29 @@ const CustomTooltip = ({
             </p>
           </div>
         ))}
+        {(() => {
+          const investedAda = payload[0]?.payload?.investedAda
+          const investedUsd = payload[0]?.payload?.investedUsd
+          if (!Number.isFinite(investedAda)) return null
+          return (
+            <div className="flex w-full items-center justify-between gap-8">
+              <p className="text-sm">Invested</p>
+              <p className="text-sm">
+                ₳
+                {Number(investedAda).toLocaleString(undefined, {
+                  minimumFractionDigits: 4,
+                  maximumFractionDigits: 4,
+                })}
+                {Number.isFinite(investedUsd)
+                  ? ` ($${Number(investedUsd).toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })})`
+                  : ""}
+              </p>
+            </div>
+          )
+        })()}
       </div>
     )
   }

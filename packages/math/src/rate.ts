@@ -53,3 +53,8 @@ export const djedADABurnRate = (
   oracleDatum: PartialOracleDatum,
   djedBurnFee: RationalFields,
 ): Rational => djedADARate(oracleDatum).mul(new Rational(1n).sub(djedBurnFee))
+
+export const toAdaUsdExchangeRate = (adaUsd: number): RationalFields => ({
+  numerator: BigInt(Math.round(adaUsd * 1_000_000)),
+  denominator: 1_000_000n,
+})

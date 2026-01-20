@@ -90,6 +90,9 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
     // Calculate daily protocol fees earned
     const dailyFeesEarned = totalDays > 0 ? feesEarned / totalDays : 0
 
+    const investedAda = initialHoldings + buyFees
+    const investedUsd = investedAda * buyPrice
+
     // Start with initial holdings (this is the ADA value of SHEN at purchase)
     let currentHoldings = initialHoldings
 
@@ -116,6 +119,8 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
         date: d,
         ADA: holdingsForDay,
         usdValue: usdValueForDay,
+        investedAda,
+        investedUsd,
       } as unknown as DataRow)
     }
 
@@ -130,8 +135,10 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
     // Add point showing initial investment BEFORE buy fees
     results.unshift({
       date: new Date(startDate.getTime() - dayInMs).toISOString(),
-      ADA_avg: initialHoldings + buyFees,
-      usdValue_avg: (initialHoldings + buyFees) * buyPrice,
+      ADA_avg: investedAda,
+      usdValue_avg: investedUsd,
+      investedAda,
+      investedUsd,
     } as unknown as DataRow)
 
     // Add point showing final value AFTER sell fees
@@ -139,6 +146,8 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
       date: new Date(endDate.getTime() + dayInMs).toISOString(),
       ADA_avg: finalHoldings - sellFees,
       usdValue_avg: (finalHoldings - sellFees) * sellPrice,
+      investedAda,
+      investedUsd,
     } as unknown as DataRow)
 
     if (results.length > 1) {
@@ -169,6 +178,8 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
         row.usdBuyFeeValue = usdBuyFeeValue
         row.sellFeeValue = sellFees
         row.usdSellFeeValue = usdSellFeeValue
+        row.investedAda = investedAda
+        row.investedUsd = investedUsd
       })
     }
 
@@ -178,7 +189,6 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
     const totalRange = sellTs - buyTs
 
     results.forEach((row) => {
-      if (Number.isFinite(row.usdValue_avg)) return
       const adaValue =
         row.ADA_avg ?? row.ADA_avg_buy_fees ?? row.ADA_avg_sell_fees ?? 0
       const rowTs = new Date(row.date).getTime()
@@ -187,7 +197,10 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
           ? Math.min(1, Math.max(0, (rowTs - buyTs) / totalRange))
           : 0
       const priceAtRow = buyPrice + ratio * priceRange
-      row.usdValue_avg = (adaValue as number) * priceAtRow
+      row.priceAtRow = priceAtRow
+      if (!Number.isFinite(row.usdValue_avg)) {
+        row.usdValue_avg = (adaValue as number) * priceAtRow
+      }
     })
 
     // Calculate y-axis domain with padding
@@ -281,13 +294,16 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
       : isSellFee
         ? (payload.sellFeeValue as number)
         : value
+    const safeAda = Number.isFinite(adaValue) ? adaValue : 0
+    const priceAtRow = payload.priceAtRow as number
     const usdValue = isBuyFee
       ? (payload.usdBuyFeeValue as number)
       : isSellFee
         ? (payload.usdSellFeeValue as number)
-        : (payload[`usdValue_${aggregations.usdValue[0]}`] as number)
+        : Number.isFinite(priceAtRow)
+          ? safeAda * priceAtRow
+          : (payload[`usdValue_${aggregations.usdValue[0]}`] as number)
 
-    const safeAda = Number.isFinite(adaValue) ? adaValue : 0
     const safeUsd = Number.isFinite(usdValue) ? usdValue : 0
     const adaFormatted = safeAda.toLocaleString(undefined, {
       minimumFractionDigits: 4,
