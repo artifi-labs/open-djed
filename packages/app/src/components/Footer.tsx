@@ -148,7 +148,7 @@ const Footer = () => {
   const DesktopFooter = () => {
     return (
       <footer className="w-full">
-        <div className="px-navbar-margin pb-navbar-margin mx-auto flex max-w-360 flex-col gap-24 pt-36">
+        <div className="px-navbar-margin pb-navbar-margin mx-auto flex flex-col gap-24 pt-36">
           <div className="flex flex-row justify-between">
             <Logo />
             <div className="flex flex-row items-center gap-40">
