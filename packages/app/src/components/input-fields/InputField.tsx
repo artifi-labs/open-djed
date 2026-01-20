@@ -64,7 +64,7 @@ const InputField: FC<InputFieldProps> = ({
   const [internalValue, setInternalValue] = useState(defaultValue)
   const [isTyping, setIsTyping] = useState(false)
   const displayedValue = value !== undefined ? value : internalValue
-  const inputValue = displayedValue === "0" ? "" : displayedValue
+  const inputValue = displayedValue
 
   const sizeClasses: Record<Size, { text: string; className: string }> = {
     Small: { text: "text-sm", className: "px-10 py-8 h-[40px]" },
