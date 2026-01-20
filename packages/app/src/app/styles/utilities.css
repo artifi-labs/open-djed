@@ -66,8 +66,8 @@
   background: var(--color-gradient-angular-2);
 }
 
-@utility bg-border-footer-gradient {
-  background: var(--color-border-footer-gradient);
+@utility bg-border-linear-gradient {
+  background: var(--color-border-linear-gradient);
 }
 
 @utility bg-gradient-badge {

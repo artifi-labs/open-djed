@@ -299,6 +299,13 @@
     var(--color-supportive-3-800, #084149) 100%
   );
 
+  --color-border-linear-gradient: linear-gradient(
+    90deg,
+    var(--color-background-primary) 0%,
+    var(--color-border-secondary) 50%,
+    var(--color-background-primary) 100%
+  );
+
   --color-gradient-angular-1: linear-gradient(
     327deg,
     var(--color-supportive-2-500, #0287d0) 1%,
