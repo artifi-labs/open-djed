@@ -31,28 +31,28 @@ export function useSimulatorActions() {
     hasInitializedPrices.current = true
   }, [protocolData])
 
-const onUpdate = useCallback(
-  (field: keyof ScenarioInputs, value: string | number) => {
-    let nextValue = value;
+  const onUpdate = useCallback(
+    (field: keyof ScenarioInputs, value: string | number) => {
+      let nextValue = value
 
-    if (NUMBER_FIELDS.has(field)) {
-      if (typeof value === "string") {
-        if (value === "" || value === "." || value.endsWith(".")) {
-          nextValue = value; 
-        } else {
-          const parsed = parseFloat(value);
-          nextValue = isNaN(parsed) ? 0 : parsed;
+      if (NUMBER_FIELDS.has(field)) {
+        if (typeof value === "string") {
+          if (value === "" || value === "." || value.endsWith(".")) {
+            nextValue = value
+          } else {
+            const parsed = parseFloat(value)
+            nextValue = isNaN(parsed) ? 0 : parsed
+          }
         }
       }
-    }
 
-    setInputs((prev) => ({
-      ...prev,
-      [field]: nextValue,
-    }));
-  },
-  [],
-);
+      setInputs((prev) => ({
+        ...prev,
+        [field]: nextValue,
+      }))
+    },
+    [],
+  )
 
   const values = useMemo(() => inputs, [inputs])
 

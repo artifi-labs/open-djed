@@ -202,6 +202,7 @@ export function MultiAreaChart({
   interval = 1,
   areas,
   tickFormatter,
+  xTickFormatter,
   tooltipFormatter,
 }: MultiAreaChartProps) {
   return (
@@ -308,12 +309,18 @@ export function MultiAreaChart({
               fill: "var(--color-tertiary)",
               fontWeight: 400,
             }}
-            tickFormatter={(value) => {
-              const date = new Date(value)
-              const month = date.toLocaleString(undefined, { month: "short" })
-              const year = date.getFullYear()
-              return `${month}, ${year}`
-            }}
+            tickFormatter={
+              xTickFormatter
+                ? xTickFormatter
+                : (value) => {
+                    const date = new Date(value)
+                    const month = date.toLocaleString(undefined, {
+                      month: "short",
+                    })
+                    const year = date.getFullYear()
+                    return `${month}, ${year}`
+                  }
+            }
           />
 
           <YAxis

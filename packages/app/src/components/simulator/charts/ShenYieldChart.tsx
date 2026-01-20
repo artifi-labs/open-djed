@@ -39,9 +39,13 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
     usdValue: ["avg"],
   }
 
-  const { results, yDomain } = useMemo(() => {
+  const { results, yDomain, xAxisFormater } = useMemo(() => {
     if (!buyDate || !sellDate || initialHoldings <= 0)
-      return { results: [], yDomain: [0, 100] as [number, number] }
+      return {
+        results: [],
+        yDomain: [0, 100] as [number, number],
+        xAxisFormater: (value: string | number) => String(value),
+      }
 
     const dayInMs = 24 * 60 * 60 * 1000
     const startDate = new Date(buyDate)
@@ -55,24 +59,51 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
     const priceDifference = sellPrice - buyPrice
     const priceStep = totalDays > 1 ? priceDifference / (totalDays - 1) : 0
 
+    // dynamic formatter for xAxis
+    const formatter = (value: string | number) => {
+      const date = new Date(value)
+      if (isNaN(date.getTime())) return String(value)
+
+      if (totalDays <= 365) {
+        return date.toLocaleDateString(undefined, {
+          month: "short",
+          day: "numeric",
+        })
+      } else if (totalDays < 730) {
+        const month = date.toLocaleString(undefined, { month: "short" })
+        const year = date.toLocaleString(undefined, { year: "2-digit" })
+        return `${month}, ${year}`
+      } else {
+        return date.getFullYear().toString()
+      }
+    }
+
     // dynamically define x-axis interval for aggregation
     let newInterval: number
 
     if (totalDays <= 60) {
       //2 months
       newInterval = 7 * dayInMs
-    } else if (totalDays <= 365) {
+    } else if (totalDays < 365) {
       //1 year
       newInterval = 30 * dayInMs
-    } else if (totalDays <= 730) {
+    } else if (totalDays < 730) {
       //2 years
       newInterval = 60 * dayInMs
     } else if (totalDays < 3653) {
       // 10 years
       newInterval = 365 * dayInMs
-    } else {
-      // over 10 years
+    } else if (totalDays < 7300) {
+      // 20 years
       newInterval = 730 * dayInMs
+    } else if (totalDays < 14600) {
+      //40 years
+      newInterval = 1460 * dayInMs
+    } else if (totalDays < 25550) {
+      //75 years
+      newInterval = 3650 * dayInMs
+    } else {
+      newInterval = 7300 * dayInMs
     }
 
     const data: DataRow[] = []
@@ -134,7 +165,7 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
 
     // Add point showing initial investment BEFORE buy fees
     results.unshift({
-      date: new Date(startDate.getTime() - dayInMs).toISOString(),
+      date: new Date(startDate.getTime()).toISOString(),
       ADA_avg: investedAda,
       usdValue_avg: investedUsd,
       investedAda,
@@ -211,7 +242,7 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
     const finalYDomain: [number, number] =
       minY < maxY ? [minY, maxY] : [0, finalHoldings + 10]
 
-    return { results, yDomain: finalYDomain }
+    return { results, yDomain: finalYDomain, xAxisFormater: formatter }
   }, [
     buyDate,
     sellDate,
@@ -332,6 +363,7 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
       interval={0}
       areas={areas}
       tickFormatter={yTickFormatter}
+      xTickFormatter={xAxisFormater}
       tooltipFormatter={tooltipFormatter}
       height={304}
       margin={{ top: 6, right: 12, left: 12, bottom: 6 }}
