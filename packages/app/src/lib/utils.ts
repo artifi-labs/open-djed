@@ -266,3 +266,19 @@ export const toISODate = (date: Date) => {
   const day = `${date.getDate()}`.padStart(2, "0")
   return `${year}-${month}-${day}`
 }
+
+/**
+ * Formats an ISO date string into a short label like "01 Jan, 2024".
+ *
+ * @param value - The ISO date string to format
+ * @returns The formatted label, or "Select" for empty/invalid dates
+ */
+export const formatDateLabel = (value?: string) => {
+  if (!value) return "Select"
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return "Select"
+  const day = `${date.getDate()}`.padStart(2, "0")
+  const month = date.toLocaleString("en-US", { month: "short" })
+  const year = date.getFullYear()
+  return `${day} ${month}, ${year}`
+}

@@ -6,7 +6,7 @@ import InputField from "../input-fields/InputField"
 import Dropdown from "../Dropdown"
 import Calendar from "../calendar/Calendar"
 import { type CalendarValue } from "../calendar/Calendar.types"
-import { toISODate } from "@/lib/utils"
+import { toISODate, formatDateLabel } from "@/lib/utils"
 import type { ScenarioInputs } from "./calculations"
 import Icon from "../icons/Icon"
 import Tooltip from "../tooltip/Tooltip"
@@ -65,19 +65,15 @@ const InputAction: React.FC<InputActionProps> = ({ values, onUpdate }) => {
   const handleValueChange = (field: keyof ScenarioInputs, val: string) => {
     onUpdate(field, val)
   }
-  const buyDate = values.buyDate ? new Date(values.buyDate) : undefined
-  const today = new Date()
-  const yesterday = new Date(today)
-  yesterday.setDate(today.getDate() - 1)
-  const formatDateLabel = (value?: string) => {
-    if (!value) return "Select"
-    const date = new Date(value)
-    if (Number.isNaN(date.getTime())) return "Select"
-    const day = `${date.getDate()}`.padStart(2, "0")
-    const month = date.toLocaleString("en-US", { month: "short" })
-    const year = date.getFullYear()
-    return `${day} ${month}, ${year}`
-  }
+
+  const sellDateDisabledDates = React.useMemo(() => {
+    if (!values.buyDate) return undefined
+    const buyDate = new Date(values.buyDate)
+    if (Number.isNaN(buyDate.getTime())) return undefined
+    const lastDisabled = new Date(buyDate)
+    lastDisabled.setDate(lastDisabled.getDate() - 1)
+    return [{ end: lastDisabled }]
+  }, [values.buyDate])
 
   return (
     <BaseCard className="desktop:p-24 desktop:self-stretch p-16">
@@ -127,11 +123,7 @@ const InputAction: React.FC<InputActionProps> = ({ values, onUpdate }) => {
                         canMultipleSelect={false}
                         hasTimeSelection={false}
                         disabledDates={
-                          id === "buyDate"
-                            ? [{ end: yesterday }]
-                            : buyDate
-                              ? [{ end: buyDate }]
-                              : undefined
+                          id === "sellDate" ? sellDateDisabledDates : undefined
                         }
                         defaultSelectedDays={
                           values[id]
@@ -142,7 +134,23 @@ const InputAction: React.FC<InputActionProps> = ({ values, onUpdate }) => {
                           if (!value.range.start) return
                           const nextValue = toISODate(value.range.start)
                           if (nextValue === values[id]) return
+                          if (id === "sellDate" && values.buyDate) {
+                            const normalizedValue =
+                              nextValue < values.buyDate
+                                ? values.buyDate
+                                : nextValue
+                            onUpdate(id, normalizedValue)
+                            close()
+                            return
+                          }
                           onUpdate(id, nextValue)
+                          if (
+                            id === "buyDate" &&
+                            values.sellDate &&
+                            values.sellDate < nextValue
+                          ) {
+                            onUpdate("sellDate", nextValue)
+                          }
                           close()
                         }}
                       />
