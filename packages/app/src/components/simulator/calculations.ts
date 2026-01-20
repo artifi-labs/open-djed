@@ -4,6 +4,7 @@ import * as React from "react"
 import { useProtocolData } from "@/hooks/useProtocolData"
 import { expectedStakingReturn, type CreditEntry } from "@/lib/staking"
 import { valueTo } from "@/lib/utils"
+import { toAdaUsdExchangeRate } from "@open-djed/math"
 
 export interface ScenarioInputs {
   shenAmount: number
@@ -79,25 +80,20 @@ export function useSimulatorResults(inputs: ScenarioInputs) {
   }
 }
 
-export function calculateSimulatorResults(
+function calculateSimulatorResults(
   inputs: ScenarioInputs,
   protocolData: ProtocolData,
 ): ResultsData {
   const { shenAmount, buyDate, sellDate, buyAdaPrice, sellAdaPrice } = inputs
   const { poolDatum } = protocolData
 
-  const toAdaUsdExchangeRate = (adaUsd: number) => {
-    if (!Number.isFinite(adaUsd) || adaUsd <= 0) return null
-    const scaled = Math.round(adaUsd * 1_000_000)
-    return { numerator: BigInt(scaled), denominator: 1_000_000n }
-  }
-
   // Build a new oracle datum using a user-provided ADA/USD price.
   const newOracleDatum = (adaUsd: number): ProtocolData["oracleDatum"] => {
-    const adaUsdExchangeRate = toAdaUsdExchangeRate(adaUsd)
-    if (!adaUsdExchangeRate) {
+    if (!Number.isFinite(adaUsd) || adaUsd <= 0) {
       throw new Error("ADA price must be greater than 0.")
     }
+
+    const adaUsdExchangeRate = toAdaUsdExchangeRate(adaUsd)
 
     return {
       oracleFields: {

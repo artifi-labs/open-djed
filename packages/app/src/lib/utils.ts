@@ -22,6 +22,24 @@ export function formatNumber(
   }).format(value)
 }
 
+/**
+ * Formats a percent value as an absolute percentage string.
+ *
+ * @param val - The percent value to format
+ * @returns The formatted percent string (e.g. "12.34%")
+ */
+export const formatPercent = (val: number) =>
+  `${formatNumber(Math.abs(val), { maximumFractionDigits: 2 })}%`
+
+/**
+ * Formats an ADA value with up to 4 decimal places.
+ *
+ * @param val - The ADA value to format
+ * @returns The formatted ADA string (e.g. "1.2345 ADA")
+ */
+export const formatADA = (val: number) =>
+  `${formatNumber(val, { maximumFractionDigits: 4 })} ADA`
+
 export const DEFAULT_SHOW_BALANCE = true
 
 const VALUE_KEYS = ["ADA", "DJED", "SHEN"]
@@ -40,6 +58,27 @@ export type ADAValue = {
 }
 
 export type Value = Partial<Record<"ADA" | TokenType, number>>
+
+export type ToUSDConverter = (value: Value, price: number) => string
+
+/**
+ * Formats a value in ADA into a USD string using a conversion function.
+ *
+ * @param toUSD - Converter that formats a value at the given price
+ * @param val - The ADA amount to convert
+ * @param price - The ADA/USD price used for conversion
+ * @param isReady - Whether conversion data is ready
+ * @returns The formatted USD string, or "$0.00" if conversion is not ready
+ */
+export const formatUSDValue = (
+  toUSD: ToUSDConverter | undefined,
+  val: number,
+  price: number,
+  isReady: boolean,
+): string => {
+  if (!toUSD || !isReady) return "$0.00"
+  return toUSD({ ADA: val }, price)
+}
 
 export const sumValues = (...values: Value[]): Value =>
   values.reduce(

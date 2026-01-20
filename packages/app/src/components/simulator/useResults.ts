@@ -1,7 +1,15 @@
 "use client"
 
 import { useMemo } from "react"
-import { formatNumber, type Value, isEmptyValue } from "@/lib/utils"
+import {
+  formatNumber,
+  formatADA,
+  formatPercent,
+  formatUSDValue,
+  isEmptyValue,
+  type ToUSDConverter,
+  type Value,
+} from "@/lib/utils"
 import {
   type ScenarioInputs,
   type ResultsData,
@@ -29,23 +37,6 @@ export type Results = {
   details: ResultItem[]
 }
 
-type ToUSDConverter = (value: Value, price: number) => string
-
-const formatUSD = (
-  toUSD: ToUSDConverter | undefined,
-  val: number,
-  price: number,
-  isReady: boolean,
-): string => {
-  if (!toUSD || !isReady) return "$0.00"
-  return toUSD({ ADA: val }, price)
-}
-
-const formatPercent = (val: number) =>
-  `${formatNumber(Math.abs(val), { maximumFractionDigits: 2 })}%`
-const formatADA = (val: number) =>
-  `${formatNumber(val, { maximumFractionDigits: 4 })} ADA`
-
 const createSectionConfigs = () => [
   {
     name: "totalPnl",
@@ -62,7 +53,10 @@ const createSectionConfigs = () => [
       toUSD: ToUSDConverter,
       prices: { buy: number; sell: number },
       isReady: boolean,
-    ) => [formatUSD(toUSD, main, prices.sell, isReady), formatPercent(sub)],
+    ) => [
+      formatUSDValue(toUSD, main, prices.sell, isReady),
+      formatPercent(sub),
+    ],
     className: "text-supportive-2-500",
   },
   {
@@ -95,7 +89,7 @@ const createSectionConfigs = () => [
       toUSD: ToUSDConverter,
       prices: { buy: number; sell: number },
       isReady: boolean,
-    ) => [formatADA(main), formatUSD(toUSD, sub, prices.buy, isReady)],
+    ) => [formatADA(main), formatUSDValue(toUSD, sub, prices.buy, isReady)],
   },
   {
     name: "sellFee",
@@ -112,7 +106,7 @@ const createSectionConfigs = () => [
       toUSD: ToUSDConverter,
       prices: { buy: number; sell: number },
       isReady: boolean,
-    ) => [formatADA(main), formatUSD(toUSD, sub, prices.sell, isReady)],
+    ) => [formatADA(main), formatUSDValue(toUSD, sub, prices.sell, isReady)],
   },
   {
     name: "stakingRewards",
@@ -129,7 +123,7 @@ const createSectionConfigs = () => [
       toUSD: ToUSDConverter,
       prices: { buy: number; sell: number },
       isReady: boolean,
-    ) => [formatADA(main), formatUSD(toUSD, sub, prices.sell, isReady)],
+    ) => [formatADA(main), formatUSDValue(toUSD, sub, prices.sell, isReady)],
     className: "text-primary",
   },
   {
@@ -147,7 +141,7 @@ const createSectionConfigs = () => [
       toUSD: ToUSDConverter,
       prices: { buy: number; sell: number },
       isReady: boolean,
-    ) => [formatADA(main), formatUSD(toUSD, sub, prices.sell, isReady)],
+    ) => [formatADA(main), formatUSDValue(toUSD, sub, prices.sell, isReady)],
   },
 ]
 
