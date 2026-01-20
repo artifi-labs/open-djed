@@ -137,7 +137,7 @@ const Footer = () => {
 
         <div className="bg-border-linear-gradient h-px w-full" />
 
-        <div className="flex flex-row justify-start gap-4">
+        <div className="flex flex-row justify-start gap-4 sm:justify-center">
           <Icon name="Legal" size={16} />
           <p className="text-xs">2025 Artifi. All rights are reserved</p>
         </div>
