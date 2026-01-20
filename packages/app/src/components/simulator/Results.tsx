@@ -9,7 +9,7 @@ import Tooltip from "../tooltip/Tooltip"
 import Icon from "../icons/Icon"
 import { isEmptyValue } from "@/lib/utils"
 import { ShenYieldChart } from "./charts/ShenYieldChart"
-import Snackbar from "../Snackbar"
+import { useToast } from "@/context/ToastContext"
 
 export type ResultsProps = {
   inputs: ScenarioInputs
@@ -94,7 +94,7 @@ const ResultSummaryItem: React.FC<ResultItem> = ({
 const Results: React.FC<ResultsProps> = ({ inputs }) => {
   const { totals, details } = useResults(inputs)
   const { results: simulatorData, error } = useSimulatorResults(inputs)
-  const [showSnackbar, setShowSnackbar] = React.useState(false)
+  const { showToast } = useToast()
 
   const isContentBlurred =
     isEmptyValue(inputs.shenAmount) ||
@@ -119,14 +119,12 @@ const Results: React.FC<ResultsProps> = ({ inputs }) => {
   )
 
   React.useEffect(() => {
-    setShowSnackbar(Boolean(error))
-  }, [error])
-
-  React.useEffect(() => {
-    if (!showSnackbar) return
-    const time = setTimeout(() => setShowSnackbar(false), 4000)
-    return () => clearTimeout(time)
-  }, [showSnackbar])
+    if (!error) return
+    showToast({
+      message: error,
+      type: "error",
+    })
+  }, [error, showToast])
 
   return (
     <>
@@ -165,19 +163,6 @@ const Results: React.FC<ResultsProps> = ({ inputs }) => {
           />
         </div>
       </BaseCard>
-
-      {showSnackbar && (
-        <div className="fixed right-24 bottom-24 z-50">
-          <Snackbar
-            text={error ?? ""}
-            type="error"
-            closeIcon={true}
-            leadingIcon="Information"
-            action={false}
-            onCloseClick={() => setShowSnackbar(false)}
-          />
-        </div>
-      )}
     </>
   )
 }
