@@ -134,7 +134,9 @@ const Footer = () => {
             </Link>
           ))}
         </div>
-        <div className="bg-border-footer-gradient h-[1px]" />
+
+        <div className="bg-border-linear-gradient h-px w-full" />
+
         <div className="flex flex-row justify-start gap-4">
           <Icon name="Legal" size={16} />
           <p className="text-xs">2025 Artifi. All rights are reserved</p>
@@ -146,7 +148,7 @@ const Footer = () => {
   const DesktopFooter = () => {
     return (
       <footer className="w-full">
-        <div className="px-navbar-margin pb-navbar-margin mx-auto flex max-w-[1440px] flex-col gap-24 pt-36">
+        <div className="px-navbar-margin pb-navbar-margin mx-auto flex max-w-360 flex-col gap-24 pt-36">
           <div className="flex flex-row justify-between">
             <Logo />
             <div className="flex flex-row items-center gap-40">
@@ -163,7 +165,9 @@ const Footer = () => {
               <SocialIcons items={socialIcons} />
             </div>
           </div>
-          <div className="bg-border-footer-gradient h-[1px]" />
+
+          <div className="bg-border-linear-gradient h-px w-full" />
+
           <div className="flex flex-row justify-center gap-4">
             <Icon name="Legal" size={16} />
             <p className="text-xs font-medium">
