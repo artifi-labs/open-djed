@@ -112,7 +112,7 @@ const Footer = () => {
 
   const MobileFooter = () => {
     return (
-      <footer className="px-navbar-margin-mobile flex flex-col gap-24 pt-20 pb-12">
+      <footer className="px-navbar-margin flex flex-col gap-24 pt-20 pb-12">
         <div className="flex flex-row justify-between px-8">
           <Logo />
           <div className="flex gap-10">
@@ -137,7 +137,7 @@ const Footer = () => {
 
         <div className="bg-border-linear-gradient h-px w-full" />
 
-        <div className="flex flex-row justify-start gap-4 sm:justify-center">
+        <div className="flex flex-row justify-start gap-4">
           <Icon name="Legal" size={16} />
           <p className="text-xs">2025 Artifi. All rights are reserved</p>
         </div>
