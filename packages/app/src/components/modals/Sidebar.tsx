@@ -3,10 +3,13 @@ import React from "react"
 import Modal from "./Modal"
 import clsx from "clsx"
 import ButtonIcon from "../ButtonIcon"
+import { type IconName } from "../icons/index"
 
 type SidePanelProps = {
   title: string
   logo?: boolean
+  titleClassName?: string
+  hasLeadingIcon?: IconName
   headerAction?: React.ReactNode
   closeButton?: React.ReactNode
   isOpen: boolean
@@ -18,6 +21,8 @@ type SidePanelProps = {
 export const Sidebar: React.FC<SidePanelProps> = ({
   title,
   logo = false,
+  titleClassName,
+  hasLeadingIcon,
   headerAction,
   closeButton,
   isOpen,
@@ -40,6 +45,8 @@ export const Sidebar: React.FC<SidePanelProps> = ({
     <Modal
       title={title}
       logo={logo}
+      titleClassName={titleClassName}
+      hasLeadingIcon={hasLeadingIcon}
       headerAction={baseHeaderAction}
       closeButton={closeButton}
       isOpen={isOpen}
