@@ -140,7 +140,7 @@ export const Navbar = () => {
 
   return (
     <header className="w-full">
-      <div className="desktop:px-navbar-margin px-navbar-margin-mobile mx-auto flex w-full flex-row items-center justify-between py-18">
+      <div className="px-navbar-margin mx-auto flex w-full flex-row items-center justify-between py-18">
         <div className="desktop:w-67.75">
           <Logo />
         </div>

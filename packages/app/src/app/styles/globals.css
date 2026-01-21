@@ -399,7 +399,6 @@
   --spacing-60: 60px;
 
   --spacing-navbar-margin: 18px;
-  --spacing-navbar-margin-mobile: 16px;
   --spacing-page-margin: 160px;
 
   /* Radius */
@@ -444,6 +443,7 @@
 @media (max-width: 1024px) {
   :root {
     --spacing-page-margin: 16px;
+    --spacing-navbar-margin: 16px;
   }
 }
 
