@@ -443,6 +443,7 @@
 @media (max-width: 1024px) {
   :root {
     --spacing-page-margin: 16px;
+    --spacing-navbar-margin: 16px;
   }
 }
 

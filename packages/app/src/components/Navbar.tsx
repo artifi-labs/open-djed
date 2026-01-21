@@ -140,7 +140,7 @@ export const Navbar = () => {
 
   return (
     <header className="w-full">
-      <div className="px-navbar-margin mx-auto flex w-full max-w-360 flex-row items-center justify-between py-18">
+      <div className="px-navbar-margin mx-auto flex w-full flex-row items-center justify-between py-18">
         <div className="desktop:w-67.75">
           <Logo />
         </div>
@@ -175,6 +175,8 @@ export const Navbar = () => {
             className="desktop:hidden cursor-pointer"
             onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
             icon={"Menu"}
+            variant="onlyIcon"
+            size="xlarge"
           />
 
           <Sidebar
