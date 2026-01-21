@@ -45,7 +45,7 @@ export const Modal: React.FC<ModalProps> = ({
   )
 
   const baseClassName = clsx(
-    "bg-surface-secondary rounded-8 relative flex max-h-[85vh] max-w-full min-w-xs flex-col overflow-hidden desktop:p-42 p-32 sm:max-h-[85vh] sm:max-w-200",
+    "bg-surface-secondary rounded-8 relative flex max-h-[85vh] max-w-full min-w-xs flex-col overflow-hidden desktop:p-24 p-16 sm:max-h-[85vh] sm:max-w-200",
     border,
     className,
   )
@@ -60,7 +60,7 @@ export const Modal: React.FC<ModalProps> = ({
         onClick={onClose}
       >
         <div className={baseClassName} onClick={(e) => e.stopPropagation()}>
-          <div className="sticky top-0 z-10 flex items-center justify-between pb-16">
+          <div className="sticky top-0 z-10 flex items-center justify-between pb-12">
             {logo ? (
               <Logo />
             ) : (
