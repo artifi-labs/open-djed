@@ -282,3 +282,27 @@ export const formatDateLabel = (value?: string) => {
   const year = date.getFullYear()
   return `${day} ${month}, ${year}`
 }
+
+const TIME_UNITS = [
+  1, 3, 6, 12, 24, 48, 168, 720, 2160, 4320, 8760, 17520, 43800, 87600,
+]
+
+function getTimeInterval(
+  totalHours: number,
+  maxPoints: number = 12,
+): number | undefined {
+  return (
+    TIME_UNITS.find((u) => totalHours / u <= maxPoints) ?? TIME_UNITS.at(-1)
+  )
+}
+
+export function useTimeInterval(
+  start: number,
+  end: number,
+  maxPoints = 12,
+): number | undefined {
+  const hourInMs = 60 * 60 * 1000
+  const totalHours = (end - start) / hourInMs
+  const interval = getTimeInterval(totalHours, maxPoints)
+  return interval ? interval * hourInMs : undefined
+}
