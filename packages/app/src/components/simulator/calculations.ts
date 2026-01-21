@@ -7,7 +7,7 @@ import { valueTo } from "@/lib/utils"
 import { toAdaUsdExchangeRate } from "@open-djed/math"
 
 export interface ScenarioInputs {
-  shenAmount: number
+  usdAmount: number
   buyDate: string
   sellDate: string
   buyAdaPrice: number
@@ -22,8 +22,8 @@ export interface ResultsData {
   feesEarned: number
   adaPnl: number
   adaPnlPercent: number
-  totalPnl: number
-  totalPnlPercent: number
+  shenPnl: number
+  shenPnlPercent: number
   initialAdaHoldings: number
   finalAdaHoldings: number
 }
@@ -37,15 +37,15 @@ const calculateFeesEarned = (
       adaUSDExchangeRate: { numerator: bigint; denominator: bigint }
     }
   },
-  shenAmount: number,
+  usdAmount: number,
 ): number => {
-  if (shenAmount <= 0) return 0
+  if (usdAmount <= 0) return 0
 
   ///1% annual APR
   const feeSharePercent = 0.01
 
   return valueTo(
-    { SHEN: shenAmount * (feeSharePercent / 100) },
+    { SHEN: usdAmount * (feeSharePercent / 100) },
     protocolData.poolDatum,
     oracleDatum,
     "ADA",
@@ -56,7 +56,7 @@ export function useSimulatorResults(inputs: ScenarioInputs) {
   const { data: protocolData } = useProtocolData()
 
   const results = React.useMemo(() => {
-    if (!protocolData || inputs.shenAmount <= 0) {
+    if (!protocolData || inputs.usdAmount <= 0) {
       return { data: null, error: null }
     }
 
@@ -84,7 +84,7 @@ function calculateSimulatorResults(
   inputs: ScenarioInputs,
   protocolData: ProtocolData,
 ): ResultsData {
-  const { shenAmount, buyDate, sellDate, buyAdaPrice, sellAdaPrice } = inputs
+  const { usdAmount, buyDate, sellDate, buyAdaPrice, sellAdaPrice } = inputs
   const { poolDatum } = protocolData
 
   // Build a new oracle datum using a user-provided ADA/USD price.
@@ -108,14 +108,14 @@ function calculateSimulatorResults(
   const buyActionData = protocolData.tokenActionData(
     "SHEN",
     "Mint",
-    shenAmount,
+    usdAmount,
     { oracleDatum: buyOracleDatum },
   )
 
   const sellActionData = protocolData.tokenActionData(
     "SHEN",
     "Burn",
-    shenAmount,
+    usdAmount,
     { oracleDatum: sellOracleDatum },
   )
 
@@ -135,7 +135,7 @@ function calculateSimulatorResults(
   const initialAdaHoldings = buyActionData.baseCost.ADA ?? 0
 
   // Staking rewards
-  const stakingInfo = expectedStakingReturn(shenAmount, buyDate, sellDate, {
+  const stakingInfo = expectedStakingReturn(usdAmount, buyDate, sellDate, {
     aprPercent: 2.5,
   })
   const stakingRewardsAda =
@@ -144,7 +144,7 @@ function calculateSimulatorResults(
   const feesEarnedAda = calculateFeesEarned(
     protocolData,
     sellOracleDatum,
-    shenAmount,
+    usdAmount,
   )
 
   const sellProceedsAda = sellActionData.toReceive.ADA ?? 0
@@ -159,9 +159,8 @@ function calculateSimulatorResults(
   // Total PNL
   const finalUsdValue = finalAdaHoldings * sellAdaPrice
   const investmentUsd = investmentAda * buyAdaPrice
-  const totalPnl = finalUsdValue - investmentUsd
-  const totalPnlPercent =
-    investmentUsd > 0 ? (totalPnl / investmentUsd) * 100 : 0
+  const shenPnl = finalUsdValue - investmentUsd
+  const shenPnlPercent = investmentUsd > 0 ? (shenPnl / investmentUsd) * 100 : 0
 
   return {
     buyFee: buyFeeAda,
@@ -171,8 +170,8 @@ function calculateSimulatorResults(
     feesEarned: feesEarnedAda,
     adaPnl,
     adaPnlPercent,
-    totalPnl,
-    totalPnlPercent,
+    shenPnl,
+    shenPnlPercent,
     initialAdaHoldings,
     finalAdaHoldings,
   }

@@ -20,9 +20,9 @@ const SCENARIO_CONFIG: Record<
   keyof ScenarioInputs,
   { label: string; tooltip: string }
 > = {
-  shenAmount: {
-    label: "SHEN Amount",
-    tooltip: "The number of SHEN tokens you purchased",
+  usdAmount: {
+    label: "USD Amount",
+    tooltip: "The amount of USD you want to invest in SHEN",
   },
   buyDate: {
     label: "Buy Date",
@@ -85,18 +85,18 @@ const InputAction: React.FC<InputActionProps> = ({ values, onUpdate }) => {
             {/* SHEN Amount */}
             <div className="desktop:gap-12 flex flex-col gap-10">
               <FieldLabel
-                label={SCENARIO_CONFIG.shenAmount.label}
-                tooltipText={SCENARIO_CONFIG.shenAmount.tooltip}
+                label={SCENARIO_CONFIG.usdAmount.label}
+                tooltipText={SCENARIO_CONFIG.usdAmount.tooltip}
               />
               <InputField
-                id="shen-amount"
+                id="usd-amount"
                 placeholder="0"
                 value={
-                  values.shenAmount.toString() === "0"
+                  values.usdAmount.toString() === "0"
                     ? ""
-                    : values.shenAmount.toString()
+                    : values.usdAmount.toString()
                 }
-                onValueChange={(val) => handleValueChange("shenAmount", val)}
+                onValueChange={(val) => handleValueChange("usdAmount", val)}
                 size="Medium"
                 autoComplete="off"
                 maxValue={Number.MAX_SAFE_INTEGER}

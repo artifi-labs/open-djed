@@ -302,6 +302,8 @@ export function MultiAreaChart({
             interval={interval}
             axisLine={false}
             tickLine={false}
+            minTickGap={30}
+            padding={{ left: 10, right: 20 }}
             tick={{
               dy: 12,
               fontSize: 10,

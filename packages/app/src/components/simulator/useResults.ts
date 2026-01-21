@@ -39,13 +39,13 @@ export type Results = {
 
 const createSectionConfigs = () => [
   {
-    name: "totalPnl",
-    label: "Total PNL",
-    tooltip: "Your total profit or loss from buying SHEN, including all fees",
+    name: "shenPnl",
+    label: "SHEN PNL",
+    tooltip: "Your profit or loss from investing in SHEN, including all fees",
     isTotal: true,
     read: (d: Partial<ResultsData>) => ({
-      main: d.totalPnl ?? 0,
-      sub: d.totalPnlPercent ?? 0,
+      main: d.shenPnl ?? 0,
+      sub: d.shenPnlPercent ?? 0,
     }),
     format: (
       main: number,
@@ -62,7 +62,7 @@ const createSectionConfigs = () => [
   {
     name: "adaPnl",
     label: "ADA PNL",
-    tooltip: "Your profit or loss from buying SHEN expressed in ADA",
+    tooltip: "Your profit or loss from investing in ADA",
     isTotal: true,
     read: (d: Partial<ResultsData>) => ({
       main: d.adaPnl ?? 0,
@@ -154,15 +154,15 @@ export function useResults(
   return useMemo(() => {
     const configs = createSectionConfigs()
     const isReady =
-      !isEmptyValue(inputs.shenAmount) &&
+      !isEmptyValue(inputs.usdAmount) &&
       !isEmptyValue(inputs.buyAdaPrice) &&
       !isEmptyValue(inputs.sellAdaPrice)
     const data = isReady && simulatorData ? simulatorData : {}
 
     const toUSD: ToUSDConverter = (value: Value, price: number) => {
       const adaAmount = value.ADA ?? 0
-      const shenAmount = value.SHEN ?? 0
-      const totalAmount = adaAmount + shenAmount
+      const usdAmount = value.SHEN ?? 0
+      const totalAmount = adaAmount + usdAmount
       const usdValue = totalAmount * price
       return `$${formatNumber(usdValue, { maximumFractionDigits: 2 })}`
     }

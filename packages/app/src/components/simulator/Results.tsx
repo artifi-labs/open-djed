@@ -97,7 +97,7 @@ const Results: React.FC<ResultsProps> = ({ inputs }) => {
   const { showToast } = useToast()
 
   const isContentBlurred =
-    isEmptyValue(inputs.shenAmount) ||
+    isEmptyValue(inputs.usdAmount) ||
     isEmptyValue(inputs.buyAdaPrice) ||
     isEmptyValue(inputs.sellAdaPrice) ||
     isEmptyValue(inputs.buyDate) ||
@@ -133,35 +133,37 @@ const Results: React.FC<ResultsProps> = ({ inputs }) => {
         overlay={isContentBlurred}
         overlayContent={BlurContent || undefined}
       >
-        <div className="flex flex-col gap-24">
-          {/* Total PNL and ADA PNL */}
-          <div className="desktop:grid-cols-2 desktop:gap-24 grid grid-rows-1 gap-16">
-            {totals.map((item) => (
-              <ResultSummaryItem key={item.label} {...item} />
-            ))}
-          </div>
+        {isContentBlurred ? null : (
+          <div className="flex flex-col gap-24">
+            {/* Total PNL and ADA PNL */}
+            <div className="desktop:grid-cols-2 desktop:gap-24 grid grid-rows-1 gap-16">
+              {totals.map((item) => (
+                <ResultSummaryItem key={item.label} {...item} />
+              ))}
+            </div>
 
-          {/* Fees and Rewards */}
-          <div className="desktop:grid-cols-2 desktop:gap-18 grid flex-1 grid-rows-1 gap-16">
-            {details.map((item) => (
-              <ResultSummaryItem key={item.label} {...item} />
-            ))}
-          </div>
+            {/* Fees and Rewards */}
+            <div className="desktop:grid-cols-2 desktop:gap-18 grid flex-1 grid-rows-1 gap-16">
+              {details.map((item) => (
+                <ResultSummaryItem key={item.label} {...item} />
+              ))}
+            </div>
 
-          {/* Chart */}
-          <ShenYieldChart
-            buyDate={inputs.buyDate}
-            sellDate={inputs.sellDate}
-            initialHoldings={simulatorData?.initialAdaHoldings ?? 0}
-            finalHoldings={simulatorData?.finalAdaHoldings ?? 0}
-            buyPrice={inputs.buyAdaPrice}
-            sellPrice={inputs.sellAdaPrice}
-            buyFees={simulatorData?.buyFee ?? 0}
-            sellFees={simulatorData?.sellFee ?? 0}
-            feesEarned={simulatorData?.feesEarned ?? 0}
-            stakingRewards={simulatorData?.stakingCredits ?? []}
-          />
-        </div>
+            {/* Chart */}
+            <ShenYieldChart
+              buyDate={inputs.buyDate}
+              sellDate={inputs.sellDate}
+              initialHoldings={simulatorData?.initialAdaHoldings ?? 0}
+              finalHoldings={simulatorData?.finalAdaHoldings ?? 0}
+              buyPrice={inputs.buyAdaPrice}
+              sellPrice={inputs.sellAdaPrice}
+              buyFees={simulatorData?.buyFee ?? 0}
+              sellFees={simulatorData?.sellFee ?? 0}
+              feesEarned={simulatorData?.feesEarned ?? 0}
+              stakingRewards={simulatorData?.stakingCredits ?? []}
+            />
+          </div>
+        )}
       </BaseCard>
     </>
   )
