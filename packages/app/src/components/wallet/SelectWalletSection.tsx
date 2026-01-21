@@ -32,7 +32,7 @@ const SelectWalletSection: React.FC<SelectWalletSectionProps> = ({
           <button
             key={wallet.id}
             onClick={() => onClick(wallet.id)}
-            className="cursor-pointer"
+            className="flex cursor-pointer"
           >
             <ListItem
               divider={index < wallets.length - 1}
