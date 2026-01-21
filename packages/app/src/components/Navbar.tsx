@@ -208,7 +208,7 @@ export const Navbar = () => {
             isOpen={isMobileSidebarOpen}
             onClose={() => setIsMobileSidebarOpen(false)}
           >
-            <div className="flex h-full flex-col justify-between pt-38">
+            <div className="flex h-full flex-col justify-between pt-28">
               <nav
                 className="flex flex-col gap-24"
                 aria-label="Main navigation"
