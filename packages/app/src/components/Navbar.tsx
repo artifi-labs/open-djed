@@ -84,7 +84,7 @@ const NetworkBadge: React.FC<NetworkBadgeProps> = ({
   const basePath = "/components/badge-icon/"
   const srcFile = `${basePath}/elipse.svg`
 
-  const baseClassName = clsx("flex gap-4 items-center", className)
+  const baseClassName = clsx("flex gap-8 items-center", className)
 
   const targetNetwork = network === "Mainnet" ? "Preprod" : "Mainnet"
 
@@ -208,27 +208,19 @@ export const Navbar = () => {
             isOpen={isMobileSidebarOpen}
             onClose={() => setIsMobileSidebarOpen(false)}
           >
-            <div className="flex h-full flex-col justify-between">
-              <nav className="flex flex-col gap-6" aria-label="Main navigation">
+            <div className="flex h-full flex-col justify-between pt-38">
+              <nav
+                className="flex flex-col gap-24"
+                aria-label="Main navigation"
+              >
                 {navLinks.map((item) => {
-                  const isActive = pathname === item.href
                   return (
                     <Link
                       key={item.href}
                       href={item.href}
                       className={clsx(
-                        "desktop:text-md w-fit p-6 font-medium transition-all",
-                        isActive && "border-b-2",
+                        "desktop:text-md w-fit p-6 text-sm font-medium transition-all",
                       )}
-                      style={
-                        isActive
-                          ? {
-                              borderImageSource:
-                                "var(--color-gradient-angular-2)",
-                              borderImageSlice: 1,
-                            }
-                          : {}
-                      }
                       onClick={() => setIsMobileSidebarOpen(false)}
                     >
                       {item.label}
