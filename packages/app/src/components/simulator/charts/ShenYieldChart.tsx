@@ -8,6 +8,8 @@ import {
   type AggregationConfig,
   type DataRow,
 } from "@/utils/timeseries"
+import { useTimeInterval } from "@/lib/utils"
+import { useViewport } from "@/hooks/useViewport"
 
 type ShenYieldChartProps = {
   buyDate: string
@@ -34,6 +36,7 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
   feesEarned,
   stakingRewards,
 }) => {
+  const { isMobile } = useViewport()
   const aggregations: AggregationConfig = {
     ADA: ["avg"],
     ADAAfterFees: ["avg"],
@@ -68,27 +71,26 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
       const month = date.toLocaleString(undefined, { month: "short" })
       const year = date.getFullYear()
       const displayedYear = date.toLocaleString(undefined, { year: "numeric" })
-
-      // 1. Logic for short durations (Show Month + Day)
+      // less than a year, show month + day
       if (totalDays <= 365) {
         return date.toLocaleDateString(undefined, {
           month: "short",
           day: "numeric",
         })
       }
+      // more than 10 years, show only year
       if (totalDays >= 365 * 10) {
         return date.toLocaleDateString(undefined, {
           year: "numeric",
         })
       }
 
-      // 2. Logic for long durations (Conditional Year)
-      // Always show Year on the first tick
+      // always show Year on the first tick
       if (index === 0) {
         return `${month}, ${displayedYear}`
       }
 
-      // Check if this tick's year is different from the previous tick's year
+      // check if this tick's year is different from the previous tick's year
       if (index !== undefined && results[index - 1]) {
         const prevDate = new Date(results[index - 1].date as string)
         const prevYear = prevDate.getFullYear()
@@ -98,29 +100,16 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
         }
       }
 
-      // Default: just show the month
-      return month
+      // default - show the year
+      return displayedYear
     }
 
     // dynamically define x-axis interval for data aggregation
-    let newInterval: number
-
-    if (totalDays <= 30) {
-      newInterval = dayInMs // Daily for a month
-    } else if (totalDays <= 365) {
-      newInterval = 7 * dayInMs // Weekly for a year
-    } else if (totalDays <= 365 * 2) {
-      newInterval = 30 * dayInMs // Monthly for 2 years
-    } else if (totalDays <= 365 * 10) {
-      newInterval = 30 * 6 * dayInMs // Quarterly for 10 years
-    } else if (totalDays <= 365 * 30) {
-      newInterval = 365 * 3 * dayInMs // Yearly for 30 years
-    } else if (totalDays <= 365 * 50) {
-      newInterval = 365 * 6 * dayInMs // Every 2 years for 50 years
-    } else {
-      // Up to 100 years: Every 5 years
-      newInterval = 365 * 20 * dayInMs
-    }
+    const newInterval = useTimeInterval(
+      startDate.getTime(),
+      endDate.getTime(),
+      isMobile ? 6 : 12,
+    )
 
     const data: DataRow[] = []
 
@@ -178,7 +167,7 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
     // Aggregate the daily data into buckets
     const results = aggregateByBucket(
       data,
-      newInterval,
+      newInterval ?? 0,
       new Date(data[0].date),
       aggregations,
     )
@@ -208,12 +197,26 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
     })
 
     // Calculate y-axis domain with padding
-    const minY = Math.floor((finalHoldings - sellFees) * 0.95)
-    const maxY = Math.ceil(Math.max(finalHoldings * 1.05, finalHoldings + 1))
+    const allValues = results
+      .flatMap((row) => [
+        (row.ADA_avg as number) || 0,
+        (row.ADAAfterFees_avg as number) || 0,
+      ])
+      .filter((v) => v > 0)
 
-    // Ensure valid y-axis domain
+    const dataMin = Math.min(...allValues)
+    const dataMax = Math.max(...allValues)
+    const dataRange = dataMax - dataMin
+
+    // For a volatile range, 15% of the spread is usually enough to center it.
+    // If the data is flat (range is 0), we fallback to a 5% buffer of the absolute value.
+    const verticalPadding = dataRange > 0 ? dataRange * 0.15 : dataMin * 0.05
+
+    const minY = Math.max(0, Math.floor(dataMin - verticalPadding))
+    const maxY = Math.ceil(dataMax + verticalPadding)
+
     const finalYDomain: [number, number] =
-      minY < maxY ? [minY, maxY] : [0, finalHoldings + 10]
+      minY < maxY ? [minY, maxY] : [0, dataMax + 10]
 
     return { results, yDomain: finalYDomain, xAxisFormater: formatter }
   }, [
