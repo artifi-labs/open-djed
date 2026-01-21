@@ -36,6 +36,7 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
 }) => {
   const aggregations: AggregationConfig = {
     ADA: ["avg"],
+    ADAAfterFees: ["avg"],
     usdValue: ["avg"],
   }
 
@@ -60,50 +61,65 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
     const priceStep = totalDays > 1 ? priceDifference / (totalDays - 1) : 0
 
     // dynamic formatter for xAxis
-    const formatter = (value: string | number) => {
+    const formatter = (value: string | number, index?: number) => {
       const date = new Date(value)
       if (isNaN(date.getTime())) return String(value)
 
+      const month = date.toLocaleString(undefined, { month: "short" })
+      const year = date.getFullYear()
+      const displayedYear = date.toLocaleString(undefined, { year: "numeric" })
+
+      // 1. Logic for short durations (Show Month + Day)
       if (totalDays <= 365) {
         return date.toLocaleDateString(undefined, {
           month: "short",
           day: "numeric",
         })
-      } else if (totalDays < 730) {
-        const month = date.toLocaleString(undefined, { month: "short" })
-        const year = date.toLocaleString(undefined, { year: "2-digit" })
-        return `${month}, ${year}`
-      } else {
-        return date.getFullYear().toString()
       }
+      if (totalDays >= 365 * 10) {
+        return date.toLocaleDateString(undefined, {
+          year: "numeric",
+        })
+      }
+
+      // 2. Logic for long durations (Conditional Year)
+      // Always show Year on the first tick
+      if (index === 0) {
+        return `${month}, ${displayedYear}`
+      }
+
+      // Check if this tick's year is different from the previous tick's year
+      if (index !== undefined && results[index - 1]) {
+        const prevDate = new Date(results[index - 1].date as string)
+        const prevYear = prevDate.getFullYear()
+
+        if (year !== prevYear) {
+          return `${month}, ${displayedYear}`
+        }
+      }
+
+      // Default: just show the month
+      return month
     }
 
-    // dynamically define x-axis interval for aggregation
+    // dynamically define x-axis interval for data aggregation
     let newInterval: number
 
-    if (totalDays <= 60) {
-      //2 months
-      newInterval = 7 * dayInMs
-    } else if (totalDays < 365) {
-      //1 year
-      newInterval = 30 * dayInMs
-    } else if (totalDays < 730) {
-      //2 years
-      newInterval = 60 * dayInMs
-    } else if (totalDays < 3653) {
-      // 10 years
-      newInterval = 365 * dayInMs
-    } else if (totalDays < 7300) {
-      // 20 years
-      newInterval = 730 * dayInMs
-    } else if (totalDays < 14600) {
-      //40 years
-      newInterval = 1460 * dayInMs
-    } else if (totalDays < 25550) {
-      //75 years
-      newInterval = 3650 * dayInMs
+    if (totalDays <= 30) {
+      newInterval = dayInMs // Daily for a month
+    } else if (totalDays <= 365) {
+      newInterval = 7 * dayInMs // Weekly for a year
+    } else if (totalDays <= 365 * 2) {
+      newInterval = 30 * dayInMs // Monthly for 2 years
+    } else if (totalDays <= 365 * 10) {
+      newInterval = 30 * 6 * dayInMs // Quarterly for 10 years
+    } else if (totalDays <= 365 * 30) {
+      newInterval = 365 * 3 * dayInMs // Yearly for 30 years
+    } else if (totalDays <= 365 * 50) {
+      newInterval = 365 * 6 * dayInMs // Every 2 years for 50 years
     } else {
-      newInterval = 7300 * dayInMs
+      // Up to 100 years: Every 5 years
+      newInterval = 365 * 20 * dayInMs
     }
 
     const data: DataRow[] = []
@@ -140,8 +156,11 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
       // Calculate ADA price for this day (linear interpolation)
       const priceForDay: number = buyPrice + i * priceStep
 
-      // Current holdings in ADA
+      // Current holdings in ADA (without fees deducted)
       const holdingsForDay: number = currentHoldings
+
+      // Holdings after fees (deduct proportional fees)
+      const holdingsAfterFees: number = currentHoldings - buyFees
 
       // USD value at current day's price
       const usdValueForDay: number = holdingsForDay * priceForDay
@@ -149,6 +168,7 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
       data.push({
         date: d,
         ADA: holdingsForDay,
+        ADAAfterFees: holdingsAfterFees,
         usdValue: usdValueForDay,
         investedAda,
         investedUsd,
@@ -163,65 +183,13 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
       aggregations,
     )
 
-    // Add point showing initial investment BEFORE buy fees
-    results.unshift({
-      date: new Date(startDate.getTime()).toISOString(),
-      ADA_avg: investedAda,
-      usdValue_avg: investedUsd,
-      investedAda,
-      investedUsd,
-    } as unknown as DataRow)
-
-    // Add point showing final value AFTER sell fees
-    results.push({
-      date: new Date(endDate.getTime() + dayInMs).toISOString(),
-      ADA_avg: finalHoldings - sellFees,
-      usdValue_avg: (finalHoldings - sellFees) * sellPrice,
-      investedAda,
-      investedUsd,
-    } as unknown as DataRow)
-
-    if (results.length > 1) {
-      // First element - show as buy fees (red area)
-      results[0].ADA_avg_buy_fees = results[0].ADA_avg
-      delete results[0].ADA_avg
-
-      // Second element - transition from buy fees to holdings
-      results[1].ADA_avg_buy_fees = results[1].ADA_avg
-      // Keep results[1].ADA_avg as well for smooth transition
-
-      // Second-to-last element - transition from holdings to sell fees
-      const secondLastIndex = results.length - 2
-      results[secondLastIndex].ADA_avg_sell_fees =
-        results[secondLastIndex].ADA_avg
-      // Keep results[secondLastIndex].ADA_avg as well for smooth transition
-
-      // Last element - show as sell fees (red area)
-      const lastIndex = results.length - 1
-      results[lastIndex].ADA_avg_sell_fees = results[lastIndex].ADA_avg
-      delete results[lastIndex].ADA_avg
-
-      const usdBuyFeeValue = buyFees * buyPrice
-      const usdSellFeeValue = sellFees * sellPrice
-
-      results.forEach((row) => {
-        row.buyFeeValue = buyFees
-        row.usdBuyFeeValue = usdBuyFeeValue
-        row.sellFeeValue = sellFees
-        row.usdSellFeeValue = usdSellFeeValue
-        row.investedAda = investedAda
-        row.investedUsd = investedUsd
-      })
-    }
-
     const buyTs = startDate.getTime()
     const sellTs = endDate.getTime()
     const priceRange = sellPrice - buyPrice
     const totalRange = sellTs - buyTs
 
     results.forEach((row) => {
-      const adaValue =
-        row.ADA_avg ?? row.ADA_avg_buy_fees ?? row.ADA_avg_sell_fees ?? 0
+      const adaValue = row.ADA_avg ?? 0
       const rowTs = new Date(row.date).getTime()
       const ratio =
         Number.isFinite(totalRange) && totalRange > 0
@@ -229,13 +197,18 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
           : 0
       const priceAtRow = buyPrice + ratio * priceRange
       row.priceAtRow = priceAtRow
+      row.buyFees = buyFees
+      row.sellFees = sellFees
+      row.investedAda = investedAda
+      row.investedUsd = investedUsd
+
       if (!Number.isFinite(row.usdValue_avg)) {
         row.usdValue_avg = (adaValue as number) * priceAtRow
       }
     })
 
     // Calculate y-axis domain with padding
-    const minY = Math.floor((initialHoldings + buyFees) * 0.95)
+    const minY = Math.floor((finalHoldings - sellFees) * 0.95)
     const maxY = Math.ceil(Math.max(finalHoldings * 1.05, finalHoldings + 1))
 
     // Ensure valid y-axis domain
@@ -258,29 +231,23 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
 
   const areas = [
     {
-      dataKey: "ADA_avg_buy_fees",
-      name: "Buy Fees",
-      tooltipLabel: "Buy Fee",
-      strokeColor: "var(--color-supportive-3-500)",
-      fillColor: "var(--color-supportive-3-500)",
-      fillOpacity: 0.1,
-    },
-    {
       dataKey: "ADA_avg",
-      name: "ADA Holdings",
-      tooltipLabel: "Earnings",
+      name: "Total ADA Holdings",
+      tooltipLabel: "Total Holdings",
       strokeColor: "var(--color-supportive-3-500)",
-      fillColor: "var(--color-supportive-3-500)",
-      fillOpacity: 0.1,
-      tag: "remove_duplicate_label_on_tooltip",
+      fillColor: "transparent",
+      fillOpacity: 0,
+      strokeWidth: 2,
     },
     {
-      dataKey: "ADA_avg_sell_fees",
-      name: "Sell Fees",
-      tooltipLabel: "Sell Fee",
-      strokeColor: "var(--color-supportive-3-500)",
-      fillColor: "var(--color-supportive-3-500)",
-      fillOpacity: 0.1,
+      dataKey: "ADAAfterFees_avg",
+      name: "ADA After Fees",
+      tooltipLabel: "After Fees",
+      strokeColor: "var(--color-red-500)",
+      fillColor: "transparent",
+      fillOpacity: 0,
+      strokeWidth: 2,
+      strokeDasharray: "5 5",
     },
   ]
 
@@ -316,24 +283,9 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
     name: string,
     payload: Record<string, unknown>,
   ) => {
-    const dataKey = name
-    const isBuyFee = dataKey === "ADA_avg_buy_fees"
-    const isSellFee = dataKey === "ADA_avg_sell_fees"
-
-    const adaValue = isBuyFee
-      ? (payload.buyFeeValue as number)
-      : isSellFee
-        ? (payload.sellFeeValue as number)
-        : value
-    const safeAda = Number.isFinite(adaValue) ? adaValue : 0
+    const safeAda = Number.isFinite(value) ? value : 0
     const priceAtRow = payload.priceAtRow as number
-    const usdValue = isBuyFee
-      ? (payload.usdBuyFeeValue as number)
-      : isSellFee
-        ? (payload.usdSellFeeValue as number)
-        : Number.isFinite(priceAtRow)
-          ? safeAda * priceAtRow
-          : (payload[`usdValue_${aggregations.usdValue[0]}`] as number)
+    const usdValue = Number.isFinite(priceAtRow) ? safeAda * priceAtRow : 0
 
     const safeUsd = Number.isFinite(usdValue) ? usdValue : 0
     const adaFormatted = safeAda.toLocaleString(undefined, {
@@ -345,15 +297,9 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
       maximumFractionDigits: 2,
     })
 
-    if (
-      name.toLowerCase().includes("ada") ||
-      name.toLowerCase().includes("fee")
-    ) {
-      return `₳${adaFormatted} ($${usdFormatted})`
-    }
-
-    return adaFormatted
+    return `₳${adaFormatted} ($${usdFormatted})`
   }
+
   return (
     <MultiAreaChart
       title="ADA Holdings"

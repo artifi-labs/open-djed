@@ -67,7 +67,7 @@ type MultiAreaChartProps = {
   xTicks?: Array<string | number>
   interval?: number
   areas: AreaSeries[]
-  xTickFormatter?: (value: string | number) => string
+  xTickFormatter?: (value: string | number, index?: number) => string
   tickFormatter?: (value: number) => string
   tooltipFormatter?: (
     value: number,
@@ -309,17 +309,8 @@ export function MultiAreaChart({
               fill: "var(--color-tertiary)",
               fontWeight: 400,
             }}
-            tickFormatter={
-              xTickFormatter
-                ? xTickFormatter
-                : (value) => {
-                    const date = new Date(value)
-                    const month = date.toLocaleString(undefined, {
-                      month: "short",
-                    })
-                    const year = date.getFullYear()
-                    return `${month}, ${year}`
-                  }
+            tickFormatter={(value, index) =>
+              xTickFormatter ? xTickFormatter(value, index) : value
             }
           />
 
