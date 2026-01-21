@@ -7,6 +7,7 @@ import Coin from "./Coin"
 import type { IconCoinName } from "./Coin"
 import type { WalletName } from "./Wallet"
 import Wallet from "./Wallet"
+import { clsx } from "clsx"
 
 type BaseProps = {
   divider?: boolean
@@ -58,9 +59,18 @@ const ListItem: React.FC<ListItemProps> = ({
   className,
 }) => {
   return (
-    <div className="inline-block w-full max-w-90.5">
+    <div
+      className={clsx(
+        "inline-block w-full max-w-90.5 overflow-hidden",
+        "hover:rounded-4 focus:rounded-4 active:rounded-4",
+      )}
+    >
       <div
-        className={`hover:bg-no-color-hover active:bg-no-color-pressed focus:bg-no-color-focused border-border-primary inline-flex w-full items-center justify-between gap-8 bg-transparent p-8 ${className || ""}`}
+        className={clsx(
+          "hover:bg-no-color-hover active:bg-no-color-pressed focus:bg-no-color-focused",
+          "inline-flex w-full items-center justify-between gap-8 bg-transparent p-8",
+          className,
+        )}
         onClick={onClick}
       >
         <div className="flex flex-1 flex-row items-center gap-8">
