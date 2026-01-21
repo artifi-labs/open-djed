@@ -7,6 +7,7 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
+  Legend,
 } from "recharts"
 import Icon from "../../icons/Icon"
 
@@ -74,6 +75,7 @@ type MultiAreaChartProps = {
     dataKey: string,
     payload: Record<string, unknown>,
   ) => string
+  showLegend?: boolean
 }
 
 const CustomTooltip = ({
@@ -204,6 +206,7 @@ export function MultiAreaChart({
   tickFormatter,
   xTickFormatter,
   tooltipFormatter,
+  showLegend = false,
 }: MultiAreaChartProps) {
   return (
     <div className="flex h-full w-full flex-col gap-6">
@@ -346,6 +349,19 @@ export function MultiAreaChart({
               />
             }
           />
+
+          {showLegend && (
+            <Legend
+              verticalAlign="top"
+              align="right"
+              iconType="circle"
+              wrapperStyle={{
+                paddingBottom: "20px",
+                fontSize: "12px",
+                fontFamily: "Poppins",
+              }}
+            />
+          )}
 
           {areas.map((area, index) => (
             <Area
