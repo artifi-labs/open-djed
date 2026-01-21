@@ -20,6 +20,7 @@ const Order = () => {
   const [page, setPage] = useState(1)
   const [pagination, setPagination] = useState<Pagination>()
   const { orders, fetchOrders } = useOrders()
+  const hasOrders = orders.length > 0
 
   useEffect(() => {
     fetchOrders(page, ORDERS_PER_PAGE, selectedFilter)
@@ -65,9 +66,10 @@ const Order = () => {
         </BaseCard>
       ) : (
         <>
-          <div className="flex flex-row justify-start gap-8 py-18">
-            {/* Search */}
-            {/*<div className="flex items-center">
+          {hasOrders && (
+            <div className="flex flex-row justify-start gap-8 py-18">
+              {/* Search */}
+              {/*<div className="flex items-center">
               <SearchInput
                 id="search-input"
                 placeholder="Search"
@@ -75,34 +77,35 @@ const Order = () => {
               />
             </div>*/}
 
-            {/* Calendar */}
-            {/*{<div className="flex w-fit items-center">
+              {/* Calendar */}
+              {/*{<div className="flex w-fit items-center">
               <ButtonIcon variant="secondary" size="small" icon="Calendar" />
             </div>}*/}
 
-            {/* Filters */}
-            <div className="flex w-full flex-row justify-end gap-8">
-              {statusFiltersArray.map((status) => (
-                <Chip
-                  key={status}
-                  text={status}
-                  size="small"
-                  variant={"outlined"}
-                  onClick={() => {
-                    setSelectedFilter(status)
-                    setPage(1)
-                  }}
-                  active={selectedFilter === status}
-                />
-              ))}
+              {/* Filters */}
+              <div className="flex w-full flex-row justify-start gap-8 sm:justify-end">
+                {statusFiltersArray.map((status) => (
+                  <Chip
+                    key={status}
+                    text={status}
+                    size="small"
+                    variant={"outlined"}
+                    onClick={() => {
+                      setSelectedFilter(status)
+                      setPage(1)
+                    }}
+                    active={selectedFilter === status}
+                  />
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Table */}
           <OrderHistory
             totalPages={pagination?.totalPages}
             data={orders}
-            filters={selectedFilter !== "All" && orders.length > 0}
+            filters={selectedFilter !== "All" && hasOrders}
             totalCount={
               pagination && pagination.totalPages > 1
                 ? pagination.totalOrders
