@@ -11,7 +11,7 @@ export type Variant =
   | "destructive"
   | "onlyIcon"
 
-export type Size = "tiny" | "small" | "medium" | "large"
+export type Size = "tiny" | "small" | "medium" | "large" | "xlarge"
 
 type BaseButtonIconProps = {
   id?: string
@@ -98,6 +98,7 @@ const ButtonIcon: React.FC<BaseButtonIconProps> = ({
     small: "p-8",
     medium: "p-10",
     large: "p-16",
+    xlarge: "p-0",
   }
 
   const iconSize: Record<Size, number> = {
@@ -105,6 +106,7 @@ const ButtonIcon: React.FC<BaseButtonIconProps> = ({
     small: 14,
     medium: 22,
     large: 24,
+    xlarge: 32,
   }
 
   const classes = clsx(

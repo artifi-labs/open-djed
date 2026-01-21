@@ -176,6 +176,7 @@ export const Navbar = () => {
             onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
             icon={"Menu"}
             variant="onlyIcon"
+            size="xlarge"
           />
 
           <Sidebar
