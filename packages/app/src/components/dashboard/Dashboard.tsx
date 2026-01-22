@@ -21,7 +21,7 @@ const Dashboard = () => {
           <h2 className="font-bold">Open DJED</h2>
           <span className="text-secondary text-xs">Stablecoin</span>
         </div>
-        <div>
+        <div className="flex items-center">
           <Button
             variant="text"
             size="medium"
