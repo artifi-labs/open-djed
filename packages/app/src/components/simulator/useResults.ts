@@ -6,6 +6,7 @@ import {
   formatADA,
   formatPercent,
   formatUSDValue,
+  formatUSD,
   isEmptyValue,
   type ToUSDConverter,
   type Value,
@@ -50,11 +51,11 @@ const createSectionConfigs = () => [
     format: (
       main: number,
       sub: number,
-      toUSD: ToUSDConverter,
-      prices: { buy: number; sell: number },
+      _toUSD: ToUSDConverter,
+      _prices: { buy: number; sell: number },
       isReady: boolean,
     ) => [
-      formatUSDValue(toUSD, main, prices.sell, isReady),
+      isReady ? formatUSD(Number(main.toFixed(2))) : "$0.00",
       formatPercent(sub),
     ],
     className: "text-supportive-2-500",
@@ -68,8 +69,14 @@ const createSectionConfigs = () => [
       main: d.adaPnl ?? 0,
       sub: d.adaPnlPercent ?? 0,
     }),
-    format: (main: number, sub: number) => [
-      formatADA(main),
+    format: (
+      main: number,
+      sub: number,
+      _toUSD: ToUSDConverter,
+      _prices: { buy: number; sell: number },
+      isReady: boolean,
+    ) => [
+      isReady ? formatUSD(Number(main.toFixed(2))) : "$0.00",
       formatPercent(sub),
     ],
     className: "text-supportive-2-500",

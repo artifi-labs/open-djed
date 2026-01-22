@@ -16,6 +16,7 @@ type ShenYieldChartProps = {
   sellDate: string
   initialHoldings: number
   finalHoldings: number
+  usdAmount: number
   buyPrice: number
   sellPrice: number
   buyFees: number
@@ -29,6 +30,7 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
   sellDate,
   initialHoldings,
   finalHoldings,
+  usdAmount,
   buyPrice,
   sellPrice,
   buyFees,
@@ -38,9 +40,8 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
 }) => {
   const { isMobile } = useViewport()
   const aggregations: AggregationConfig = {
-    ADA: ["avg"],
-    ADAAfterFees: ["avg"],
-    usdValue: ["avg"],
+    adaPnlUsd: ["avg"],
+    shenPnlUsd: ["avg"],
   }
 
   const { results, yDomain, xAxisFormater } = useMemo(() => {
@@ -126,11 +127,17 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
     // Calculate daily protocol fees earned
     const dailyFeesEarned = totalDays > 0 ? feesEarned / totalDays : 0
 
-    const investedAda = initialHoldings + buyFees
-    const investedUsd = investedAda * buyPrice
+    const totalRewards = stakingRewards.reduce(
+      (acc, entry) => acc + entry.reward,
+      0,
+    )
+    const holdingsEndBase = initialHoldings + totalRewards + feesEarned
+    const shenValueFactor =
+      holdingsEndBase > 0 ? finalHoldings / holdingsEndBase : 1
 
     // Start with initial holdings (this is the ADA value of SHEN at purchase)
     let currentHoldings = initialHoldings
+    const adaPurchased = buyPrice > 0 ? usdAmount / buyPrice : 0
 
     for (let i = 0; i < totalDays; i++) {
       const d = new Date(startDate.getTime() + i * dayInMs).toISOString()
@@ -146,21 +153,14 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
       const priceForDay: number = buyPrice + i * priceStep
 
       // Current holdings in ADA (without fees deducted)
-      const holdingsForDay: number = currentHoldings
-
-      // Holdings after fees (deduct proportional fees)
-      const holdingsAfterFees: number = currentHoldings - buyFees
-
-      // USD value at current day's price
-      const usdValueForDay: number = holdingsForDay * priceForDay
+      const ratio = totalDays > 1 ? i / (totalDays - 1) : 1
+      const factorForDay = 1 + (shenValueFactor - 1) * ratio
+      const holdingsForDay: number = currentHoldings * factorForDay
 
       data.push({
         date: d,
-        ADA: holdingsForDay,
-        ADAAfterFees: holdingsAfterFees,
-        usdValue: usdValueForDay,
-        investedAda,
-        investedUsd,
+        adaPnlUsd: adaPurchased * priceForDay - usdAmount,
+        shenPnlUsd: holdingsForDay * priceForDay - usdAmount,
       } as unknown as DataRow)
     }
 
@@ -178,7 +178,6 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
     const totalRange = sellTs - buyTs
 
     results.forEach((row) => {
-      const adaValue = row.ADA_avg ?? 0
       const rowTs = new Date(row.date).getTime()
       const ratio =
         Number.isFinite(totalRange) && totalRange > 0
@@ -186,23 +185,15 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
           : 0
       const priceAtRow = buyPrice + ratio * priceRange
       row.priceAtRow = priceAtRow
-      row.buyFees = buyFees
-      row.sellFees = sellFees
-      row.investedAda = investedAda
-      row.investedUsd = investedUsd
-
-      if (!Number.isFinite(row.usdValue_avg)) {
-        row.usdValue_avg = (adaValue as number) * priceAtRow
-      }
     })
 
     // Calculate y-axis domain with padding
     const allValues = results
       .flatMap((row) => [
-        (row.ADA_avg as number) || 0,
-        (row.ADAAfterFees_avg as number) || 0,
+        (row.adaPnlUsd_avg as number) || 0,
+        (row.shenPnlUsd_avg as number) || 0,
       ])
-      .filter((v) => v > 0)
+      .filter((v) => Number.isFinite(v))
 
     const dataMin = Math.min(...allValues)
     const dataMax = Math.max(...allValues)
@@ -210,9 +201,11 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
 
     // For a volatile range, 15% of the spread is usually enough to center it.
     // If the data is flat (range is 0), we fallback to a 5% buffer of the absolute value.
-    const verticalPadding = dataRange > 0 ? dataRange * 0.15 : dataMin * 0.05
+    const basePadding = Math.max(Math.abs(dataMin), Math.abs(dataMax))
+    const verticalPadding =
+      dataRange > 0 ? dataRange * 0.15 : basePadding * 0.05
 
-    const minY = Math.max(0, Math.floor(dataMin - verticalPadding))
+    const minY = Math.floor(dataMin - verticalPadding)
     const maxY = Math.ceil(dataMax + verticalPadding)
 
     const finalYDomain: [number, number] =
@@ -230,22 +223,23 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
     sellFees,
     feesEarned,
     stakingRewards,
+    usdAmount,
   ])
 
   const areas = [
     {
-      dataKey: "ADA_avg",
-      name: "Total ADA Holdings",
-      tooltipLabel: "Total Holdings",
+      dataKey: "shenPnlUsd_avg",
+      name: "SHEN PNL",
+      tooltipLabel: "SHEN PNL",
       strokeColor: "var(--color-supportive-3-500)",
       fillColor: "transparent",
       fillOpacity: 0,
       strokeWidth: 2,
     },
     {
-      dataKey: "ADAAfterFees_avg",
-      name: "ADA After Fees",
-      tooltipLabel: "After Fees",
+      dataKey: "adaPnlUsd_avg",
+      name: "ADA PNL",
+      tooltipLabel: "ADA PNL",
       strokeColor: "var(--color-red-500)",
       fillColor: "transparent",
       fillOpacity: 0,
@@ -277,35 +271,23 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
     return `${sign}${Math.round(billions)}B`
   }
 
-  // format y-axis ticks as ADA units
+  // format y-axis ticks as USD
   const yTickFormatter = (value: number) => `${formatAxisValue(value)}`
 
-  // formats tooltip to always show ADA holdings and equivalent USD value
-  const tooltipFormatter = (
-    value: number,
-    name: string,
-    payload: Record<string, unknown>,
-  ) => {
-    const safeAda = Number.isFinite(value) ? value : 0
-    const priceAtRow = payload.priceAtRow as number
-    const usdValue = Number.isFinite(priceAtRow) ? safeAda * priceAtRow : 0
-
-    const safeUsd = Number.isFinite(usdValue) ? usdValue : 0
-    const adaFormatted = safeAda.toLocaleString(undefined, {
-      minimumFractionDigits: 4,
-      maximumFractionDigits: 4,
-    })
+  // formats tooltip to show USD PNL
+  const tooltipFormatter = (value: number) => {
+    const safeUsd = Number.isFinite(value) ? value : 0
     const usdFormatted = safeUsd.toLocaleString(undefined, {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     })
 
-    return `₳${adaFormatted} ($${usdFormatted})`
+    return `$${usdFormatted}`
   }
 
   return (
     <MultiAreaChart
-      title="ADA Holdings"
+      title="Profit over time"
       data={results as DataRow[]}
       xKey="date"
       yDomain={yDomain}

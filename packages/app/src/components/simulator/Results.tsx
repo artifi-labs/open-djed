@@ -155,6 +155,7 @@ const Results: React.FC<ResultsProps> = ({ inputs }) => {
               sellDate={inputs.sellDate}
               initialHoldings={simulatorData?.initialAdaHoldings ?? 0}
               finalHoldings={simulatorData?.finalAdaHoldings ?? 0}
+              usdAmount={inputs.usdAmount}
               buyPrice={inputs.buyAdaPrice}
               sellPrice={inputs.sellAdaPrice}
               buyFees={simulatorData?.buyFee ?? 0}

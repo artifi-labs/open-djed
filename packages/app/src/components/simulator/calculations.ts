@@ -151,16 +151,16 @@ function calculateSimulatorResults(
   const finalAdaHoldings =
     sellProceedsAda - sellOperatorFeeAda + stakingRewardsAda + feesEarnedAda
 
-  // PNL in ADA
-  const investmentAda = initialAdaHoldings + buyFeeAda
-  const adaPnl = finalAdaHoldings - investmentAda
-  const adaPnlPercent = investmentAda > 0 ? (adaPnl / investmentAda) * 100 : 0
+  // ADA PNL in USD - (exclude fees and rewards)
+  const adaPurchased = buyAdaPrice > 0 ? usdAmount / buyAdaPrice : 0
+  const adaFinalUsdValue = adaPurchased * sellAdaPrice
+  const adaPnl = adaFinalUsdValue - usdAmount
+  const adaPnlPercent = usdAmount > 0 ? (adaPnl / usdAmount) * 100 : 0
 
-  // Total PNL
+  // SHEN PNL in USD - (includes fees and rewards)
   const finalUsdValue = finalAdaHoldings * sellAdaPrice
-  const investmentUsd = investmentAda * buyAdaPrice
-  const shenPnl = finalUsdValue - investmentUsd
-  const shenPnlPercent = investmentUsd > 0 ? (shenPnl / investmentUsd) * 100 : 0
+  const shenPnl = finalUsdValue - usdAmount
+  const shenPnlPercent = usdAmount > 0 ? (shenPnl / usdAmount) * 100 : 0
 
   return {
     buyFee: buyFeeAda,
