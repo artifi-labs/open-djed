@@ -16,6 +16,7 @@ type ModalProps = {
   headerAction?: React.ReactNode
   isOpen: boolean
   onClose: () => void
+  onBack?: () => void
   children: React.ReactNode
   className?: string
   overlayClassName?: string
@@ -32,6 +33,7 @@ export const Modal: React.FC<ModalProps> = ({
   closeButton,
   isOpen,
   onClose,
+  onBack,
   children,
   className,
   border = "border-gradient border-color-gradient",
@@ -76,7 +78,7 @@ export const Modal: React.FC<ModalProps> = ({
                     variant="onlyIcon"
                     name="Back-Button"
                     aria-label="Back Button"
-                    onClick={onClose}
+                    onClick={onBack ?? onClose}
                   />
                 )}
                 <h3

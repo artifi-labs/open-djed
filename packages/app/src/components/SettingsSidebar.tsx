@@ -2,6 +2,7 @@ import Dropdown from "./Dropdown"
 import Sidebar from "./modals/Sidebar"
 import { type ContextualMenuItem } from "./ContextualMenu"
 import { env } from "@/lib/envLoader"
+import { useViewport } from "@/hooks/useViewport"
 // import { useEffect, useState } from "react"
 // import { SUPPORTED_LANGUAGES } from "@/lib/constants"
 // import { useTranslation } from "react-i18next"
@@ -9,12 +10,15 @@ import { env } from "@/lib/envLoader"
 export default function SettingsSidebar({
   isOpen,
   onClose,
+  onBack,
 }: {
   isOpen: boolean
   onClose: () => void
+  onBack?: () => void
 }) {
   // const { i18n } = useTranslation()
   const { NETWORK, CONFIG } = env
+  const { isMobile } = useViewport()
 
   // const [activeLanguage, setActiveLanguage] = useState<string>("en")
   // const [_isClient, setIsClient] = useState(false)
@@ -57,10 +61,11 @@ export default function SettingsSidebar({
     <Sidebar
       title="Settings"
       titleClassName="text-[18px]"
-      hasLeadingIcon={"Arrow-Left"}
+      hasLeadingIcon={isMobile ? "Arrow-Left" : undefined}
       headerAction={null}
       isOpen={isOpen}
       onClose={onClose}
+      onBack={onBack}
     >
       <div className="flex h-full w-full flex-col items-start justify-start gap-18 py-8">
         {/* <div className="flex w-full flex-col items-start justify-start gap-10">
