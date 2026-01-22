@@ -29,22 +29,18 @@ const SelectWalletSection: React.FC<SelectWalletSectionProps> = ({
     <div className="flex h-full flex-col gap-24">
       <div className="flex flex-1 flex-col overflow-y-auto py-8">
         {wallets?.map((wallet, index) => (
-          <button
-            key={wallet.id}
+          <ListItem
+            divider={index < wallets.length - 1}
+            text={capitalizeLower(wallet.name)}
             onClick={() => onClick(wallet.id)}
-            className="flex cursor-pointer"
-          >
-            <ListItem
-              divider={index < wallets.length - 1}
-              text={capitalizeLower(wallet.name)}
-              wallet={
-                isValidCoinName(wallet.name)
-                  ? (wallet.name.toUpperCase() as WalletName)
-                  : "PLACEHOLDER"
-              }
-              icon="Arrow-Right"
-            />
-          </button>
+            wallet={
+              isValidCoinName(wallet.name)
+                ? (wallet.name.toUpperCase() as WalletName)
+                : "PLACEHOLDER"
+            }
+            icon="Arrow-Right"
+            className="cursor-pointer"
+          />
         ))}
       </div>
 
