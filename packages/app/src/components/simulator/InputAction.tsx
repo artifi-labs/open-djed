@@ -6,7 +6,7 @@ import InputField from "../input-fields/InputField"
 import Dropdown from "../Dropdown"
 import Calendar from "../calendar/Calendar"
 import { type CalendarValue } from "../calendar/Calendar.types"
-import { toISODate, formatDateLabel } from "@/lib/utils"
+import { toISODate, formatDateLabel, formatUSD } from "@/lib/utils"
 import type { ScenarioInputs } from "./calculations"
 import Icon from "../icons/Icon"
 import Tooltip from "../tooltip/Tooltip"
@@ -66,6 +66,12 @@ const InputAction: React.FC<InputActionProps> = ({ values, onUpdate }) => {
     onUpdate(field, val)
   }
 
+  const formatUsdInputValue = (value: ScenarioInputs[keyof ScenarioInputs]) => {
+    if (typeof value === "string") return value
+    if (value === 0) return ""
+    return formatUSD(value)
+  }
+
   const sellDateDisabledDates = React.useMemo(() => {
     if (!values.buyDate) return undefined
     const buyDate = new Date(values.buyDate)
@@ -91,11 +97,7 @@ const InputAction: React.FC<InputActionProps> = ({ values, onUpdate }) => {
               <InputField
                 id="usd-amount"
                 placeholder="0"
-                value={
-                  values.usdAmount.toString() === "0"
-                    ? ""
-                    : values.usdAmount.toString()
-                }
+                value={formatUsdInputValue(values.usdAmount)}
                 onValueChange={(val) => handleValueChange("usdAmount", val)}
                 size="Medium"
                 autoComplete="off"
@@ -171,7 +173,7 @@ const InputAction: React.FC<InputActionProps> = ({ values, onUpdate }) => {
                   <InputField
                     id={id}
                     placeholder="0"
-                    value={values[id] === 0 ? "" : values[id].toString()}
+                    value={formatUsdInputValue(values[id])}
                     onValueChange={(val) => handleValueChange(id, val)}
                     size="Medium"
                     autoComplete="off"
