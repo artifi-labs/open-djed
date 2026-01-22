@@ -11,6 +11,7 @@ import { useWallet } from "@/context/WalletContext"
 import { useSidebar } from "@/context/SidebarContext"
 import Wallet, { type WalletName } from "./Wallet"
 import Sidebar from "./modals/Sidebar"
+import SettingsSidebar from "./SettingsSidebar"
 import { shortenString } from "@/lib/utils"
 import Logo from "./Logo"
 import { useViewport } from "@/hooks/useViewport"
@@ -108,9 +109,16 @@ const NetworkBadge: React.FC<NetworkBadgeProps> = ({
 
 export const Navbar = () => {
   const { NETWORK, CONFIG } = env
+  const { isMobile } = useViewport()
   const { wallet } = useWallet()
-  const { openWalletSidebar, openSettingsSidebar } = useSidebar()
+  const {
+    openWalletSidebar,
+    openSettingsSidebar,
+    closeSidebar,
+    isSettingsSidebarOpen,
+  } = useSidebar()
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false)
+  const [returnToMenuOnBack, setReturnToMenu] = useState(false)
   const pathname = usePathname()
 
   const handleNetworkSwitch = () => {
@@ -157,7 +165,10 @@ export const Navbar = () => {
               variant="outlined"
               icon="Settings"
               size="medium"
-              onClick={() => openSettingsSidebar()}
+              onClick={() => {
+                setReturnToMenu(false)
+                openSettingsSidebar()
+              }}
             />
           </div>
 
@@ -189,6 +200,7 @@ export const Navbar = () => {
                   icon="Settings"
                   size="medium"
                   onClick={() => {
+                    setReturnToMenu(true)
                     openSettingsSidebar()
                     setIsMobileSidebarOpen(false)
                   }}
@@ -246,6 +258,21 @@ export const Navbar = () => {
           </Sidebar>
         </div>
       </div>
+
+      <SettingsSidebar
+        isOpen={isSettingsSidebarOpen}
+        onClose={() => {
+          setReturnToMenu(false)
+          closeSidebar()
+        }}
+        onBack={() => {
+          closeSidebar()
+          if (isMobile && returnToMenuOnBack) {
+            setIsMobileSidebarOpen(true)
+          }
+          setReturnToMenu(false)
+        }}
+      />
     </header>
   )
 }

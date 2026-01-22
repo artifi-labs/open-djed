@@ -253,7 +253,7 @@
 
   --color-surface-primary-inverse: var(--color-neutral-25);
   --color-surface-card: var(--color-primary-700-60);
-  --color-surface-modal: var(--color-primary-700);
+  --color-surface-modal: var(--color-primary-650);
   --color-surface-primary: var(--color-primary-700);
   --color-surface-primary-hover: var(--color-primary-800);
   --color-surface-primary-pressed: var(--color-primary-850);

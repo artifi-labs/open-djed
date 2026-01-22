@@ -9,7 +9,6 @@ import React, {
 } from "react"
 import { useWallet } from "@/context/WalletContext"
 import WalletSidebar from "@/components/wallet/WalletSidebar"
-import SettingsSidebar from "@/components/SettingsSidebar"
 
 type SidebarType = "wallet" | "settings" | null
 
@@ -69,8 +68,6 @@ export const SidebarProvider: React.FC<{ children: React.ReactNode }> = ({
         isOpen={isWalletSidebarOpen}
         onClose={closeSidebar}
       />
-
-      <SettingsSidebar isOpen={isSettingsSidebarOpen} onClose={closeSidebar} />
     </SidebarContext.Provider>
   )
 }
