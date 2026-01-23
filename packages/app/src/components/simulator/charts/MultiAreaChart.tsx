@@ -121,23 +121,23 @@ const CustomTooltip = ({
     }
 
     return (
-      <div className="rounded-4 border-border-primary bg-surface-secondary flex w-fit flex-col gap-12 border p-12">
+      <div className="rounded-4 border-border-primary bg-surface-secondary flex w-79 max-w-full flex-col gap-12 border p-12">
         <div className="flex flex-row">
-          <p className="text-sm">{formatTooltipDate(label)}</p>
+          <p className="text-xxs">{formatTooltipDate(label)}</p>
         </div>
         {filteredPayload.map((entry: TooltipPayloadEntry, index: number) => (
           <div
             key={index}
-            className="flex w-full items-center justify-between gap-8"
+            className="flex w-full items-center justify-between gap-12"
           >
-            <div className="flex items-center gap-2">
+            <div className="flex items-center">
               <div style={{ backgroundColor: entry.stroke }} />
-              <p className="text-sm">
+              <p className="text-xxs">
                 {areas.find((area) => area.dataKey === entry.dataKey)
                   ?.tooltipLabel || entry.name}
               </p>
             </div>
-            <p className="text-sm">
+            <p className="text-xxs">
               {tooltipFormatter
                 ? tooltipFormatter(entry.value, entry.dataKey, entry.payload)
                 : tickFormatter
