@@ -15,7 +15,6 @@ import {
   type ResultsData,
   useSimulatorResults,
 } from "./calculations"
-import { ADA_SIMULATOR_COLOR, SHEN_SIMULATOR_COLOR } from "@/lib/constants"
 
 export type ValueItem = {
   name: string
@@ -80,7 +79,7 @@ const createSectionConfigs: () => SectionConfig[] = () => [
         : "$0.00",
       formatPercent(sub),
     ],
-    className: `text-${SHEN_SIMULATOR_COLOR}`,
+    className: `text-accent-3`,
   },
   {
     name: "adaPnl",
@@ -104,7 +103,7 @@ const createSectionConfigs: () => SectionConfig[] = () => [
         : "$0.00",
       formatPercent(sub),
     ],
-    className: `text-${ADA_SIMULATOR_COLOR}`,
+    className: `text-accent-1`,
   },
   {
     name: "buyFee",

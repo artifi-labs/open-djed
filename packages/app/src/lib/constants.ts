@@ -30,6 +30,3 @@ export const ALLOWED_WALLETS = [
   "gerowallet",
   "vespr",
 ]
-
-export const SHEN_SIMULATOR_COLOR = "accent-3"
-export const ADA_SIMULATOR_COLOR = "accent-1"

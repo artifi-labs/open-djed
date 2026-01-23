@@ -143,124 +143,115 @@ const Results: React.FC<ResultsProps> = ({ inputs }) => {
         overlay={isContentBlurred}
         overlayContent={BlurContent || undefined}
       >
-        {isContentBlurred ? null : (
-          <div className="flex flex-col gap-24">
-            <div className="flex flex-col gap-10 rounded-lg">
-              <div className="flex flex-col gap-6">
-                <p className="min-w-auto text-sm font-medium">
-                  Your Returns Comparison (SHEN vs ADA)
-                </p>
-                <p className="text-secondary text-xs">
-                  This chart shows alternative outcomes. Holding SHEN or ADA.
-                </p>
-              </div>
-              <div className="desktop:grid-cols-2 desktop:gap-24 grid grid-rows-1 gap-16">
-                {totals.map((item) => (
-                  <ResultSummaryItem key={item.label} {...item} />
-                ))}
-              </div>
+        <div className="flex flex-col gap-24">
+          <div className="flex flex-col gap-10 rounded-lg">
+            <div className="flex flex-col gap-6">
+              <p className="min-w-auto text-sm font-medium">
+                Your Returns Comparison (SHEN vs ADA)
+              </p>
+              <p className="text-secondary text-xs">
+                This chart shows alternative outcomes. Holding SHEN or ADA.
+              </p>
             </div>
-
-            <Divider orientation="horizontal" />
-
             <div className="desktop:grid-cols-2 desktop:gap-24 grid grid-rows-1 gap-16">
-              {/* Fees */}
-              <div className="flex flex-col justify-start gap-8">
-                <div className="flex flex-row items-center gap-8">
-                  <p className="min-w-auto text-sm font-medium">Fees</p>
-                  <Tooltip
-                    text={
-                      detailedFees
-                        ? "See simplified fees"
-                        : "See detailed fees breakdown"
-                    }
-                    tooltipDirection="top"
-                  >
-                    <Icon
-                      name={detailedFees ? "Minus" : "Plus"}
-                      size={14}
-                      onClick={() => setDetailedFees(!detailedFees)}
-                    />
-                  </Tooltip>
-                </div>
-                <div
-                  className={clsx(
-                    "desktop:gap-18 grid flex-1 grid-rows-1 gap-16",
-                    detailedFees
-                      ? "desktop:grid-rows-2"
-                      : "desktop:grid-rows-1",
-                  )}
-                >
-                  {feeDetails.map((item) => {
-                    if (detailedFees && item.values[0].name === "totalFees")
-                      return null
-                    if (!detailedFees && item.values[0].name !== "totalFees")
-                      return null
-                    return <ResultSummaryItem key={item.label} {...item} />
-                  })}
-                </div>
-              </div>
+              {totals.map((item) => (
+                <ResultSummaryItem key={item.label} {...item} />
+              ))}
+            </div>
+          </div>
 
-              {/* Rewards */}
-              <div className="flex flex-col justify-start gap-8">
-                <div className="flex flex-row items-center gap-8">
-                  <p className="min-w-auto text-sm font-medium">Rewards</p>
-                  <Tooltip
-                    text={
-                      detailedRewards
-                        ? "See simplified rewards"
-                        : "See detailed rewards breakdown"
-                    }
-                    tooltipDirection="top"
-                  >
-                    <Icon
-                      name={detailedRewards ? "Minus" : "Plus"}
-                      size={14}
-                      onClick={() => setDetailedRewards(!detailedRewards)}
-                    />
-                  </Tooltip>
-                </div>
-                <div
-                  className={clsx(
-                    "desktop:gap-18 grid flex-1 grid-rows-1 gap-16",
+          <Divider orientation="horizontal" />
+
+          <div className="desktop:grid-cols-2 desktop:gap-24 grid grid-rows-1 gap-16">
+            {/* Fees */}
+            <div className="flex flex-col justify-start gap-8">
+              <div className="flex flex-row items-center gap-8">
+                <p className="min-w-auto text-sm font-medium">Fees</p>
+                <Tooltip
+                  text={
                     detailedFees
-                      ? "desktop:grid-rows-2"
-                      : "desktop:grid-rows-1",
-                  )}
+                      ? "See simplified fees"
+                      : "See detailed fees breakdown"
+                  }
+                  tooltipDirection="top"
                 >
-                  {rewardDetails.map((item) => {
-                    if (
-                      detailedRewards &&
-                      item.values[0].name === "totalRewards"
-                    )
-                      return null
-                    if (
-                      !detailedRewards &&
-                      item.values[0].name !== "totalRewards"
-                    )
-                      return null
-                    return <ResultSummaryItem key={item.label} {...item} />
-                  })}
-                </div>
+                  <Icon
+                    name={detailedFees ? "Minus" : "Plus"}
+                    size={14}
+                    onClick={() => setDetailedFees(!detailedFees)}
+                  />
+                </Tooltip>
+              </div>
+              <div
+                className={clsx(
+                  "desktop:gap-18 grid flex-1 grid-rows-1 gap-16",
+                  detailedFees ? "desktop:grid-rows-2" : "desktop:grid-rows-1",
+                )}
+              >
+                {feeDetails.map((item) => {
+                  if (detailedFees && item.values[0].name === "totalFees")
+                    return null
+                  if (!detailedFees && item.values[0].name !== "totalFees")
+                    return null
+                  return <ResultSummaryItem key={item.label} {...item} />
+                })}
               </div>
             </div>
 
-            {/* Chart */}
-            <ShenYieldChart
-              buyDate={inputs.buyDate}
-              sellDate={inputs.sellDate}
-              initialHoldings={simulatorData?.initialAdaHoldings ?? 0}
-              finalHoldings={simulatorData?.finalAdaHoldings ?? 0}
-              usdAmount={inputs.usdAmount}
-              buyPrice={inputs.buyAdaPrice}
-              sellPrice={inputs.sellAdaPrice}
-              buyFees={simulatorData?.buyFee ?? 0}
-              sellFees={simulatorData?.sellFee ?? 0}
-              feesEarned={simulatorData?.feesEarned ?? 0}
-              stakingRewards={simulatorData?.stakingCredits ?? []}
-            />
+            {/* Rewards */}
+            <div className="flex flex-col justify-start gap-8">
+              <div className="flex flex-row items-center gap-8">
+                <p className="min-w-auto text-sm font-medium">Rewards</p>
+                <Tooltip
+                  text={
+                    detailedRewards
+                      ? "See simplified rewards"
+                      : "See detailed rewards breakdown"
+                  }
+                  tooltipDirection="top"
+                >
+                  <Icon
+                    name={detailedRewards ? "Minus" : "Plus"}
+                    size={14}
+                    onClick={() => setDetailedRewards(!detailedRewards)}
+                  />
+                </Tooltip>
+              </div>
+              <div
+                className={clsx(
+                  "desktop:gap-18 grid flex-1 grid-rows-1 gap-16",
+                  detailedFees ? "desktop:grid-rows-2" : "desktop:grid-rows-1",
+                )}
+              >
+                {rewardDetails.map((item) => {
+                  if (detailedRewards && item.values[0].name === "totalRewards")
+                    return null
+                  if (
+                    !detailedRewards &&
+                    item.values[0].name !== "totalRewards"
+                  )
+                    return null
+                  return <ResultSummaryItem key={item.label} {...item} />
+                })}
+              </div>
+            </div>
           </div>
-        )}
+
+          {/* Chart */}
+          <ShenYieldChart
+            buyDate={inputs.buyDate}
+            sellDate={inputs.sellDate}
+            initialHoldings={simulatorData?.initialAdaHoldings ?? 0}
+            finalHoldings={simulatorData?.finalAdaHoldings ?? 0}
+            usdAmount={inputs.usdAmount}
+            buyPrice={inputs.buyAdaPrice}
+            sellPrice={inputs.sellAdaPrice}
+            buyFees={simulatorData?.buyFee ?? 0}
+            sellFees={simulatorData?.sellFee ?? 0}
+            feesEarned={simulatorData?.feesEarned ?? 0}
+            stakingRewards={simulatorData?.stakingCredits ?? []}
+          />
+        </div>
       </BaseCard>
     </>
   )
