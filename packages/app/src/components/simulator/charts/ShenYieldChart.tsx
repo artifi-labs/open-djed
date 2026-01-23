@@ -10,6 +10,7 @@ import {
 } from "@/utils/timeseries"
 import { useTimeInterval } from "@/lib/utils"
 import { useViewport } from "@/hooks/useViewport"
+import { ADA_SIMULATOR_COLOR, SHEN_SIMULATOR_COLOR } from "@/lib/constants"
 
 type ShenYieldChartProps = {
   buyDate: string
@@ -206,7 +207,7 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
       dataKey: "shenPnlUsd_avg",
       name: "SHEN PNL",
       tooltipLabel: "SHEN PNL",
-      strokeColor: "var(--color-lilac-300)",
+      strokeColor: `var(--color-${SHEN_SIMULATOR_COLOR})`,
       fillColor: "transparent",
       fillOpacity: 0,
       strokeWidth: 2,
@@ -215,7 +216,7 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
       dataKey: "adaPnlUsd_avg",
       name: "ADA PNL",
       tooltipLabel: "ADA PNL",
-      strokeColor: "var(--color-supportive-3-500)",
+      strokeColor: `var(--color-${ADA_SIMULATOR_COLOR})`,
       fillColor: "transparent",
       fillOpacity: 0,
       strokeWidth: 2,

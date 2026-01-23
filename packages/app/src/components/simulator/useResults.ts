@@ -6,7 +6,6 @@ import {
   formatADA,
   formatPercent,
   formatUSDValue,
-  formatUSD,
   isEmptyValue,
   type ToUSDConverter,
   type Value,
@@ -16,6 +15,7 @@ import {
   type ResultsData,
   useSimulatorResults,
 } from "./calculations"
+import { ADA_SIMULATOR_COLOR, SHEN_SIMULATOR_COLOR } from "@/lib/constants"
 
 export type ValueItem = {
   name: string
@@ -24,6 +24,7 @@ export type ValueItem = {
   isTotal?: boolean
   pnlColorClass?: string
   pnlIconName?: "Arrow-Top" | "Arrow-Down"
+  detailsType?: "fee" | "reward"
 }
 
 export type ResultItem = {
@@ -35,10 +36,28 @@ export type ResultItem = {
 
 export type Results = {
   totals: ResultItem[]
-  details: ResultItem[]
+  feeDetails: ResultItem[]
+  rewardDetails: ResultItem[]
 }
 
-const createSectionConfigs = () => [
+type SectionConfig = {
+  name: string
+  label: string
+  tooltip: string
+  isTotal?: boolean
+  read: (d: Partial<ResultsData>) => { main: number; sub: number }
+  format: (
+    main: number,
+    sub: number,
+    toUSD: ToUSDConverter,
+    prices: { buy: number; sell: number },
+    isReady: boolean,
+  ) => [string, string]
+  className?: string
+  detailsType?: "fee" | "reward"
+}
+
+const createSectionConfigs: () => SectionConfig[] = () => [
   {
     name: "shenPnl",
     label: "SHEN PNL",
@@ -56,10 +75,12 @@ const createSectionConfigs = () => [
       _prices: { buy: number; sell: number },
       isReady: boolean,
     ) => [
-      isReady ? formatUSD(Number(main.toFixed(2))) : "$0.00",
+      isReady
+        ? `$${formatNumber(main, { maximumFractionDigits: 2 })}`
+        : "$0.00",
       formatPercent(sub),
     ],
-    className: "text-supportive-2-500",
+    className: `text-${SHEN_SIMULATOR_COLOR}`,
   },
   {
     name: "adaPnl",
@@ -78,10 +99,12 @@ const createSectionConfigs = () => [
       _prices: { buy: number; sell: number },
       isReady: boolean,
     ) => [
-      isReady ? formatUSD(Number(main.toFixed(2))) : "$0.00",
+      isReady
+        ? `$${formatNumber(main, { maximumFractionDigits: 2 })}`
+        : "$0.00",
       formatPercent(sub),
     ],
-    className: "text-supportive-2-500",
+    className: `text-${ADA_SIMULATOR_COLOR}`,
   },
   {
     name: "buyFee",
@@ -99,6 +122,7 @@ const createSectionConfigs = () => [
       prices: { buy: number; sell: number },
       isReady: boolean,
     ) => [formatADA(main), formatUSDValue(toUSD, sub, prices.buy, isReady)],
+    detailsType: "fee",
   },
   {
     name: "sellFee",
@@ -116,6 +140,41 @@ const createSectionConfigs = () => [
       prices: { buy: number; sell: number },
       isReady: boolean,
     ) => [formatADA(main), formatUSDValue(toUSD, sub, prices.sell, isReady)],
+    detailsType: "fee",
+  },
+  {
+    name: "totalFees",
+    label: "Total Fees",
+    tooltip:
+      "Total fees applied when buying/selling Djed/Shen. This helps maintain the protocol and is shared with SHEN holders",
+    read: (d: Partial<ResultsData>) => ({
+      main: d.totalFees ?? 0,
+      sub: d.buyFee ?? 0,
+    }),
+    format: (
+      main: number,
+      sub: number,
+      toUSD: ToUSDConverter,
+      prices: { buy: number; sell: number },
+      isReady: boolean,
+    ) => {
+      const formattedAda = formatADA(main)
+      if (!toUSD || !isReady) return [formattedAda, "$0.00"]
+
+      // main is total fees in ADA, sub is buy fee in ADA
+      // to get sell fee in ADA, we do main - sub
+      const sellFeeAda = main - sub
+      const sellFeeUsd = toUSD({ ADA: sellFeeAda }, prices.sell)
+      const buyFeeUsd = toUSD({ ADA: sub }, prices.buy)
+      const totalFeesUsd = `$${formatNumber(
+        Number(sellFeeUsd.replace(/[$,]/g, "") || "0") +
+          Number(buyFeeUsd.replace(/[$,]/g, "") || "0"),
+        { maximumFractionDigits: 2 },
+      )}`
+
+      return [formattedAda, totalFeesUsd]
+    },
+    detailsType: "fee",
   },
   {
     name: "stakingRewards",
@@ -133,13 +192,13 @@ const createSectionConfigs = () => [
       prices: { buy: number; sell: number },
       isReady: boolean,
     ) => [formatADA(main), formatUSDValue(toUSD, sub, prices.sell, isReady)],
-    className: "text-primary",
+    detailsType: "reward",
   },
   {
     name: "feesEarned",
     label: "Buy/Sell Fees Earned",
     tooltip:
-      "The total fees collected from buy and sell transactions. These are distributed to SHEN Holders. This is the sum of the two above during a given period or projected for a period in the future",
+      "The total fees collected from buy and sell transactions. These are distributed to SHEN Holders. This is the sum of the buy and sell fees during a given period or projected for a period in the future",
     read: (d: Partial<ResultsData>) => ({
       main: d.feesEarned ?? 0,
       sub: d.feesEarned ?? 0,
@@ -151,6 +210,41 @@ const createSectionConfigs = () => [
       prices: { buy: number; sell: number },
       isReady: boolean,
     ) => [formatADA(main), formatUSDValue(toUSD, sub, prices.sell, isReady)],
+    detailsType: "reward",
+  },
+  {
+    name: "totalRewards",
+    label: "Total Rewards",
+    tooltip:
+      "The sum of the rewards you earn on the staked ADA backing your SHEN and the total fees collected from buy and sell transactions, that are distributed to SHEN Holders.",
+    read: (d: Partial<ResultsData>) => ({
+      main: d.totalRewards ?? 0,
+      sub: d.feesEarned ?? 0,
+    }),
+    format: (
+      main: number,
+      sub: number,
+      toUSD: ToUSDConverter,
+      prices: { buy: number; sell: number },
+      isReady: boolean,
+    ) => {
+      const formattedAda = formatADA(main)
+      if (!toUSD || !isReady) return [formattedAda, "$0.00"]
+
+      // main is total rewards in ADA, sub is fees earned in ADA
+      // to get staking rewards in ADA, we do main - sub
+      const stakingRewardsAda = main - sub
+      const stakingRewardsUsd = toUSD({ ADA: stakingRewardsAda }, prices.sell)
+      const feesEarnedUsd = toUSD({ ADA: sub }, prices.sell)
+      const totalRewardsUsd = `$${formatNumber(
+        Number(stakingRewardsUsd.replace(/[$,]/g, "") || "0") +
+          Number(feesEarnedUsd.replace(/[$,]/g, "") || "0"),
+        { maximumFractionDigits: 2 },
+      )}`
+
+      return [formattedAda, totalRewardsUsd]
+    },
+    detailsType: "reward",
   },
 ]
 
@@ -207,6 +301,7 @@ export function useResults(
             isTotal: section.isTotal,
             pnlColorClass: isPositive ? "text-success-text" : "text-error-text",
             pnlIconName: isPositive ? "Arrow-Top" : "Arrow-Down",
+            detailsType: section.detailsType,
           },
         ],
       }
@@ -214,7 +309,12 @@ export function useResults(
 
     return {
       totals: allItems.filter((item) => item.values[0].isTotal),
-      details: allItems.filter((item) => !item.values[0].isTotal),
+      feeDetails: allItems.filter(
+        (item) => item.values[0].detailsType === "fee",
+      ),
+      rewardDetails: allItems.filter(
+        (item) => item.values[0].detailsType === "reward",
+      ),
     }
   }, [inputs, priceData, simulatorData])
 }

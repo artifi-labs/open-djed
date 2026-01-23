@@ -27,8 +27,8 @@ export function useSimulatorActions() {
     defaultSellDate.setFullYear(defaultSellDate.getFullYear() + 1)
     const sellDateString = defaultSellDate.toISOString().split("T")[0]
 
-    setInputs((prev) => ({
-      ...prev,
+    setInputs(() => ({
+      usdAmount: 1000,
       buyDate: currentDate,
       sellDate: sellDateString,
       buyAdaPrice: Number(currentAdaPrice.toFixed(4)),

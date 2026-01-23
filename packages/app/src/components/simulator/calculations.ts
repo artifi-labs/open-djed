@@ -17,9 +17,11 @@ export interface ScenarioInputs {
 export interface ResultsData {
   buyFee: number
   sellFee: number
+  totalFees: number
   stakingRewards: number
   stakingCredits: CreditEntry[]
   feesEarned: number
+  totalRewards: number
   adaPnl: number
   adaPnlPercent: number
   shenPnl: number
@@ -162,9 +164,14 @@ function calculateSimulatorResults(
   const shenPnl = finalUsdValue - usdAmount
   const shenPnlPercent = usdAmount > 0 ? (shenPnl / usdAmount) * 100 : 0
 
+  const totalFees = buyFeeAda + sellFeeAda
+  const totalRewards = stakingRewardsAda + feesEarnedAda
+
   return {
     buyFee: buyFeeAda,
     sellFee: sellFeeAda,
+    totalFees,
+    totalRewards,
     stakingRewards: stakingRewardsAda,
     stakingCredits: stakingInfo.credits,
     feesEarned: feesEarnedAda,

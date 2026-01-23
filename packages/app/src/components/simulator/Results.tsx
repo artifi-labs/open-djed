@@ -10,6 +10,8 @@ import Icon from "../icons/Icon"
 import { isEmptyValue } from "@/lib/utils"
 import { ShenYieldChart } from "./charts/ShenYieldChart"
 import { useToast } from "@/context/ToastContext"
+import Divider from "../Divider"
+import { useLocalStorage } from "usehooks-ts"
 
 export type ResultsProps = {
   inputs: ScenarioInputs
@@ -28,7 +30,12 @@ const ResultSummaryItem: React.FC<ResultItem> = ({
     <div className="desktop:flex-col desktop:items-start desktop:justify-start desktop:gap-4 flex min-w-auto flex-row items-center justify-between gap-4">
       {/* Label + Tooltip */}
       <div className="flex min-w-auto items-center gap-6">
-        <p className="text-secondary font-regular min-w-auto text-xs">
+        <p
+          className={clsx(
+            "text-secondary min-w-auto",
+            isTotal ? "text-sm font-medium" : "font-regular text-xs",
+          )}
+        >
           {label}
         </p>
         {tooltip && (
@@ -87,12 +94,17 @@ const ResultSummaryItem: React.FC<ResultItem> = ({
 }
 
 const Results: React.FC<ResultsProps> = ({ inputs }) => {
-  const { totals, details } = useResults(inputs)
+  const { totals, feeDetails, rewardDetails } = useResults(inputs)
   const { results: simulatorData, error } = useSimulatorResults(inputs)
   const { showToast } = useToast()
-
-  console.log("totals", totals)
-  console.log("details", details)
+  const [detailedFees, setDetailedFees] = useLocalStorage<boolean>(
+    "detailedFees",
+    false,
+  )
+  const [detailedRewards, setDetailedRewards] = useLocalStorage<boolean>(
+    "detailedRewards",
+    false,
+  )
 
   const isContentBlurred =
     isEmptyValue(inputs.usdAmount) ||
@@ -127,16 +139,21 @@ const Results: React.FC<ResultsProps> = ({ inputs }) => {
   return (
     <>
       <BaseCard
-        className="desktop:p-24 desktop:flex-none desktop:w-160 desktop:self-stretch p-16"
+        className="desktop:p-24 desktop:flex-none desktop:w-160 desktop:self-stretch min-h-144 w-full p-16"
         overlay={isContentBlurred}
         overlayContent={BlurContent || undefined}
       >
         {isContentBlurred ? null : (
           <div className="flex flex-col gap-24">
-            <div className="flex flex-col gap-8">
-              <p className="min-w-auto text-sm font-medium">
-                Your Returns Compared
-              </p>
+            <div className="bg-background-secondary border-primary flex flex-col gap-10 rounded-lg border p-2.5">
+              <div className="flex flex-col gap-6">
+                <p className="min-w-auto text-sm font-medium">
+                  Your Returns Comparison (SHEN vs ADA)
+                </p>
+                <p className="text-secondary text-xs">
+                  This chart shows alternative outcomes. Holding SHEN or ADA.
+                </p>
+              </div>
               <div className="desktop:grid-cols-2 desktop:gap-24 grid grid-rows-1 gap-16">
                 {totals.map((item) => (
                   <ResultSummaryItem key={item.label} {...item} />
@@ -144,15 +161,87 @@ const Results: React.FC<ResultsProps> = ({ inputs }) => {
               </div>
             </div>
 
-            {/* Fees and Rewards */}
-            <div className="flex flex-col gap-8">
-              <p className="min-w-auto text-sm font-medium">
-                Fees & Rewards Breakdown
-              </p>
-              <div className="desktop:grid-cols-2 desktop:gap-18 grid flex-1 grid-rows-1 gap-16">
-                {details.map((item) => (
-                  <ResultSummaryItem key={item.label} {...item} />
-                ))}
+            <Divider orientation="horizontal" />
+
+            <div className="desktop:grid-cols-2 desktop:gap-24 grid grid-rows-1 gap-16">
+              {/* Fees */}
+              <div className="flex flex-col justify-start gap-8">
+                <div className="flex flex-row items-center gap-8">
+                  <p className="min-w-auto text-sm font-medium">Fees</p>
+                  <Tooltip
+                    text={
+                      detailedFees
+                        ? "See simplified fees"
+                        : "See detailed fees breakdown"
+                    }
+                    tooltipDirection="top"
+                  >
+                    <Icon
+                      name={detailedFees ? "Minus" : "Plus"}
+                      size={14}
+                      onClick={() => setDetailedFees(!detailedFees)}
+                    />
+                  </Tooltip>
+                </div>
+                <div
+                  className={clsx(
+                    "desktop:gap-18 grid flex-1 grid-rows-1 gap-16",
+                    detailedFees
+                      ? "desktop:grid-rows-2"
+                      : "desktop:grid-rows-1",
+                  )}
+                >
+                  {feeDetails.map((item) => {
+                    if (detailedFees && item.values[0].name === "totalFees")
+                      return null
+                    if (!detailedFees && item.values[0].name !== "totalFees")
+                      return null
+                    return <ResultSummaryItem key={item.label} {...item} />
+                  })}
+                </div>
+              </div>
+
+              {/* Rewards */}
+              <div className="flex flex-col justify-start gap-8">
+                <div className="flex flex-row items-center gap-8">
+                  <p className="min-w-auto text-sm font-medium">Rewards</p>
+                  <Tooltip
+                    text={
+                      detailedRewards
+                        ? "See simplified rewards"
+                        : "See detailed rewards breakdown"
+                    }
+                    tooltipDirection="top"
+                  >
+                    <Icon
+                      name={detailedRewards ? "Minus" : "Plus"}
+                      size={14}
+                      onClick={() => setDetailedRewards(!detailedRewards)}
+                    />
+                  </Tooltip>
+                </div>
+                <div
+                  className={clsx(
+                    "desktop:gap-18 grid flex-1 grid-rows-1 gap-16",
+                    detailedFees
+                      ? "desktop:grid-rows-2"
+                      : "desktop:grid-rows-1",
+                  )}
+                >
+                  {rewardDetails.map((item) => {
+                    if (
+                      detailedRewards &&
+                      item.values[0].name === "totalRewards"
+                    )
+                      return null
+                    if (
+                      !detailedRewards &&
+                      item.values[0].name !== "totalRewards"
+                    )
+                      return null
+                    return <ResultSummaryItem key={item.label} {...item} />
+                  })}
+                </div>
               </div>
             </div>
 
