@@ -35,7 +35,7 @@ export function ReserveGraph({
       value: currentRatioValue,
       position: "bottom-full mb-1",
       style:
-        "w-5 h-5 rounded-full bg-gradient-angular-2 border border-[var(--color-border-secondary)]",
+        "h-[18px] w-[18px] rounded-full bg-gradient-angular-2 border border-[var(--color-border-secondary)]",
       tooltipModalClass: "py-4",
     },
   ]
