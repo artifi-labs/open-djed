@@ -21,8 +21,8 @@ const ConnectedWalletSection: React.FC<ConnectedWalletSectionProps> = ({
   const { closeSidebar } = useSidebar()
 
   return (
-    <div className="flex h-full w-full flex-col gap-5 overflow-hidden">
-      <div className="flex shrink-0 flex-col gap-5">
+    <div className="flex h-full w-full flex-col gap-14 overflow-hidden py-8">
+      <div className="flex shrink-0 flex-col gap-12">
         <WalletDetail
           balance={wallet.balance}
           name={wallet.name.toUpperCase() as WalletName}
@@ -34,14 +34,16 @@ const ConnectedWalletSection: React.FC<ConnectedWalletSectionProps> = ({
           <WalletBalance token="SHEN" amount={wallet.balance.SHEN} />
           <WalletBalance token="ADA" amount={wallet.balance.ADA} />
         </div>
-        <Link href={"/"}>
-          <Button
-            className="w-full"
-            variant="primary"
-            onClick={() => closeSidebar()}
-            text="Mint & Burn Now"
-          />
-        </Link>
+        <div className="pb-8">
+          <Link href={"/"}>
+            <Button
+              className="w-full"
+              variant="primary"
+              onClick={() => closeSidebar()}
+              text="Mint & Burn Now"
+            />
+          </Link>
+        </div>
       </div>
       <Divider className="w-full" />
       <OrdersWalletSection wallet={wallet} />
