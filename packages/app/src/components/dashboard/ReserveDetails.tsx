@@ -32,36 +32,35 @@ const ReserveDetails = () => {
         <div className="desktop:gap-24 flex w-full flex-col gap-16">
           <div className="flex w-full flex-wrap justify-between gap-x-8 gap-y-4">
             {/* Current Ratio */}
-            <div className="flex items-center gap-8">
+            <div className="flex shrink-0 items-center gap-8">
               <span className="text-secondary text-xs whitespace-nowrap">
                 Current Ratio:
               </span>
-              <span className="text-primary truncate text-sm font-medium">
+              <span className="text-primary text-sm font-medium whitespace-nowrap">
                 {formatNumber(reserveRatio, { maximumFractionDigits: 2 })} %
               </span>
             </div>
 
             {/* Min Ratio */}
-            <div className="flex items-center gap-8">
+            <div className="flex shrink-0 items-center gap-8">
               <span className="text-secondary text-xs whitespace-nowrap">
                 Min Ratio:
               </span>
-              <span className="text-primary truncate text-sm font-medium">
+              <span className="text-primary text-sm font-medium whitespace-nowrap">
                 {minRatio} %
               </span>
             </div>
 
             {/* Max Ratio */}
-            <div className="flex items-center gap-8">
+            <div className="flex shrink-0 items-center gap-8">
               <span className="text-secondary text-xs whitespace-nowrap">
                 Max Ratio:
               </span>
-              <span className="text-primary truncate text-sm font-medium">
+              <span className="text-primary text-sm font-medium whitespace-nowrap">
                 {maxRatio} %
               </span>
             </div>
           </div>
-
           <Divider />
 
           {/* Reserve Value */}

@@ -58,7 +58,7 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({ action }) => {
   const BlurContent = React.useMemo(() => {
     if (isContentBlured) {
       return (
-        <div className="flex h-full flex-col justify-center gap-6 text-center">
+        <div className="desktop:p-24 flex h-full flex-col justify-center gap-6 p-16 text-center">
           <p className="text-md font-semibold">Transaction Summary</p>
           <p className="text-sm">
             Start by entering an amount to see the full cost breakdown.
