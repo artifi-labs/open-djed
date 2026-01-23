@@ -18,7 +18,7 @@ export default function OrdersWalletSection({ wallet }: { wallet: Wallet }) {
 
   return (
     <>
-      <div className="flex h-full w-full flex-col gap-6 overflow-y-auto px-12 py-8">
+      <div className="flex h-full w-full flex-col gap-12 overflow-y-auto py-8">
         <h1 className="text-sm font-medium">Orders</h1>
         <div className="flex h-full w-full flex-col gap-12">
           {orders.length > 0 ? (
@@ -43,7 +43,7 @@ export default function OrdersWalletSection({ wallet }: { wallet: Wallet }) {
             </>
           ) : (
             <div className="flex h-full w-full flex-col items-center justify-center gap-12">
-              <div className="flex w-full flex-col items-center justify-center">
+              <div className="flex w-full flex-col items-center justify-center gap-6">
                 <span className="text-sm font-semibold md:text-base">
                   No orders yet
                 </span>

@@ -26,7 +26,7 @@ const SelectWalletSection: React.FC<SelectWalletSectionProps> = ({
   onClick,
 }) => {
   return (
-    <div className="flex h-full flex-col gap-24">
+    <div className="desktop:gap-24 flex h-full flex-col gap-16">
       <div className="flex flex-1 flex-col overflow-y-auto py-8">
         {wallets?.map((wallet, index) => (
           <ListItem
@@ -46,7 +46,7 @@ const SelectWalletSection: React.FC<SelectWalletSectionProps> = ({
 
       <Divider orientation="horizontal" />
       <div className="flex flex-col text-center">
-        <p className="text-secondary self-stretch text-sm">
+        <p className="text-secondary self-stretch text-xs">
           By connecting you agree to our{" "}
           <Link href="/terms" className="text-link underline">
             Terms & Services
