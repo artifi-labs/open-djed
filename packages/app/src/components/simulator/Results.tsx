@@ -28,12 +28,7 @@ const ResultSummaryItem: React.FC<ResultItem> = ({
     <div className="desktop:flex-col desktop:items-start desktop:justify-start desktop:gap-4 flex min-w-auto flex-row items-center justify-between gap-4">
       {/* Label + Tooltip */}
       <div className="flex min-w-auto items-center gap-6">
-        <p
-          className={clsx(
-            "text-secondary min-w-auto",
-            isTotal ? "text-sm font-medium" : "font-regular text-xs",
-          )}
-        >
+        <p className="text-secondary font-regular min-w-auto text-xs">
           {label}
         </p>
         {tooltip && (
@@ -96,6 +91,9 @@ const Results: React.FC<ResultsProps> = ({ inputs }) => {
   const { results: simulatorData, error } = useSimulatorResults(inputs)
   const { showToast } = useToast()
 
+  console.log("totals", totals)
+  console.log("details", details)
+
   const isContentBlurred =
     isEmptyValue(inputs.usdAmount) ||
     isEmptyValue(inputs.buyAdaPrice) ||
@@ -135,18 +133,27 @@ const Results: React.FC<ResultsProps> = ({ inputs }) => {
       >
         {isContentBlurred ? null : (
           <div className="flex flex-col gap-24">
-            {/* Total PNL and ADA PNL */}
-            <div className="desktop:grid-cols-2 desktop:gap-24 grid grid-rows-1 gap-16">
-              {totals.map((item) => (
-                <ResultSummaryItem key={item.label} {...item} />
-              ))}
+            <div className="flex flex-col gap-8">
+              <p className="min-w-auto text-sm font-medium">
+                Your Returns Compared
+              </p>
+              <div className="desktop:grid-cols-2 desktop:gap-24 grid grid-rows-1 gap-16">
+                {totals.map((item) => (
+                  <ResultSummaryItem key={item.label} {...item} />
+                ))}
+              </div>
             </div>
 
             {/* Fees and Rewards */}
-            <div className="desktop:grid-cols-2 desktop:gap-18 grid flex-1 grid-rows-1 gap-16">
-              {details.map((item) => (
-                <ResultSummaryItem key={item.label} {...item} />
-              ))}
+            <div className="flex flex-col gap-8">
+              <p className="min-w-auto text-sm font-medium">
+                Fees & Rewards Breakdown
+              </p>
+              <div className="desktop:grid-cols-2 desktop:gap-18 grid flex-1 grid-rows-1 gap-16">
+                {details.map((item) => (
+                  <ResultSummaryItem key={item.label} {...item} />
+                ))}
+              </div>
             </div>
 
             {/* Chart */}

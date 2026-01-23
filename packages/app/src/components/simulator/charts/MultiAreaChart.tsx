@@ -337,6 +337,9 @@ export function MultiAreaChart({
                 fontSize: "12px",
                 fontFamily: "Poppins",
               }}
+              formatter={(value) => (
+                <span className="text-secondary">{value}</span>
+              )}
             />
           )}
 

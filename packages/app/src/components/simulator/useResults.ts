@@ -42,7 +42,8 @@ const createSectionConfigs = () => [
   {
     name: "shenPnl",
     label: "SHEN PNL",
-    tooltip: "Your profit or loss from investing in SHEN, including all fees",
+    tooltip:
+      "This shows the profit or loss you would make if you invest in SHEN, including fees and rewards.",
     isTotal: true,
     read: (d: Partial<ResultsData>) => ({
       main: d.shenPnl ?? 0,
@@ -63,7 +64,8 @@ const createSectionConfigs = () => [
   {
     name: "adaPnl",
     label: "ADA PNL",
-    tooltip: "Your profit or loss from investing in ADA",
+    tooltip:
+      "This shows the profit or loss you would make by simply holding ADA, without buying SHEN.",
     isTotal: true,
     read: (d: Partial<ResultsData>) => ({
       main: d.adaPnl ?? 0,
