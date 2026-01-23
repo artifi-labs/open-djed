@@ -44,11 +44,10 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
     shenPnlUsd: ["avg"],
   }
 
-  const { results, yDomain, xAxisFormater } = useMemo(() => {
+  const { results, xAxisFormater } = useMemo(() => {
     if (!buyDate || !sellDate || initialHoldings <= 0)
       return {
         results: [],
-        yDomain: [0, 100] as [number, number],
         xAxisFormater: (value: string | number) => String(value),
       }
 
@@ -187,31 +186,7 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
       row.priceAtRow = priceAtRow
     })
 
-    // Calculate y-axis domain with padding
-    const allValues = results
-      .flatMap((row) => [
-        (row.adaPnlUsd_avg as number) || 0,
-        (row.shenPnlUsd_avg as number) || 0,
-      ])
-      .filter((v) => Number.isFinite(v))
-
-    const dataMin = Math.min(...allValues)
-    const dataMax = Math.max(...allValues)
-    const dataRange = dataMax - dataMin
-
-    // For a volatile range, 15% of the spread is usually enough to center it.
-    // If the data is flat (range is 0), we fallback to a 5% buffer of the absolute value.
-    const basePadding = Math.max(Math.abs(dataMin), Math.abs(dataMax))
-    const verticalPadding =
-      dataRange > 0 ? dataRange * 0.15 : basePadding * 0.05
-
-    const minY = Math.floor(dataMin - verticalPadding)
-    const maxY = Math.ceil(dataMax + verticalPadding)
-
-    const finalYDomain: [number, number] =
-      minY < maxY ? [minY, maxY] : [0, dataMax + 10]
-
-    return { results, yDomain: finalYDomain, xAxisFormater: formatter }
+    return { results, xAxisFormater: formatter }
   }, [
     buyDate,
     sellDate,
@@ -231,7 +206,7 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
       dataKey: "shenPnlUsd_avg",
       name: "SHEN PNL",
       tooltipLabel: "SHEN PNL",
-      strokeColor: "var(--color-supportive-3-500)",
+      strokeColor: "var(--color-lilac-300)",
       fillColor: "transparent",
       fillOpacity: 0,
       strokeWidth: 2,
@@ -240,7 +215,7 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
       dataKey: "adaPnlUsd_avg",
       name: "ADA PNL",
       tooltipLabel: "ADA PNL",
-      strokeColor: "var(--color-red-500)",
+      strokeColor: "var(--color-supportive-3-500)",
       fillColor: "transparent",
       fillOpacity: 0,
       strokeWidth: 2,
@@ -290,7 +265,6 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
       title="Profit over time"
       data={results as DataRow[]}
       xKey="date"
-      yDomain={yDomain}
       interval={0}
       areas={areas}
       tickFormatter={yTickFormatter}

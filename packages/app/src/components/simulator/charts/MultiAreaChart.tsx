@@ -63,7 +63,7 @@ type MultiAreaChartProps = {
   height?: number
   margin?: { top?: number; right?: number; left?: number; bottom?: number }
   xKey: string
-  yDomain: [number, number]
+  yDomain?: [number, number]
   yTicks?: number[]
   xTicks?: Array<string | number>
   interval?: number
