@@ -145,7 +145,7 @@ const Results: React.FC<ResultsProps> = ({ inputs }) => {
       >
         {isContentBlurred ? null : (
           <div className="flex flex-col gap-24">
-            <div className="bg-background-secondary border-primary flex flex-col gap-10 rounded-lg border p-2.5">
+            <div className="flex flex-col gap-10 rounded-lg">
               <div className="flex flex-col gap-6">
                 <p className="min-w-auto text-sm font-medium">
                   Your Returns Comparison (SHEN vs ADA)
