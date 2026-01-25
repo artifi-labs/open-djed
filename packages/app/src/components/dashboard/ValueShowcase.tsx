@@ -3,6 +3,7 @@ import Asset, { type AssetProps } from "../Asset"
 import { type IconName } from "../icons/Icon"
 import Tag from "../Tag"
 import Divider from "../Divider"
+import { formatNumber } from "@/lib/utils"
 
 type ValueShowcaseProps = {
   asset: AssetProps
@@ -27,11 +28,14 @@ const ValueShowcase: React.FC<ValueShowcaseProps> = ({
   tagTrailingIcon,
   suffix,
 }) => {
+
+  const showValue = value || defaultValue
+
   return (
     <div className="flex w-full flex-row items-center justify-between">
       <div className="flex flex-col gap-6">
         <span className="text-tertiary text-sm font-medium">
-          {value || defaultValue}
+          {formatNumber(parseFloat(showValue), { maximumFractionDigits: 4 })}
         </span>
         {hasAvailableAmount && availableAmount && (
           <span className="text-tertiary text-xxs">
