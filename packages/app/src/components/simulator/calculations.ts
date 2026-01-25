@@ -3,7 +3,7 @@
 import * as React from "react"
 import { useProtocolData } from "@/hooks/useProtocolData"
 import { expectedStakingReturn, type CreditEntry } from "@/lib/staking"
-import { valueTo } from "@/lib/utils"
+import { sumValues, valueTo } from "@/lib/utils"
 import { toAdaUsdExchangeRate } from "@open-djed/math"
 
 export interface ScenarioInputs {
@@ -87,7 +87,6 @@ function calculateSimulatorResults(
   protocolData: ProtocolData,
 ): ResultsData {
   const { usdAmount, buyDate, sellDate, buyAdaPrice, sellAdaPrice } = inputs
-  const { poolDatum } = protocolData
 
   // Build a new oracle datum using a user-provided ADA/USD price.
   const newOracleDatum = (adaUsd: number): ProtocolData["oracleDatum"] => {
@@ -110,30 +109,16 @@ function calculateSimulatorResults(
   const buyActionData = protocolData.tokenActionData(
     "SHEN",
     "Mint",
-    usdAmount,
+    { type: "In", amount: protocolData.to({ DJED: usdAmount }, "SHEN") },
     { oracleDatum: buyOracleDatum },
   )
+  console.log(buyActionData.toReceive.SHEN ?? 0)
 
-  const sellActionData = protocolData.tokenActionData(
-    "SHEN",
-    "Burn",
-    usdAmount,
-    { oracleDatum: sellOracleDatum },
-  )
-
-  const buyFeeAda =
-    (buyActionData.actionFee.ADA ?? 0) + (buyActionData.operatorFee.ADA ?? 0)
-
-  const sellActionFeeShen = sellActionData.actionFee.SHEN ?? 0
-  const sellOperatorFeeAda = sellActionData.operatorFee.ADA ?? 0
-
-  const sellActionFeeAda = valueTo(
-    { SHEN: sellActionFeeShen },
-    poolDatum,
-    sellOracleDatum,
+  const buyFeeAda = protocolData.to(
+    sumValues(buyActionData.actionFee, buyActionData.operatorFee),
     "ADA",
   )
-  const sellFeeAda = sellActionFeeAda + sellOperatorFeeAda
+
   const initialAdaHoldings = buyActionData.baseCost.ADA ?? 0
 
   // Staking rewards
@@ -149,36 +134,60 @@ function calculateSimulatorResults(
     usdAmount,
   )
 
-  const sellProceedsAda = sellActionData.toReceive.ADA ?? 0
+  const sellActionData = protocolData.tokenActionData(
+    "SHEN",
+    "Burn",
+    {
+      type: "In",
+      amount:
+        (buyActionData.toReceive.SHEN ?? 0) +
+        protocolData.to({ ADA: feesEarnedAda }, "SHEN"),
+    },
+    { oracleDatum: sellOracleDatum },
+  )
+
+  console.log(sellActionData)
+  console.log("feesEarnedAda", feesEarnedAda)
+  console.log(
+    "SHEN to sell",
+    (buyActionData.toReceive.SHEN ?? 0) +
+      protocolData.to({ ADA: feesEarnedAda }, "SHEN"),
+    " in USD ",
+    (buyActionData.toReceive.SHEN ?? 0) *
+      sellActionData.price.ADA *
+      sellAdaPrice,
+  )
+
+  const sellFeeAda = protocolData.to(
+    sumValues(sellActionData.actionFee, sellActionData.operatorFee),
+    "ADA",
+    { oracleDatum: sellOracleDatum },
+  )
+
   const finalAdaHoldings =
-    sellProceedsAda - sellOperatorFeeAda + stakingRewardsAda + feesEarnedAda
+    (sellActionData.toReceive.ADA ?? 0) + stakingRewardsAda
 
   // ADA PNL in USD - (exclude fees and rewards)
   const adaPurchased = buyAdaPrice > 0 ? usdAmount / buyAdaPrice : 0
   const adaFinalUsdValue = adaPurchased * sellAdaPrice
   const adaPnl = adaFinalUsdValue - usdAmount
-  const adaPnlPercent = usdAmount > 0 ? (adaPnl / usdAmount) * 100 : 0
 
   // SHEN PNL in USD - (includes fees and rewards)
   const finalUsdValue = finalAdaHoldings * sellAdaPrice
   const shenPnl = finalUsdValue - usdAmount
-  const shenPnlPercent = usdAmount > 0 ? (shenPnl / usdAmount) * 100 : 0
-
-  const totalFees = buyFeeAda + sellFeeAda
-  const totalRewards = stakingRewardsAda + feesEarnedAda
 
   return {
     buyFee: buyFeeAda,
     sellFee: sellFeeAda,
-    totalFees,
-    totalRewards,
+    totalFees: buyFeeAda + sellFeeAda,
+    totalRewards: stakingRewardsAda + feesEarnedAda,
     stakingRewards: stakingRewardsAda,
     stakingCredits: stakingInfo.credits,
     feesEarned: feesEarnedAda,
     adaPnl,
-    adaPnlPercent,
+    adaPnlPercent: usdAmount > 0 ? (adaPnl / usdAmount) * 100 : 0,
     shenPnl,
-    shenPnlPercent,
+    shenPnlPercent: usdAmount > 0 ? (shenPnl / usdAmount) * 100 : 0,
     initialAdaHoldings,
     finalAdaHoldings,
   }

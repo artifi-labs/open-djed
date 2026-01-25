@@ -52,7 +52,13 @@ const calculateTokenAction = (
   const tokenAction = (isMint ? token : token) as TokenType
   const amountInToken = amount
 
-  return data.tokenActionData(tokenAction, action, amountInToken)
+  return data.tokenActionData(
+    tokenAction,
+    action,
+    action === "Mint"
+      ? { type: "Out", amount: amountInToken }
+      : { type: "In", amount: amountInToken },
+  )
 }
 
 const calculateFromPay = ({
