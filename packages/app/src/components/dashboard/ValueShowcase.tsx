@@ -28,7 +28,6 @@ const ValueShowcase: React.FC<ValueShowcaseProps> = ({
   tagTrailingIcon,
   suffix,
 }) => {
-
   const showValue = value || defaultValue
 
   return (
