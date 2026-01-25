@@ -189,32 +189,78 @@ export const shortenString = (text: string, start = 4, end = 6): string => {
  * Sanitizes numeric input for financial values.
  *
  * Rules:
- * - Converts commas (`,`) to dots (`.`)
+ * - Removes commas (`,`) used as thousand separators
  * - Allows only digits (`0–9`) and a single dot (`.`)
  * - Removes any extra dots after the first one
- * - Adds a leading zero if the value starts with a dot (e.g., ".5" becomes "0.5")
+ * - Prepends a zero if the value starts with a dot (e.g., ".5" becomes "0.5")
  *
- * @param {string} value - Raw input value from the user
- * @returns {string} A sanitized numeric string
+ * @param {string} value - Raw input string from the user
+ * @returns {string} Sanitized numeric string
  *
  * @example
- * sanitizeNumberInput("1,5")   // "1.5"
- * sanitizeNumberInput("1.2.3") // "1.23"
- * sanitizeNumberInput(",5")    // "0.5"
- * sanitizeNumberInput("1a,2b") // "1.2"
- * sanitizeNumberInput(".1231") // "0.1231"
+ * sanitizeNumberInput("1,000,000.00")   // "1000000.00"
+ * sanitizeNumberInput("1,5")            // "15"
+ * sanitizeNumberInput(",5")             // "0.5"
  */
-export const sanitizeNumberInput = (v: string) => {
-  const sanitized = v
-    .replace(/,/g, ".")
-    .replace(/[^0-9.]/g, "")
-    .replace(/(\..*)\./g, "$1")
+export function sanitizeNumberInput(v: string): string {
+  // Remove commas and invalid characters
+  let sanitized = v.replace(/,/g, "").replace(/[^0-9.]/g, "")
 
+  // Keep only the first dot
+  const parts = sanitized.split(".")
+  const first = parts[0] || ""
+  sanitized = first + (parts.length > 1 ? "." + parts.slice(1).join("") : "")
+
+  // Prepend zero if starting with dot
   if (sanitized.startsWith(".")) {
     return "0" + sanitized
   }
 
   return sanitized
+}
+
+/**
+ * Formats a numeric string for display with thousand separators,
+ * while preserving user input for live typing.
+ *
+ * Rules:
+ * - Adds commas to the integer part for readability
+ * - Keeps the decimal part intact while typing
+ * - Trims the decimal part to `maxDecimalPlaces` if provided
+ * - Preserves a trailing dot if the user types it
+ *
+ * @param {string} value - Clean numeric string
+ * @param {number} [maxDecimalPlaces] - Optional maximum number of decimals
+ * @returns {string} Formatted numeric string for display
+ *
+ * @example
+ * formatStringToNumber("1234")           // "1,234"
+ * formatStringToNumber("1234.5")         // "1,234.5"
+ */
+export function formatLiveStringToNumber(
+  value: string,
+  maxDecimalPlaces?: number,
+) {
+  if (!value) return ""
+
+  const [intPartRaw, decPartRaw] = value.split(".")
+
+  // Remove leading zeros from integer part
+  const intPart = intPartRaw.replace(/^0+(?=\d)/, "") || "0"
+
+  // Handle decimal part and max decimal places
+  let decPart = decPartRaw ?? ""
+  if (maxDecimalPlaces !== undefined) {
+    decPart = decPart.slice(0, maxDecimalPlaces)
+  }
+
+  // Format integer part with commas
+  const formattedInt = parseInt(intPart, 10).toLocaleString("en-US")
+  return decPart !== ""
+    ? `${formattedInt}.${decPart}`
+    : value.endsWith(".")
+      ? `${formattedInt}.`
+      : formattedInt
 }
 
 export const formatToken = (v: number, token: Token) =>

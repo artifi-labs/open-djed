@@ -8,7 +8,7 @@ import Tag from "../Tag"
 import ButtonIcon from "../ButtonIcon"
 import Asset, { type AssetProps } from "../Asset"
 import Button from "../Button"
-import { sanitizeNumberInput } from "@/lib/utils"
+import { formatLiveStringToNumber, sanitizeNumberInput } from "@/lib/utils"
 
 export type InputStatus = "default" | "warning" | "error" | "success"
 
@@ -71,28 +71,38 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
 }) => {
   const [internalValue, setInternalValue] = React.useState(defaultValue)
   const displayedValue = value !== undefined ? value : internalValue
-  const inputValue = displayedValue === "0" ? "" : displayedValue
+  const inputValue = formatLiveStringToNumber(displayedValue, maxDecimalPlaces) // Format input value for display
 
-  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const sanitized = sanitizeNumberInput(e.target.value)
-
-    if (maxDecimalPlaces !== undefined && sanitized !== "") {
-      const parts = sanitized.split(".")
-      if (parts.length > 1 && parts[1].length > maxDecimalPlaces) {
-        return
-      }
-    }
-
-    if (maxValue !== undefined && sanitized !== "") {
-      const numValue = parseFloat(sanitized)
-      if (!isNaN(numValue) && numValue > maxValue) {
-        return
-      }
-    }
+  const processInputValue = (rawValue: string) => {
+    const sanitized = sanitizeNumberInput(rawValue)
 
     if (sanitized === displayedValue) return
+
+    // Check max decimal places
+    if (maxDecimalPlaces !== undefined && sanitized !== "") {
+      const parts = sanitized.split(".")
+      if (parts[1]?.length > maxDecimalPlaces) return
+    }
+
+    // Check max value
+    if (maxValue !== undefined && sanitized !== "") {
+      const numValue = parseFloat(sanitized)
+      if (!isNaN(numValue) && numValue > maxValue) return
+    }
+
+    // Update state and trigger callback
     if (value === undefined) setInternalValue(sanitized)
     onValueChange?.(sanitized)
+  }
+
+  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    processInputValue(e.target.value)
+  }
+
+  const handleOnPaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    e.preventDefault()
+    const pastedText = e.clipboardData.getData("text")
+    processInputValue(pastedText)
   }
 
   const baseClasses =
@@ -154,6 +164,7 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
           disabled={disabled || inputDisabled}
           value={inputValue}
           onChange={handleOnChange}
+          onPaste={handleOnPaste}
           {...props}
         />
 
