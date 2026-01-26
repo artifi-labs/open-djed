@@ -33,9 +33,9 @@ const SimulatorInfo = () => {
     <div className="text-secondary flex flex-col gap-16 text-sm">
       <div className="flex flex-col gap-16">
         <p className="gap-16 text-sm">
-          The Yield Simulator helps you understand how profitable a SHEN
-          position could be. By entering the amount of SHEN, your buy and sell
-          dates, and ADA prices, the tool estimates:
+          The Trade Simulator helps you understand how profitable a SHEN
+          investment could be. By entering the amount of USD to invest, your buy
+          and sell dates, and ADA prices, the tool estimates:
         </p>
 
         <ul className="flex flex-col gap-16">
@@ -53,9 +53,9 @@ const SimulatorInfo = () => {
         </ul>
 
         <p>
-          It's not a prediction tool - it's a calculator that shows how your
+          It's not a trading tool - it's a calculator that shows how your
           returns change based on the inputs you choose, so you can plan your
-          strategy with clarity.
+          strategy with clarity. It should not be considered financial advice.
         </p>
       </div>
     </div>

@@ -55,7 +55,7 @@ export default function OrdersWalletSection({ wallet }: { wallet: Wallet }) {
                 <Button
                   text={"Mint & Burn Now"}
                   className="w-full"
-                  variant="secondary"
+                  variant="outlined"
                   onClick={() => closeSidebar()}
                 />
               </Link>

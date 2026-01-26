@@ -7,7 +7,6 @@ const { NETWORK } = env
 const title = NETWORK === "Mainnet" ? APP_NAME : `${APP_NAME} | ${NETWORK}`
 
 export const metadata: Metadata = {
-  metadataBase: new URL(env.BASE_URL),
   title: {
     default: title,
     template: `%s | Orders`,

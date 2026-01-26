@@ -97,6 +97,7 @@ const WalletDetail: React.FC<WalletDetailProps> = ({
         icon="Disconnect"
         variant="secondary"
         onClick={onDisconnect}
+        size="small"
       />
     </div>
   )
