@@ -1,6 +1,6 @@
 export default function Background() {
   return (
-    <div className="fixed inset-0 -z-10 pointer-events-none">
+    <div className="pointer-events-none fixed inset-0 -z-10">
       <picture>
         <source
           media="(min-width: 1929px)"
