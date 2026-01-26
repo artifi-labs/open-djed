@@ -206,6 +206,8 @@
   --color-supportive-3-975: #010809;
   --color-supportive-3-1000: #000000;
 
+  --color-supportive-4-400: #c953d2;
+
   /* Color Tokens */
   --color-primary: var(--color-offwhite);
   --color-secondary: var(--color-neutral-200);
@@ -280,6 +282,9 @@
   --color-no-color-text-hover: var(--color-primary-100);
   --color-no-color-text-focused: var(--color-primary-150);
   --color-no-color-text-pressed: var(--color-primary-150);
+
+  --color-accent-1: var(--color-supportive-1-500);
+  --color-accent-3: var(--color-supportive-4-400);
 
   --color-gradient-1: linear-gradient(
     180deg,

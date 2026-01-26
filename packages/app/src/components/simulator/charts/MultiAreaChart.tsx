@@ -7,6 +7,7 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
+  Legend,
 } from "recharts"
 import Icon from "../../icons/Icon"
 
@@ -62,18 +63,19 @@ type MultiAreaChartProps = {
   height?: number
   margin?: { top?: number; right?: number; left?: number; bottom?: number }
   xKey: string
-  yDomain: [number, number]
+  yDomain?: [number, number]
   yTicks?: number[]
   xTicks?: Array<string | number>
   interval?: number
   areas: AreaSeries[]
-  xTickFormatter?: (value: string | number) => string
+  xTickFormatter?: (value: string | number, index?: number) => string
   tickFormatter?: (value: number) => string
   tooltipFormatter?: (
     value: number,
     dataKey: string,
     payload: Record<string, unknown>,
   ) => string
+  showLegend?: boolean
 }
 
 const CustomTooltip = ({
@@ -119,23 +121,23 @@ const CustomTooltip = ({
     }
 
     return (
-      <div className="rounded-4 border-border-primary bg-surface-secondary flex w-fit flex-col gap-12 border p-12">
+      <div className="rounded-4 border-border-primary bg-surface-secondary flex w-79 max-w-full flex-col gap-12 border p-12">
         <div className="flex flex-row">
-          <p className="text-sm">{formatTooltipDate(label)}</p>
+          <p className="text-xxs">{formatTooltipDate(label)}</p>
         </div>
         {filteredPayload.map((entry: TooltipPayloadEntry, index: number) => (
           <div
             key={index}
-            className="flex w-full items-center justify-between gap-8"
+            className="flex w-full items-center justify-between gap-12"
           >
-            <div className="flex items-center gap-2">
+            <div className="flex items-center">
               <div style={{ backgroundColor: entry.stroke }} />
-              <p className="text-sm">
+              <p className="text-xxs">
                 {areas.find((area) => area.dataKey === entry.dataKey)
                   ?.tooltipLabel || entry.name}
               </p>
             </div>
-            <p className="text-sm">
+            <p className="text-xxs">
               {tooltipFormatter
                 ? tooltipFormatter(entry.value, entry.dataKey, entry.payload)
                 : tickFormatter
@@ -144,29 +146,6 @@ const CustomTooltip = ({
             </p>
           </div>
         ))}
-        {(() => {
-          const investedAda = payload[0]?.payload?.investedAda
-          const investedUsd = payload[0]?.payload?.investedUsd
-          if (!Number.isFinite(investedAda)) return null
-          return (
-            <div className="flex w-full items-center justify-between gap-8">
-              <p className="text-sm">Invested</p>
-              <p className="text-sm">
-                ₳
-                {Number(investedAda).toLocaleString(undefined, {
-                  minimumFractionDigits: 4,
-                  maximumFractionDigits: 4,
-                })}
-                {Number.isFinite(investedUsd)
-                  ? ` ($${Number(investedUsd).toLocaleString(undefined, {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    })})`
-                  : ""}
-              </p>
-            </div>
-          )
-        })()}
       </div>
     )
   }
@@ -202,7 +181,9 @@ export function MultiAreaChart({
   interval = 1,
   areas,
   tickFormatter,
+  xTickFormatter,
   tooltipFormatter,
+  showLegend = false,
 }: MultiAreaChartProps) {
   return (
     <div className="flex h-full w-full flex-col gap-6">
@@ -301,6 +282,8 @@ export function MultiAreaChart({
             interval={interval}
             axisLine={false}
             tickLine={false}
+            minTickGap={30}
+            padding={{ left: 10, right: 20 }}
             tick={{
               dy: 12,
               fontSize: 10,
@@ -308,12 +291,9 @@ export function MultiAreaChart({
               fill: "var(--color-tertiary)",
               fontWeight: 400,
             }}
-            tickFormatter={(value) => {
-              const date = new Date(value)
-              const month = date.toLocaleString(undefined, { month: "short" })
-              const year = date.getFullYear()
-              return `${month}, ${year}`
-            }}
+            tickFormatter={(value, index) =>
+              xTickFormatter ? xTickFormatter(value, index) : value
+            }
           />
 
           <YAxis
@@ -346,6 +326,19 @@ export function MultiAreaChart({
               />
             }
           />
+
+          {showLegend && (
+            <Legend
+              verticalAlign="top"
+              align="right"
+              iconType="circle"
+              wrapperStyle={{
+                paddingBottom: "20px",
+                fontSize: "12px",
+                fontFamily: "Poppins",
+              }}
+            />
+          )}
 
           {areas.map((area, index) => (
             <Area

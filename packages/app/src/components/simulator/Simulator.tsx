@@ -3,7 +3,7 @@
 import { useState } from "react"
 import Button from "@/components/Button"
 import Modal from "@/components/modals/Modal"
-import SimulatorInfo from "@/components/SimulatorInfo"
+import SimulatorInfo from "@/components/simulator/SimulatorInfo"
 import Results from "@/components/simulator/Results"
 import InputAction from "@/components/simulator/InputAction"
 import { useSimulatorActions } from "./useSimulatorActions"
@@ -17,9 +17,9 @@ export default function Simulator() {
       {/* Header */}
       <div className="desktop:flex-row flex flex-col justify-between gap-12">
         <div className="desktop:gap-6 flex flex-col gap-4">
-          <h2 className="text font-bold">SHEN Yield Simulator</h2>
+          <h2 className="text font-bold">SHEN Trade Simulator</h2>
           <span className="text-secondary text-sm">
-            Check the yield outcomes quickly and clearly
+            Check the outcomes of investing in SHEN quickly and clearly
           </span>
         </div>
 
@@ -27,7 +27,7 @@ export default function Simulator() {
           <Button
             variant="text"
             size="medium"
-            text="What is a yield simulator?"
+            text="What is the trade simulator?"
             onClick={() => setIsModalOpen(true)}
           />
         </div>
@@ -35,7 +35,7 @@ export default function Simulator() {
 
       {/* Modal */}
       <Modal
-        title="What is a yield simulator?"
+        title="What is the trade simulator?"
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
       >
