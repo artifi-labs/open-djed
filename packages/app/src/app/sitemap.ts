@@ -7,13 +7,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {
       url: BASE_URL,
-      lastModified: new Date("2024-12-24"),
+      lastModified: new Date("2026-01-26"),
       changeFrequency: "daily",
       priority: 1.0,
     },
     {
       url: `${BASE_URL}/orders`,
-      lastModified: new Date("2024-12-24"),
+      lastModified: new Date("2026-01-26"),
+      changeFrequency: "daily",
+      priority: 0.8,
+    },
+    {
+      url: `${BASE_URL}/simulator`,
+      lastModified: new Date("2026-01-26"),
       changeFrequency: "daily",
       priority: 0.8,
     },
