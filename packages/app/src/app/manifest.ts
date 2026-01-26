@@ -11,8 +11,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name,
     short_name: APP_NAME,
     description: `Mint and burn DJED, Cardano's overcollateralized stablecoin,
-      with our open-source platform. Transparent alternative to DJED.xyz -
-      accessible 24/7 anywhere.`,
+      with our open-source platform.`,
     start_url: "/",
     display: "standalone",
     background_color: themeColor,
