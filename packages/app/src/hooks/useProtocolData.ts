@@ -36,7 +36,17 @@ export function useProtocolData() {
         async (
           r,
         ): Promise<{
-          to: (value: Value, token: TokenType | "ADA") => number
+          to: (
+            value: Value,
+            token: TokenType | "ADA",
+            overrides?: {
+              oracleDatum?: {
+                oracleFields: {
+                  adaUSDExchangeRate: { numerator: bigint; denominator: bigint }
+                }
+              }
+            },
+          ) => number
           oracleDatum: {
             oracleFields: {
               adaUSDExchangeRate: { numerator: bigint; denominator: bigint }
@@ -67,7 +77,7 @@ export function useProtocolData() {
           tokenActionData: (
             token: TokenType,
             action: ActionType,
-            amount: number,
+            amount: { type: "In" | "Out"; amount: number },
             overrides?: {
               oracleDatum?: {
                 oracleFields: {
@@ -113,8 +123,26 @@ export function useProtocolData() {
           const registry = registryByNetwork[NETWORK]
           const refundableDeposit = { ADA: Number(poolDatum.minADA) / 1e6 }
           return {
-            to: (value: Value, token: TokenType | "ADA"): number =>
-              valueTo(value, poolDatum, oracleDatum, token),
+            to: (
+              value: Value,
+              token: TokenType | "ADA",
+              overrides?: {
+                oracleDatum?: {
+                  oracleFields: {
+                    adaUSDExchangeRate: {
+                      numerator: bigint
+                      denominator: bigint
+                    }
+                  }
+                }
+              },
+            ): number =>
+              valueTo(
+                value,
+                poolDatum,
+                overrides?.oracleDatum ?? oracleDatum,
+                token,
+              ),
             oracleDatum,
             poolDatum,
             protocolData: {
@@ -196,7 +224,7 @@ export function useProtocolData() {
             tokenActionData: (
               token: TokenType,
               action: ActionType,
-              amount: number,
+              amount: { type: "In" | "Out"; amount: number },
               overrides,
             ) => {
               const activeOracleDatum = overrides?.oracleDatum ?? oracleDatum
@@ -204,97 +232,151 @@ export function useProtocolData() {
                 registry[`${action}${token}FeePercentage`],
               )
               const actionFeePercentage = actionFeeRatio.toNumber() * 100
-              const amountBigInt = BigInt(Math.floor(amount * 1e6))
+              const amountBigInt = BigInt(Math.floor(amount.amount * 1e6))
               const exchangeRate =
                 token === "DJED"
                   ? djedADARate(activeOracleDatum)
                   : shenADARate(poolDatum, activeOracleDatum)
               if (action === "Mint") {
-                const baseCostRational = exchangeRate.mul(amountBigInt)
+                if (amount.type === "Out") {
+                  const baseCostRational = exchangeRate.mul(amountBigInt)
+                  const baseCost = {
+                    ADA: baseCostRational.div(1_000_000n).toNumber(),
+                  }
+                  const actionFeeRational = actionFeeRatio.mul(baseCostRational)
+                  const actionFee = {
+                    ADA: actionFeeRational.div(1_000_000n).toNumber(),
+                  }
+                  const operatorFee = {
+                    ADA: new Rational(
+                      getOperatorFee(
+                        baseCostRational.add(actionFeeRational),
+                        registry.operatorFeeConfig,
+                      ),
+                    )
+                      .div(1_000_000n)
+                      .toNumber(),
+                  }
+                  const totalCost = sumValues(baseCost, actionFee, operatorFee)
+                  return {
+                    baseCost,
+                    actionFee,
+                    actionFeePercentage: actionFeeRatio.toNumber() * 100,
+                    operatorFee,
+                    totalCost,
+                    toSend: sumValues(totalCost, refundableDeposit),
+                    toReceive: sumValues(
+                      { [token]: amount.amount },
+                      refundableDeposit,
+                    ),
+                    price: {
+                      ADA:
+                        valueToADA(totalCost, poolDatum, activeOracleDatum) /
+                        amount.amount,
+                    },
+                  }
+                }
+                const amountADA = exchangeRate.mul(amountBigInt)
+                const baseCostRationalToken = actionFeeRatio
+                  .add(1n)
+                  .invert()
+                  .mul(amountBigInt)
+                const baseCostRational = baseCostRationalToken.mul(exchangeRate)
                 const baseCost = {
                   ADA: baseCostRational.div(1_000_000n).toNumber(),
                 }
-                const actionFeeRational = actionFeeRatio.mul(baseCostRational)
+                const actionFeeRational = baseCostRational
+                  .negate()
+                  .add(amountADA)
                 const actionFee = {
                   ADA: actionFeeRational.div(1_000_000n).toNumber(),
                 }
+                const operatorFeeBigInt = getOperatorFee(
+                  baseCostRational.toBigInt(),
+                  registry.operatorFeeConfig,
+                )
                 const operatorFee = {
-                  ADA: new Rational(
-                    getOperatorFee(
-                      baseCostRational.add(actionFeeRational),
-                      registry.operatorFeeConfig,
-                    ),
-                  )
-                    .div(1_000_000n)
-                    .toNumber(),
+                  ADA: new Rational({
+                    numerator: operatorFeeBigInt,
+                    denominator: 1_000_000n,
+                  }).toNumber(),
                 }
                 const totalCost = sumValues(baseCost, actionFee, operatorFee)
+                // FIXME: We slightly underestimate this. I don't know why but for now it's ok. Better to underestimate than overestimate.
+                const toReceive = {
+                  [token]: baseCostRationalToken.div(1_000_000n).toNumber(),
+                }
                 return {
                   baseCost,
                   actionFee,
-                  actionFeePercentage: actionFeeRatio.toNumber() * 100,
+                  actionFeePercentage,
                   operatorFee,
                   totalCost,
                   toSend: sumValues(totalCost, refundableDeposit),
-                  toReceive: sumValues({ [token]: amount }, refundableDeposit),
+                  toReceive,
                   price: {
                     ADA:
-                      valueToADA(totalCost, poolDatum, activeOracleDatum) /
-                      amount,
+                      valueToADA(toReceive, poolDatum, activeOracleDatum) /
+                      valueTo(totalCost, poolDatum, activeOracleDatum, token),
                   },
                 }
               }
-              const baseCostRational = actionFeeRatio
-                .add(1n)
-                .invert()
-                .mul(amountBigInt)
-              const baseCost = {
-                [token]: baseCostRational.div(1_000_000n).toNumber(),
+              if (action === "Burn" && amount.type === "In") {
+                const baseCostRational = actionFeeRatio
+                  .add(1n)
+                  .invert()
+                  .mul(amountBigInt)
+                const baseCost = {
+                  [token]: baseCostRational.div(1_000_000n).toNumber(),
+                }
+                const actionFeeRational = baseCostRational
+                  .negate()
+                  .add(amountBigInt)
+                const actionFee = {
+                  [token]: actionFeeRational.div(1_000_000n).toNumber(),
+                }
+                const operatorFeeBigInt = getOperatorFee(
+                  baseCostRational.mul(exchangeRate).toBigInt(),
+                  registry.operatorFeeConfig,
+                )
+                const operatorFee = {
+                  ADA: new Rational({
+                    numerator: operatorFeeBigInt,
+                    denominator: 1_000_000n,
+                  }).toNumber(),
+                }
+                const totalCost = {
+                  ...operatorFee,
+                  [token]: baseCostRational
+                    .add(actionFeeRational)
+                    .div(1_000_000n)
+                    .toNumber(),
+                }
+                // FIXME: We slightly underestimate this. I don't know why but for now it's ok. Better to underestimate than overestimate.
+                const toReceive = {
+                  ADA: baseCostRational
+                    .mul(exchangeRate)
+                    .div(1_000_000n)
+                    .toNumber(),
+                }
+                return {
+                  baseCost,
+                  actionFee,
+                  actionFeePercentage,
+                  operatorFee,
+                  totalCost,
+                  toSend: sumValues(totalCost, refundableDeposit),
+                  toReceive,
+                  price: {
+                    ADA:
+                      valueToADA(toReceive, poolDatum, activeOracleDatum) /
+                      valueTo(totalCost, poolDatum, activeOracleDatum, token),
+                  },
+                }
               }
-              const actionFeeRational = baseCostRational
-                .negate()
-                .add(amountBigInt)
-              const actionFee = {
-                [token]: actionFeeRational.div(1_000_000n).toNumber(),
-              }
-              const operatorFeeBigInt = getOperatorFee(
-                baseCostRational.mul(exchangeRate).toBigInt(),
-                registry.operatorFeeConfig,
+              throw new Error(
+                `Invalid action: ${action} ${token} and amount type: ${amount.type}`,
               )
-              const operatorFee = {
-                ADA: new Rational({
-                  numerator: operatorFeeBigInt,
-                  denominator: 1_000_000n,
-                }).toNumber(),
-              }
-              const totalCost = {
-                ...operatorFee,
-                [token]: baseCostRational
-                  .add(actionFeeRational)
-                  .div(1_000_000n)
-                  .toNumber(),
-              }
-              // FIXME: We slightly underestimate this. I don't know why but for now it's ok. Better to underestimate than overestimate.
-              const toReceive = {
-                ADA: baseCostRational
-                  .mul(exchangeRate)
-                  .div(1_000_000n)
-                  .toNumber(),
-              }
-              return {
-                baseCost,
-                actionFee,
-                actionFeePercentage,
-                operatorFee,
-                totalCost,
-                toSend: sumValues(totalCost, refundableDeposit),
-                toReceive,
-                price: {
-                  ADA:
-                    valueToADA(toReceive, poolDatum, activeOracleDatum) /
-                    valueTo(totalCost, poolDatum, activeOracleDatum, token),
-                },
-              }
             },
           }
         },

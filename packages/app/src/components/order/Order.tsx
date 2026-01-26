@@ -66,7 +66,7 @@ const Order = () => {
         </BaseCard>
       ) : (
         <>
-          {hasOrders && (
+          {(hasOrders || selectedFilter !== "All") && (
             <div className="flex flex-row justify-start gap-8 py-18">
               {/* Search */}
               {/*<div className="flex items-center">

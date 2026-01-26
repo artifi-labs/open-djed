@@ -52,7 +52,13 @@ const calculateTokenAction = (
   const tokenAction = (isMint ? token : token) as TokenType
   const amountInToken = amount
 
-  return data.tokenActionData(tokenAction, action, amountInToken)
+  return data.tokenActionData(
+    tokenAction,
+    action,
+    action === "Mint"
+      ? { type: "Out", amount: amountInToken }
+      : { type: "In", amount: amountInToken },
+  )
 }
 
 const calculateFromPay = ({
@@ -287,7 +293,7 @@ export function useMintBurnAction(defaultActionType: ActionType) {
               Math.max(
                 (actionType === "Burn"
                   ? wallet.balance[currentToken]
-                  : ((wallet.balance.ADA ?? 0) -
+                  : (Math.max((wallet.balance.ADA ?? 0) - 5, 0) -
                       (Number(registry.operatorFeeConfig.max) +
                         (data.protocolData.refundableDeposit.ADA ?? 1823130)) /
                         1e6) /

@@ -37,7 +37,7 @@ type CloseButtonProps = {
 } & ButtonHTMLAttributes<HTMLButtonElement>
 
 const ClearButton: FC<CloseButtonProps> = ({ onClick, size, ...props }) => {
-  const className = clsx("cursor-pointer p-8", props.className)
+  const className = clsx("cursor-pointer p-8 flex-shrink-0", props.className)
 
   return (
     <button onClick={onClick} className={className} {...props}>
@@ -64,7 +64,7 @@ const InputField: FC<InputFieldProps> = ({
   const [internalValue, setInternalValue] = useState(defaultValue)
   const [isTyping, setIsTyping] = useState(false)
   const displayedValue = value !== undefined ? value : internalValue
-  const inputValue = displayedValue === "0" ? "" : displayedValue
+  const inputValue = displayedValue
 
   const sizeClasses: Record<Size, { text: string; className: string }> = {
     Small: { text: "text-sm", className: "px-10 py-8 h-[40px]" },
@@ -95,7 +95,7 @@ const InputField: FC<InputFieldProps> = ({
   }
 
   const baseClasses = clsx(
-    "w-full",
+    "w-full overflow-hidden",
     "border-gradient border-color-primary bg-surface-primary rounded-input-dropdown items-center flex flex-row gap-8",
     sizeClasses[size].className,
   )
@@ -107,7 +107,7 @@ const InputField: FC<InputFieldProps> = ({
 
   const textClassName = clsx(
     "text-primary placeholder:text-tertiary font-medium outline-none",
-    "flex-1",
+    "flex-1 min-w-0 bg-transparent",
     sizeClasses[size].text,
     inputClassName,
   )
