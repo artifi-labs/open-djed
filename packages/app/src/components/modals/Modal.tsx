@@ -19,6 +19,7 @@ type ModalProps = {
   onBack?: () => void
   children: React.ReactNode
   className?: string
+  paddingClassName?: string
   overlayClassName?: string
   border?: string
 }
@@ -36,6 +37,7 @@ export const Modal: React.FC<ModalProps> = ({
   onBack,
   children,
   className,
+  paddingClassName,
   border = "border-gradient border-color-gradient",
 }) => {
   if (!isOpen) return null
@@ -52,9 +54,13 @@ export const Modal: React.FC<ModalProps> = ({
   )
 
   const baseClassName = clsx(
-    "bg-surface-modal rounded-8 relative flex max-h-[85vh] max-w-full min-w-xs flex-col overflow-hidden desktop:p-24 p-16 sm:max-h-[85vh] sm:max-w-200",
+    "bg-surface-modal rounded-8 relative flex max-h-[85vh] max-w-full min-w-xs flex-col overflow-hidden sm:max-h-[85vh] sm:max-w-200",
     border,
     className,
+  )
+  const contentClasses = clsx(
+    "flex-1 overflow-y-auto",
+    paddingClassName ?? "desktop:px-24 px-16",
   )
 
   return (
@@ -67,7 +73,7 @@ export const Modal: React.FC<ModalProps> = ({
         onClick={onClose}
       >
         <div className={baseClassName} onClick={(e) => e.stopPropagation()}>
-          <div className="sticky top-0 z-10 flex items-center justify-between pb-12">
+          <div className="desktop:p-24 sticky top-0 z-10 flex items-center justify-between p-16 pb-12">
             {logo ? (
               <Logo />
             ) : (
@@ -95,7 +101,7 @@ export const Modal: React.FC<ModalProps> = ({
             <div className="absolute top-16 right-16 z-20">{CloseBtn}</div>
           )}
 
-          <div className="flex-1 overflow-y-auto">{children}</div>
+          <div className={contentClasses}>{children}</div>
         </div>
       </div>
     </>

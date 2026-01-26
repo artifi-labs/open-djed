@@ -22,31 +22,35 @@ const ConnectedWalletSection: React.FC<ConnectedWalletSectionProps> = ({
 
   return (
     <div className="flex h-full w-full flex-col gap-14 overflow-hidden py-8">
-      <div className="flex shrink-0 flex-col gap-12">
-        <WalletDetail
-          balance={wallet.balance}
-          name={wallet.name.toUpperCase() as WalletName}
-          address={wallet.address ? wallet.address : ""}
-          onDisconnect={disconnect}
-        />
-        <div className="flex w-full flex-row items-start justify-start gap-8 overflow-x-auto">
-          <WalletBalance token="DJED" amount={wallet.balance.DJED} />
-          <WalletBalance token="SHEN" amount={wallet.balance.SHEN} />
-          <WalletBalance token="ADA" amount={wallet.balance.ADA} />
-        </div>
-        <div className="pb-8">
-          <Link href={"/"}>
-            <Button
-              className="w-full"
-              variant="primary"
-              onClick={() => closeSidebar()}
-              text="Mint & Burn Now"
-            />
-          </Link>
+      <div className="desktop:px-24 px-16">
+        <div className="flex shrink-0 flex-col gap-12">
+          <WalletDetail
+            balance={wallet.balance}
+            name={wallet.name.toUpperCase() as WalletName}
+            address={wallet.address ? wallet.address : ""}
+            onDisconnect={disconnect}
+          />
+          <div className="flex w-full flex-row items-start justify-start gap-8 overflow-x-auto">
+            <WalletBalance token="DJED" amount={wallet.balance.DJED} />
+            <WalletBalance token="SHEN" amount={wallet.balance.SHEN} />
+            <WalletBalance token="ADA" amount={wallet.balance.ADA} />
+          </div>
+          <div className="pb-8">
+            <Link href={"/"}>
+              <Button
+                className="w-full"
+                variant="primary"
+                onClick={() => closeSidebar()}
+                text="Mint & Burn Now"
+              />
+            </Link>
+          </div>
         </div>
       </div>
       <Divider className="w-full" />
-      <OrdersWalletSection wallet={wallet} />
+      <div className="desktop:px-24 px-16">
+        <OrdersWalletSection wallet={wallet} />
+      </div>
     </div>
   )
 }
