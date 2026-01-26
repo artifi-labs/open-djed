@@ -35,7 +35,7 @@ const TransactionDetails: React.FC<TransactionDetailsProps> = ({
       {/* Main Row */}
       <tr
         className={clsx(
-          "text-primary text-xs transition-colors duration-200",
+          "text-primary text-xs",
           isOpen
             ? "bg-background-primary-pressed"
             : "hover:bg-background-primary-hover",

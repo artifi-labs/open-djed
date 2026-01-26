@@ -30,6 +30,7 @@ const SelectWalletSection: React.FC<SelectWalletSectionProps> = ({
       <div className="flex flex-1 flex-col overflow-y-auto py-8">
         {wallets?.map((wallet, index) => (
           <ListItem
+            key={`${wallet.name}-${wallet.id}`}
             divider={index < wallets.length - 1}
             text={capitalizeLower(wallet.name)}
             onClick={() => onClick(wallet.id)}
