@@ -48,7 +48,7 @@ const ConnectedWalletSection: React.FC<ConnectedWalletSectionProps> = ({
         </div>
       </div>
       <Divider className="w-full" />
-      <div className="desktop:px-24 px-16">
+      <div className="desktop:px-24 h-full px-16">
         <OrdersWalletSection wallet={wallet} />
       </div>
     </div>
