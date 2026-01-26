@@ -73,7 +73,7 @@ export const Modal: React.FC<ModalProps> = ({
         onClick={onClose}
       >
         <div className={baseClassName} onClick={(e) => e.stopPropagation()}>
-          <div className="desktop:p-24 sticky top-0 z-10 flex items-center justify-between p-16 pb-12">
+          <div className="desktop:px-24 sticky top-0 z-10 flex items-center justify-between px-16 py-12 pb-12">
             {logo ? (
               <Logo />
             ) : (

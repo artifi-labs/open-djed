@@ -26,7 +26,7 @@ const SelectWalletSection: React.FC<SelectWalletSectionProps> = ({
   onClick,
 }) => {
   return (
-    <div className="desktop:gap-24 flex h-full flex-col gap-16">
+    <div className="desktop:gap-24 flex h-full flex-col">
       <div className="desktop:px-24 px-16">
         <div className="flex flex-1 flex-col overflow-y-auto py-8">
           {wallets?.map((wallet, index) => (
@@ -46,8 +46,10 @@ const SelectWalletSection: React.FC<SelectWalletSectionProps> = ({
         </div>
       </div>
 
-      <div className="mt-auto flex flex-col gap-16">
-        <Divider orientation="horizontal" className="w-full" />
+      <div className="mt-auto flex flex-col">
+        <div className="desktop:px-24 px-16">
+          <Divider />
+        </div>
         <div className="desktop:p-24 p-16">
           <div className="flex flex-col text-center">
             <p className="text-secondary self-stretch text-xs">
