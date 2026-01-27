@@ -111,7 +111,7 @@ const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
         hasAvailableAmount={hasAvailableAmount}
       />
     ) : (
-      <div className="relative flex flex-col gap-2.5">
+      <div className="relative">
         <TransactionInput
           disabled={disabled}
           placeholder="0"
@@ -147,7 +147,7 @@ const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
           maxDecimalPlaces={4}
         />
         {minWarningMessage && (
-          <span className="text-xxs -bottom-18 left-0">
+          <span className="text-xxs absolute -bottom-18 left-0">
             {minWarningMessage}
           </span>
         )}
@@ -207,7 +207,7 @@ const InputAction: React.FC<InputActionProps> = ({
   minWarningMessage,
 }) => {
   return (
-    <div className="flex flex-col gap-12">
+    <div className={`gap- flex flex-col ${minWarningMessage ? "pb-6" : ""}`}>
       <div className="flex justify-between">
         <p className="text-xxs text-secondary font-medium">{label}</p>
 
