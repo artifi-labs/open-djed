@@ -59,16 +59,18 @@ export const Asset: React.FC<AssetProps> = ({
   return (
     <div className={clsx("flex flex-row items-center gap-8", textSize)}>
       <Coin name={currentCoin} size={size} checked={checked} />
-      <span className="font-normal">{currentCoin}</span>
-      {hasLeadingIcon && canRotate && (
-        <ButtonIcon
-          id={`${currentCoin}-leading-icon`}
-          variant="onlyIcon"
-          size="tiny"
-          icon={buttonIcon}
-          onClick={handleClick}
-        />
-      )}
+      <div className="flex items-center gap-4">
+        <span className="font-normal">{currentCoin}</span>
+        {hasLeadingIcon && canRotate && (
+          <ButtonIcon
+            id={`${currentCoin}-leading-icon`}
+            variant="onlyIcon"
+            size="tiny"
+            icon={buttonIcon}
+            onClick={handleClick}
+          />
+        )}
+      </div>
     </div>
   )
 }
