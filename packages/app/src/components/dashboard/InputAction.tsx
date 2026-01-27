@@ -111,7 +111,7 @@ const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
         hasAvailableAmount={hasAvailableAmount}
       />
     ) : (
-      <div className="relative">
+      <div className="relative flex flex-col gap-2.5">
         <TransactionInput
           disabled={disabled}
           placeholder="0"
@@ -147,7 +147,7 @@ const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
           maxDecimalPlaces={4}
         />
         {minWarningMessage && (
-          <span className="text-xxs absolute -bottom-18 left-0">
+          <span className="text-xxs -bottom-18 left-0">
             {minWarningMessage}
           </span>
         )}

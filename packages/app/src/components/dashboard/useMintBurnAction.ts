@@ -328,8 +328,10 @@ export function useMintBurnAction(defaultActionType: ActionType) {
     return Math.floor(minTokenAmount * 1000) / 1000
   }, [])
   const minMessage = React.useMemo(() => {
-    return minAmount > 1 ? `(minimum ${minAmount})` : ""
-  }, [])
+    const token = actionType === "Mint" ? activeReceiveToken : activePayToken
+    if (!token || minAmount <= 0) return ""
+    return `(minimum ${minAmount} ${token})`
+  }, [actionType, activePayToken, activeReceiveToken, minAmount])
 
   const handlePayValueChange = React.useCallback(
     (token: Token, value: string) => {
@@ -399,49 +401,49 @@ export function useMintBurnAction(defaultActionType: ActionType) {
 
   const handlePayTokenChange = React.useCallback(
     (newToken: Token) => {
-      const currentValue = payValues[activePayToken] || "0"
       setActivePayToken(newToken)
-      setPayValues((prev) => ({ ...prev, [newToken]: currentValue }))
+      setInputStatus("default")
+      setMinWarningMessage(undefined)
+      setPayValues(createInitialRecord("0"))
+      setReceiveValues(createInitialRecord("0"))
+      setActionData({})
 
       if (!isMint) {
-        const numValue = parseFloat(currentValue) || 0
-        const result = calculateFromPayValue(newToken, numValue)
-        setReceiveValues(result.receive)
-        setActionData(result.actionData)
+        return
       }
     },
     [
-      payValues,
-      activePayToken,
       setActivePayToken,
       setPayValues,
-      isMint,
-      calculateFromPayValue,
       setReceiveValues,
+      isMint,
+      setActionData,
+      setInputStatus,
+      setMinWarningMessage,
     ],
   )
 
   const handleReceiveTokenChange = React.useCallback(
     (newToken: Token) => {
-      const currentValue = receiveValues[activeReceiveToken] || "0"
       setActiveReceiveToken(newToken)
-      setReceiveValues((prev) => ({ ...prev, [newToken]: currentValue }))
+      setInputStatus("default")
+      setMinWarningMessage(undefined)
+      setPayValues(createInitialRecord("0"))
+      setReceiveValues(createInitialRecord("0"))
+      setActionData({})
 
       if (isMint) {
-        const numValue = parseFloat(currentValue) || 0
-        const result = calculateFromReceiveValue(newToken, numValue)
-        setPayValues(result.pay)
-        setActionData(result.actionData)
+        return
       }
     },
     [
-      receiveValues,
-      activeReceiveToken,
       setActiveReceiveToken,
       setReceiveValues,
       isMint,
-      calculateFromReceiveValue,
       setPayValues,
+      setActionData,
+      setInputStatus,
+      setMinWarningMessage,
     ],
   )
 
