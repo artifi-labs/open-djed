@@ -207,7 +207,7 @@ const InputAction: React.FC<InputActionProps> = ({
   minWarningMessage,
 }) => {
   return (
-    <div className={`gap- flex flex-col ${minWarningMessage ? "pb-6" : ""}`}>
+    <div className="flex flex-col gap-12">
       <div className="flex justify-between">
         <p className="text-xxs text-secondary font-medium">{label}</p>
 
