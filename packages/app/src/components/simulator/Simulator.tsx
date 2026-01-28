@@ -38,6 +38,9 @@ export default function Simulator() {
         title="What is the trade simulator?"
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
+        className="desktop:p-42 p-32"
+        paddingClassName="p-0"
+        titleClassName="pb-16"
       >
         <SimulatorInfo />
       </Modal>

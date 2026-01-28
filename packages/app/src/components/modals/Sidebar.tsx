@@ -17,6 +17,8 @@ type SidePanelProps = {
   onBack?: () => void
   children: React.ReactNode
   width?: string
+  paddingClassName?: string
+  headerClassName?: string
 }
 
 export const Sidebar: React.FC<SidePanelProps> = ({
@@ -31,6 +33,8 @@ export const Sidebar: React.FC<SidePanelProps> = ({
   onBack,
   children,
   width,
+  paddingClassName,
+  headerClassName,
 }) => {
   const baseHeaderAction = headerAction ?? (
     <ButtonIcon
@@ -54,9 +58,11 @@ export const Sidebar: React.FC<SidePanelProps> = ({
       isOpen={isOpen}
       onClose={onClose}
       onBack={onBack}
+      paddingClassName={paddingClassName}
+      headerClassName={headerClassName}
       className={clsx(
         "rounded-l-8 ml-auto h-full max-h-full rounded-none sm:h-full sm:max-h-full",
-        "transform transition-transform duration-300 ease-in-out",
+        "transform py-12 transition-transform duration-300 ease-in-out",
         width ?? "w-full sm:w-[350px] lg:w-[460px]",
         isOpen ? "translate-x-0" : "translate-x-full",
       )}

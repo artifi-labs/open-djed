@@ -60,7 +60,8 @@ export default function SettingsSidebar({
   return (
     <Sidebar
       title="Settings"
-      titleClassName="text-[18px]"
+      titleClassName="desktop:px-24 px-16 py-12 pb-12 text-[18px]"
+      headerClassName="desktop:px-0 px-16"
       hasLeadingIcon={isMobile ? "Arrow-Left" : undefined}
       headerAction={null}
       isOpen={isOpen}
