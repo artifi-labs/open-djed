@@ -61,7 +61,7 @@ const ListItem: React.FC<ListItemProps> = ({
   return (
     <div
       className={clsx(
-        "inline-block w-full overflow-hidden",
+        "block w-full overflow-hidden",
         "hover:rounded-4 focus:rounded-4 active:rounded-4",
       )}
     >
