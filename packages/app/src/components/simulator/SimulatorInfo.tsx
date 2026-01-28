@@ -32,7 +32,7 @@ const SimulatorInfo = () => {
   return (
     <div className="text-secondary flex flex-col gap-16 text-sm">
       <div className="flex flex-col gap-16">
-        <p className="gap-16 text-sm">
+        <p className="text-sm">
           The Trade Simulator helps you understand how profitable a SHEN
           investment could be. By entering the amount of USD to invest, your buy
           and sell dates, and ADA prices, the tool estimates:

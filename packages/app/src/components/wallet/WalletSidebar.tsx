@@ -25,7 +25,7 @@ export default function WalletSidebar({
       title={wallet ? "Wallet" : "Connect Wallet"}
       isOpen={isOpen}
       onClose={onClose}
-      titleClassName="text-[18px]"
+      titleClassName="desktop:px-24 px-16 py-12 pb-12 text-[18px]"
       paddingClassName="p-0"
     >
       {wallet ? (

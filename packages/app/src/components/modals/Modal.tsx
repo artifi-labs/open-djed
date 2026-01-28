@@ -14,6 +14,7 @@ type ModalProps = {
   hasCloseButton?: boolean
   closeButton?: React.ReactNode
   headerAction?: React.ReactNode
+  headerClassName?: string
   isOpen: boolean
   onClose: () => void
   onBack?: () => void
@@ -32,12 +33,13 @@ export const Modal: React.FC<ModalProps> = ({
   headerAction,
   hasCloseButton = true,
   closeButton,
+  headerClassName,
   isOpen,
   onClose,
   onBack,
   children,
   className,
-  paddingClassName,
+  paddingClassName = "desktop:p-24 p-16",
   border = "border-gradient border-color-gradient",
 }) => {
   if (!isOpen) return null
@@ -58,10 +60,7 @@ export const Modal: React.FC<ModalProps> = ({
     border,
     className,
   )
-  const contentClasses = clsx(
-    "flex-1 overflow-y-auto",
-    paddingClassName ?? "desktop:px-24 px-16",
-  )
+  const contentClasses = clsx("flex-1 overflow-y-auto", paddingClassName)
 
   return (
     <>
@@ -73,7 +72,12 @@ export const Modal: React.FC<ModalProps> = ({
         onClick={onClose}
       >
         <div className={baseClassName} onClick={(e) => e.stopPropagation()}>
-          <div className="desktop:px-24 sticky top-0 z-10 flex items-center justify-between px-16 py-12 pb-12">
+          <div
+            className={clsx(
+              "sticky top-0 z-10 flex items-center justify-between",
+              headerClassName,
+            )}
+          >
             {logo ? (
               <Logo />
             ) : (

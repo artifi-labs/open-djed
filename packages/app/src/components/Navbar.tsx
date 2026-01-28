@@ -219,8 +219,9 @@ export const Navbar = () => {
             }
             isOpen={isMobileSidebarOpen}
             onClose={() => setIsMobileSidebarOpen(false)}
+            headerClassName="p-16"
           >
-            <div className="flex h-full flex-col justify-between pt-28">
+            <div className="flex h-full flex-col justify-between pt-24">
               <nav
                 className="flex flex-col gap-24"
                 aria-label="Main navigation"
