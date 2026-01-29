@@ -8,7 +8,7 @@ const title = NETWORK === "Mainnet" ? APP_NAME : `${APP_NAME} | ${NETWORK}`
 
 export const metadata: Metadata = {
   title: {
-    default: title,
+    default: `Dashboard | ${title}`,
     template: `%s | Dashboard`,
   },
 }

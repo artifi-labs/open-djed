@@ -130,7 +130,7 @@ export const Navbar = () => {
 
   const navLinks: { label: string; href: string }[] = [
     { label: "Dashboard", href: "/" },
-    // { label: "Analytics", href: "/analytics" },
+    { label: "Analytics", href: "/analytics" },
     { label: "Simulator", href: "/simulator" },
     { label: "Orders", href: "/orders" },
   ]
