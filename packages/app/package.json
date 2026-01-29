@@ -37,7 +37,7 @@
     "install": "^0.13.0",
     "isbot": "^5.1.28",
     "json-bigint": "^1.0.0",
-    "next": "15.5.9",
+    "next": "16.1.5",
     "posthog-js": "^1.246.0",
     "react": "19.1.2",
     "react-dom": "19.1.2",
