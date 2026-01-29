@@ -280,6 +280,41 @@ async function completeTransaction(createOrderFn: () => TxBuilder) {
   }
 }
 
+const getDaysForPeriod = (period: "W" | "M" | "1Y" | "3Y" | "All"): number => {
+  const map = {
+    W: 7,
+    M: 30,
+    "1Y": 365,
+    "3Y": 365 * 3,
+    All: 365 * 5,
+  }
+  return map[period]
+}
+
+const generateMockReserveData = (period: "W" | "M" | "1Y" | "3Y" | "All") => {
+  const daysToGenerate = getDaysForPeriod(period)
+  const timeSeries: Record<string, number> = {}
+
+  const anchorDate = new Date()
+  anchorDate.setDate(anchorDate.getDate() - 1) // Yesterday
+
+  let currentValue = 2.6
+
+  for (let i = 0; i < daysToGenerate; i++) {
+    const targetDate = new Date(anchorDate)
+    targetDate.setDate(anchorDate.getDate() - i)
+
+    const dateKey = targetDate.toISOString().slice(0, 10)
+
+    const change = (Math.random() - 0.5) * 0.1
+    currentValue = Math.max(0.1, parseFloat((currentValue + change).toFixed(2)))
+
+    timeSeries[dateKey] = currentValue
+  }
+
+  return timeSeries
+}
+
 const tokenSchema = z.enum(["DJED", "SHEN"]).openapi({ example: "DJED" })
 export type TokenType = z.infer<typeof tokenSchema>
 
@@ -659,6 +694,69 @@ const app = new Hono()
             headers: { "Content-Type": "application/json" },
           },
         )
+      } catch (err) {
+        if (err instanceof AppError) {
+          throw err
+        }
+        console.error("Unhandled error in orders endpoint:", err)
+        throw new InternalServerError()
+      }
+    },
+  )
+  .get(
+    "/historical-reserve-ratio/:period",
+    cacheMiddleware,
+    describeRoute({
+      description: "Get the historical reserve ratio",
+      tags: ["Action"],
+      responses: {
+        200: {
+          description: "Successfully got the historical reserve ratio",
+          content: {
+            "text/plain": {
+              example: "reserve ratio",
+            },
+          },
+        },
+        400: {
+          description: "Bad Request",
+          content: {
+            "text/plain": {
+              example: "Bad Request",
+            },
+          },
+        },
+        500: {
+          description: "Internal Server Error",
+          content: {
+            "text/plain": {
+              example: "Internal Server Error",
+            },
+          },
+        },
+      },
+    }),
+    zValidator(
+      "param",
+      z.object({
+        period: z.enum(["W", "M", "1Y", "3Y", "All"]),
+      }),
+    ),
+    (c) => {
+      let param
+      try {
+        param = c.req.valid("param")
+        if (!param?.period) {
+          throw new ValidationError("Missing period in request.")
+        }
+      } catch (e) {
+        console.error("Invalid or missing request payload.", e)
+        throw new ValidationError("Invalid or missing request payload.")
+      }
+      try {
+        const data = generateMockReserveData(param.period)
+
+        return c.json(data)
       } catch (err) {
         if (err instanceof AppError) {
           throw err
