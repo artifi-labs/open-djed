@@ -280,39 +280,40 @@ async function completeTransaction(createOrderFn: () => TxBuilder) {
   }
 }
 
-const getDaysForPeriod = (period: "W" | "M" | "1Y" | "3Y" | "All"): number => {
+const getDaysForPeriod = (period: "D" | "W" | "M" | "1Y"): number => {
   const map = {
+    D: 1,
     W: 7,
     M: 30,
     "1Y": 365,
-    "3Y": 365 * 3,
-    All: 365 * 5,
   }
   return map[period]
 }
 
-const generateMockReserveData = (period: "W" | "M" | "1Y" | "3Y" | "All") => {
+const generateMockReserveData = (period: "D" | "W" | "M" | "1Y") => {
   const daysToGenerate = getDaysForPeriod(period)
-  const timeSeries: Record<string, number> = {}
+  const chartData: { name: string; value: number }[] = []
 
   const anchorDate = new Date()
-  anchorDate.setDate(anchorDate.getDate() - 1) // Yesterday
+  anchorDate.setDate(anchorDate.getDate() - 1)
 
-  let currentValue = 2.6
+  let currentValue = 3.6
 
   for (let i = 0; i < daysToGenerate; i++) {
     const targetDate = new Date(anchorDate)
     targetDate.setDate(anchorDate.getDate() - i)
-
     const dateKey = targetDate.toISOString().slice(0, 10)
 
     const change = (Math.random() - 0.5) * 0.1
     currentValue = Math.max(0.1, parseFloat((currentValue + change).toFixed(2)))
 
-    timeSeries[dateKey] = currentValue
+    chartData.push({
+      name: dateKey,
+      value: currentValue * 100,
+    })
   }
 
-  return timeSeries
+  return chartData.reverse()
 }
 
 const tokenSchema = z.enum(["DJED", "SHEN"]).openapi({ example: "DJED" })
@@ -739,7 +740,7 @@ const app = new Hono()
     zValidator(
       "param",
       z.object({
-        period: z.enum(["W", "M", "1Y", "3Y", "All"]),
+        period: z.enum(["D", "W", "M", "1Y"]),
       }),
     ),
     (c) => {
