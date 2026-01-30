@@ -2,11 +2,7 @@ import type { Actions, Token } from "../../generated/prisma/enums"
 import { env } from "../../lib/env"
 import { Blockfrost } from "@open-djed/blockfrost"
 import { registryByNetwork } from "@open-djed/registry"
-import {
-  credentialToAddress,
-  getAddressDetails,
-  Data,
-} from "@lucid-evolution/lucid"
+import { credentialToAddress, getAddressDetails } from "@lucid-evolution/lucid"
 import {
   OrderStatus,
   RedeemerPurpose,
@@ -17,8 +13,6 @@ import {
   type TransactionRedeemer,
   type UTxO,
   type Transaction,
-  type OrderUTxO,
-  type TransactionData,
   type ReserveRatio,
   type OracleUTxoWithDatumAndTimestamp,
   type PoolUTxoWithDatumAndTimestamp,
@@ -31,12 +25,12 @@ import {
 import fs from "fs"
 import path from "path"
 import { logger } from "../utils/logger"
+import { reserveRatio } from "@open-djed/math"
 import {
   CancelOrderSpendRedeemerHash,
-  OrderDatum,
   ProcessOrderSpendOrderRedeemerHash,
+  type OrderDatum,
 } from "@open-djed/data"
-import { reserveRatio } from "@open-djed/math"
 
 const blockfrostUrl = env.BLOCKFROST_URL
 const blockfrostId = env.BLOCKFROST_PROJECT_ID
@@ -396,11 +390,11 @@ export async function getEveryResultFromPaginatedEndpoint(endpoint: string) {
   logger.info("Fetching all transactions...")
   const everyOrderTx: Transaction[] = []
   let txPage = 1
-  while (txPage < 2) {
+  while (txPage < 5) {
     try {
       logger.debug(`Fetching transaction page ${txPage}...`)
       const pageResult = (await blockfrostFetch(
-        `${endpoint}?page=${txPage}&count=20`,
+        `${endpoint}?page=${txPage}&count=100&order=desc`,
       )) as Transaction[]
 
       if (!Array.isArray(pageResult) || pageResult.length === 0) break
@@ -488,6 +482,8 @@ export const assignTimeWeightsToDailyUTxOs = (
         ? currentTimestampMs
         : previousTimestampMs
       const intervalEndMs = isLastEntry ? dayEndMs : currentTimestampMs
+      const intervalStartIso = new Date(intervalStartMs).toISOString()
+      const intervalEndIso = new Date(intervalEndMs).toISOString()
 
       if (
         activePoolDatum &&
@@ -499,18 +495,23 @@ export const assignTimeWeightsToDailyUTxOs = (
           activePoolDatum,
           activeOracleDatum,
         ).toNumber()
-        console.log("reserve ratio period", {
-          day: dailyDayChunk.day,
-          timestamp: currentEntry.value.timestamp,
-          source: currentEntry.key,
-          ratio: currentEntry.ratio,
-          poolUTxO: activePoolEntry.value,
-          oracleUTxO: activeOracleEntry.value,
-          period: {
-            start: new Date(intervalStartMs).toISOString(),
-            end: new Date(intervalEndMs).toISOString(),
-          },
-        })
+        currentEntry.period = {
+          start: intervalStartIso,
+          end: intervalEndIso,
+        }
+        // console.log("reserve ratio period", {
+        //   day: dailyDayChunk.day,
+        //   timestamp: currentEntry.value.timestamp,
+        //   source: currentEntry.key,
+        //   ratio: currentEntry.ratio,
+        //   poolUTxO: activePoolEntry.value,
+        //   oracleUTxO: activeOracleEntry.value,
+        //   oracleExchangeRate: getOracleExchangeRate(activeOracleEntry),
+        //   period: {
+        //     start: new Date(intervalStartMs).toISOString(),
+        //     end: new Date(intervalEndMs).toISOString(),
+        //   },
+        // })
       }
       let duration = Math.max(0, currentTimestampMs - previousTimestampMs)
 
@@ -559,16 +560,16 @@ export const getTimeWeightedDailyReserveRatio = (
     const latestEntry = chunk.entries.at(-1)
     if (!latestEntry) continue
 
-    console.log("daily reserve ratio", {
-      day: chunk.day,
-      average_ratio: averageRatio,
-      coverage_fraction: coverageFraction,
-      coverage_full_day: fullDayCoverage,
-      weights_total_ms: durationSum.toString(),
-    })
+    // console.log("daily reserve ratio", {
+    //   day: chunk.day,
+    //   average_ratio: averageRatio*100,
+    //   coverage_fraction: coverageFraction,
+    //   coverage_full_day: fullDayCoverage,
+    //   weights_total_ms: durationSum.toString(),
+    // })
 
     dailyReserveRatios.push({
-      id: 0,
+      // id: 0,
       timestamp: latestEntry.value.timestamp,
       reserveRatio: averageRatio,
       block: latestEntry.value.block_hash,
@@ -579,68 +580,41 @@ export const getTimeWeightedDailyReserveRatio = (
   return dailyReserveRatios
 }
 
-export const logAllWeightedDayChunks = (chunks: DailyUTxOsWithWeights[]) => {
-  console.log(`Weighted daily chunks (${chunks.length} days)`)
-  chunks.forEach((chunk) => {
-    console.log(`Day ${chunk.day} ${chunk.startIso}→${chunk.endIso}`)
-    chunk.entries.forEach((entry, index) => {
-      const datum =
-        entry.key === "pool" ? entry.value.poolDatum : entry.value.oracleDatum
-      console.log({
-        index,
-        source: entry.key,
-        timestamp: entry.value.timestamp,
-        block_hash: entry.value.block_hash,
-        block_slot: entry.value.block_slot,
-        weight: entry.weight,
-        reserve_ratio: entry.ratio,
-        datum,
-      })
-    })
-  })
-}
+export const dumpDayChunkToJsonFile = (
+  chunks: DailyUTxOsWithWeights[],
+  targetDay: string,
+) => {
+  const chunk = chunks.find((c) => c.day === targetDay)
+  if (!chunk) {
+    console.warn(`Day ${targetDay} not found for JSON dump`)
+    return
+  }
 
-export const logWeightedDayChunkDetails = (chunk: DailyUTxOsWithWeights) => {
-  console.log(
-    `Day ${chunk.day} (${chunk.startIso} → ${chunk.endIso}) – ${chunk.entries.length} entries (weights in ms)`,
-  )
-  chunk.entries.forEach((entry) => {
-    const datum =
-      entry.key === "pool" ? entry.value.poolDatum : entry.value.oracleDatum
-    console.log({
-      source: entry.key,
+  const logDir = path.join(process.cwd(), "logs")
+  if (!fs.existsSync(logDir)) {
+    fs.mkdirSync(logDir, { recursive: true })
+  }
+
+  const replacer = (_key: string, value: unknown) =>
+    typeof value === "bigint" ? value.toString() : value
+
+  const out = {
+    day: chunk.day,
+    startIso: chunk.startIso,
+    endIso: chunk.endIso,
+    entries: chunk.entries.map((entry) => ({
+      key: entry.key,
       timestamp: entry.value.timestamp,
       block_hash: entry.value.block_hash,
       block_slot: entry.value.block_slot,
       weight: entry.weight,
-      reserve_ratio: entry.ratio,
-      datum,
-    })
-  })
-}
-
-export const logDayChunkDetails = (chunk: DailyUTxOs) => {
-  console.log(
-    `Day ${chunk.day} (${chunk.startIso} → ${chunk.endIso}) – ${chunk.entries.length} entries`,
-  )
-  for (const entry of chunk.entries) {
-    const datum =
-      entry.key === "pool" ? entry.value.poolDatum : entry.value.oracleDatum
-    console.log({
-      source: entry.key,
-      timestamp: entry.value.timestamp,
-      block_hash: entry.value.block_hash,
-      block_slot: entry.value.block_slot,
-      datum,
-    })
+      ratio: entry.ratio,
+      period: entry.period,
+      value: entry.value,
+    })),
   }
-}
 
-// export function processReserveRatiosToInsert(reserveRatios: ReserveRatio[]) {
-//   return reserveRatios.map((ratio) => ({
-//     timestamp: new Date(ratio.timestamp),
-//     reserveRatio: ratio.reserveRatio.toString(),
-//     block: ratio.block,
-//     slot: BigInt(ratio.slot),
-//   }))
-// }
+  const filePath = path.join(logDir, `reserve-ratio-${targetDay}.json`)
+  fs.writeFileSync(filePath, JSON.stringify(out, replacer, 2))
+  console.log(`Dumped day ${targetDay} chunk to ${filePath}`)
+}

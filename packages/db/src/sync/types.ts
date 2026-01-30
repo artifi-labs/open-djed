@@ -223,7 +223,6 @@ export type ReserveEntries =
     }
 
 export type ReserveRatio = {
-  id: number
   timestamp: string
   reserveRatio: number
   block: string
@@ -247,6 +246,10 @@ export type DailyUTxOs = {
 export type WeightedReserveEntry = ReserveEntries & {
   weight: number
   ratio?: number
+  period?: {
+    start: string
+    end: string
+  }
 }
 
 export type DailyUTxOsWithWeights = Omit<DailyUTxOs, "entries"> & {

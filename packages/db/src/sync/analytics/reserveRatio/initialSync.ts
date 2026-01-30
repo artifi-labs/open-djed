@@ -7,7 +7,6 @@ import {
   type OracleUTxoWithDatumAndTimestamp,
   type TransactionData,
   type ReserveEntries,
-  type ReserveRatio,
   type Block,
 } from "../../types"
 import {
@@ -19,10 +18,7 @@ import {
   breakIntoDays,
   assignTimeWeightsToDailyUTxOs,
   getTimeWeightedDailyReserveRatio,
-  logDayChunkDetails,
-  logWeightedDayChunkDetails,
-  logAllWeightedDayChunks,
-  processReserveRatiosToInsert,
+  dumpDayChunkToJsonFile,
 } from "../../utils"
 import { prisma } from "../../../../lib/prisma"
 
@@ -256,41 +252,23 @@ export const populateDbWithHistoricReserveRatio = async () => {
   // console.log("ordinateTxOs", ordinateTxOs)
 
   const dailyTxOs = breakIntoDays(ordinateTxOs)
-  // const firstDayChunk = dailyTxOs[0]
-  // if (firstDayChunk) {
-  //   logDayChunkDetails(firstDayChunk)
-  // }
   const weightedDailyTxOs = assignTimeWeightsToDailyUTxOs(dailyTxOs)
-  logAllWeightedDayChunks(weightedDailyTxOs)
-  console.log("weightedDailyTxOs", weightedDailyTxOs)
 
-  // const firstWeightedChunk = weightedDailyTxOs[1]
-  // if (firstWeightedChunk) {
-  //   console.log("first weighted daily chunk", firstWeightedChunk)
-  //   logWeightedDayChunkDetails(firstWeightedChunk)
-  // }
+  dumpDayChunkToJsonFile(weightedDailyTxOs, "2026-01-29")
 
-  // const secondWeightedChunk = weightedDailyTxOs[1]
-  // if (secondWeightedChunk) {
-  //   logWeightedDayChunkDetails(secondWeightedChunk)
-  // }
+  const dailyRatios = getTimeWeightedDailyReserveRatio(weightedDailyTxOs)
 
-  // const dailyRatios = getTimeWeightedDailyReserveRatio(weightedDailyTxOs)
-  // if (dailyRatios.length === 0) {
-  //   logger.warn("No daily reserve ratios computed")
-  // } else {
-  //   logger.info({ dailyRatios }, "Daily reserve ratios")
-  // }
+  if (dailyRatios.length === 0) {
+    logger.warn("No daily reserve ratios computed")
+  } else {
+    logger.info({ dailyRatios }, "Daily reserve ratios")
+  }
 
   logger.info("Processing order data...")
 
-  // const dailyReserveRatioToInsert = processReserveRatiosToInsert(dailyRatios)
-
-  // logger.info(
-  //   `Inserting ${dailyReserveRatioToInsert.length} reserve ratio into database...`,
-  // )
+  // logger.info(`Inserting ${dailyRatios.length} reserve ratio into database...`)
   // await prisma.reserveRatio.createMany({
-  //   data: dailyReserveRatioToInsert,
+  //   data: dailyRatios,
   //   skipDuplicates: true,
   // })
   // logger.info(
