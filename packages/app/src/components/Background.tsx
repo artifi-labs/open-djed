@@ -1,7 +1,7 @@
 export default function Background() {
   return (
-    <div className="bg-background-primary pointer-events-none fixed inset-0 -z-10">
-      <picture className="hidden h-full w-full min-[744px]:block">
+    <div className="pointer-events-none fixed inset-0 -z-10">
+      <picture className="max-[744px]:hidden">
         <source
           media="(min-width: 1929px)"
           srcSet="/backgrounds/bg-large.svg"
