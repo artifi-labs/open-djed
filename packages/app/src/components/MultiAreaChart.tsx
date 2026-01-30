@@ -8,8 +8,11 @@ import {
   Tooltip,
   ResponsiveContainer,
   Legend,
+  ReferenceLine,
+  Label,
+  ReferenceDot,
 } from "recharts"
-import Icon from "../../icons/Icon"
+import Icon from "./icons/Icon"
 
 interface AreaSeries {
   name?: string
@@ -68,6 +71,20 @@ type MultiAreaChartProps = {
   xTicks?: Array<string | number>
   interval?: number
   areas: AreaSeries[]
+  referenceLines?: { y: number; label: string; stroke: string }[]
+  currentPoint?: {
+    x: string | number
+    y: number
+    label: {
+      size: number
+      text: string
+      color: string
+    }
+    dot: {
+      fill: string
+      stroke: string
+    }
+  }
   xTickFormatter?: (value: string | number, index?: number) => string
   tickFormatter?: (value: number) => string
   tooltipFormatter?: (
@@ -184,6 +201,8 @@ export function MultiAreaChart({
   xTickFormatter,
   tooltipFormatter,
   showLegend = false,
+  referenceLines,
+  currentPoint,
 }: MultiAreaChartProps) {
   return (
     <div className="flex h-full w-full flex-col gap-6">
@@ -355,6 +374,39 @@ export function MultiAreaChart({
               activeDot={<DotMarker />}
             />
           ))}
+
+          {referenceLines?.map((line, i) => (
+            <ReferenceLine
+              key={i}
+              y={line.y}
+              stroke={line.stroke}
+              strokeDasharray="3 3"
+              label={{
+                value: line.label,
+                position: "insideBottomLeft",
+                fill: line.stroke,
+                fontSize: 10,
+              }}
+            />
+          ))}
+
+          {currentPoint && (
+            <ReferenceDot
+              x={currentPoint.x}
+              y={currentPoint.y}
+              r={4}
+              fill={currentPoint.dot.fill}
+              stroke={currentPoint.dot.stroke}
+            >
+              <Label
+                value={currentPoint.label.text}
+                position="top"
+                fill={currentPoint.label.color}
+                fontSize={currentPoint.label.size}
+                offset={10}
+              />
+            </ReferenceDot>
+          )}
         </AreaChart>
       </ResponsiveContainer>
     </div>
