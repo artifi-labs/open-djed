@@ -2,7 +2,6 @@
 
 import { MultiAreaChart } from "@/components/MultiAreaChart"
 import { useViewport } from "@/hooks/useViewport"
-import { useTimeInterval } from "@/lib/utils"
 import { aggregateByBucket, type DataRow } from "@/utils/timeseries"
 import { useMemo } from "react"
 import { type ReserveRatioChartEntry } from "../useAnalyticsData"
@@ -79,12 +78,12 @@ export const ReserveRatioOverTimeChart: React.FC<
       },
     )
 
-    if(totalDays > 365){
+    if (totalDays > 365) {
       results[results.length - 1] = {
         date: new Date(data[data.length - 1].name).toISOString(),
         reserveRatio_avg: data[data.length - 1].value,
-      } as unknown as DataRow 
-    }else{
+      } as unknown as DataRow
+    } else {
       results.push({
         date: new Date(data[data.length - 1].name).toISOString(),
         reserveRatio_avg: data[data.length - 1].value,
