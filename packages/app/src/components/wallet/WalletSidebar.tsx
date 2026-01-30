@@ -25,8 +25,8 @@ export default function WalletSidebar({
       title={wallet ? "Wallet" : "Connect Wallet"}
       isOpen={isOpen}
       onClose={onClose}
-      titleClassName="desktop:px-24 px-16 py-12 pb-12 text-[18px]"
       paddingClassName="p-0"
+      headerClassName="pl-16 pr-6 py-12 desktop:px-24"
     >
       {wallet ? (
         <ConnectedWalletSection wallet={wallet} disconnect={disconnect} />

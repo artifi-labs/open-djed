@@ -62,7 +62,7 @@ export const Sidebar: React.FC<SidePanelProps> = ({
       headerClassName={headerClassName}
       className={clsx(
         "rounded-l-8 ml-auto h-full max-h-full rounded-none sm:h-full sm:max-h-full",
-        "transform py-12 transition-transform duration-300 ease-in-out",
+        "transform transition-transform duration-300 ease-in-out",
         width ?? "w-full sm:w-[350px] lg:w-[460px]",
         isOpen ? "translate-x-0" : "translate-x-full",
       )}
