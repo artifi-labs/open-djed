@@ -3,6 +3,7 @@ import { config } from "../../lib/env"
 import cron from "node-cron"
 import { updateOrders } from "./orders/updateOrders"
 import { isLocked, lock, unlock } from "./utils"
+import { updateReserveRatios } from "./analytics/reserveRatio/reserveRatio"
 
 // Run every 2 minutes
 cron.schedule(config.CRON_SCHEDULE, async () => {
@@ -14,6 +15,7 @@ cron.schedule(config.CRON_SCHEDULE, async () => {
   lock()
   logger.info("Starting scheduled order update...")
   try {
+    await updateReserveRatios()
     await updateOrders()
   } catch (error) {
     logger.error(error, "Cron job failed:")

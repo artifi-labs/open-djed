@@ -20,6 +20,7 @@ import {
   processOrdersToInsert,
 } from "../../utils"
 import { populateDbWithHistoricReserveRatio } from "./initialSync"
+import { getLatestReserveRatio } from "../../../client/reserveRatio"
 
 /**
  * Fetches transactions from the order address using the `/addresses/{address}/transactions` endpoint.
@@ -146,60 +147,33 @@ async function updateLatestBlock(
 }
 
 /**
- * sync the database with the newly created orders
+ * sync the database with the most recent reserve ratio averages
  * check every new block, within the safety margin, after the last sync, and get every new transaction
- * check the UTxOs of the new transactions to check if any new order was created
+ * check the UTxOs of the new transactions and calculate the resereve ratios
  * @returns
  */
-export async function syncNewOrders() {
-  logger.info("=== Syncing New Orders ===")
+export async function syncReserveRatios() {
+  logger.info("=== Syncing Reserve Ratios ===")
 
-  let latestSyncedBlock = await prisma.block.findFirst()
-  if (!latestSyncedBlock) {
-    logger.warn(
-      "No synced block found in database, skipping. performing initial sync...",
+  const isDbPopulated = (await prisma.reserveRatio.count()) > 0
+  if (!isDbPopulated) {
+    // populate historic data if the database is empty
+    await populateDbWithHistoricReserveRatio()
+  }
+
+  const latestReserveRatio = await getLatestReserveRatio()
+  // return if latest was less than 24h ago
+  if (
+    latestReserveRatio &&
+    latestReserveRatio.timestamp.getTime() > Date.now() - 24 * 60 * 60 * 1000
+  ) {
+    logger.info(
+      "=== Latest reserve ratio is less than 24h old, skipping update ===",
     )
-    await populateDbWithHistoricOrders()
-    latestSyncedBlock = await prisma.block.findFirst()
-    if (!latestSyncedBlock) {
-      logger.error("Initial sync failed to create a block record.")
-      return { id: 0, latestBlock: "", latestSlot: 0 }
-    }
+    return
   }
 
-  const syncedBlock = (await blockfrostFetch(
-    `/blocks/${latestSyncedBlock.latestBlock}`,
-  )) as {
-    height: number
-  }
-
-  const transactions = await fetchTransactionsFromAddress(syncedBlock.height)
-  if (transactions.length === 0) {
-    logger.info("No new transactions since last sync")
-    return latestSyncedBlock
-  }
-
-  const orderUTxOs = await fetchOrderUTxOs(transactions)
-  if (orderUTxOs.length === 0) {
-    logger.info("No order UTxOs in new blocks")
-    return latestSyncedBlock
-  }
-
-  const orderUTxOsWithData: OrderUTxOWithDatum[] =
-    await enrichUTxOsWithData(orderUTxOs)
-  const ordersToInsert: Order[] =
-    await processOrdersToInsert(orderUTxOsWithData)
-  if (ordersToInsert.length === 0) {
-    logger.info("No orders to insert")
-    return latestSyncedBlock
-  }
-
-  await prisma.order.createMany({
-    data: ordersToInsert,
-    skipDuplicates: true,
-  })
-
-  logger.info(`Successfully inserted ${ordersToInsert.length} new orders`)
-
-  return updateLatestBlock(latestSyncedBlock, ordersToInsert)
+  const latestSyncedBlock = latestReserveRatio?.block
+  // await updateReserveRatio(latestSyncedBlock)
+  return
 }
