@@ -49,15 +49,18 @@ export const ReserveRatioOverTimeChart: React.FC<
       return totalDays > 365 * 2 ? displayedYear : month
     }
 
-    console.log("last: ", data[data.length - 1])
-    console.log("previous to last: ", data[data.length - 2])
-
-    const newInterval = useTimeInterval(
-      new Date(data[0].name).getTime(),
-      new Date(data[data.length - 1].name).getTime(),
-      isMobile ? 6 : 12,
-    )
-    console.log("newInterval: ", newInterval)
+    const dayInMs = 24 * 60 * 60 * 1000
+    let newInterval
+    if (totalDays <= 7) {
+      //1 week
+      newInterval = dayInMs
+    } else if (totalDays <= 31) {
+      // 1 month
+      newInterval = isMobile ? 7 * dayInMs : 3 * dayInMs
+    } else if (totalDays <= 365) {
+      // 1 year
+      newInterval = isMobile ? 30 * dayInMs : 60 * dayInMs
+    }
 
     const dataRows: DataRow[] = []
     for (let i = 0; i < data.length - 1; i++) {
@@ -75,6 +78,20 @@ export const ReserveRatioOverTimeChart: React.FC<
         reserveRatio: ["avg"],
       },
     )
+
+    if(totalDays > 365){
+      results[results.length - 1] = {
+        date: new Date(data[data.length - 1].name).toISOString(),
+        reserveRatio_avg: data[data.length - 1].value,
+      } as unknown as DataRow 
+    }else{
+      results.push({
+        date: new Date(data[data.length - 1].name).toISOString(),
+        reserveRatio_avg: data[data.length - 1].value,
+      } as unknown as DataRow)
+    }
+
+    console.log("results: ", results)
 
     return { formattedData: results, xAxisFormatter: formatter }
   }, [data])
