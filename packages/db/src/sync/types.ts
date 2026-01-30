@@ -1,4 +1,4 @@
-import type { OrderDatum } from "@open-djed/data"
+import type { OrderDatum, PoolDatum, OracleDatum } from "@open-djed/data"
 import type { Actions, Token } from "../../generated/prisma/enums"
 
 export type Transaction = {
@@ -196,4 +196,59 @@ export type TransactionRedeemer = {
   unit_mem: string
   unit_steps: string
   fee: string
+}
+
+export type PoolUTxoWithDatumAndTimestamp = {
+  poolDatum: PoolDatum
+  timestamp: string
+  block_hash: string
+  block_slot: number
+}
+
+export type OracleUTxoWithDatumAndTimestamp = {
+  oracleDatum: OracleDatum
+  timestamp: string
+  block_hash: string
+  block_slot: number
+}
+
+export type ReserveEntries =
+  | {
+      key: "pool"
+      value: PoolUTxoWithDatumAndTimestamp
+    }
+  | {
+      key: "oracle"
+      value: OracleUTxoWithDatumAndTimestamp
+    }
+
+export type ReserveRatio = {
+  id: number
+  timestamp: string
+  reserveRatio: number
+  block: string
+  slot: number
+}
+
+export type DailyReserveRatio = {
+  date: string
+  reserveRatio: string
+  block_hash: string
+  block_slot: number
+}
+
+export type DailyUTxOs = {
+  day: string
+  startIso: string
+  endIso: string
+  entries: ReserveEntries[]
+}
+
+export type WeightedReserveEntry = ReserveEntries & {
+  weight: number
+  ratio?: number
+}
+
+export type DailyUTxOsWithWeights = Omit<DailyUTxOs, "entries"> & {
+  entries: WeightedReserveEntry[]
 }
