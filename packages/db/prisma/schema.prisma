@@ -50,8 +50,8 @@ model Block {
 }
 
 model ReserveRatio {
-  id           Int      @id @default(autoincrement())
-  timestamp    DateTime @db.Date
+  id           Int     @id @default(autoincrement())
+  timestamp    String
   reserveRatio Decimal // Stored as ratio (e.g. 300% => 3.0)
   block        String // block hash
   slot         BigInt // block slot
