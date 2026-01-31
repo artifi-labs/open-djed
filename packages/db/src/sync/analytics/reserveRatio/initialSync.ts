@@ -7,7 +7,6 @@ import {
   type OracleUTxoWithDatumAndTimestamp,
   type TransactionData,
   type ReserveEntries,
-  type Block,
 } from "../../types"
 import {
   processBatch,
@@ -266,22 +265,15 @@ export const populateDbWithHistoricReserveRatio = async () => {
 
   logger.info("Processing order data...")
 
-  // logger.info(`Inserting ${dailyRatios.length} reserve ratio into database...`)
-  // await prisma.reserveRatio.createMany({
-  //   data: dailyRatios,
-  //   skipDuplicates: true,
-  // })
-  // logger.info(
-  //   `Historic reserve ratio sync complete. Inserted ${dailyRatios.length} reserve ratios`,
-  // )
+  logger.info(`Inserting ${dailyRatios.length} reserve ratio into database...`)
+  await prisma.reserveRatio.createMany({
+    data: dailyRatios,
+    skipDuplicates: true,
+  })
+  logger.info(
+    `Historic reserve ratio sync complete. Inserted ${dailyRatios.length} reserve ratios`,
+  )
 
-  // // Fetch and store latest block
-  // const latestBlock = (await blockfrostFetch(`/blocks/latest`)) as Block
-  // await prisma.block.create({
-  //   data: { latestBlock: latestBlock.hash, latestSlot: latestBlock.slot },
-  // })
-  // logger.info(`Latest block: ${latestBlock.hash}`)
-
-  // const end = Date.now() - start
-  // logger.info(`Time sec: ${(end / 1000).toFixed(2)}`)
+  const end = Date.now() - start
+  logger.info(`Time sec: ${(end / 1000).toFixed(2)}`)
 }

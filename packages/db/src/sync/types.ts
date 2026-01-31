@@ -229,20 +229,13 @@ export type ReserveRatio = {
   slot: number
 }
 
-export type DailyReserveRatio = {
-  date: string
-  reserveRatio: string
-  block_hash: string
-  block_slot: number
-}
-
 export type DailyUTxOs = {
   day: string
   startIso: string
   endIso: string
   entries: ReserveEntries[]
 }
-
+//TODO: to be deleted after confirm datum logic
 export type WeightedReserveEntry = ReserveEntries & {
   weight: number
   ratio?: number
@@ -250,6 +243,8 @@ export type WeightedReserveEntry = ReserveEntries & {
     start: string
     end: string
   }
+  usedPoolDatum?: PoolUTxoWithDatumAndTimestamp["poolDatum"]
+  usedOracleDatum?: OracleUTxoWithDatumAndTimestamp["oracleDatum"]
 }
 
 export type DailyUTxOsWithWeights = Omit<DailyUTxOs, "entries"> & {
