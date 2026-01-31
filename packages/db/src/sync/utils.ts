@@ -2,7 +2,11 @@ import type { Actions, Token } from "../../generated/prisma/enums"
 import { env } from "../../lib/env"
 import { Blockfrost } from "@open-djed/blockfrost"
 import { registryByNetwork } from "@open-djed/registry"
-import { credentialToAddress, getAddressDetails } from "@lucid-evolution/lucid"
+import {
+  credentialToAddress,
+  Data,
+  getAddressDetails,
+} from "@lucid-evolution/lucid"
 import {
   OrderStatus,
   RedeemerPurpose,
@@ -20,6 +24,7 @@ import {
   type DailyUTxOsWithWeights,
   type WeightedReserveEntry,
   type ReserveEntries,
+  type TransactionData,
 } from "./types"
 
 import fs from "fs"
@@ -28,10 +33,13 @@ import { logger } from "../utils/logger"
 import { reserveRatio } from "@open-djed/math"
 import {
   CancelOrderSpendRedeemerHash,
+  OracleDatum,
+  PoolDatum,
   ProcessOrderSpendOrderRedeemerHash,
   type OrderDatum,
 } from "@open-djed/data"
 import { toISODate } from "../../../app/src/lib/utils"
+import { prisma } from "../../lib/prisma"
 
 const blockfrostUrl = env.BLOCKFROST_URL
 const blockfrostId = env.BLOCKFROST_PROJECT_ID
@@ -89,7 +97,12 @@ export async function fetchWithRetry<T = unknown>(
       if (!text || text.trim().length === 0) {
         throw new Error("Empty response")
       }
-
+      if (text.trim().startsWith("<")) {
+        logger.error(
+          `Received HTML instead of JSON from ${url}. First 1000 chars: ${text.substring(0, 1000)}`,
+        )
+        throw new Error("Received HTML response instead of JSON")
+      }
       return JSON.parse(text) as T
     } catch (error) {
       lastError = error as Error
@@ -397,7 +410,7 @@ export async function getEveryResultFromPaginatedEndpoint(endpoint: string) {
   logger.info("Fetching all transactions...")
   const everyOrderTx: Transaction[] = []
   let txPage = 1
-  while (txPage < 5) {
+  while (true) {
     try {
       logger.debug(`Fetching transaction page ${txPage}...`)
       const pageResult = (await blockfrostFetch(
@@ -416,11 +429,58 @@ export async function getEveryResultFromPaginatedEndpoint(endpoint: string) {
   return everyOrderTx
 }
 
+/**
+ * Runs a `while (true)` pagination loop against Blockfrost, concatenating every
+ * transaction returned by each page. The loop stops when an empty page is encountered
+ * or when a transaction older than the specified time is encountered
+ *
+ * @param assetId
+ * @param time
+ * @returns
+ */
+export async function getAssetTxsUpUntilSpecifiedTime(
+  assetId: string,
+  time: string,
+) {
+  const specifiedTime = Math.floor(new Date(time).getTime() / 1000)
+  logger.info(
+    `Fetching transactions newer than ${time} (Unix: ${specifiedTime})...`,
+  )
+  const everyOrderTx: Transaction[] = []
+  let txPage = 1
+  while (true) {
+    try {
+      logger.debug(`Fetching transaction page ${txPage}...`)
+      const pageResult = (await blockfrostFetch(
+        `/assets/${assetId}/transactions?page=${txPage}&count=100&order=desc`,
+      )) as Transaction[]
+
+      everyOrderTx.push(...pageResult)
+
+      const hasExceededSpecifiedTime = pageResult.find(
+        (item) => item.block_time < specifiedTime,
+      )
+
+      if (
+        !Array.isArray(pageResult) ||
+        pageResult.length === 0 ||
+        hasExceededSpecifiedTime
+      )
+        break
+
+      txPage++
+    } catch (error) {
+      logger.error(error, `Error fetching page ${txPage}:`)
+      break
+    }
+  }
+  return everyOrderTx
+}
+
 const getUtcDayKey = (timestamp: string) => timestamp.slice(0, 10)
 const formatDayIso = (day: string) => `${day}T00:00:00.000Z`
 const formatDayEndIso = (day: string) => `${day}T23:59:59.999Z`
 const MS_PER_DAY = 24 * 60 * 60 * 1000
-const MS_PER_DAY_BIGINT = BigInt(MS_PER_DAY)
 
 /**
  * Aggregates reserve entries by their timestamp, sorts each bucket, and
@@ -591,19 +651,9 @@ export const getTimeWeightedDailyReserveRatio = (
     if (durationSum === 0n) continue
 
     const averageRatio = weightedSumNumber / MS_PER_DAY
-    const coverageFraction = Number(durationSum) / MS_PER_DAY
-    const fullDayCoverage = durationSum === MS_PER_DAY_BIGINT
 
     const latestEntry = chunk.entries.at(-1)
     if (!latestEntry) continue
-
-    // console.log("daily reserve ratio", {
-    //   day: chunk.day,
-    //   average_ratio: averageRatio*100,
-    //   coverage_fraction: coverageFraction,
-    //   coverage_full_day: fullDayCoverage,
-    //   weights_total_ms: durationSum.toString(),
-    // })
 
     dailyReserveRatios.push({
       timestamp: toISODate(new Date(latestEntry.value.timestamp)),
@@ -616,60 +666,231 @@ export const getTimeWeightedDailyReserveRatio = (
   return dailyReserveRatios
 }
 
-//TODO: to be delete
-export const dumpDayChunkToJsonFile = (
-  chunks: DailyUTxOsWithWeights[],
-  targetDay: string,
+const withBlockTime = (
+  txs: { tx_hash: string; block_time: number }[],
+  utxos: UTxO[],
+  assetId: string,
 ) => {
-  const chunk = chunks.find((c) => c.day === targetDay)
-  if (!chunk) {
-    console.warn(`Day ${targetDay} not found for JSON dump`)
+  const txTimeByHash = new Map(
+    txs.map((tx) => [tx.tx_hash, tx.block_time] as const),
+  )
+
+  return utxos.flatMap((utxo) => {
+    const blockTime = txTimeByHash.get(utxo.hash)
+    if (blockTime === undefined) return []
+
+    return utxo.outputs
+      .filter((output) => output.data_hash !== null)
+      .filter((output) => output.amount.some((amt) => amt.unit === assetId))
+      .map((output) => ({
+        ...output,
+        tx_hash: utxo.hash,
+        blockTime,
+      }))
+  })
+}
+
+export async function processReserveRatioTxs(
+  everyPoolTx: Transaction[],
+  everyOracleTx: Transaction[],
+) {
+  if (everyPoolTx.length === 0) {
+    logger.info("No transactions found")
     return
   }
-  const index = chunks.findIndex((c) => c.day === targetDay)
-  const previousChunk = index > 0 ? chunks[index - 1] : null
+  logger.info(`Found ${everyPoolTx.length} transactions`)
 
-  const logDir = path.join(process.cwd(), "logs")
-  if (!fs.existsSync(logDir)) {
-    fs.mkdirSync(logDir, { recursive: true })
+  logger.info("Fetching UTxOs...")
+  const everyPoolUTxO: UTxO[] = await processBatch(
+    everyPoolTx,
+    async (order) => {
+      try {
+        return (await blockfrostFetch(`/txs/${order.tx_hash}/utxos`)) as UTxO
+      } catch (error) {
+        logger.error(error, `Error fetching UTxO for tx ${order.tx_hash}:`)
+        throw error
+      }
+    },
+    10,
+    500,
+  )
+
+  if (everyOracleTx.length === 0) {
+    logger.info("No transactions found")
+    return
+  }
+  logger.info(`Found ${everyOracleTx.length} transactions`)
+
+  logger.info("Fetching UTxOs...")
+  const everyOracleUTxO: UTxO[] = await processBatch(
+    everyOracleTx,
+    async (order) => {
+      try {
+        return (await blockfrostFetch(`/txs/${order.tx_hash}/utxos`)) as UTxO
+      } catch (error) {
+        logger.error(error, `Error fetching UTxO for tx ${order.tx_hash}:`)
+        throw error
+      }
+    },
+    10,
+    500,
+  )
+
+  const poolUTxOsWithTimestamp = withBlockTime(
+    everyPoolTx,
+    everyPoolUTxO,
+    registry.poolAssetId,
+  )
+  const oracleUTXOsWithTimestamp = withBlockTime(
+    everyOracleTx,
+    everyOracleUTxO,
+    registry.oracleAssetId,
+  )
+
+  logger.info("Fetching pool UTxO datums and transaction data...")
+  const poolUTxOsWithDatumAndTimestamp = await processBatch(
+    poolUTxOsWithTimestamp,
+    async (utxo, idx) => {
+      let rawDatum: string | undefined
+      try {
+        const [datum, tx] = await Promise.all([
+          utxo.data_hash
+            ? blockfrost.getDatum(utxo.data_hash).catch((err) => {
+                logger.error(err, `Error fetching datum for ${utxo.data_hash}:`)
+                throw err
+              })
+            : Promise.resolve(undefined),
+          blockfrostFetch(`/txs/${utxo.tx_hash}`) as Promise<TransactionData>,
+        ])
+        rawDatum = datum
+
+        if (!rawDatum) {
+          throw new Error(`Couldn't get pool datum for ${utxo.tx_hash}`)
+        }
+
+        return {
+          poolDatum: Data.from(rawDatum, PoolDatum),
+          timestamp: new Date(utxo.blockTime * 1000).toISOString(),
+          block_hash: tx.block,
+          block_slot: tx.slot,
+        }
+      } catch (error) {
+        const message =
+          error instanceof Error ? error.message : JSON.stringify(error)
+        logger.info(
+          `Skipping pool UTxO ${utxo.tx_hash} (${idx + 1}/${
+            poolUTxOsWithTimestamp.length
+          }) because its datum could not be decoded: ${message}`,
+        )
+        return null
+      }
+    },
+    5,
+    300,
+  ).then((results) =>
+    results.filter(
+      (utxo): utxo is PoolUTxoWithDatumAndTimestamp => utxo !== null,
+    ),
+  )
+
+  if (poolUTxOsWithDatumAndTimestamp.length === 0) {
+    logger.info("No valid pool UTxOs with datum found")
+    return
+  }
+  logger.info(
+    `Enriched ${poolUTxOsWithDatumAndTimestamp.length} pool UTxOs with datum, timestamp and block data`,
+  )
+
+  logger.info("Fetching oracle UTxO datums and transaction data...")
+  const oracleUTxOsWithDatumAndTimestamp = await processBatch(
+    oracleUTXOsWithTimestamp,
+    async (utxo, idx) => {
+      try {
+        const [rawDatum, tx] = await Promise.all([
+          utxo.data_hash
+            ? blockfrost.getDatum(utxo.data_hash).catch((err) => {
+                logger.error(err, `Error fetching datum for ${utxo.data_hash}:`)
+                throw err
+              })
+            : Promise.resolve(undefined),
+          blockfrostFetch(`/txs/${utxo.tx_hash}`) as Promise<TransactionData>,
+        ])
+
+        if (!rawDatum) {
+          throw new Error(`Couldn't get oracle datum for ${utxo.tx_hash}`)
+        }
+
+        return {
+          oracleDatum: Data.from(rawDatum, OracleDatum),
+          timestamp: new Date(utxo.blockTime * 1000).toISOString(),
+          block_hash: tx.block,
+          block_slot: tx.slot,
+        }
+      } catch (error) {
+        logger.error(
+          error,
+          `Error processing oracle UTxO ${idx + 1}/${oracleUTXOsWithTimestamp.length}:`,
+        )
+        logger.debug("Skipping this UTxO and continuing...")
+        return null
+      }
+    },
+    5,
+    300,
+  ).then((results) =>
+    results.filter(
+      (utxo): utxo is OracleUTxoWithDatumAndTimestamp => utxo !== null,
+    ),
+  )
+
+  if (oracleUTxOsWithDatumAndTimestamp.length === 0) {
+    logger.info("No valid oracle UTxOs with datum found")
+    return
+  }
+  logger.info(
+    `Enriched ${oracleUTxOsWithDatumAndTimestamp.length} oracle UTxOs with datum, timestamp, and block data`,
+  )
+
+  const ordinateTxOs: ReserveEntries[] = [
+    ...poolUTxOsWithDatumAndTimestamp.map((datum) => ({
+      key: "pool" as const,
+      value: {
+        poolDatum: datum.poolDatum,
+        timestamp: datum.timestamp,
+        block_hash: datum.block_hash,
+        block_slot: datum.block_slot,
+      },
+    })),
+    ...oracleUTxOsWithDatumAndTimestamp.map((datum) => ({
+      key: "oracle" as const,
+      value: {
+        oracleDatum: datum.oracleDatum,
+        timestamp: datum.timestamp,
+        block_hash: datum.block_hash,
+        block_slot: datum.block_slot,
+      },
+    })),
+  ].sort((a, b) => (a.value.timestamp < b.value.timestamp ? -1 : 1))
+
+  const dailyTxOs = breakIntoDays(ordinateTxOs)
+  const weightedDailyTxOs = assignTimeWeightsToDailyUTxOs(dailyTxOs)
+
+  const dailyRatios = getTimeWeightedDailyReserveRatio(weightedDailyTxOs)
+
+  if (dailyRatios.length === 0) {
+    logger.warn("No daily reserve ratios computed")
+  } else {
+    logger.info({ dailyRatios }, "Daily reserve ratios")
   }
 
-  const replacer = (_key: string, value: unknown) =>
-    typeof value === "bigint" ? value.toString() : value
+  logger.info("Processing order data...")
 
-  const collectEntries = (chunkToDump: DailyUTxOsWithWeights | null) =>
-    chunkToDump
-      ? chunkToDump.entries.map((entry) => ({
-          day: chunkToDump.day,
-          key: entry.key,
-          timestamp: entry.value.timestamp,
-          block_hash: entry.value.block_hash,
-          block_slot: entry.value.block_slot,
-          weight: entry.weight,
-          ratio: entry.ratio,
-          period: entry.period,
-          usedPoolDatum: entry.usedPoolDatum,
-          usedOracleDatum: entry.usedOracleDatum,
-          value: entry.value,
-        }))
-      : []
-
-  const out = {
-    targetDay: {
-      day: chunk.day,
-      startIso: chunk.startIso,
-      endIso: chunk.endIso,
-      entries: collectEntries(chunk),
-    },
-    previousDay: previousChunk && {
-      day: previousChunk.day,
-      startIso: previousChunk.startIso,
-      endIso: previousChunk.endIso,
-      entries: collectEntries(previousChunk),
-    },
-  }
-
-  const filePath = path.join(logDir, `reserve-ratio-${targetDay}.json`)
-  fs.writeFileSync(filePath, JSON.stringify(out, replacer, 2))
-  console.log(`Dumped day ${targetDay} chunk to ${filePath}`)
+  logger.info(`Inserting ${dailyRatios.length} reserve ratio into database...`)
+  await prisma.reserveRatio.createMany({
+    data: dailyRatios,
+    skipDuplicates: true,
+  })
+  logger.info(
+    `Historic reserve ratio sync complete. Inserted ${dailyRatios.length} reserve ratios`,
+  )
 }

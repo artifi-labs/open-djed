@@ -62,3 +62,11 @@ export const deleteAllReserveRatios = async () => {
   const result = await prisma.reserveRatio.deleteMany()
   return result
 }
+
+export const deletePeriodReserveRatio = async (period: Period) => {
+  const startIso = getStartIso(period)
+
+  await prisma.reserveRatio.deleteMany({
+    where: startIso ? { timestamp: { gte: startIso } } : undefined,
+  })
+}

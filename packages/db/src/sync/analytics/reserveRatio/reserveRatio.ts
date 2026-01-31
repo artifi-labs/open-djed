@@ -1,5 +1,6 @@
 import { prisma } from "../../../../lib/prisma"
 import { logger } from "../../../utils/logger"
+import { rollbackReserveRatios } from "./rollbackReserveRatios"
 import { syncReserveRatios } from "./updateReserveRatio"
 
 export async function updateReserveRatios() {
@@ -7,7 +8,7 @@ export async function updateReserveRatios() {
   logger.info("=== Starting Reserve Ratio Update Process ===")
 
   try {
-    //await rollbackReserveRatios()
+    await rollbackReserveRatios()
     await syncReserveRatios()
     logger.info("=== Reserve Ratio Update Complete ===")
     const end = Date.now() - start

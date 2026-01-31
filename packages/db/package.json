@@ -15,6 +15,7 @@
     "@open-djed/blockfrost": "workspace:*",
     "@open-djed/data": "workspace:*",
     "@open-djed/registry": "workspace:*",
+    "@open-djed/math": "workspace:*",
     "@prisma/adapter-pg": "^7.1.0",
     "@prisma/client": "^7.1.0",
     "@t3-oss/env-core": "^0.12.0",
