@@ -43,7 +43,7 @@ import {
   ValidationError,
 } from "./errors"
 import JSONbig from "json-bigint"
-import { getOrdersByAddressKeys } from "@open-djed/db"
+import { getOrdersByAddressKeys, getPeriodReserveRatio } from "@open-djed/db"
 import type { Order } from "@open-djed/db"
 export type { Order } from "@open-djed/db"
 
@@ -278,42 +278,6 @@ async function completeTransaction(createOrderFn: () => TxBuilder) {
     }
     throw err
   }
-}
-
-const getDaysForPeriod = (period: "D" | "W" | "M" | "1Y"): number => {
-  const map = {
-    D: 1,
-    W: 7,
-    M: 30,
-    "1Y": 365,
-  }
-  return map[period]
-}
-
-const generateMockReserveData = (period: "D" | "W" | "M" | "1Y") => {
-  const daysToGenerate = getDaysForPeriod(period)
-  const chartData: { name: string; value: number }[] = []
-
-  const anchorDate = new Date()
-  anchorDate.setDate(anchorDate.getDate() - 1)
-
-  let currentValue = 3.6
-
-  for (let i = 0; i < daysToGenerate; i++) {
-    const targetDate = new Date(anchorDate)
-    targetDate.setDate(anchorDate.getDate() - i)
-    const dateKey = targetDate.toISOString().slice(0, 10)
-
-    const change = (Math.random() - 0.5) * 0.1
-    currentValue = Math.max(0.1, parseFloat((currentValue + change).toFixed(2)))
-
-    chartData.push({
-      name: dateKey,
-      value: currentValue * 100,
-    })
-  }
-
-  return chartData.reverse()
 }
 
 const tokenSchema = z.enum(["DJED", "SHEN"]).openapi({ example: "DJED" })
@@ -740,10 +704,10 @@ const app = new Hono()
     zValidator(
       "param",
       z.object({
-        period: z.enum(["D", "W", "M", "1Y"]),
+        period: z.enum(["D", "W", "M", "1Y", "All"]),
       }),
     ),
-    (c) => {
+    async (c) => {
       let param
       try {
         param = c.req.valid("param")
@@ -755,9 +719,12 @@ const app = new Hono()
         throw new ValidationError("Invalid or missing request payload.")
       }
       try {
-        const data = generateMockReserveData(param.period)
-
-        return c.json(data)
+        const reserveRatios = await getPeriodReserveRatio(param.period)
+        const historicalData = reserveRatios.map((ratio) => ({
+          name: ratio.timestamp.slice(0, 10),
+          value: ratio.reserveRatio * 100,
+        }))
+        return c.json(historicalData)
       } catch (err) {
         if (err instanceof AppError) {
           throw err
