@@ -60,14 +60,15 @@ export default function SettingsSidebar({
   return (
     <Sidebar
       title="Settings"
-      titleClassName="text-[18px]"
+      headerClassName="pl-16 pr-6 py-12 desktop:px-24"
       hasLeadingIcon={isMobile ? "Arrow-Left" : undefined}
       headerAction={null}
       isOpen={isOpen}
       onClose={onClose}
       onBack={onBack}
+      paddingClassName="px-16 py-8 desktop:px-24"
     >
-      <div className="flex h-full w-full flex-col items-start justify-start gap-18 py-8">
+      <div className="flex h-full w-full flex-col items-start justify-start gap-18">
         {/* <div className="flex w-full flex-col items-start justify-start gap-10">
           <span className="text-secondary text-xs">Language</span>
           <Dropdown

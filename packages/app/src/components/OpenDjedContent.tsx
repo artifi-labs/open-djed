@@ -4,7 +4,7 @@ const OpenDjedContent = () => {
   return (
     <div className="text-secondary flex flex-col gap-16 text-sm">
       {/* What is Open Djed? */}
-      <p className="gap-16 text-sm">
+      <p className="text-sm">
         Open DJED is a transparent, community-driven web app for interacting
         with the DJED algorithmic stablecoin on Cardano, built entirely open
         source by Artifi Labs. It recreates the original DJED experience with
