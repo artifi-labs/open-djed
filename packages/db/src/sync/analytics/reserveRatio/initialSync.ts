@@ -1,4 +1,3 @@
-import { deletePeriodReserveRatio } from "../../../client/reserveRatio"
 import { logger } from "../../../utils/logger"
 import {
   registry,
@@ -17,10 +16,6 @@ export const populateDbWithHistoricReserveRatio = async () => {
   ) //txs from oracle
 
   await processReserveRatioTxs(everyPoolTx, everyOracleTx)
-
-  // delete the last day has it still does not have all the necessary txs
-  // to calculate the accurate reserve ratio
-  await deletePeriodReserveRatio("D")
 
   const end = Date.now() - start
   logger.info(`Time sec: ${(end / 1000).toFixed(2)}`)

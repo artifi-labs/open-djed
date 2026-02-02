@@ -2,10 +2,7 @@ import { logger } from "../../../utils/logger"
 import { prisma } from "../../../../lib/prisma"
 
 import { populateDbWithHistoricReserveRatio } from "./initialSync"
-import {
-  deletePeriodReserveRatio,
-  getLatestReserveRatio,
-} from "../../../client/reserveRatio"
+import { getLatestReserveRatio } from "../../../client/reserveRatio"
 import {
   getAssetTxsUpUntilSpecifiedTime,
   processReserveRatioTxs,
@@ -24,10 +21,6 @@ async function updateReserveRatio(timestamp: string) {
   )
 
   await processReserveRatioTxs(newPoolTxs, newOracleTxs)
-
-  // delete the last day has it still does not have all the necessary txs
-  // to calculate the accurate reserve ratio
-  await deletePeriodReserveRatio("D")
 
   const end = Date.now() - start
   logger.info(`Time sec: ${(end / 1000).toFixed(2)}`)

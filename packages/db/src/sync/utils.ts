@@ -885,6 +885,17 @@ export async function processReserveRatioTxs(
 
   logger.info("Processing order data...")
 
+  // if the current day was processed remove it, as the data is incomplete and should not be recorded
+  dailyRatios.sort((a, b) => {
+    return new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+  })
+  if (
+    dailyRatios[dailyRatios.length - 1]?.timestamp ===
+    new Date().toISOString().split("T")[0]
+  ) {
+    dailyRatios.pop()
+  }
+
   logger.info(`Inserting ${dailyRatios.length} reserve ratio into database...`)
   await prisma.reserveRatio.createMany({
     data: dailyRatios,
