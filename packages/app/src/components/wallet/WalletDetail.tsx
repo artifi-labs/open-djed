@@ -88,17 +88,19 @@ const WalletDetail: React.FC<WalletDetailProps> = ({
           </div>
         </div>
       </div>
-      {NETWORK !== "Preprod" ? (
-        <span className="text-md font-semibold">
-          ${formatNumber(totalBalance, { maximumFractionDigits: 2 })}
-        </span>
-      ) : null}
-      <ButtonIcon
-        icon="Disconnect"
-        variant="secondary"
-        onClick={onDisconnect}
-        size="small"
-      />
+      <div className="flex items-center gap-8">
+        {NETWORK !== "Preprod" ? (
+          <span className="text-md font-semibold">
+            ${formatNumber(totalBalance, { maximumFractionDigits: 2 })}
+          </span>
+        ) : null}
+        <ButtonIcon
+          icon="Disconnect"
+          variant="outlined"
+          onClick={onDisconnect}
+          size="small"
+        />
+      </div>
     </div>
   )
 }

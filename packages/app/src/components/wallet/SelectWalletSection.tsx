@@ -26,37 +26,44 @@ const SelectWalletSection: React.FC<SelectWalletSectionProps> = ({
   onClick,
 }) => {
   return (
-    <div className="desktop:gap-24 flex h-full flex-col gap-16">
-      <div className="flex flex-1 flex-col overflow-y-auto py-8">
-        {wallets?.map((wallet, index) => (
-          <ListItem
-            key={`${wallet.name}-${wallet.id}`}
-            divider={index < wallets.length - 1}
-            text={capitalizeLower(wallet.name)}
-            onClick={() => onClick(wallet.id)}
-            wallet={
-              isValidCoinName(wallet.name)
-                ? (wallet.name.toUpperCase() as WalletName)
-                : "PLACEHOLDER"
-            }
-            icon="Arrow-Right"
-            className="cursor-pointer"
-          />
-        ))}
+    <div className="desktop:gap-24 flex h-full flex-col">
+      <div className="desktop:px-24 px-16">
+        <div className="flex flex-1 flex-col overflow-y-auto py-8">
+          {wallets?.map((wallet, index) => (
+            <ListItem
+              divider={index < wallets.length - 1}
+              text={capitalizeLower(wallet.name)}
+              onClick={() => onClick(wallet.id)}
+              wallet={
+                isValidCoinName(wallet.name)
+                  ? (wallet.name.toUpperCase() as WalletName)
+                  : "PLACEHOLDER"
+              }
+              icon="Arrow-Right"
+              className="cursor-pointer"
+            />
+          ))}
+        </div>
       </div>
 
-      <Divider orientation="horizontal" />
-      <div className="flex flex-col text-center">
-        <p className="text-secondary self-stretch text-xs">
-          By connecting you agree to our{" "}
-          <Link href="/terms" className="text-link underline">
-            Terms & Services
-          </Link>{" "}
-          and{" "}
-          <Link href="/privacy" className="text-link underline">
-            Privacy Policy
-          </Link>
-        </p>
+      <div className="mt-auto flex flex-col">
+        <div className="desktop:px-24 px-16">
+          <Divider />
+        </div>
+        <div className="desktop:p-24 p-16">
+          <div className="flex flex-col text-center">
+            <p className="text-secondary self-stretch text-xs">
+              By connecting you agree to our{" "}
+              <Link href="/terms" className="text-link underline">
+                Terms & Services
+              </Link>{" "}
+              and{" "}
+              <Link href="/privacy" className="text-link underline">
+                Privacy Policy
+              </Link>
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   )

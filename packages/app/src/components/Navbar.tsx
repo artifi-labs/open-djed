@@ -219,10 +219,12 @@ export const Navbar = () => {
             }
             isOpen={isMobileSidebarOpen}
             onClose={() => setIsMobileSidebarOpen(false)}
+            headerClassName="px-16 pt-16"
+            paddingClassName="px-16 pt-40 pb-16"
           >
-            <div className="flex h-full flex-col justify-between pt-28">
+            <div className="flex h-full flex-col justify-between">
               <nav
-                className="flex flex-col gap-24"
+                className="flex flex-col gap-24 overflow-y-auto"
                 aria-label="Main navigation"
               >
                 {navLinks.map((item) => {
@@ -240,7 +242,7 @@ export const Navbar = () => {
                   )
                 })}
               </nav>
-              <div className="flex flex-col gap-24">
+              <div className="flex flex-col gap-24 pt-40">
                 <Button
                   text={walletButtonText}
                   variant={wallet ? "secondary" : "accent"}
