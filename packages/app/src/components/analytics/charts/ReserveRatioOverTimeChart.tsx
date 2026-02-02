@@ -59,6 +59,8 @@ export const ReserveRatioOverTimeChart: React.FC<
     } else if (totalDays <= 365) {
       // 1 year
       newInterval = isMobile ? 30 * dayInMs : 60 * dayInMs
+    } else {
+      newInterval = isMobile ? 60 * dayInMs : 90 * dayInMs
     }
 
     const dataRows: DataRow[] = []

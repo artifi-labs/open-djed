@@ -7,7 +7,7 @@ import { AppError } from "@open-djed/api/src/errors"
 import { useCallback, useEffect, useState } from "react"
 
 export type ReserveRatioChartEntry = { name: string; value: number }
-export const RESERVE_RATIO_OPTIONS = ["D", "W", "M", "1Y"] as const
+export const RESERVE_RATIO_OPTIONS = ["D", "W", "M", "1Y", "All"] as const
 export type ReserveRatioChartPeriod = (typeof RESERVE_RATIO_OPTIONS)[number]
 
 export function useAnalyticsData() {
