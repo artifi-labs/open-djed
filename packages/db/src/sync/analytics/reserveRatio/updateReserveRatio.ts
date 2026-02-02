@@ -44,21 +44,23 @@ export async function syncReserveRatios() {
   }
 
   const latestReserveRatio = await getLatestReserveRatio()
-  if (
-    latestReserveRatio &&
-    new Date(latestReserveRatio.timestamp).getTime() >
-      Date.now() - 24 * 60 * 60 * 1000
-  ) {
+  if (!latestReserveRatio) return
+
+  // we only want to run the update once every 24h,
+  // in order to get the data relative to the lates full day
+  const yesterday = new Date()
+  yesterday.setDate(yesterday.getDate() - 1)
+  const yesterdayStr = yesterday.toISOString().split("T")[0]
+  if (!yesterdayStr) return
+
+  if (latestReserveRatio.timestamp >= yesterdayStr) {
     // return if latest was less than 24h ago
     logger.info(
       "=== Latest reserve ratio is less than 24h old, skipping update ===",
     )
     return
   }
-  if (latestReserveRatio) {
-    // update reserve ratio with most recent data
-    logger.info("=== Updating reserve ratio historical data ===")
-    await updateReserveRatio(latestReserveRatio?.timestamp)
-  }
-  return
+
+  logger.info("=== Updating reserve ratio historical data ===")
+  await updateReserveRatio(latestReserveRatio?.timestamp)
 }
