@@ -14,3 +14,5 @@ log
 dist
 
 !.env.example
+
+.vscode

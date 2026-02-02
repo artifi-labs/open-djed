@@ -36,7 +36,9 @@ const Dashboard = () => {
         title="What is Open DJED?"
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        className="mx-16"
+        className="desktop:p-42 p-32"
+        paddingClassName="p-0"
+        titleClassName="pb-16"
       >
         <OpenDjedContent />
       </Modal>

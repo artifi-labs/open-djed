@@ -13,6 +13,7 @@ import {
   TWITTER_URL,
   WEBSITE_URL,
 } from "@/lib/constants"
+import { buildTitle } from "@/lib/metadata"
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -22,15 +23,11 @@ const poppins = Poppins({
   fallback: ["sans-serif"],
 })
 
-const { NETWORK } = env
-const title = NETWORK === "Mainnet" ? APP_NAME : `${APP_NAME} | ${NETWORK}`
+const title = buildTitle()
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.BASE_URL),
-  title: {
-    default: title,
-    template: `%s | ${title}`,
-  },
+  title: title,
   applicationName: APP_NAME,
   description: `Mint and burn DJED, Cardano's overcollateralized stablecoin, with our open-source platform. Transparent alternative to DJED.xyz - accessible 24/7 anywhere.`,
   keywords: [
