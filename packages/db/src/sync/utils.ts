@@ -581,19 +581,6 @@ export const assignTimeWeightsToDailyUTxOs = (
           start: intervalStartIso,
           end: intervalEndIso,
         }
-        // console.log("reserve ratio period", {
-        //   day: dailyDayChunk.day,
-        //   timestamp: currentEntry.value.timestamp,
-        //   source: currentEntry.key,
-        //   ratio: currentEntry.ratio,
-        //   poolUTxO: activePoolEntry.value,
-        //   oracleUTxO: activeOracleEntry.value,
-        //   oracleExchangeRate: getOracleExchangeRate(activeOracleEntry),
-        //   period: {
-        //     start: new Date(intervalStartMs).toISOString(),
-        //     end: new Date(intervalEndMs).toISOString(),
-        //   },
-        // })
       }
       let duration = Math.max(0, currentTimestampMs - previousTimestampMs)
 
