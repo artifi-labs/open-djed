@@ -21,10 +21,13 @@ import {
   type OracleUTxoWithDatumAndTimestamp,
   type PoolUTxoWithDatumAndTimestamp,
   type DailyUTxOs,
-  type DailyUTxOsWithWeights,
+  type DailyReserveRatioUTxOsWithWeights,
   type WeightedReserveEntry,
-  type ReserveEntries,
+  type OrderedPoolOracleTxOs,
   type TransactionData,
+  type DjedMarketCap,
+  type DailyDjedMarketCapUTxOsWithWeights,
+  type WeightedDjedMarketCapEntry,
 } from "./types"
 
 import fs from "fs"
@@ -40,6 +43,10 @@ import {
 } from "@open-djed/data"
 import { toISODate } from "../../../app/src/lib/utils"
 import { prisma } from "../../lib/prisma"
+import {
+  djedADAMarketCap,
+  djedUSDMarketCap,
+} from "@open-djed/math/src/market-cap"
 
 const blockfrostUrl = env.BLOCKFROST_URL
 const blockfrostId = env.BLOCKFROST_PROJECT_ID
@@ -489,8 +496,10 @@ const MS_PER_DAY = 24 * 60 * 60 * 1000
  * @param entries the list of reserve entries generated from pool/oracle UTxOs
  * @returns per-day buckets with start/end ISO timestamps and sorted entries
  */
-export const breakIntoDays = (entries: ReserveEntries[]): DailyUTxOs[] => {
-  const buckets = new Map<string, ReserveEntries[]>()
+export const breakIntoDays = (
+  entries: OrderedPoolOracleTxOs[],
+): DailyUTxOs[] => {
+  const buckets = new Map<string, OrderedPoolOracleTxOs[]>()
   for (const entry of entries) {
     const day = getUtcDayKey(entry.value.timestamp)
     let dayEntries = buckets.get(day)
@@ -520,15 +529,15 @@ export const breakIntoDays = (entries: ReserveEntries[]): DailyUTxOs[] => {
  * @param dailyChunks grouped entries per day emitted from `breakIntoDays`
  * @returns the same chunks enriched with weight, ratio, and datum references
  */
-export const assignTimeWeightsToDailyUTxOs = (
+export const assignTimeWeightsToReserveRatioDailyUTxOs = (
   dailyChunks: DailyUTxOs[],
-): DailyUTxOsWithWeights[] => {
+): DailyReserveRatioUTxOsWithWeights[] => {
   let previousDayLastTimestampMs: number | null = null
   let activePoolDatum: PoolUTxoWithDatumAndTimestamp["poolDatum"] | null = null
   let activeOracleDatum: OracleUTxoWithDatumAndTimestamp["oracleDatum"] | null =
     null
-  let activePoolEntry: ReserveEntries | null = null
-  let activeOracleEntry: ReserveEntries | null = null
+  let activePoolEntry: OrderedPoolOracleTxOs | null = null
+  let activeOracleEntry: OrderedPoolOracleTxOs | null = null
 
   return dailyChunks.map((dailyDayChunk, chunkIndex) => {
     const timedEntries: WeightedReserveEntry[] = dailyDayChunk.entries.map(
@@ -618,7 +627,7 @@ export const assignTimeWeightsToDailyUTxOs = (
  * @returns the averaged daily reserve ratio rows that are persisted
  */
 export const getTimeWeightedDailyReserveRatio = (
-  dailyChunks: DailyUTxOsWithWeights[],
+  dailyChunks: DailyReserveRatioUTxOsWithWeights[],
 ): ReserveRatio[] => {
   const dailyReserveRatios: ReserveRatio[] = []
 
@@ -675,7 +684,7 @@ const withBlockTime = (
   })
 }
 
-export async function processReserveRatioTxs(
+export async function processPoolOracleTxs(
   everyPoolTx: Transaction[],
   everyOracleTx: Transaction[],
 ) {
@@ -836,7 +845,7 @@ export async function processReserveRatioTxs(
     `Enriched ${oracleUTxOsWithDatumAndTimestamp.length} oracle UTxOs with datum, timestamp, and block data`,
   )
 
-  const ordinateTxOs: ReserveEntries[] = [
+  const orderedTxOs: OrderedPoolOracleTxOs[] = [
     ...poolUTxOsWithDatumAndTimestamp.map((datum) => ({
       key: "pool" as const,
       value: {
@@ -857,8 +866,18 @@ export async function processReserveRatioTxs(
     })),
   ].sort((a, b) => (a.value.timestamp < b.value.timestamp ? -1 : 1))
 
-  const dailyTxOs = breakIntoDays(ordinateTxOs)
-  const weightedDailyTxOs = assignTimeWeightsToDailyUTxOs(dailyTxOs)
+  return orderedTxOs
+}
+
+export async function processReserveRatio(
+  everyPoolTx: Transaction[],
+  everyOracleTx: Transaction[],
+) {
+  const orderedTxOs = await processPoolOracleTxs(everyPoolTx, everyOracleTx)
+  if (!orderedTxOs) return
+
+  const dailyTxOs = breakIntoDays(orderedTxOs)
+  const weightedDailyTxOs = assignTimeWeightsToReserveRatioDailyUTxOs(dailyTxOs)
 
   const dailyRatios = getTimeWeightedDailyReserveRatio(weightedDailyTxOs)
 
@@ -888,5 +907,191 @@ export async function processReserveRatioTxs(
   })
   logger.info(
     `Historic reserve ratio sync complete. Inserted ${dailyRatios.length} reserve ratios`,
+  )
+}
+
+/**
+ * Assigns a millisecond-based weight to every UTxO by tracking the interval
+ * until the next observation within the same day. Records the pool/oracle datum
+ * that would back each interval so the market cap can later be computed.
+ * @param dailyChunks grouped entries per day emitted from `breakIntoDays`
+ * @returns the same chunks enriched with weight, market cap values, and datum references
+ */
+export const assignTimeWeightsToDailyDjedMCUTxOs = (
+  dailyChunks: DailyUTxOs[],
+): DailyDjedMarketCapUTxOsWithWeights[] => {
+  let previousDayLastTimestampMs: number | null = null
+  let activePoolDatum: PoolUTxoWithDatumAndTimestamp["poolDatum"] | null = null
+  let activeOracleDatum: OracleUTxoWithDatumAndTimestamp["oracleDatum"] | null =
+    null
+  let activePoolEntry: OrderedPoolOracleTxOs | null = null
+  let activeOracleEntry: OrderedPoolOracleTxOs | null = null
+
+  const returnArr = dailyChunks.map((dailyDayChunk, chunkIndex) => {
+    const timedEntries: WeightedDjedMarketCapEntry[] =
+      dailyDayChunk.entries.map((entry) => ({
+        ...entry,
+        weight: 0,
+      }))
+
+    const dayStartMs = Date.parse(dailyDayChunk.startIso)
+    const dayEndMs = Date.parse(dailyDayChunk.endIso)
+
+    const gapStartMs =
+      chunkIndex === 0
+        ? dayStartMs
+        : Math.max(previousDayLastTimestampMs ?? dayStartMs, dayStartMs)
+
+    let previousTimestampMs = gapStartMs
+
+    timedEntries.forEach((currentEntry, index) => {
+      const previousPoolDatum = activePoolDatum
+      const previousOracleDatum = activeOracleDatum
+      const previousPoolEntry = activePoolEntry
+      const previousOracleEntry = activeOracleEntry
+
+      const currentTimestampMs = Date.parse(currentEntry.value.timestamp)
+      const isLastEntry = index === timedEntries.length - 1
+      const intervalStartMs = isLastEntry
+        ? currentTimestampMs
+        : previousTimestampMs
+      const intervalEndMs = isLastEntry ? dayEndMs : currentTimestampMs
+      const intervalStartIso = new Date(intervalStartMs).toISOString()
+      const intervalEndIso = new Date(intervalEndMs).toISOString()
+
+      if (
+        previousPoolDatum &&
+        previousOracleDatum &&
+        previousPoolEntry &&
+        previousOracleEntry
+      ) {
+        currentEntry.usedPoolDatum = previousPoolDatum
+        currentEntry.usedOracleDatum = previousOracleDatum
+        currentEntry.usdValue = djedUSDMarketCap(previousPoolDatum).toNumber()
+        currentEntry.adaValue = djedADAMarketCap(
+          previousPoolDatum,
+          previousOracleDatum,
+        ).toNumber()
+        currentEntry.period = {
+          start: intervalStartIso,
+          end: intervalEndIso,
+        }
+      }
+      let duration = Math.max(0, currentTimestampMs - previousTimestampMs)
+
+      if (index === timedEntries.length - 1) {
+        duration = Math.max(0, dayEndMs - currentTimestampMs)
+      }
+
+      currentEntry.weight = duration
+      previousTimestampMs = currentTimestampMs
+
+      if (currentEntry.key === "pool") {
+        activePoolDatum = currentEntry.value.poolDatum
+        activePoolEntry = currentEntry
+      } else {
+        activeOracleDatum = currentEntry.value.oracleDatum
+        activeOracleEntry = currentEntry
+      }
+    })
+
+    const lastEntry = timedEntries.at(-1)
+    if (lastEntry) {
+      previousDayLastTimestampMs = Date.parse(lastEntry.value.timestamp)
+    }
+
+    return {
+      ...dailyDayChunk,
+      entries: timedEntries,
+    }
+  })
+
+  return returnArr
+}
+
+/**
+ * Reduces each day’s weighted entries into a single average market cap
+ * entry, skipping days with no coverage and keeping metadata such as the
+ * block hash/slot from the last entry.
+ * @param dailyChunks the weighted daily chunks that include time coverage
+ * @returns the averaged daily market cap rows that are persisted
+ */
+export const getTimeWeightedDailyDjedMC = (
+  dailyChunks: DailyDjedMarketCapUTxOsWithWeights[],
+): DjedMarketCap[] => {
+  const dailyReserveRatios: DjedMarketCap[] = []
+
+  for (const chunk of dailyChunks) {
+    let weightedUSDSumNumber = 0
+    let weightedADASumNumber = 0
+    let durationSum = 0n
+
+    for (const entry of chunk.entries) {
+      if (
+        entry.weight <= 0 ||
+        entry.usdValue === undefined ||
+        entry.adaValue === undefined
+      )
+        continue
+      const duration = BigInt(entry.weight)
+      durationSum += duration
+      weightedUSDSumNumber += entry.usdValue * Number(duration)
+      weightedADASumNumber += entry.adaValue * Number(duration)
+    }
+
+    if (durationSum === 0n) continue
+
+    const averageUSDValue = weightedUSDSumNumber / MS_PER_DAY
+    const averageADAValue = weightedADASumNumber / MS_PER_DAY
+
+    const latestEntry = chunk.entries.at(-1)
+    if (!latestEntry) continue
+
+    dailyReserveRatios.push({
+      timestamp: toISODate(new Date(latestEntry.value.timestamp)),
+      usdValue: averageUSDValue,
+      adaValue: averageADAValue,
+      block: latestEntry.value.block_hash,
+      slot: latestEntry.value.block_slot,
+    })
+  }
+
+  return dailyReserveRatios
+}
+
+export async function processDjedMarketCap(
+  everyPoolTx: Transaction[],
+  everyOracleTx: Transaction[],
+) {
+  const orderedTxOs = await processPoolOracleTxs(everyPoolTx, everyOracleTx)
+  if (!orderedTxOs) return
+
+  const dailyTxOs = breakIntoDays(orderedTxOs)
+  const weightedDailyTxOs = assignTimeWeightsToDailyDjedMCUTxOs(dailyTxOs)
+  const dailyDjedMC = getTimeWeightedDailyDjedMC(weightedDailyTxOs)
+
+  if (dailyDjedMC.length === 0) {
+    logger.warn("No daily DJED market caps computed")
+  } else {
+    logger.info({ dailyDjedMC }, "Daily DJED market caps")
+  }
+
+  logger.info("Processing DJED market cap data...")
+
+  // if the current day was processed remove it, as the data is incomplete and should not be recorded
+  dailyDjedMC.sort((a, b) => {
+    return new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+  })
+  if (
+    dailyDjedMC[dailyDjedMC.length - 1]?.timestamp ===
+    new Date().toISOString().split("T")[0]
+  ) {
+    dailyDjedMC.pop()
+  }
+
+  logger.info(`Inserting ${dailyDjedMC.length} reserve ratio into database...`)
+  // insert into db
+  logger.info(
+    `Historic reserve ratio sync complete. Inserted ${dailyDjedMC.length} reserve ratios`,
   )
 }

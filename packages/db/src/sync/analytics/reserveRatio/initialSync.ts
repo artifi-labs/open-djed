@@ -2,7 +2,7 @@ import { logger } from "../../../utils/logger"
 import {
   registry,
   getEveryResultFromPaginatedEndpoint,
-  processReserveRatioTxs,
+  processReserveRatio,
 } from "../../utils"
 
 export const populateDbWithHistoricReserveRatio = async () => {
@@ -15,7 +15,7 @@ export const populateDbWithHistoricReserveRatio = async () => {
     `/assets/${registry.oracleAssetId}/transactions`,
   ) //txs from oracle
 
-  await processReserveRatioTxs(everyPoolTx, everyOracleTx)
+  await processReserveRatio(everyPoolTx, everyOracleTx)
 
   const end = Date.now() - start
   logger.info(`Time sec: ${(end / 1000).toFixed(2)}`)

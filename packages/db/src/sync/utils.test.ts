@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest"
 import { type DailyUTxOs } from "./types" // adjust path as needed
 import type { OracleDatum, PoolDatum } from "@open-djed/data"
 import {
-  assignTimeWeightsToDailyUTxOs,
+  assignTimeWeightsToReserveRatioDailyUTxOs,
   getTimeWeightedDailyReserveRatio,
 } from "./utils"
 
@@ -106,7 +106,7 @@ describe("assignTimeWeightsToDailyUTxOs", () => {
       },
     ]
 
-    const result = assignTimeWeightsToDailyUTxOs(dailyChunks)
+    const result = assignTimeWeightsToReserveRatioDailyUTxOs(dailyChunks)
 
     expect(result).toHaveLength(1)
     expect(result[0].entries).toHaveLength(2)
@@ -165,7 +165,7 @@ describe("assignTimeWeightsToDailyUTxOs", () => {
       },
     ]
 
-    const result = assignTimeWeightsToDailyUTxOs(dailyChunks)
+    const result = assignTimeWeightsToReserveRatioDailyUTxOs(dailyChunks)
 
     expect(result).toHaveLength(2)
 
@@ -184,7 +184,7 @@ describe("assignTimeWeightsToDailyUTxOs", () => {
       },
     ]
 
-    const result = assignTimeWeightsToDailyUTxOs(dailyChunks)
+    const result = assignTimeWeightsToReserveRatioDailyUTxOs(dailyChunks)
 
     expect(result).toHaveLength(1)
     expect(result[0].entries).toHaveLength(0)
@@ -210,7 +210,7 @@ describe("assignTimeWeightsToDailyUTxOs", () => {
       },
     ]
 
-    const result = assignTimeWeightsToDailyUTxOs(dailyChunks)
+    const result = assignTimeWeightsToReserveRatioDailyUTxOs(dailyChunks)
 
     expect(result).toHaveLength(1)
     expect(result[0].entries).toHaveLength(1)
@@ -259,7 +259,7 @@ describe("assignTimeWeightsToDailyUTxOs", () => {
       },
     ]
 
-    const result = assignTimeWeightsToDailyUTxOs(dailyChunks)
+    const result = assignTimeWeightsToReserveRatioDailyUTxOs(dailyChunks)
 
     // Third entry should have period set
     expect(result[0].entries[2]).toHaveProperty("period")

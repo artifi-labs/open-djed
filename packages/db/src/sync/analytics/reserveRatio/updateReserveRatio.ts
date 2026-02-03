@@ -5,7 +5,7 @@ import { populateDbWithHistoricReserveRatio } from "./initialSync"
 import { getLatestReserveRatio } from "../../../client/reserveRatio"
 import {
   getAssetTxsUpUntilSpecifiedTime,
-  processReserveRatioTxs,
+  processReserveRatio,
   registry,
 } from "../../utils"
 
@@ -20,7 +20,7 @@ async function updateReserveRatio(timestamp: string) {
     timestamp,
   )
 
-  await processReserveRatioTxs(newPoolTxs, newOracleTxs)
+  await processReserveRatio(newPoolTxs, newOracleTxs)
 
   const end = Date.now() - start
   logger.info(`Time sec: ${(end / 1000).toFixed(2)}`)
