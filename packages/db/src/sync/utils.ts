@@ -489,7 +489,6 @@ const MS_PER_DAY = 24 * 60 * 60 * 1000
  * @param entries the list of reserve entries generated from pool/oracle UTxOs
  * @returns per-day buckets with start/end ISO timestamps and sorted entries
  */
-//TODO: remove start and end data after confirm datums logic
 export const breakIntoDays = (entries: ReserveEntries[]): DailyUTxOs[] => {
   const buckets = new Map<string, ReserveEntries[]>()
   for (const entry of entries) {
@@ -521,7 +520,6 @@ export const breakIntoDays = (entries: ReserveEntries[]): DailyUTxOs[] => {
  * @param dailyChunks grouped entries per day emitted from `breakIntoDays`
  * @returns the same chunks enriched with weight, ratio, and datum references
  */
-//TODO: remove unnecessary code after confirm datums logic
 export const assignTimeWeightsToDailyUTxOs = (
   dailyChunks: DailyUTxOs[],
 ): DailyUTxOsWithWeights[] => {
