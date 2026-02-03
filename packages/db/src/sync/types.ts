@@ -212,7 +212,7 @@ export type OracleUTxoWithDatumAndTimestamp = {
   block_slot: number
 }
 
-export type ReserveEntries =
+export type OrderedPoolOracleTxOs =
   | {
       key: "pool"
       value: PoolUTxoWithDatumAndTimestamp
@@ -229,14 +229,23 @@ export type ReserveRatio = {
   slot: number
 }
 
+export type DjedMarketCap = {
+  timestamp: string
+  usdValue: number
+  adaValue: number
+  block: string
+  slot: number
+}
+
 export type DailyUTxOs = {
   day: string
   startIso: string
   endIso: string
-  entries: ReserveEntries[]
+  entries: OrderedPoolOracleTxOs[]
 }
+
 //TODO: to be deleted after confirm datum logic
-export type WeightedReserveEntry = ReserveEntries & {
+export type WeightedReserveEntry = OrderedPoolOracleTxOs & {
   weight: number
   ratio?: number
   period?: {
@@ -247,6 +256,22 @@ export type WeightedReserveEntry = ReserveEntries & {
   usedOracleDatum?: OracleUTxoWithDatumAndTimestamp["oracleDatum"]
 }
 
-export type DailyUTxOsWithWeights = Omit<DailyUTxOs, "entries"> & {
+export type DailyReserveRatioUTxOsWithWeights = Omit<DailyUTxOs, "entries"> & {
   entries: WeightedReserveEntry[]
+}
+
+export type WeightedDjedMarketCapEntry = OrderedPoolOracleTxOs & {
+  weight: number
+  usdValue?: number
+  adaValue?: number
+  period?: {
+    start: string
+    end: string
+  }
+  usedPoolDatum?: PoolUTxoWithDatumAndTimestamp["poolDatum"]
+  usedOracleDatum?: OracleUTxoWithDatumAndTimestamp["oracleDatum"]
+}
+
+export type DailyDjedMarketCapUTxOsWithWeights = Omit<DailyUTxOs, "entries"> & {
+  entries: WeightedDjedMarketCapEntry[]
 }
