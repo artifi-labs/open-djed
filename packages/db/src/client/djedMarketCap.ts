@@ -1,10 +1,9 @@
 import { prisma } from "../../lib/prisma"
-import type { DjedMarketCap } from "../sync/types"
 import { type Period, getStartIso } from "../sync/utils"
 
 export const getPeriodDjedMC = async (
   period: Period,
-): Promise<DjedMarketCap[]> => {
+) => {
   const startIso = getStartIso(period)
 
   const rows = await prisma.marketCap.findMany({
@@ -15,7 +14,7 @@ export const getPeriodDjedMC = async (
   })
 
   return rows.map((row) => ({
-    timestamp: row.timestamp,
+    timestamp: row.timestamp.toISOString().slice(0, 10),
     usdValue: row.usdValue,
     adaValue: row.adaValue,
     block: row.block,
@@ -25,7 +24,7 @@ export const getPeriodDjedMC = async (
 }
 
 export const getLatestDjedMC = async () => {
-  return await prisma.marketCap.findFirst({
+  const entry = await prisma.marketCap.findFirst({
     orderBy: {
       timestamp: "desc",
     },
@@ -33,6 +32,14 @@ export const getLatestDjedMC = async () => {
       token: "DJED",
     },
   })
+
+  return entry ? {
+    timestamp: entry.timestamp.toISOString().slice(0, 10),
+    usdValue: entry.usdValue,
+    adaValue: entry.adaValue,
+    block: entry.block,
+    slot: Number(entry.slot),
+  } : undefined
 }
 
 export const deleteAllDjedMC = async () => {

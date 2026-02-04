@@ -719,27 +719,27 @@ export async function processPoolOracleTxs(
 }
 
 export type Period = "D" | "W" | "M" | "1Y" | "All"
-export const getStartIso = (period: Period): string | undefined => {
+export const getStartIso = (period: Period) => {
   const today = new Date()
   today.setHours(0, 0, 0, 0)
 
   switch (period) {
     case "D":
-      return today.toISOString().slice(0, 10)
+      return today
     case "W": {
       const start = new Date(today)
       start.setDate(start.getDate() - 6)
-      return start.toISOString().slice(0, 10)
+      return start
     }
     case "M": {
       const start = new Date(today)
       start.setDate(start.getDate() - 29)
-      return start.toISOString().slice(0, 10)
+      return start
     }
     case "1Y": {
       const start = new Date(today)
       start.setUTCFullYear(start.getUTCFullYear() - 1)
-      return start.toISOString().slice(0, 10)
+      return start
     }
     case "All":
       return undefined

@@ -1,10 +1,9 @@
 import { prisma } from "../../lib/prisma"
-import type { ReserveRatio } from "../sync/types"
 import { type Period, getStartIso } from "../sync/utils"
 
 export const getPeriodReserveRatio = async (
   period: Period,
-): Promise<ReserveRatio[]> => {
+) => {
   const startIso = getStartIso(period)
 
   const rows = await prisma.reserveRatio.findMany({
@@ -13,7 +12,7 @@ export const getPeriodReserveRatio = async (
   })
 
   return rows.map((row) => ({
-    timestamp: row.timestamp,
+    timestamp: row.timestamp.toISOString().slice(0, 10),
     reserveRatio: Number(row.reserveRatio),
     block: row.block,
     slot: Number(row.slot),
@@ -27,7 +26,12 @@ export const getLatestReserveRatio = async () => {
     },
   })
 
-  return latestReserveRatio
+  return latestReserveRatio ? {
+    timestamp: latestReserveRatio.timestamp.toISOString().slice(0, 10),
+    reserveRatio: Number(latestReserveRatio.reserveRatio),
+    block: latestReserveRatio.block,
+    slot: Number(latestReserveRatio.slot),
+  } : undefined
 }
 
 export const deleteAllReserveRatios = async () => {
