@@ -11,13 +11,8 @@ import type {
   ReserveRatio,
   WeightedReserveEntry,
 } from "../../types"
-import {
-  breakIntoDays,
-  getAssetTxsUpUntilSpecifiedTime,
-  registry,
-  processPoolOracleTxs,
-  MS_PER_DAY,
-} from "../../utils"
+import { breakIntoDays, MS_PER_DAY } from "../../utils"
+import { handleAnalyticsUpdates } from "../updateAnalytics"
 
 /**
  * Assigns a millisecond-based weight to every UTxO by tracking the interval
@@ -205,34 +200,8 @@ export async function updateReserveRatios() {
   const latestReserveRatio = await getLatestReserveRatio()
   if (!latestReserveRatio) return
 
-  // we only want to run the update once every 24h,
-  // in order to get the data relative to the lates full day
-  const yesterday = new Date()
-  yesterday.setDate(yesterday.getDate() - 1)
-  const yesterdayStr = yesterday.toISOString().split("T")[0]
-  if (!yesterdayStr) return
-  const timestampStr = latestReserveRatio.timestamp.toISOString().split("T")[0]
-  if (!timestampStr) return
-
-  if (timestampStr >= yesterdayStr) {
-    // return if latest was less than 24h ago
-    logger.info(
-      "=== Latest reserve ratio is less than 24h old, skipping update ===",
-    )
-    return
-  }
-
-  const newPoolTxs = await getAssetTxsUpUntilSpecifiedTime(
-    registry.poolAssetId,
-    timestampStr,
+  await handleAnalyticsUpdates(
+    latestReserveRatio.timestamp,
+    processReserveRatio,
   )
-  const newOracleTxs = await getAssetTxsUpUntilSpecifiedTime(
-    registry.oracleAssetId,
-    timestampStr,
-  )
-
-  const orderedTxOs = await processPoolOracleTxs(newPoolTxs, newOracleTxs)
-  if (!orderedTxOs) return
-
-  await processReserveRatio(orderedTxOs)
 }

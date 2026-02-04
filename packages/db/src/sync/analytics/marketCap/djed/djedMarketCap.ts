@@ -14,6 +14,8 @@ import type {
   WeightedDjedMarketCapEntry,
 } from "../../../types"
 import { breakIntoDays, MS_PER_DAY } from "../../../utils"
+import { getLatestDjedMC } from "../../../../client/djedMarketCap"
+import { handleAnalyticsUpdates } from "../../updateAnalytics"
 
 /**
  * Assigns a millisecond-based weight to every UTxO by tracking the interval
@@ -207,4 +209,9 @@ export async function processDjedMarketCap(
   )
 }
 
-export async function updateDjedMC() {}
+export async function updateDjedMC() {
+  const latestDjedMC = await getLatestDjedMC()
+  if (!latestDjedMC) return
+
+  await handleAnalyticsUpdates(latestDjedMC.timestamp, processDjedMarketCap)
+}

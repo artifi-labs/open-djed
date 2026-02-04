@@ -2,6 +2,7 @@ import { prisma } from "../../../lib/prisma"
 import { logger } from "../../utils/logger"
 import type { OrderedPoolOracleTxOs } from "../types"
 import {
+  getAssetTxsUpUntilSpecifiedTime,
   getEveryResultFromPaginatedEndpoint,
   processPoolOracleTxs,
   registry,
@@ -68,6 +69,42 @@ async function handleUpdateDb(toUpdate: DbProcessor[]) {
       .filter((config) => !config.isEmpty)
       .map((config) => config.updateDbProcessor()),
   )
+}
+
+export async function handleAnalyticsUpdates(
+  timestamp: Date,
+  processor: (orderedTxOs: OrderedPoolOracleTxOs[]) => Promise<void>,
+) {
+  // we only want to run the update once every 24h,
+  // in order to get the data relative to the lates full day
+  const yesterday = new Date()
+  yesterday.setDate(yesterday.getDate() - 1)
+  const yesterdayStr = yesterday.toISOString().split("T")[0]
+  if (!yesterdayStr) return
+  const timestampStr = timestamp.toISOString().split("T")[0]
+  if (!timestampStr) return
+
+  if (timestampStr >= yesterdayStr) {
+    // return if latest was less than 24h ago
+    logger.info(
+      "=== Latest DJED market cap is less than 24h old, skipping update ===",
+    )
+    return
+  }
+
+  const newPoolTxs = await getAssetTxsUpUntilSpecifiedTime(
+    registry.poolAssetId,
+    timestampStr,
+  )
+  const newOracleTxs = await getAssetTxsUpUntilSpecifiedTime(
+    registry.oracleAssetId,
+    timestampStr,
+  )
+
+  const orderedTxOs = await processPoolOracleTxs(newPoolTxs, newOracleTxs)
+  if (!orderedTxOs) return
+
+  await processor(orderedTxOs)
 }
 
 export async function updateAnalytics() {
