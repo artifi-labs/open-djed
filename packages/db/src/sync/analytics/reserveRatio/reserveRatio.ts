@@ -197,11 +197,17 @@ export async function processReserveRatio(
 }
 
 export async function updateReserveRatios() {
+  const start = Date.now()
+  logger.info(`=== Updating Reserve Ratio ===`)
   const latestReserveRatio = await getLatestReserveRatio()
   if (!latestReserveRatio) return
 
   await handleAnalyticsUpdates(
     latestReserveRatio.timestamp,
     processReserveRatio,
+  )
+  const end = Date.now() - start
+  logger.info(
+    `=== Updating Reserve Ratio took sec: ${(end / 1000).toFixed(2)} ===`,
   )
 }

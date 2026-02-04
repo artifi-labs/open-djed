@@ -210,8 +210,14 @@ export async function processDjedMarketCap(
 }
 
 export async function updateDjedMC() {
+  const start = Date.now()
+  logger.info(`=== Updating DJED Market Cap ===`)
   const latestDjedMC = await getLatestDjedMC()
   if (!latestDjedMC) return
 
   await handleAnalyticsUpdates(latestDjedMC.timestamp, processDjedMarketCap)
+  const end = Date.now() - start
+  logger.info(
+    `=== Updating DJED Market Cap took sec: ${(end / 1000).toFixed(2)} ===`,
+  )
 }
