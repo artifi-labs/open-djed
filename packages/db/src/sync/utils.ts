@@ -404,7 +404,7 @@ export async function getEveryResultFromPaginatedEndpoint(endpoint: string) {
   logger.info("Fetching all transactions...")
   const everyOrderTx: Transaction[] = []
   let txPage = 1
-  while (txPage < 11) {
+  while (true) {
     try {
       logger.debug(`Fetching transaction page ${txPage}...`)
       const pageResult = (await blockfrostFetch(

@@ -168,7 +168,7 @@ export async function processReserveRatio(
     logger.info({ dailyRatios }, "Daily reserve ratios")
   }
 
-  logger.info("Processing order data...")
+  logger.info("Processing reserve ratio data...")
 
   // if the current day was processed remove it, as the data is incomplete and should not be recorded
   dailyRatios.sort((a, b) => {

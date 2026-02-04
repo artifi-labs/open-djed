@@ -87,7 +87,7 @@ export async function handleAnalyticsUpdates(
   if (timestampStr >= yesterdayStr) {
     // return if latest was less than 24h ago
     logger.info(
-      "=== Latest DJED market cap is less than 24h old, skipping update ===",
+      `=== Latest ${processor.name} is less than 24h old, skipping update ===`,
     )
     return
   }

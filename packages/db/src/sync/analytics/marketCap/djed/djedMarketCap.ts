@@ -195,13 +195,13 @@ export async function processDjedMarketCap(
     dailyDjedMC.pop()
   }
 
-  logger.info(`Inserting ${dailyDjedMC.length} reserve ratio into database...`)
+  logger.info(`Inserting ${dailyDjedMC.length} DJED market cap entries into database...`)
   await prisma.marketCap.createMany({
     data: dailyDjedMC,
     skipDuplicates: true,
   })
   logger.info(
-    `Historic reserve ratio sync complete. Inserted ${dailyDjedMC.length} reserve ratios`,
+    `Historic DJED market cap sync complete. Inserted ${dailyDjedMC.length} DJED market cap entries`,
   )
   const end = Date.now() - start
   logger.info(
