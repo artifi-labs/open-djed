@@ -43,7 +43,11 @@ import {
   ValidationError,
 } from "./errors"
 import JSONbig from "json-bigint"
-import { getOrdersByAddressKeys, getPeriodReserveRatio } from "@open-djed/db"
+import {
+  getOrdersByAddressKeys,
+  getPeriodDjedMC,
+  getPeriodReserveRatio,
+} from "@open-djed/db"
 import type { Order } from "@open-djed/db"
 import type { Period } from "@open-djed/db/src/sync/utils"
 export type { Order } from "@open-djed/db"
@@ -739,6 +743,86 @@ const app = new Hono()
           value: ratio.reserveRatio * 100,
         }))
         return c.json(historicalData)
+      } catch (err) {
+        if (err instanceof AppError) {
+          throw err
+        }
+        console.error("Unhandled error in orders endpoint:", err)
+        throw new InternalServerError()
+      }
+    },
+  )
+  .get(
+    "/historical-djed-market-cap",
+    cacheMiddleware,
+    describeRoute({
+      description: "Get the historical djed market cap",
+      tags: ["Action"],
+      responses: {
+        200: {
+          description: "Successfully got the historical djed market cap",
+          content: {
+            "text/plain": {
+              example: "djed market cap",
+            },
+          },
+        },
+        400: {
+          description: "Bad Request",
+          content: {
+            "text/plain": {
+              example: "Bad Request",
+            },
+          },
+        },
+        500: {
+          description: "Internal Server Error",
+          content: {
+            "text/plain": {
+              example: "Internal Server Error",
+            },
+          },
+        },
+      },
+    }),
+    zValidator(
+      "query",
+      z.object({
+        period: z.enum([
+          "D",
+          "W",
+          "M",
+          "1Y",
+          "All",
+          "d",
+          "w",
+          "m",
+          "1y",
+          "all",
+        ]),
+      }),
+    ),
+    async (c) => {
+      let param
+      try {
+        param = c.req.valid("query")
+        if (!param?.period) {
+          throw new ValidationError("Missing period in request.")
+        }
+      } catch (e) {
+        console.error("Invalid or missing request payload.", e)
+        throw new ValidationError("Invalid or missing request payload.")
+      }
+      try {
+        const djedMarketCaps = await getPeriodDjedMC(
+          param.period.toUpperCase() as Period,
+        )
+        const historicalData = djedMarketCaps.map((ratio) => ({
+          name: ratio.timestamp,
+          adaValue: Number(ratio.adaValue) / 1e6,
+          usdValue: Number(ratio.usdValue) / 1e6,
+        }))
+        return new Response(JSONbig.stringify(historicalData))
       } catch (err) {
         if (err instanceof AppError) {
           throw err
