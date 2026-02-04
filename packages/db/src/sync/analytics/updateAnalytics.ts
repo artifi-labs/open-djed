@@ -30,6 +30,7 @@ async function handleRollbacks() {
 // with this we can reuse the same data for every analytics process
 // saving hundreds of thousands of requests
 async function handlePopulateDb(toUpdate: DbProcessor[]) {
+  if (toUpdate.every((item) => !item.isEmpty)) return
   const start = Date.now()
   logger.info("=== Populating Database ===")
   const everyPoolTx = await getEveryResultFromPaginatedEndpoint(
