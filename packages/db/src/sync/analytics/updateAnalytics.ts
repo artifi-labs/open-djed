@@ -10,6 +10,7 @@ import {
   processDjedMarketCap,
   updateDjedMC,
 } from "./marketCap/djed/djedMarketCap"
+import { rollbackDjedMC } from "./marketCap/djed/rollbackDjedMC"
 import {
   processReserveRatio,
   updateReserveRatios,
@@ -23,7 +24,7 @@ type DbProcessor = {
 }
 
 async function handleRollbacks() {
-  await rollbackReserveRatios()
+  await Promise.all([rollbackReserveRatios(), rollbackDjedMC()])
 }
 
 // with this we can reuse the same data for every analytics process
