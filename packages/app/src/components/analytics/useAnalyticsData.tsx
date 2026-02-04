@@ -27,14 +27,13 @@ export function useAnalyticsData() {
     async (period: ReserveRatioChartPeriod) => {
       setIsLoadingReserve(true)
       try {
-        const res = await client.api["historical-reserve-ratio"][
-          ":period"
-        ].$get({
-          param: { period },
+        const res = await client.api["historical-reserve-ratio"].$get({
+          query: { period },
         })
 
         if (res.ok) {
           const historicalData = await res.json()
+          console.log("Fetched historical reserve ratio data:", historicalData)
 
           if (reserveRatio !== undefined) {
             const todayKey = new Date().toISOString().slice(0, 10)

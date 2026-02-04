@@ -45,6 +45,7 @@ import {
 import JSONbig from "json-bigint"
 import { getOrdersByAddressKeys, getPeriodReserveRatio } from "@open-djed/db"
 import type { Order } from "@open-djed/db"
+import type { Period } from "@open-djed/db/src/sync/utils"
 export type { Order } from "@open-djed/db"
 
 //NOTE: We only need this cache for transactions, not for other requests. Using this for `protocol-data` sligltly increases the response time.
@@ -669,7 +670,7 @@ const app = new Hono()
     },
   )
   .get(
-    "/historical-reserve-ratio/:period",
+    "/historical-reserve-ratio",
     cacheMiddleware,
     describeRoute({
       description: "Get the historical reserve ratio",
@@ -702,15 +703,26 @@ const app = new Hono()
       },
     }),
     zValidator(
-      "param",
+      "query",
       z.object({
-        period: z.enum(["D", "W", "M", "1Y", "All"]),
+        period: z.enum([
+          "D",
+          "W",
+          "M",
+          "1Y",
+          "All",
+          "d",
+          "w",
+          "m",
+          "1y",
+          "all",
+        ]),
       }),
     ),
     async (c) => {
       let param
       try {
-        param = c.req.valid("param")
+        param = c.req.valid("query")
         if (!param?.period) {
           throw new ValidationError("Missing period in request.")
         }
@@ -719,9 +731,11 @@ const app = new Hono()
         throw new ValidationError("Invalid or missing request payload.")
       }
       try {
-        const reserveRatios = await getPeriodReserveRatio(param.period)
+        const reserveRatios = await getPeriodReserveRatio(
+          param.period.toUpperCase() as Period,
+        )
         const historicalData = reserveRatios.map((ratio) => ({
-          name: ratio.timestamp.slice(0, 10),
+          name: ratio.timestamp,
           value: ratio.reserveRatio * 100,
         }))
         return c.json(historicalData)
