@@ -2,7 +2,6 @@ import {
   djedUSDMarketCap,
   djedADAMarketCap,
 } from "@open-djed/math/src/market-cap"
-import { toISODate } from "../../../../../../app/src/lib/utils"
 import { prisma } from "../../../../../lib/prisma"
 import { logger } from "../../../../utils/logger"
 import type {
@@ -154,7 +153,7 @@ export const getTimeWeightedDailyDjedMC = (
     if (!latestEntry) continue
 
     dailyReserveRatios.push({
-      timestamp: toISODate(new Date(latestEntry.value.timestamp)),
+      timestamp: new Date(latestEntry.value.timestamp),
       usdValue: averageUSDValue,
       adaValue: averageADAValue,
       block: latestEntry.value.block_hash,

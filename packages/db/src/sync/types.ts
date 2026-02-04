@@ -223,14 +223,14 @@ export type OrderedPoolOracleTxOs =
     }
 
 export type ReserveRatio = {
-  timestamp: string
+  timestamp: Date
   reserveRatio: number
   block: string
   slot: number
 }
 
 export type DjedMarketCap = {
-  timestamp: string
+  timestamp: Date
   usdValue: bigint
   adaValue: bigint
   block: string

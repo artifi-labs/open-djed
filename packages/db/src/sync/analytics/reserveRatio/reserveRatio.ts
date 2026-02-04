@@ -1,5 +1,4 @@
 import { reserveRatio } from "@open-djed/math"
-import { toISODate } from "../../../../../app/src/lib/utils"
 import { prisma } from "../../../../lib/prisma"
 import { getLatestReserveRatio } from "../../../client/reserveRatio"
 import { logger } from "../../../utils/logger"
@@ -148,7 +147,7 @@ export const getTimeWeightedDailyReserveRatio = (
     if (!latestEntry) continue
 
     dailyReserveRatios.push({
-      timestamp: toISODate(new Date(latestEntry.value.timestamp)),
+      timestamp: new Date(latestEntry.value.timestamp),
       reserveRatio: averageRatio,
       block: latestEntry.value.block_hash,
       slot: latestEntry.value.block_slot,
@@ -212,8 +211,10 @@ export async function updateReserveRatios() {
   yesterday.setDate(yesterday.getDate() - 1)
   const yesterdayStr = yesterday.toISOString().split("T")[0]
   if (!yesterdayStr) return
+  const timestampStr = latestReserveRatio.timestamp.toISOString().split("T")[0]
+  if (!timestampStr) return
 
-  if (latestReserveRatio.timestamp >= yesterdayStr) {
+  if (timestampStr >= yesterdayStr) {
     // return if latest was less than 24h ago
     logger.info(
       "=== Latest reserve ratio is less than 24h old, skipping update ===",
@@ -223,11 +224,11 @@ export async function updateReserveRatios() {
 
   const newPoolTxs = await getAssetTxsUpUntilSpecifiedTime(
     registry.poolAssetId,
-    latestReserveRatio.timestamp,
+    timestampStr,
   )
   const newOracleTxs = await getAssetTxsUpUntilSpecifiedTime(
     registry.oracleAssetId,
-    latestReserveRatio.timestamp,
+    timestampStr,
   )
 
   const orderedTxOs = await processPoolOracleTxs(newPoolTxs, newOracleTxs)
