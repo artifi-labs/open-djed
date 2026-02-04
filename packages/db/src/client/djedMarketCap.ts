@@ -1,9 +1,7 @@
 import { prisma } from "../../lib/prisma"
 import { type Period, getStartIso } from "../sync/utils"
 
-export const getPeriodDjedMC = async (
-  period: Period,
-) => {
+export const getPeriodDjedMC = async (period: Period) => {
   const startIso = getStartIso(period)
 
   const rows = await prisma.marketCap.findMany({
@@ -33,13 +31,15 @@ export const getLatestDjedMC = async () => {
     },
   })
 
-  return entry ? {
-    timestamp: entry.timestamp.toISOString().slice(0, 10),
-    usdValue: entry.usdValue,
-    adaValue: entry.adaValue,
-    block: entry.block,
-    slot: Number(entry.slot),
-  } : undefined
+  return entry
+    ? {
+        timestamp: entry.timestamp.toISOString().slice(0, 10),
+        usdValue: entry.usdValue,
+        adaValue: entry.adaValue,
+        block: entry.block,
+        slot: Number(entry.slot),
+      }
+    : undefined
 }
 
 export const deleteAllDjedMC = async () => {

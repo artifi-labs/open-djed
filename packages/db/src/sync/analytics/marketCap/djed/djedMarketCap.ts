@@ -195,7 +195,9 @@ export async function processDjedMarketCap(
     dailyDjedMC.pop()
   }
 
-  logger.info(`Inserting ${dailyDjedMC.length} DJED market cap entries into database...`)
+  logger.info(
+    `Inserting ${dailyDjedMC.length} DJED market cap entries into database...`,
+  )
   await prisma.marketCap.createMany({
     data: dailyDjedMC,
     skipDuplicates: true,
