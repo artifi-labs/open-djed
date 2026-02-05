@@ -1,7 +1,6 @@
 "use client"
 
-import React, { useMemo } from "react"
-import { MultiAreaChart } from "./MultiAreaChart"
+import React, { useMemo, useState } from "react"
 import type { CreditEntry } from "@/lib/staking"
 import {
   aggregateByBucket,
@@ -10,6 +9,11 @@ import {
 } from "@/utils/timeseries"
 import { useTimeInterval } from "@/lib/utils"
 import { useViewport } from "@/hooks/useViewport"
+import { LineChart } from "@/components/charts/line-chart/LineChart"
+import { Legend, Line, Tooltip } from "recharts"
+import { ChartLegend } from "@/components/charts/legend/ChartLegend"
+import { dateFormatter, yTickFormatter } from "@/components/charts/utils"
+import { ChartTooltip } from "@/components/charts/tooltips/ChartTooltip"
 
 type ShenYieldChartProps = {
   buyDate: string
@@ -42,6 +46,15 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
   const aggregations: AggregationConfig = {
     adaPnlUsd: ["avg"],
     shenPnlUsd: ["avg"],
+  }
+
+  const [hiddenLines, setHiddenLines] = useState<Record<string, boolean>>({})
+
+  const toggleLine = (dataKey: string) => {
+    setHiddenLines((prev) => ({
+      ...prev,
+      [dataKey]: !prev[dataKey],
+    }))
   }
 
   const { results, xAxisFormater } = useMemo(() => {
@@ -201,78 +214,54 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({
     usdAmount,
   ])
 
-  const areas = [
+  const lines = [
     {
       dataKey: "shenPnlUsd_avg",
       name: "SHEN PNL",
-      tooltipLabel: "SHEN PNL",
-      strokeColor: `var(--color-accent-3)`,
-      fillColor: "transparent",
-      fillOpacity: 0,
-      strokeWidth: 2,
+      stroke: `var(--color-accent-3)`,
+      hide: hiddenLines["shenPnlUsd_avg"],
     },
     {
       dataKey: "adaPnlUsd_avg",
       name: "ADA PNL",
-      tooltipLabel: "ADA PNL",
-      strokeColor: `var(--color-accent-1)`,
-      fillColor: "transparent",
-      fillOpacity: 0,
-      strokeWidth: 2,
-      strokeDasharray: "5 5",
+      stroke: `var(--color-accent-1)`,
+      hide: hiddenLines["adaPnlUsd_avg"],
     },
   ]
 
-  const formatSmall = (val: number) => {
-    const rounded = val.toFixed(3)
-    return rounded.replace(/\.?0+$/, "")
-  }
-
-  const formatAxisValue = (val: number) => {
-    const sign = val < 0 ? "-" : ""
-    const absVal = Math.abs(val)
-
-    if (absVal === 0) return "0"
-    if (absVal > 0 && absVal < 1) return `${sign}${formatSmall(absVal)}`
-    if (absVal < 1000) return `${sign}${Math.round(absVal)}`
-    if (absVal < 10000) return `${sign}${(absVal / 1000).toFixed(1)}k`
-    if (absVal < 100000) return `${sign}${Math.round(absVal / 1000)}k`
-    if (absVal < 1000000) return `${sign}${Math.round(absVal / 1000)}k`
-    if (absVal < 10000000) return `${sign}${(absVal / 1000000).toFixed(1)}M`
-    if (absVal < 1000000000) return `${sign}${Math.round(absVal / 1000000)}M`
-
-    const billions = absVal / 1000000000
-    if (absVal < 10000000000) return `${sign}${billions.toFixed(1)}B`
-    return `${sign}${Math.round(billions)}B`
-  }
-
-  // format y-axis ticks as USD
-  const yTickFormatter = (value: number) => `${formatAxisValue(value)}`
-
-  // formats tooltip to show USD PNL
-  const tooltipFormatter = (value: number) => {
-    const safeUsd = Number.isFinite(value) ? value : 0
-    const usdFormatted = safeUsd.toLocaleString(undefined, {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    })
-
-    return `$${usdFormatted}`
-  }
+  console.log("Chart results:", results)
 
   return (
-    <MultiAreaChart
-      title="Profit over time"
-      data={results as DataRow[]}
-      xKey="date"
-      interval={0}
-      areas={areas}
-      tickFormatter={yTickFormatter}
-      xTickFormatter={xAxisFormater}
-      tooltipFormatter={tooltipFormatter}
-      height={304}
-      margin={{ top: 6, right: 12, left: 12, bottom: 6 }}
-      showLegend={true}
-    />
+    <div className="flex flex-col gap-24 font-medium">
+      <p className="text-md text-primary">Profit over time</p>
+      <LineChart
+        data={results}
+        xKey="date"
+        margin={{ top: 22, right: 0, left: 20, bottom: 0 }}
+        yTickFormatter={yTickFormatter}
+        xTickFormatter={xAxisFormater}
+      >
+        <Legend
+          content={
+            <ChartLegend onToggle={toggleLine} hiddenLines={hiddenLines} />
+          }
+          verticalAlign="top"
+          wrapperStyle={{ left: 0, width: "100%", top: 0 }}
+        />
+
+        <Tooltip
+          content={
+            <ChartTooltip
+              tickFormatter={yTickFormatter}
+              labelFormatter={dateFormatter}
+            />
+          }
+        />
+
+        {lines.map((line) => (
+          <Line key={line.dataKey} strokeWidth={2} dot={false} {...line} />
+        ))}
+      </LineChart>
+    </div>
   )
 }
