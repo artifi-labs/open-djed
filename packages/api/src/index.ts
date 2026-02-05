@@ -818,7 +818,7 @@ const app = new Hono()
           param.period.toUpperCase() as Period,
         )
         const historicalData = djedMarketCaps.map((ratio) => ({
-          name: ratio.timestamp,
+          date: ratio.timestamp,
           adaValue: Number(ratio.adaValue) / 1e6,
           usdValue: Number(ratio.usdValue) / 1e6,
         }))

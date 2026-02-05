@@ -80,8 +80,6 @@ export const ReserveRatioOverTimeChart: React.FC<
       } as unknown as DataRow)
     }
 
-    console.log("results: ", results)
-
     return { formattedData: results, xAxisFormatter: formatter }
   }, [data])
 
