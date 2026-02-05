@@ -739,7 +739,7 @@ const app = new Hono()
           param.period.toUpperCase() as Period,
         )
         const historicalData = reserveRatios.map((ratio) => ({
-          name: ratio.timestamp,
+          date: ratio.timestamp,
           value: ratio.reserveRatio * 100,
         }))
         return c.json(historicalData)

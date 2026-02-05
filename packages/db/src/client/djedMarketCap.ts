@@ -12,7 +12,7 @@ export const getPeriodDjedMC = async (period: Period) => {
   })
 
   return rows.map((row) => ({
-    timestamp: row.timestamp.toISOString().slice(0, 10),
+    timestamp: row.timestamp,
     usdValue: row.usdValue,
     adaValue: row.adaValue,
     block: row.block,
@@ -33,7 +33,7 @@ export const getLatestDjedMC = async () => {
 
   return entry
     ? {
-        timestamp: entry.timestamp.toISOString().slice(0, 10),
+        timestamp: entry.timestamp,
         usdValue: entry.usdValue,
         adaValue: entry.adaValue,
         block: entry.block,

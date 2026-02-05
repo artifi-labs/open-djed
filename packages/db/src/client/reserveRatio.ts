@@ -26,7 +26,7 @@ export const getLatestReserveRatio = async () => {
 
   return latestReserveRatio
     ? {
-        timestamp: latestReserveRatio.timestamp.toISOString().slice(0, 10),
+        timestamp: latestReserveRatio.timestamp,
         reserveRatio: Number(latestReserveRatio.reserveRatio),
         block: latestReserveRatio.block,
         slot: Number(latestReserveRatio.slot),
