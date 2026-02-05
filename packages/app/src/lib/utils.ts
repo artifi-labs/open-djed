@@ -352,3 +352,22 @@ export function useTimeInterval(
   const interval = getTimeInterval(totalHours, maxPoints)
   return interval ? interval * hourInMs : undefined
 }
+
+export function getAnalyticsTimeInterval(totalDays: number, isMobile: boolean) {
+  const dayInMs = 24 * 60 * 60 * 1000
+  let newInterval
+  if (totalDays <= 10) {
+    //1 week
+    newInterval = dayInMs
+  } else if (totalDays <= 31) {
+    // 1 month
+    newInterval = isMobile ? 7 * dayInMs : 3 * dayInMs
+  } else if (totalDays <= 365) {
+    // 1 year
+    newInterval = isMobile ? 30 * dayInMs : 60 * dayInMs
+  } else {
+    newInterval = isMobile ? 60 * dayInMs : 90 * dayInMs
+  }
+
+  return newInterval
+}

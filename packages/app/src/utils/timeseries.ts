@@ -130,11 +130,15 @@ export function aggregateByBucket(
   return result
 }
 
+function normalizeDate(date: string): string {
+  return new Date(date).toISOString()
+}
+
 function convertRawToAggregated(
   row: DataRow,
   aggregations: AggregationConfig,
 ): DataRow {
-  const out: DataRow = { date: row.date } as DataRow
+  const out: DataRow = { date: normalizeDate(row.date) } as DataRow
 
   for (const col in aggregations) {
     const value = row[col]

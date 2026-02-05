@@ -5,6 +5,7 @@ import { useViewport } from "@/hooks/useViewport"
 import { aggregateByBucket, type DataRow } from "@/utils/timeseries"
 import { useMemo } from "react"
 import { type ReserveRatioChartEntry } from "../useAnalyticsData"
+import { getAnalyticsTimeInterval } from "@/lib/utils"
 
 type ReserveRatioOverTimeChartProps = {
   title?: string
@@ -48,25 +49,12 @@ export const ReserveRatioOverTimeChart: React.FC<
       return totalDays > 365 * 2 ? displayedYear : month
     }
 
-    const dayInMs = 24 * 60 * 60 * 1000
-    let newInterval
-    if (totalDays <= 7) {
-      //1 week
-      newInterval = dayInMs
-    } else if (totalDays <= 31) {
-      // 1 month
-      newInterval = isMobile ? 7 * dayInMs : 3 * dayInMs
-    } else if (totalDays <= 365) {
-      // 1 year
-      newInterval = isMobile ? 30 * dayInMs : 60 * dayInMs
-    } else {
-      newInterval = isMobile ? 60 * dayInMs : 90 * dayInMs
-    }
+    const newInterval = getAnalyticsTimeInterval(totalDays, isMobile)
 
     const dataRows: DataRow[] = []
     for (let i = 0; i < data.length - 1; i++) {
       dataRows.push({
-        date: new Date(data[i].date).toISOString(),
+        date: data[i].date,
         reserveRatio: data[i].value,
       } as unknown as DataRow)
     }
