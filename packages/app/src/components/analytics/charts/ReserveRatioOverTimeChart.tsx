@@ -39,7 +39,7 @@ export const ReserveRatioOverTimeChart: React.FC<
       if (index === 0) return `${month}, ${displayedYear}`
 
       if (index !== undefined && data[index - 1]) {
-        const prevDate = new Date(data[index - 1].name as string)
+        const prevDate = new Date(data[index - 1].date as string)
         if (year !== prevDate.getFullYear()) {
           return `${month}, ${displayedYear}`
         }
@@ -66,7 +66,7 @@ export const ReserveRatioOverTimeChart: React.FC<
     const dataRows: DataRow[] = []
     for (let i = 0; i < data.length - 1; i++) {
       dataRows.push({
-        date: new Date(data[i].name).toISOString(),
+        date: new Date(data[i].date).toISOString(),
         reserveRatio: data[i].value,
       } as unknown as DataRow)
     }
@@ -74,7 +74,7 @@ export const ReserveRatioOverTimeChart: React.FC<
     const results = aggregateByBucket(
       dataRows,
       newInterval ?? 0,
-      new Date(data[0].name),
+      new Date(data[0].date),
       {
         reserveRatio: ["avg"],
       },
@@ -82,12 +82,12 @@ export const ReserveRatioOverTimeChart: React.FC<
 
     if (totalDays > 365) {
       results[results.length - 1] = {
-        date: new Date(data[data.length - 1].name).toISOString(),
+        date: new Date(data[data.length - 1].date).toISOString(),
         reserveRatio_avg: data[data.length - 1].value,
       } as unknown as DataRow
     } else {
       results.push({
-        date: new Date(data[data.length - 1].name).toISOString(),
+        date: new Date(data[data.length - 1].date).toISOString(),
         reserveRatio_avg: data[data.length - 1].value,
       } as unknown as DataRow)
     }
