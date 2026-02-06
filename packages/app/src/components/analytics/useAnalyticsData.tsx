@@ -7,14 +7,19 @@ import { useReserveDetails } from "@/hooks/useReserveDetails"
 import { AppError } from "@open-djed/api/src/errors"
 import { useCallback, useEffect, useState } from "react"
 
-export type ReserveRatioChartEntry = { date: string; value: number }
+export type ReserveRatioChartEntry = {
+  id: number
+  timestamp: string
+  reserveRatio: number
+}
 export type DjedMChartEntry = {
-  date: string
-  adaValue: number
+  id: number
+  timestamp: string
   usdValue: number
+  adaValue: number
 }
 
-export const CHART_PERIOD_OPTIONS = ["D", "W", "M", "1Y", "All"] as const
+export const CHART_PERIOD_OPTIONS = ["D", "W", "M", "Y", "All"] as const
 export type ChartPeriod = (typeof CHART_PERIOD_OPTIONS)[number]
 
 export function useAnalyticsData() {
@@ -46,13 +51,14 @@ export function useAnalyticsData() {
           const historicalData = (await res.json()) as ReserveRatioChartEntry[]
 
           if (reserveRatio !== undefined) {
-            const todayKey = new Date().toISOString().slice(0, 10)
+            const todayKey = new Date().toISOString()
             historicalData.push({
-              date: todayKey,
-              value: reserveRatio,
+              id: -1,
+              timestamp: todayKey,
+              reserveRatio: reserveRatio,
             })
           }
-
+          console.log("reserve: ", historicalData)
           setReserveRatioData(historicalData)
         }
       } catch (err) {
@@ -89,11 +95,14 @@ export function useAnalyticsData() {
           if (!isLoading) {
             const todayKey = new Date().toISOString()
             historicalData.push({
-              date: todayKey,
+              id: -1,
+              timestamp: todayKey,
               adaValue: Number(data?.protocolData.DJED.marketCap.ADA) / 1e6,
               usdValue: Number(data?.protocolData.DJED.marketCap.USD) / 1e6,
             })
           }
+
+          console.log("djed: ", historicalData)
 
           setDjedMCHistoricalData(historicalData)
         }

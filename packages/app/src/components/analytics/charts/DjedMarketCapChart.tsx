@@ -7,7 +7,7 @@ import { useMemo } from "react"
 type DjedMarketCapChartProps = {
   title?: string
   data: {
-    date: string
+    timestamp: string
     adaValue: number
     usdValue: number
   }[]
@@ -45,7 +45,7 @@ export const DjedMarketCapChart: React.FC<DjedMarketCapChartProps> = ({
       if (index === 0) return `${month}, ${displayedYear}`
 
       if (index !== undefined && data[index - 1]) {
-        const prevDate = new Date(data[index - 1].date as string)
+        const prevDate = new Date(data[index - 1].timestamp as string)
         if (year !== prevDate.getFullYear()) {
           return `${month}, ${displayedYear}`
         }
@@ -59,7 +59,7 @@ export const DjedMarketCapChart: React.FC<DjedMarketCapChartProps> = ({
     const dataRows: DataRow[] = []
     for (let i = 0; i < data.length - 1; i++) {
       dataRows.push({
-        date: data[i].date,
+        date: data[i].timestamp,
         adaValue: data[i].adaValue,
         usdValue: data[i].usdValue,
       } as unknown as DataRow)
@@ -68,7 +68,7 @@ export const DjedMarketCapChart: React.FC<DjedMarketCapChartProps> = ({
     const results = aggregateByBucket(
       dataRows,
       newInterval ?? 0,
-      new Date(data[0].date),
+      new Date(data[0].timestamp),
       {
         adaValue: ["avg"],
         usdValue: ["avg"],

@@ -709,18 +709,7 @@ const app = new Hono()
     zValidator(
       "query",
       z.object({
-        period: z.enum([
-          "D",
-          "W",
-          "M",
-          "1Y",
-          "All",
-          "d",
-          "w",
-          "m",
-          "1y",
-          "all",
-        ]),
+        period: z.enum(["D", "W", "M", "Y", "All", "d", "w", "m", "y", "all"]),
       }),
     ),
     async (c) => {
@@ -738,11 +727,8 @@ const app = new Hono()
         const reserveRatios = await getPeriodReserveRatio(
           param.period.toUpperCase() as Period,
         )
-        const historicalData = reserveRatios.map((ratio) => ({
-          date: ratio.timestamp,
-          value: ratio.reserveRatio,
-        }))
-        return c.json(historicalData)
+        console.log(reserveRatios)
+        return c.json(reserveRatios)
       } catch (err) {
         if (err instanceof AppError) {
           throw err
@@ -788,18 +774,7 @@ const app = new Hono()
     zValidator(
       "query",
       z.object({
-        period: z.enum([
-          "D",
-          "W",
-          "M",
-          "1Y",
-          "All",
-          "d",
-          "w",
-          "m",
-          "1y",
-          "all",
-        ]),
+        period: z.enum(["D", "W", "M", "Y", "All", "d", "w", "m", "y", "all"]),
       }),
     ),
     async (c) => {
@@ -817,12 +792,7 @@ const app = new Hono()
         const djedMarketCaps = await getPeriodDjedMC(
           param.period.toUpperCase() as Period,
         )
-        const historicalData = djedMarketCaps.map((ratio) => ({
-          date: ratio.timestamp,
-          adaValue: Number(ratio.adaValue) / 1e6,
-          usdValue: Number(ratio.usdValue) / 1e6,
-        }))
-        return new Response(JSONbig.stringify(historicalData))
+        return c.json(djedMarketCaps)
       } catch (err) {
         if (err instanceof AppError) {
           throw err

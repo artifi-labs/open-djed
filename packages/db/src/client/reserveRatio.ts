@@ -9,15 +9,13 @@ export const getPeriodReserveRatio = async (period: Period) => {
     {
       id: number
       timestamp: Date
-      block: string
-      slot: bigint
       reserveRatio: number
     }[]
   >`
     SELECT
       id,
       timestamp,
-      ("reserveRatio" * 100)::float AS "reserve_ratio"
+      ("reserveRatio" * 100)::float AS "reserveRatio"
     FROM "ReserveRatio"
     ${startIso ? Prisma.sql`WHERE timestamp >= ${startIso}` : Prisma.empty}
     ORDER BY timestamp ASC

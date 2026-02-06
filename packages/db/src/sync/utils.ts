@@ -709,7 +709,7 @@ export async function processPoolOracleTxs(
   return orderedTxOs
 }
 
-export type Period = "D" | "W" | "M" | "1Y" | "All"
+export type Period = "D" | "W" | "M" | "Y" | "All"
 export const getStartIso = (period: Period) => {
   const today = new Date()
   today.setHours(0, 0, 0, 0)
@@ -727,7 +727,7 @@ export const getStartIso = (period: Period) => {
       start.setDate(start.getDate() - 29)
       return start
     }
-    case "1Y": {
+    case "Y": {
       const start = new Date(today)
       start.setUTCFullYear(start.getUTCFullYear() - 1)
       return start
