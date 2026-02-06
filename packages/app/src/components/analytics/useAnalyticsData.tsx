@@ -58,7 +58,7 @@ export function useAnalyticsData() {
               reserveRatio: reserveRatio,
             })
           }
-          console.log("reserve: ", historicalData)
+
           setReserveRatioData(historicalData)
         }
       } catch (err) {
@@ -101,8 +101,6 @@ export function useAnalyticsData() {
               usdValue: Number(data?.protocolData.DJED.marketCap.USD) / 1e6,
             })
           }
-
-          console.log("djed: ", historicalData)
 
           setDjedMCHistoricalData(historicalData)
         }
