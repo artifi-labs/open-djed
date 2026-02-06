@@ -740,7 +740,7 @@ const app = new Hono()
         )
         const historicalData = reserveRatios.map((ratio) => ({
           date: ratio.timestamp,
-          value: ratio.reserveRatio * 100,
+          value: Number(ratio.reserveRatio) * 100,
         }))
         return c.json(historicalData)
       } catch (err) {
@@ -817,7 +817,6 @@ const app = new Hono()
         const djedMarketCaps = await getPeriodDjedMC(
           param.period.toUpperCase() as Period,
         )
-        console.log("djed: ", djedMarketCaps)
         const historicalData = djedMarketCaps.map((ratio) => ({
           date: ratio.timestamp,
           adaValue: Number(ratio.adaValue) / 1e6,

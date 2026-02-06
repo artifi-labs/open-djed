@@ -10,19 +10,10 @@ export const getPeriodDjedMC = async (period: Period) => {
       : undefined,
     orderBy: { timestamp: "asc" },
   })
-
-  // return rows.map((row) => ({
-  //   timestamp: row.timestamp,
-  //   usdValue: row.usdValue,
-  //   adaValue: row.adaValue,
-  //   block: row.block,
-  //   slot: Number(row.slot),
-  //   token: "DJED",
-  // }))
 }
 
 export const getLatestDjedMC = async () => {
-  const entry = await prisma.marketCap.findFirst({
+  return await prisma.marketCap.findFirst({
     orderBy: {
       timestamp: "desc",
     },
@@ -30,16 +21,6 @@ export const getLatestDjedMC = async () => {
       token: "DJED",
     },
   })
-
-  return entry
-    ? {
-        timestamp: entry.timestamp,
-        usdValue: entry.usdValue,
-        adaValue: entry.adaValue,
-        block: entry.block,
-        slot: Number(entry.slot),
-      }
-    : undefined
 }
 
 export const deleteAllDjedMC = async () => {

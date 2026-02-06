@@ -13,8 +13,15 @@ import type {
   PoolUTxoWithDatumAndTimestamp,
   WeightedDjedMarketCapEntry,
 } from "../../../types"
-import { breakIntoDays, MS_PER_DAY } from "../../../utils"
-import { getLatestDjedMC } from "../../../../client/djedMarketCap"
+import {
+  breakIntoDays,
+  MS_PER_DAY,
+  processAnalyticsDataToInsert,
+} from "../../../utils"
+import {
+  getLatestDjedMC,
+  getPeriodDjedMC,
+} from "../../../../client/djedMarketCap"
 import { handleAnalyticsUpdates } from "../../updateAnalytics"
 
 /**
@@ -178,32 +185,22 @@ export async function processDjedMarketCap(
 
   if (dailyDjedMC.length === 0) {
     logger.warn("No daily DJED market caps computed")
-  } else {
-    logger.info({ dailyDjedMC }, "Daily DJED market caps")
   }
 
   logger.info("Processing DJED market cap data...")
 
-  // if the current day was processed remove it, as the data is incomplete and should not be recorded
-  dailyDjedMC.sort((a, b) => {
-    return new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
-  })
-  if (
-    dailyDjedMC[dailyDjedMC.length - 1]?.timestamp ===
-    new Date().toISOString().split("T")[0]
-  ) {
-    dailyDjedMC.pop()
-  }
+  const existing = await getPeriodDjedMC("W") // week period, bc the update is 24h so we will never repeat more than 2/3 days (extrapolation with old datums)
+  const dataToInsert = processAnalyticsDataToInsert(dailyDjedMC, existing)
 
   logger.info(
-    `Inserting ${dailyDjedMC.length} DJED market cap entries into database...`,
+    `Inserting ${dataToInsert.length} DJED market cap entries into database...`,
   )
   await prisma.marketCap.createMany({
-    data: dailyDjedMC,
+    data: dataToInsert,
     skipDuplicates: true,
   })
   logger.info(
-    `Historic DJED market cap sync complete. Inserted ${dailyDjedMC.length} DJED market cap entries`,
+    `Historic DJED market cap sync complete. Inserted ${dataToInsert.length} DJED market cap entries`,
   )
   const end = Date.now() - start
   logger.info(

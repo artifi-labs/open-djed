@@ -11,8 +11,13 @@ import type {
   ReserveRatio,
   WeightedReserveEntry,
 } from "../../types"
-import { breakIntoDays, MS_PER_DAY } from "../../utils"
+import {
+  breakIntoDays,
+  MS_PER_DAY,
+  processAnalyticsDataToInsert,
+} from "../../utils"
 import { handleAnalyticsUpdates } from "../updateAnalytics"
+import { getPeriodDjedMC } from "../../../client/djedMarketCap"
 
 /**
  * Assigns a millisecond-based weight to every UTxO by tracking the interval
@@ -164,30 +169,20 @@ export async function processReserveRatio(
 
   if (dailyRatios.length === 0) {
     logger.warn("No daily reserve ratios computed")
-  } else {
-    logger.info({ dailyRatios }, "Daily reserve ratios")
   }
 
   logger.info("Processing reserve ratio data...")
 
-  // if the current day was processed remove it, as the data is incomplete and should not be recorded
-  dailyRatios.sort((a, b) => {
-    return new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
-  })
-  if (
-    dailyRatios[dailyRatios.length - 1]?.timestamp ===
-    new Date().toISOString().split("T")[0]
-  ) {
-    dailyRatios.pop()
-  }
+  const existing = await getPeriodDjedMC("W") // week period, bc the update is 24h so we will never repeat more than 2/3 days (extrapolation with old datums)
+  const dataToInsert = processAnalyticsDataToInsert(dailyRatios, existing)
 
-  logger.info(`Inserting ${dailyRatios.length} reserve ratio into database...`)
+  logger.info(`Inserting ${dataToInsert.length} reserve ratio into database...`)
   await prisma.reserveRatio.createMany({
-    data: dailyRatios,
+    data: dataToInsert,
     skipDuplicates: true,
   })
   logger.info(
-    `Historic reserve ratio sync complete. Inserted ${dailyRatios.length} reserve ratios`,
+    `Historic reserve ratio sync complete. Inserted ${dataToInsert.length} reserve ratios`,
   )
 
   const end = Date.now() - start

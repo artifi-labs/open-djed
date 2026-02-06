@@ -443,18 +443,15 @@ export async function getAssetTxsUpUntilSpecifiedTime(
         `/assets/${assetId}/transactions?page=${txPage}&count=100&order=desc`,
       )) as Transaction[]
 
-      everyOrderTx.push(...pageResult)
+      if (!Array.isArray(pageResult) || pageResult.length === 0) break
 
-      const hasExceededSpecifiedTime = pageResult.find(
-        (item) => item.block_time < specifiedTime,
-      )
+      const validTxs = pageResult.filter((tx) => tx.block_time >= specifiedTime)
 
-      if (
-        !Array.isArray(pageResult) ||
-        pageResult.length === 0 ||
-        hasExceededSpecifiedTime
-      )
+      everyOrderTx.push(...validTxs)
+
+      if (validTxs.length < pageResult.length) {
         break
+      }
 
       txPage++
     } catch (error) {
@@ -738,4 +735,34 @@ export const getStartIso = (period: Period) => {
     case "All":
       return undefined
   }
+}
+
+export const toDayString = (d: Date | string) =>
+  new Date(d).toISOString().slice(0, 10)
+
+export function processAnalyticsDataToInsert<
+  T extends { timestamp: Date | string },
+  U extends { timestamp: Date | string },
+>(data: T[], existingData: U[]) {
+  const today = toDayString(new Date())
+
+  const sorted = [...data].sort(
+    (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
+  )
+
+  // if the current day was processed remove it, as the data is incomplete and should not be recorded
+  const last = sorted[sorted.length - 1]
+  if (last && toDayString(last.timestamp) === today) {
+    sorted.pop()
+  }
+
+  // check if there are repeated days in the new data
+  const existingDays = new Set(
+    existingData.map((row) => toDayString(row.timestamp)),
+  )
+
+  return sorted.filter((entry) => {
+    const day = toDayString(entry.timestamp)
+    return !existingDays.has(day)
+  })
 }
