@@ -5,7 +5,6 @@ import { updateOrders } from "./orders/updateOrders"
 import { isLocked, lock, unlock } from "./utils"
 import { updateAnalytics } from "./analytics/updateAnalytics"
 
-// Run every 2 minutes
 cron.schedule(config.CRON_SCHEDULE, async () => {
   if (isLocked()) {
     logger.info("Cron job already running, skipping...")
@@ -15,8 +14,7 @@ cron.schedule(config.CRON_SCHEDULE, async () => {
   lock()
   logger.info("Starting scheduled order update...")
   try {
-    await updateAnalytics()
-    await updateOrders()
+    await Promise.all([updateAnalytics(), updateOrders()])
   } catch (error) {
     logger.error(error, "Cron job failed:")
   } finally {

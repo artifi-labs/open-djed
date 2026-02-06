@@ -4,21 +4,21 @@ import { type Period, getStartIso } from "../sync/utils"
 export const getPeriodDjedMC = async (period: Period) => {
   const startIso = getStartIso(period)
 
-  const rows = await prisma.marketCap.findMany({
+  return await prisma.marketCap.findMany({
     where: startIso
       ? { timestamp: { gte: startIso }, token: "DJED" }
       : undefined,
     orderBy: { timestamp: "asc" },
   })
 
-  return rows.map((row) => ({
-    timestamp: row.timestamp,
-    usdValue: row.usdValue,
-    adaValue: row.adaValue,
-    block: row.block,
-    slot: Number(row.slot),
-    token: "DJED",
-  }))
+  // return rows.map((row) => ({
+  //   timestamp: row.timestamp,
+  //   usdValue: row.usdValue,
+  //   adaValue: row.adaValue,
+  //   block: row.block,
+  //   slot: Number(row.slot),
+  //   token: "DJED",
+  // }))
 }
 
 export const getLatestDjedMC = async () => {

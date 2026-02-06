@@ -817,6 +817,7 @@ const app = new Hono()
         const djedMarketCaps = await getPeriodDjedMC(
           param.period.toUpperCase() as Period,
         )
+        console.log("djed: ", djedMarketCaps)
         const historicalData = djedMarketCaps.map((ratio) => ({
           date: ratio.timestamp,
           adaValue: Number(ratio.adaValue) / 1e6,

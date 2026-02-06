@@ -91,12 +91,6 @@ export async function fetchWithRetry<T = unknown>(
       if (!text || text.trim().length === 0) {
         throw new Error("Empty response")
       }
-      if (text.trim().startsWith("<")) {
-        logger.error(
-          `Received HTML instead of JSON from ${url}. First 1000 chars: ${text.substring(0, 1000)}`,
-        )
-        throw new Error("Received HTML response instead of JSON")
-      }
       return JSON.parse(text) as T
     } catch (error) {
       lastError = error as Error

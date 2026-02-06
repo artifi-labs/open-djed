@@ -85,6 +85,7 @@ export function useAnalyticsData() {
 
         if (res.ok) {
           const historicalData = (await res.json()) as DjedMChartEntry[]
+          console.log("historicalData: ", historicalData)
 
           if (!isLoading) {
             const todayKey = new Date().toISOString()

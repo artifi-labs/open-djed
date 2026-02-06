@@ -1,5 +1,17 @@
 import { expect, test } from "vitest"
-import { djedADAMarketCap, djedUSDMarketCap } from "./market-cap"
+import {
+  djedADAMarketCap,
+  djedInCirculation,
+  djedUSDMarketCap,
+} from "./market-cap"
+
+test("djedInCirculation", () => {
+  expect(
+    djedInCirculation({
+      djedInCirculation: 3041800103658n,
+    }).simplify(),
+  ).toEqual({ numerator: 3041800103658n, denominator: 1n })
+})
 
 test("djedUSDMarketCap", () => {
   expect(
