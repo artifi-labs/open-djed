@@ -740,7 +740,7 @@ const app = new Hono()
         )
         const historicalData = reserveRatios.map((ratio) => ({
           date: ratio.timestamp,
-          value: Number(ratio.reserveRatio) * 100,
+          value: ratio.reserveRatio,
         }))
         return c.json(historicalData)
       } catch (err) {
