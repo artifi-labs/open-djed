@@ -2,7 +2,7 @@ import { Prisma } from "../../generated/prisma/client"
 import { prisma } from "../../lib/prisma"
 import { type Period, getStartIso } from "../sync/utils"
 
-export const getPeriodReserveRatio = async (period: Period) => {
+export const getPeriodReserveRatio = (period: Period) => {
   const startIso = getStartIso(period)
 
   return prisma.$queryRaw<
