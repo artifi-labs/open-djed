@@ -17,7 +17,6 @@ import {
   processAnalyticsDataToInsert,
 } from "../../utils"
 import { handleAnalyticsUpdates } from "../updateAnalytics"
-import { getPeriodDjedMC } from "../../../client/djedMarketCap"
 
 /**
  * Assigns a millisecond-based weight to every UTxO by tracking the interval
@@ -173,8 +172,7 @@ export async function processReserveRatio(
 
   logger.info("Processing reserve ratio data...")
 
-  const existing = await getPeriodDjedMC("W") // week period, bc the update is 24h so we will never repeat more than 2/3 days (extrapolation with old datums)
-  const dataToInsert = processAnalyticsDataToInsert(dailyRatios, existing)
+  const dataToInsert = processAnalyticsDataToInsert(dailyRatios)
 
   logger.info(`Inserting ${dataToInsert.length} reserve ratio into database...`)
   await prisma.reserveRatio.createMany({

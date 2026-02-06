@@ -18,10 +18,7 @@ import {
   MS_PER_DAY,
   processAnalyticsDataToInsert,
 } from "../../../utils"
-import {
-  getLatestDjedMC,
-  getPeriodDjedMC,
-} from "../../../../client/djedMarketCap"
+import { getLatestDjedMC } from "../../../../client/djedMarketCap"
 import { handleAnalyticsUpdates } from "../../updateAnalytics"
 
 /**
@@ -189,8 +186,7 @@ export async function processDjedMarketCap(
 
   logger.info("Processing DJED market cap data...")
 
-  const existing = await getPeriodDjedMC("W") // week period, bc the update is 24h so we will never repeat more than 2/3 days (extrapolation with old datums)
-  const dataToInsert = processAnalyticsDataToInsert(dailyDjedMC, existing)
+  const dataToInsert = processAnalyticsDataToInsert(dailyDjedMC)
 
   logger.info(
     `Inserting ${dataToInsert.length} DJED market cap entries into database...`,

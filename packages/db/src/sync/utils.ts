@@ -742,8 +742,7 @@ export const toDayString = (d: Date | string) =>
 
 export function processAnalyticsDataToInsert<
   T extends { timestamp: Date | string },
-  U extends { timestamp: Date | string },
->(data: T[], existingData: U[]) {
+>(data: T[]) {
   const today = toDayString(new Date())
 
   const sorted = [...data].sort(
@@ -756,13 +755,5 @@ export function processAnalyticsDataToInsert<
     sorted.pop()
   }
 
-  // check if there are repeated days in the new data
-  const existingDays = new Set(
-    existingData.map((row) => toDayString(row.timestamp)),
-  )
-
-  return sorted.filter((entry) => {
-    const day = toDayString(entry.timestamp)
-    return !existingDays.has(day)
-  })
+  return sorted
 }
