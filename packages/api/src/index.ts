@@ -727,7 +727,6 @@ const app = new Hono()
         const reserveRatios = await getPeriodReserveRatio(
           param.period.toUpperCase() as Period,
         )
-        console.log(reserveRatios)
         return c.json(reserveRatios)
       } catch (err) {
         if (err instanceof AppError) {
