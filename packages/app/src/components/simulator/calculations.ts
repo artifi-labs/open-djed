@@ -146,18 +146,6 @@ function calculateSimulatorResults(
     { oracleDatum: sellOracleDatum },
   )
 
-  console.log(sellActionData)
-  console.log("feesEarnedAda", feesEarnedAda)
-  console.log(
-    "SHEN to sell",
-    (buyActionData.toReceive.SHEN ?? 0) +
-      protocolData.to({ ADA: feesEarnedAda }, "SHEN"),
-    " in USD ",
-    (buyActionData.toReceive.SHEN ?? 0) *
-      sellActionData.price.ADA *
-      sellAdaPrice,
-  )
-
   const sellFeeAda = protocolData.to(
     sumValues(sellActionData.actionFee, sellActionData.operatorFee),
     "ADA",
