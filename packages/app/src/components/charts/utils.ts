@@ -34,10 +34,10 @@ export const formatAxisValue = (val: number) => {
 }
 
 // format y-axis ticks as USD
-export const yTickFormatter = (value: number | string) =>
+export const UsdFormatter = (value: number | string) =>
   `$${formatAxisValue(Number(value))}`
 
-export const dateFormatter = (label: string | number) => {
+export const dateFormatter = (label: string | number): string => {
   if (!label) return ""
   const d = new Date(label)
   if (Number.isNaN(d.getTime())) return String(label)

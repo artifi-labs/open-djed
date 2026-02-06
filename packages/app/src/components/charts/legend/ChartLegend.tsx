@@ -37,7 +37,7 @@ export function ChartLegend({
         </h3>
       )}
       <div className="flex flex-wrap items-center justify-center gap-12">
-        {visiblePayload.reverse().map((entry, index) => {
+        {visiblePayload.map((entry, index) => {
           const dataKey = entry.dataKey?.toString() || ""
           const isHidden = hiddenLines?.[dataKey]
           const isClickable = !!onToggle

@@ -6,12 +6,11 @@ type ChartTooltipProps = Partial<TooltipContentProps<number, string>> & {
 }
 
 export function ChartTooltip({
-  label,
   labelFormatter,
   tickFormatter,
   ...props
 }: ChartTooltipProps) {
-  const { payload } = props
+  const { payload, label } = props
 
   if (!payload || !payload.length) {
     return false

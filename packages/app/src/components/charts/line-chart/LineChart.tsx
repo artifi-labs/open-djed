@@ -33,7 +33,7 @@ export function LineChart({
   margin = { top: 6, right: 12, left: 12, bottom: 6 },
   chartContainerClassName,
   xKey = "x",
-  yTickFormatter = (value) => `${(Number(value) / 1000).toFixed(1)}K`,
+  yTickFormatter,
   xTickFormatter,
   children,
 }: LineChartProps) {
@@ -74,11 +74,10 @@ export function LineChart({
           {!hasXAxis && (
             <XAxis
               dataKey={xKey}
-              interval={1}
               axisLine={false}
               tickLine={false}
-              minTickGap={30}
-              padding={{ left: 10, right: 20 }}
+              minTickGap={5}
+              padding={{ left: 5, right: 5 }}
               tick={{
                 dy: 12,
                 fontSize: 10,
