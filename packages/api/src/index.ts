@@ -43,8 +43,13 @@ import {
   ValidationError,
 } from "./errors"
 import JSONbig from "json-bigint"
-import { getOrdersByAddressKeys, getPeriodReserveRatio } from "@open-djed/db"
+import {
+  getOrdersByAddressKeys,
+  getPeriodDjedMC,
+  getPeriodReserveRatio,
+} from "@open-djed/db"
 import type { Order } from "@open-djed/db"
+import type { Period } from "@open-djed/db/src/sync/utils"
 export type { Order } from "@open-djed/db"
 
 //NOTE: We only need this cache for transactions, not for other requests. Using this for `protocol-data` sligltly increases the response time.
@@ -669,7 +674,7 @@ const app = new Hono()
     },
   )
   .get(
-    "/historical-reserve-ratio/:period",
+    "/historical-reserve-ratio",
     cacheMiddleware,
     describeRoute({
       description: "Get the historical reserve ratio",
@@ -702,15 +707,15 @@ const app = new Hono()
       },
     }),
     zValidator(
-      "param",
+      "query",
       z.object({
-        period: z.enum(["D", "W", "M", "1Y", "All"]),
+        period: z.enum(["D", "W", "M", "Y", "All", "d", "w", "m", "y", "all"]),
       }),
     ),
     async (c) => {
       let param
       try {
-        param = c.req.valid("param")
+        param = c.req.valid("query")
         if (!param?.period) {
           throw new ValidationError("Missing period in request.")
         }
@@ -719,12 +724,74 @@ const app = new Hono()
         throw new ValidationError("Invalid or missing request payload.")
       }
       try {
-        const reserveRatios = await getPeriodReserveRatio(param.period)
-        const historicalData = reserveRatios.map((ratio) => ({
-          name: ratio.timestamp.slice(0, 10),
-          value: ratio.reserveRatio * 100,
-        }))
-        return c.json(historicalData)
+        const reserveRatios = await getPeriodReserveRatio(
+          param.period.toUpperCase() as Period,
+        )
+        return c.json(reserveRatios)
+      } catch (err) {
+        if (err instanceof AppError) {
+          throw err
+        }
+        console.error("Unhandled error in orders endpoint:", err)
+        throw new InternalServerError()
+      }
+    },
+  )
+  .get(
+    "/historical-djed-market-cap",
+    cacheMiddleware,
+    describeRoute({
+      description: "Get the historical djed market cap",
+      tags: ["Action"],
+      responses: {
+        200: {
+          description: "Successfully got the historical djed market cap",
+          content: {
+            "text/plain": {
+              example: "djed market cap",
+            },
+          },
+        },
+        400: {
+          description: "Bad Request",
+          content: {
+            "text/plain": {
+              example: "Bad Request",
+            },
+          },
+        },
+        500: {
+          description: "Internal Server Error",
+          content: {
+            "text/plain": {
+              example: "Internal Server Error",
+            },
+          },
+        },
+      },
+    }),
+    zValidator(
+      "query",
+      z.object({
+        period: z.enum(["D", "W", "M", "Y", "All", "d", "w", "m", "y", "all"]),
+      }),
+    ),
+    async (c) => {
+      let param
+      try {
+        param = c.req.valid("query")
+        if (!param?.period) {
+          throw new ValidationError("Missing period in request.")
+        }
+      } catch (e) {
+        console.error("Invalid or missing request payload.", e)
+        throw new ValidationError("Invalid or missing request payload.")
+      }
+      try {
+        const djedMarketCaps = await getPeriodDjedMC(
+          param.period.toUpperCase() as Period,
+        )
+        return c.json(djedMarketCaps)
       } catch (err) {
         if (err instanceof AppError) {
           throw err

@@ -5,6 +5,7 @@ import { useViewport } from "@/hooks/useViewport"
 import { aggregateByBucket, type DataRow } from "@/utils/timeseries"
 import { useMemo } from "react"
 import { type ReserveRatioChartEntry } from "../useAnalyticsData"
+import { getAnalyticsTimeInterval } from "@/lib/utils"
 
 type ReserveRatioOverTimeChartProps = {
   title?: string
@@ -39,7 +40,7 @@ export const ReserveRatioOverTimeChart: React.FC<
       if (index === 0) return `${month}, ${displayedYear}`
 
       if (index !== undefined && data[index - 1]) {
-        const prevDate = new Date(data[index - 1].name as string)
+        const prevDate = new Date(data[index - 1].timestamp as string)
         if (year !== prevDate.getFullYear()) {
           return `${month}, ${displayedYear}`
         }
@@ -48,33 +49,20 @@ export const ReserveRatioOverTimeChart: React.FC<
       return totalDays > 365 * 2 ? displayedYear : month
     }
 
-    const dayInMs = 24 * 60 * 60 * 1000
-    let newInterval
-    if (totalDays <= 7) {
-      //1 week
-      newInterval = dayInMs
-    } else if (totalDays <= 31) {
-      // 1 month
-      newInterval = isMobile ? 7 * dayInMs : 3 * dayInMs
-    } else if (totalDays <= 365) {
-      // 1 year
-      newInterval = isMobile ? 30 * dayInMs : 60 * dayInMs
-    } else {
-      newInterval = isMobile ? 60 * dayInMs : 90 * dayInMs
-    }
+    const newInterval = getAnalyticsTimeInterval(totalDays, isMobile)
 
     const dataRows: DataRow[] = []
     for (let i = 0; i < data.length - 1; i++) {
       dataRows.push({
-        date: new Date(data[i].name).toISOString(),
-        reserveRatio: data[i].value,
+        date: data[i].timestamp,
+        reserveRatio: data[i].reserveRatio,
       } as unknown as DataRow)
     }
 
     const results = aggregateByBucket(
       dataRows,
       newInterval ?? 0,
-      new Date(data[0].name),
+      new Date(data[0].timestamp),
       {
         reserveRatio: ["avg"],
       },
@@ -82,17 +70,15 @@ export const ReserveRatioOverTimeChart: React.FC<
 
     if (totalDays > 365) {
       results[results.length - 1] = {
-        date: new Date(data[data.length - 1].name).toISOString(),
-        reserveRatio_avg: data[data.length - 1].value,
+        date: new Date(data[data.length - 1].timestamp).toISOString(),
+        reserveRatio_avg: data[data.length - 1].reserveRatio,
       } as unknown as DataRow
     } else {
       results.push({
-        date: new Date(data[data.length - 1].name).toISOString(),
-        reserveRatio_avg: data[data.length - 1].value,
+        date: new Date(data[data.length - 1].timestamp).toISOString(),
+        reserveRatio_avg: data[data.length - 1].reserveRatio,
       } as unknown as DataRow)
     }
-
-    console.log("results: ", results)
 
     return { formattedData: results, xAxisFormatter: formatter }
   }, [data])

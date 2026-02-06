@@ -1,33 +1,36 @@
-import { reserveRatio } from "@open-djed/math"
-import { prisma } from "../../../../lib/prisma"
-import { getLatestReserveRatio } from "../../../client/reserveRatio"
-import { logger } from "../../../utils/logger"
+import {
+  djedUSDMarketCap,
+  djedADAMarketCap,
+} from "@open-djed/math/src/market-cap"
+import { prisma } from "../../../../../lib/prisma"
+import { logger } from "../../../../utils/logger"
 import type {
-  DailyReserveRatioUTxOsWithWeights,
+  DailyDjedMarketCapUTxOsWithWeights,
   DailyUTxOs,
+  DjedMarketCap,
   OracleUTxoWithDatumAndTimestamp,
   OrderedPoolOracleTxOs,
   PoolUTxoWithDatumAndTimestamp,
-  ReserveRatio,
-  WeightedReserveEntry,
-} from "../../types"
+  WeightedDjedMarketCapEntry,
+} from "../../../types"
 import {
   breakIntoDays,
   MS_PER_DAY,
   processAnalyticsDataToInsert,
-} from "../../utils"
-import { handleAnalyticsUpdates } from "../updateAnalytics"
+} from "../../../utils"
+import { getLatestDjedMC } from "../../../../client/djedMarketCap"
+import { handleAnalyticsUpdates } from "../../updateAnalytics"
 
 /**
  * Assigns a millisecond-based weight to every UTxO by tracking the interval
  * until the next observation within the same day. Records the pool/oracle datum
- * that would back each interval so the reserve ratio can later be computed.
+ * that would back each interval so the market cap can later be computed.
  * @param dailyChunks grouped entries per day emitted from `breakIntoDays`
- * @returns the same chunks enriched with weight, ratio, and datum references
+ * @returns the same chunks enriched with weight, market cap values, and datum references
  */
-export const assignTimeWeightsToReserveRatioDailyUTxOs = (
+export const assignTimeWeightsToDailyDjedMCUTxOs = (
   dailyChunks: DailyUTxOs[],
-): DailyReserveRatioUTxOsWithWeights[] => {
+): DailyDjedMarketCapUTxOsWithWeights[] => {
   let previousDayLastTimestampMs: number | null = null
   let activePoolDatum: PoolUTxoWithDatumAndTimestamp["poolDatum"] | null = null
   let activeOracleDatum: OracleUTxoWithDatumAndTimestamp["oracleDatum"] | null =
@@ -35,13 +38,12 @@ export const assignTimeWeightsToReserveRatioDailyUTxOs = (
   let activePoolEntry: OrderedPoolOracleTxOs | null = null
   let activeOracleEntry: OrderedPoolOracleTxOs | null = null
 
-  return dailyChunks.map((dailyDayChunk, chunkIndex) => {
-    const timedEntries: WeightedReserveEntry[] = dailyDayChunk.entries.map(
-      (entry) => ({
+  const returnArr = dailyChunks.map((dailyDayChunk, chunkIndex) => {
+    const timedEntries: WeightedDjedMarketCapEntry[] =
+      dailyDayChunk.entries.map((entry) => ({
         ...entry,
         weight: 0,
-      }),
-    )
+      }))
 
     const dayStartMs = Date.parse(dailyDayChunk.startIso)
     const dayEndMs = Date.parse(dailyDayChunk.endIso)
@@ -76,10 +78,11 @@ export const assignTimeWeightsToReserveRatioDailyUTxOs = (
       ) {
         currentEntry.usedPoolDatum = previousPoolDatum
         currentEntry.usedOracleDatum = previousOracleDatum
-        currentEntry.ratio = reserveRatio(
+        currentEntry.usdValue = djedUSDMarketCap(previousPoolDatum).toBigInt()
+        currentEntry.adaValue = djedADAMarketCap(
           previousPoolDatum,
           previousOracleDatum,
-        ).toNumber()
+        ).toBigInt()
         currentEntry.period = {
           start: intervalStartIso,
           end: intervalEndIso,
@@ -113,94 +116,103 @@ export const assignTimeWeightsToReserveRatioDailyUTxOs = (
       entries: timedEntries,
     }
   })
+
+  return returnArr
 }
 
 /**
- * Reduces each day’s weighted entries into a single average reserve ratio
+ * Reduces each day’s weighted entries into a single average market cap
  * entry, skipping days with no coverage and keeping metadata such as the
  * block hash/slot from the last entry.
  * @param dailyChunks the weighted daily chunks that include time coverage
- * @returns the averaged daily reserve ratio rows that are persisted
+ * @returns the averaged daily market cap rows that are persisted
  */
-export const getTimeWeightedDailyReserveRatio = (
-  dailyChunks: DailyReserveRatioUTxOsWithWeights[],
-): ReserveRatio[] => {
-  const dailyReserveRatios: ReserveRatio[] = []
+export const getTimeWeightedDailyDjedMC = (
+  dailyChunks: DailyDjedMarketCapUTxOsWithWeights[],
+): DjedMarketCap[] => {
+  const dailyReserveRatios: DjedMarketCap[] = []
 
   for (const chunk of dailyChunks) {
-    let weightedSumNumber = 0
+    let weightedUSDSum = 0n
+    let weightedADASum = 0n
     let durationSum = 0n
 
     for (const entry of chunk.entries) {
-      if (entry.ratio === undefined || entry.weight <= 0) continue
+      if (
+        entry.weight <= 0 ||
+        entry.usdValue === undefined ||
+        entry.adaValue === undefined
+      )
+        continue
       const duration = BigInt(entry.weight)
       durationSum += duration
-      weightedSumNumber += entry.ratio * Number(duration)
+      weightedUSDSum += BigInt(entry.usdValue) * duration
+      weightedADASum += BigInt(entry.adaValue) * duration
     }
 
     if (durationSum === 0n) continue
 
-    const averageRatio = weightedSumNumber / MS_PER_DAY
+    const averageUSDValue = weightedUSDSum / BigInt(MS_PER_DAY)
+    const averageADAValue = weightedADASum / BigInt(MS_PER_DAY)
 
     const latestEntry = chunk.entries.at(-1)
     if (!latestEntry) continue
 
     dailyReserveRatios.push({
       timestamp: new Date(latestEntry.value.timestamp),
-      reserveRatio: averageRatio,
+      usdValue: averageUSDValue,
+      adaValue: averageADAValue,
       block: latestEntry.value.block_hash,
       slot: latestEntry.value.block_slot,
+      token: "DJED",
     })
   }
 
   return dailyReserveRatios
 }
 
-export async function processReserveRatio(
+export async function processDjedMarketCap(
   orderedTxOs: OrderedPoolOracleTxOs[],
 ) {
   const start = Date.now()
-  logger.info(`=== Processing Reserve Ratio ===`)
+  logger.info(`=== Processing DJED Market Cap ===`)
   const dailyTxOs = breakIntoDays(orderedTxOs)
-  const weightedDailyTxOs = assignTimeWeightsToReserveRatioDailyUTxOs(dailyTxOs)
+  const weightedDailyTxOs = assignTimeWeightsToDailyDjedMCUTxOs(dailyTxOs)
+  const dailyDjedMC = getTimeWeightedDailyDjedMC(weightedDailyTxOs)
 
-  const dailyRatios = getTimeWeightedDailyReserveRatio(weightedDailyTxOs)
-
-  if (dailyRatios.length === 0) {
-    logger.warn("No daily reserve ratios computed")
+  if (dailyDjedMC.length === 0) {
+    logger.warn("No daily DJED market caps computed")
   }
 
-  logger.info("Processing reserve ratio data...")
+  logger.info("Processing DJED market cap data...")
 
-  const dataToInsert = processAnalyticsDataToInsert(dailyRatios)
+  const dataToInsert = processAnalyticsDataToInsert(dailyDjedMC)
 
-  logger.info(`Inserting ${dataToInsert.length} reserve ratio into database...`)
-  await prisma.reserveRatio.createMany({
+  logger.info(
+    `Inserting ${dataToInsert.length} DJED market cap entries into database...`,
+  )
+  await prisma.marketCap.createMany({
     data: dataToInsert,
     skipDuplicates: true,
   })
   logger.info(
-    `Historic reserve ratio sync complete. Inserted ${dataToInsert.length} reserve ratios`,
+    `Historic DJED market cap sync complete. Inserted ${dataToInsert.length} DJED market cap entries`,
   )
-
   const end = Date.now() - start
   logger.info(
-    `=== Processing Reserve Ratios took sec: ${(end / 1000).toFixed(2)} ===`,
+    `=== Processing DJED Market Cap took sec: ${(end / 1000).toFixed(2)} ===`,
   )
 }
 
-export async function updateReserveRatios() {
+export async function updateDjedMC() {
   const start = Date.now()
-  logger.info(`=== Updating Reserve Ratio ===`)
-  const latestReserveRatio = await getLatestReserveRatio()
-  if (!latestReserveRatio) return
+  logger.info(`=== Updating DJED Market Cap ===`)
+  const latestDjedMC = await getLatestDjedMC()
+  if (!latestDjedMC) return
 
-  await handleAnalyticsUpdates(
-    latestReserveRatio.timestamp,
-    processReserveRatio,
-  )
+  await handleAnalyticsUpdates(latestDjedMC.timestamp, processDjedMarketCap)
   const end = Date.now() - start
   logger.info(
-    `=== Updating Reserve Ratio took sec: ${(end / 1000).toFixed(2)} ===`,
+    `=== Updating DJED Market Cap took sec: ${(end / 1000).toFixed(2)} ===`,
   )
 }

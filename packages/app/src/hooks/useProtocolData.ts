@@ -21,6 +21,8 @@ import {
   Rational,
   djedADARate,
   shenADARate,
+  djedUSDMarketCap,
+  djedADAMarketCap,
 } from "@open-djed/math"
 import { registryByNetwork } from "@open-djed/registry"
 import { useQuery } from "@tanstack/react-query"
@@ -66,6 +68,10 @@ export function useProtocolData() {
               circulatingSupply: Value
               mintableAmount: Value
               burnableAmount: Value
+              marketCap: {
+                USD: bigint
+                ADA: bigint
+              }
             }
           > & {
             reserve: {
@@ -175,6 +181,10 @@ export function useProtocolData() {
                 burnableAmount: {
                   DJED: Number(poolDatum.djedInCirculation) / 1e6,
                 },
+                marketCap: {
+                  USD: djedUSDMarketCap(poolDatum).toBigInt(),
+                  ADA: djedADAMarketCap(poolDatum, oracleDatum).toBigInt(),
+                },
               },
               SHEN: {
                 buyPrice: {
@@ -213,6 +223,10 @@ export function useProtocolData() {
                         registry.MintSHENFeePercentage,
                       ),
                     ) / 1e6,
+                },
+                marketCap: {
+                  USD: djedUSDMarketCap(poolDatum).toBigInt(),
+                  ADA: djedADAMarketCap(poolDatum, oracleDatum).toBigInt(),
                 },
               },
               reserve: {

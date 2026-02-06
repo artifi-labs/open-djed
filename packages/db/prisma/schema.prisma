@@ -24,6 +24,11 @@ enum Token {
   BOTH
 }
 
+enum TokenMarketCap {
+  DJED
+  SHEN
+}
+
 model Order {
   id        Int      @id @default(autoincrement())
   address   Json // user address, stores paymentKeyHash and stakeKeyHash
@@ -50,11 +55,21 @@ model Block {
 }
 
 model ReserveRatio {
-  id           Int     @id @default(autoincrement())
-  timestamp    String
+  id           Int      @id @default(autoincrement())
+  timestamp    DateTime @db.Date @unique
   reserveRatio Decimal // Stored as ratio (e.g. 300% => 3.0)
   block        String // block hash
   slot         BigInt // block slot
+}
 
-  @@index([slot], name: "idx_reserve_ratio_slot") // index makes lookups much faster
+model MarketCap {
+  id        Int            @id @default(autoincrement())
+  timestamp DateTime       @db.Date
+  token     TokenMarketCap
+  usdValue  BigInt
+  adaValue  BigInt
+  block     String // block hash
+  slot      BigInt // block slot
+
+  @@unique([token, timestamp])
 }
