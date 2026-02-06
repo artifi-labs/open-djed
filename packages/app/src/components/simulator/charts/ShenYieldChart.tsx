@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useMemo } from "react"
-import { MultiAreaChart } from "./MultiAreaChart"
+import { MultiAreaChart } from "../../MultiAreaChart"
 import type { CreditEntry } from "@/lib/staking"
 import {
   aggregateByBucket,

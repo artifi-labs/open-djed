@@ -43,7 +43,7 @@ import {
   ValidationError,
 } from "./errors"
 import JSONbig from "json-bigint"
-import { getOrdersByAddressKeys } from "@open-djed/db"
+import { getOrdersByAddressKeys, getPeriodReserveRatio } from "@open-djed/db"
 import type { Order } from "@open-djed/db"
 export type { Order } from "@open-djed/db"
 
@@ -659,6 +659,72 @@ const app = new Hono()
             headers: { "Content-Type": "application/json" },
           },
         )
+      } catch (err) {
+        if (err instanceof AppError) {
+          throw err
+        }
+        console.error("Unhandled error in orders endpoint:", err)
+        throw new InternalServerError()
+      }
+    },
+  )
+  .get(
+    "/historical-reserve-ratio/:period",
+    cacheMiddleware,
+    describeRoute({
+      description: "Get the historical reserve ratio",
+      tags: ["Action"],
+      responses: {
+        200: {
+          description: "Successfully got the historical reserve ratio",
+          content: {
+            "text/plain": {
+              example: "reserve ratio",
+            },
+          },
+        },
+        400: {
+          description: "Bad Request",
+          content: {
+            "text/plain": {
+              example: "Bad Request",
+            },
+          },
+        },
+        500: {
+          description: "Internal Server Error",
+          content: {
+            "text/plain": {
+              example: "Internal Server Error",
+            },
+          },
+        },
+      },
+    }),
+    zValidator(
+      "param",
+      z.object({
+        period: z.enum(["D", "W", "M", "1Y", "All"]),
+      }),
+    ),
+    async (c) => {
+      let param
+      try {
+        param = c.req.valid("param")
+        if (!param?.period) {
+          throw new ValidationError("Missing period in request.")
+        }
+      } catch (e) {
+        console.error("Invalid or missing request payload.", e)
+        throw new ValidationError("Invalid or missing request payload.")
+      }
+      try {
+        const reserveRatios = await getPeriodReserveRatio(param.period)
+        const historicalData = reserveRatios.map((ratio) => ({
+          name: ratio.timestamp.slice(0, 10),
+          value: ratio.reserveRatio * 100,
+        }))
+        return c.json(historicalData)
       } catch (err) {
         if (err instanceof AppError) {
           throw err

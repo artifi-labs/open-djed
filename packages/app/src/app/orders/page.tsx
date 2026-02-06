@@ -1,4 +1,5 @@
 import Order from "@/components/order/Order"
+
 import { buildTitle } from "@/lib/metadata"
 import type { Metadata } from "next"
 

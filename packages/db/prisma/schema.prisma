@@ -48,3 +48,13 @@ model Block {
   latestSlot  BigInt // slot of the latest block synced
   updatedAt   DateTime @updatedAt @db.Timestamptz(6)
 }
+
+model ReserveRatio {
+  id           Int     @id @default(autoincrement())
+  timestamp    String
+  reserveRatio Decimal // Stored as ratio (e.g. 300% => 3.0)
+  block        String // block hash
+  slot         BigInt // block slot
+
+  @@index([slot], name: "idx_reserve_ratio_slot") // index makes lookups much faster
+}

@@ -1,4 +1,5 @@
 import { logger } from "../utils/logger"
+import { updateReserveRatios } from "./analytics/reserveRatio/reserveRatio"
 import { updateOrders } from "./orders/updateOrders"
 import { isLocked, lock, unlock } from "./utils"
 
@@ -11,6 +12,7 @@ async function sync() {
   lock()
   logger.info("Starting scheduled order update...")
   try {
+    await updateReserveRatios()
     await updateOrders()
   } catch (error) {
     logger.error(error, "Sync job failed:")
