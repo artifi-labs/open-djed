@@ -13,6 +13,10 @@ import {
 } from "./marketCap/djed/djedMarketCap"
 import { rollbackDjedMC } from "./marketCap/djed/rollbackDjedMC"
 import {
+  processTokenPrices,
+  updateTokenPrices,
+} from "./price/updateTokenPrices"
+import {
   processReserveRatio,
   updateReserveRatios,
 } from "./reserveRatio/reserveRatio"
@@ -117,6 +121,7 @@ export async function updateAnalytics() {
     (await prisma.marketCap.count({
       where: { token: "DJED" },
     })) === 0
+  const isPriceEmpty = (await prisma.price.count()) === 0
 
   const toUpdate: DbProcessor[] = [
     {
@@ -128,6 +133,11 @@ export async function updateAnalytics() {
       isEmpty: isDjedMCEmpty,
       populateDbProcessor: processDjedMarketCap,
       updateDbProcessor: updateDjedMC,
+    },
+    {
+      isEmpty: isPriceEmpty,
+      populateDbProcessor: processTokenPrices,
+      updateDbProcessor: updateTokenPrices,
     },
   ]
 
