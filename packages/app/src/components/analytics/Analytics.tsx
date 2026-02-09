@@ -3,7 +3,12 @@
 import ChartCard from "../card/ChartCard"
 import { DjedMarketCapChart } from "./charts/DjedMarketCapChart"
 import { ReserveRatioOverTimeChart } from "./charts/ReserveRatioOverTimeChart"
-import { useAnalyticsData, CHART_PERIOD_OPTIONS } from "./useAnalyticsData"
+import { ShenAdaPriceChart } from "./charts/ShenAdaPriceChart"
+import {
+  useAnalyticsData,
+  CHART_PERIOD_OPTIONS,
+  CURRENCY_OPTIONS,
+} from "./useAnalyticsData"
 
 const AnalyticsPage = () => {
   const {
@@ -13,6 +18,11 @@ const AnalyticsPage = () => {
     djedMCPeriod,
     djedMCHistoricalData,
     setDjedMCPeriod,
+    shenAdaHistoricalData,
+    shenAdaPricePeriod,
+    setShenAdaPricePeriod,
+    shenAdaCurrency,
+    setShenAdaCurrency,
   } = useAnalyticsData()
   return (
     <div className="desktop:pt-32 desktop:pb-64 mx-auto flex w-full max-w-280 flex-1 flex-col">
@@ -42,7 +52,19 @@ const AnalyticsPage = () => {
         >
           <DjedMarketCapChart data={djedMCHistoricalData} currency="USD" />
         </ChartCard>
-        <ChartCard></ChartCard>
+        <ChartCard
+          period={shenAdaPricePeriod}
+          periodItems={[...CHART_PERIOD_OPTIONS]}
+          onPeriodChange={setShenAdaPricePeriod}
+          currency={shenAdaCurrency}
+          onCurrencyChange={setShenAdaCurrency}
+          currencyItems={[...CURRENCY_OPTIONS]}
+        >
+          <ShenAdaPriceChart
+            data={shenAdaHistoricalData}
+            currency={shenAdaCurrency}
+          />
+        </ChartCard>
       </div>
     </div>
   )
