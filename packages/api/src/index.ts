@@ -48,9 +48,8 @@ import {
   getPeriodDjedMC,
   getPeriodReserveRatio,
 } from "@open-djed/db"
-import type { Order } from "@open-djed/db"
-import type { Period } from "@open-djed/db/src/sync/utils"
-export type { Order } from "@open-djed/db"
+import { type Order, type Tokens, type Period } from "@open-djed/db"
+import { getPeriodPricesForToken } from "@open-djed/db/src/client/price"
 
 //NOTE: We only need this cache for transactions, not for other requests. Using this for `protocol-data` sligltly increases the response time.
 const requestCache = new TTLCache<string, { value: Response; expiry: number }>({
@@ -792,6 +791,72 @@ const app = new Hono()
           param.period.toUpperCase() as Period,
         )
         return c.json(djedMarketCaps)
+      } catch (err) {
+        if (err instanceof AppError) {
+          throw err
+        }
+        console.error("Unhandled error in orders endpoint:", err)
+        throw new InternalServerError()
+      }
+    },
+  )
+  .get(
+    "/historical-token-price",
+    cacheMiddleware,
+    describeRoute({
+      description: "Get the historical token price",
+      tags: ["Action"],
+      responses: {
+        200: {
+          description: "Successfully got the historical token price",
+          content: {
+            "text/plain": {
+              example: "token price",
+            },
+          },
+        },
+        400: {
+          description: "Bad Request",
+          content: {
+            "text/plain": {
+              example: "Bad Request",
+            },
+          },
+        },
+        500: {
+          description: "Internal Server Error",
+          content: {
+            "text/plain": {
+              example: "Internal Server Error",
+            },
+          },
+        },
+      },
+    }),
+    zValidator(
+      "query",
+      z.object({
+        period: z.enum(["D", "W", "M", "Y", "All", "d", "w", "m", "y", "all"]),
+        token: z.enum(["DJED", "SHEN", "ADA", "djed", "shen", "ada"]),
+      }),
+    ),
+    async (c) => {
+      let param
+      try {
+        param = c.req.valid("query")
+        if (!param?.period) {
+          throw new ValidationError("Missing period in request.")
+        }
+      } catch (e) {
+        console.error("Invalid or missing request payload.", e)
+        throw new ValidationError("Invalid or missing request payload.")
+      }
+      try {
+        const tokenPrices = await getPeriodPricesForToken(
+          param.token.toUpperCase() as Tokens,
+          param.period.toUpperCase() as Period,
+        )
+        return c.json(tokenPrices)
       } catch (err) {
         if (err instanceof AppError) {
           throw err
