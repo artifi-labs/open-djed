@@ -50,6 +50,7 @@ import {
   getPeriodReserveRatio,
 } from "@open-djed/db"
 import { type Order, type Period } from "@open-djed/db"
+export type { Order } from "@open-djed/db"
 
 //NOTE: We only need this cache for transactions, not for other requests. Using this for `protocol-data` sligltly increases the response time.
 const requestCache = new TTLCache<string, { value: Response; expiry: number }>({
