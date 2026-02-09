@@ -35,3 +35,27 @@ export const getLatestPriceTimestamp = async () =>
       timestamp: true,
     },
   })
+
+export const getPricesByTimestamp = (token: string, timestamp: Date) => {
+  return prisma.$queryRaw<{
+    id: number
+    timestamp: Date
+    token: string
+    usdValue: bigint
+    adaValue: bigint
+    block: string
+    slot: bigint
+  }>`
+    SELECT
+      timestamp,
+      token,
+      ("usdValue" / 1000000.0)::float AS "usdValue",
+      ("adaValue" / 1000000.0)::float AS "adaValue",
+      block,
+      slot
+    FROM "Price"
+    WHERE token = ${token}
+      AND timestamp = ${timestamp}
+    ORDER BY timestamp ASC
+  `
+}
