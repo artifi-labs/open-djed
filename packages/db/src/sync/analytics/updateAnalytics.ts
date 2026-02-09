@@ -5,9 +5,7 @@ import {
   getAssetTxsUpUntilSpecifiedTime,
   getEveryResultFromPaginatedEndpoint,
   processPoolOracleTxs,
-  readOrderedTxOsFromFile,
   registry,
-  writeOrderedTxOsToFile,
 } from "../utils"
 import {
   processDjedMarketCap,
