@@ -305,3 +305,6 @@ export type WeightedTokenPriceEntry = OrderedPoolOracleTxOs & {
 export type DailyTokenPriceUTxOsWithWeights = Omit<DailyUTxOs, "entries"> & {
   entries: WeightedTokenPriceEntry[]
 }
+
+export type Tokens = "DJED" | "SHEN" | "ADA"
+export type Period = "D" | "W" | "M" | "Y" | "All"

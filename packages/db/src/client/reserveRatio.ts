@@ -1,6 +1,7 @@
 import { Prisma } from "../../generated/prisma/client"
 import { prisma } from "../../lib/prisma"
-import { type Period, getStartIso } from "../sync/utils"
+import type { Period } from "../sync/types"
+import { getStartIso } from "../sync/utils"
 
 export const getPeriodReserveRatio = (period: Period) => {
   const startIso = getStartIso(period)

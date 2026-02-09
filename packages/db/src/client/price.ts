@@ -1,8 +1,9 @@
 import { Prisma } from "../../generated/prisma/client"
 import { prisma } from "../../lib/prisma"
-import { type Period, getStartIso } from "../sync/utils"
+import type { Period, Tokens } from "../sync/types"
+import { getStartIso } from "../sync/utils"
 
-export const getPeriodPricesForToken = (token: string, period?: Period) => {
+export const getPeriodPricesForToken = (token: Tokens, period?: Period) => {
   const startIso = period ? getStartIso(period) : undefined
 
   return prisma.$queryRaw<
@@ -12,8 +13,6 @@ export const getPeriodPricesForToken = (token: string, period?: Period) => {
       token: string
       usdValue: bigint
       adaValue: bigint
-      block: string
-      slot: bigint
     }[]
   >`
     SELECT

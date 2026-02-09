@@ -22,6 +22,7 @@ import {
   type DailyUTxOs,
   type OrderedPoolOracleTxOs,
   type TransactionData,
+  type Period,
 } from "./types"
 
 import fs from "fs"
@@ -709,7 +710,6 @@ export async function processPoolOracleTxs(
   return orderedTxOs
 }
 
-export type Period = "D" | "W" | "M" | "Y" | "All"
 export const getStartIso = (period: Period) => {
   const today = new Date()
   today.setHours(0, 0, 0, 0)
