@@ -5,7 +5,9 @@ import {
   getAssetTxsUpUntilSpecifiedTime,
   getEveryResultFromPaginatedEndpoint,
   processPoolOracleTxs,
+  readOrderedTxOsFromFile,
   registry,
+  writeOrderedTxOsToFile,
 } from "../utils"
 import {
   processDjedMarketCap,
@@ -56,6 +58,13 @@ async function handlePopulateDb(toUpdate: DbProcessor[]) {
     return
   }
 
+  // await writeOrderedTxOsToFile(orderedTxOs, "./orderedTxOs.json")
+
+  // const orderedTxOs = await readOrderedTxOsFromFile("./orderedTxOs.json")
+  // if (!orderedTxOs) {
+  //   logger.warn("No orderedTxOs read from file — skipping DB population")
+  //   return
+  // }
   const end = Date.now() - start
   logger.info(
     `=== Fetching data to populate database took sec: ${(end / 1000).toFixed(2)} ===`,

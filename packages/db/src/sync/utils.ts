@@ -35,6 +35,8 @@ import {
   ProcessOrderSpendOrderRedeemerHash,
   type OrderDatum,
 } from "@open-djed/data"
+import JSONbig from "json-bigint"
+import fsPromises from "fs/promises"
 
 const blockfrostUrl = env.BLOCKFROST_URL
 const blockfrostId = env.BLOCKFROST_PROJECT_ID
@@ -399,7 +401,7 @@ export async function getEveryResultFromPaginatedEndpoint(endpoint: string) {
   logger.info("Fetching all transactions...")
   const everyOrderTx: Transaction[] = []
   let txPage = 1
-  while (txPage < 11) {
+  while (true) {
     try {
       logger.debug(`Fetching transaction page ${txPage}...`)
       const pageResult = (await blockfrostFetch(
@@ -756,4 +758,78 @@ export function processAnalyticsDataToInsert<
   }
 
   return sorted
+}
+
+export async function writeOrderedTxOsToFile(
+  data: OrderedPoolOracleTxOs[],
+  filePath: string,
+): Promise<void> {
+  const absolutePath = path.resolve(filePath)
+
+  const json = JSONbig.stringify(data)
+
+  await fsPromises.writeFile(absolutePath, json, {
+    encoding: "utf-8",
+  })
+}
+
+function normalizePoolDatum(
+  pool: PoolUTxoWithDatumAndTimestamp["poolDatum"],
+): PoolUTxoWithDatumAndTimestamp["poolDatum"] {
+  return {
+    ...pool,
+    adaInReserve: BigInt(pool.adaInReserve),
+    djedInCirculation: BigInt(pool.djedInCirculation),
+    shenInCirculation: BigInt(pool.shenInCirculation),
+    minADA: BigInt(pool.minADA),
+    _1: BigInt(pool._1),
+  }
+}
+
+function normalizeOracleDatum(
+  oracle: OracleUTxoWithDatumAndTimestamp["oracleDatum"],
+): OracleUTxoWithDatumAndTimestamp["oracleDatum"] {
+  return {
+    ...oracle,
+    oracleFields: {
+      ...oracle.oracleFields,
+      adaUSDExchangeRate: {
+        numerator: BigInt(oracle.oracleFields.adaUSDExchangeRate.numerator),
+        denominator: BigInt(oracle.oracleFields.adaUSDExchangeRate.denominator),
+      },
+    },
+  }
+}
+
+function normalizeOrderedTxO(
+  txo: OrderedPoolOracleTxOs,
+): OrderedPoolOracleTxOs {
+  if (txo.key === "pool") {
+    return {
+      ...txo,
+      value: {
+        ...txo.value,
+        poolDatum: normalizePoolDatum(txo.value.poolDatum),
+      },
+    }
+  }
+
+  return {
+    ...txo,
+    value: {
+      ...txo.value,
+      oracleDatum: normalizeOracleDatum(txo.value.oracleDatum),
+    },
+  }
+}
+
+export async function readOrderedTxOsFromFile(
+  filePath: string,
+): Promise<OrderedPoolOracleTxOs[]> {
+  const absolutePath = path.resolve(filePath)
+
+  const raw = await fsPromises.readFile(absolutePath, "utf-8")
+  const parsed = JSONbig.parse(raw) as OrderedPoolOracleTxOs[]
+
+  return parsed.map(normalizeOrderedTxO)
 }
