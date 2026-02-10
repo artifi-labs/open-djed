@@ -59,18 +59,6 @@ export const assignTimeWeightsToReserveRatioDailyUTxOs = (
       const previousPoolEntry = activePoolEntry
       const previousOracleEntry = activeOracleEntry
 
-      const candidatePoolDatum =
-        previousPoolDatum ??
-        (currentEntry.key === "pool" ? currentEntry.value.poolDatum : null)
-      const candidateOracleDatum =
-        previousOracleDatum ??
-        (currentEntry.key === "oracle" ? currentEntry.value.oracleDatum : null)
-      const candidatePoolEntry =
-        previousPoolEntry ?? (currentEntry.key === "pool" ? currentEntry : null)
-      const candidateOracleEntry =
-        previousOracleEntry ??
-        (currentEntry.key === "oracle" ? currentEntry : null)
-
       const currentTimestampMs = Date.parse(currentEntry.value.timestamp)
       const isLastEntry = index === timedEntries.length - 1
       const intervalStartMs = isLastEntry
@@ -81,16 +69,16 @@ export const assignTimeWeightsToReserveRatioDailyUTxOs = (
       const intervalEndIso = new Date(intervalEndMs).toISOString()
 
       if (
-        candidatePoolDatum &&
-        candidateOracleDatum &&
-        candidatePoolEntry &&
-        candidateOracleEntry
+        previousPoolDatum &&
+        previousOracleDatum &&
+        previousPoolEntry &&
+        previousOracleEntry
       ) {
-        currentEntry.usedPoolDatum = candidatePoolDatum
-        currentEntry.usedOracleDatum = candidateOracleDatum
+        currentEntry.usedPoolDatum = previousPoolDatum
+        currentEntry.usedOracleDatum = previousOracleDatum
         currentEntry.ratio = reserveRatio(
-          candidatePoolDatum,
-          candidateOracleDatum,
+          previousPoolDatum,
+          previousOracleDatum,
         ).toNumber()
         currentEntry.period = {
           start: intervalStartIso,
