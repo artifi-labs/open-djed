@@ -488,3 +488,88 @@ test("TC-3: active pool/oracle datums are propagated within a single day", () =>
   })
 })
 //#endregion "TC-3"
+
+//#region "TC-4"
+test("TC-4: active pool/oracle datums persist across day chunks", () => {
+  const day1: DailyUTxOs = {
+    day: "2025-02-01",
+    startIso: "2025-02-01T00:00:00.000Z",
+    endIso: "2025-02-01T23:59:59.999Z",
+    entries: [
+      {
+        key: "pool",
+        value: {
+          poolDatum: poolDatumA,
+          timestamp: "2025-02-01T22:00:00.000Z",
+          block_hash: "day1-pool-A",
+          block_slot: 10,
+        },
+      },
+      {
+        key: "oracle",
+        value: {
+          oracleDatum: oracleDatumA,
+          timestamp: "2025-02-01T23:00:00.000Z",
+          block_hash: "day1-oracle-A",
+          block_slot: 11,
+        },
+      },
+    ] as OrderedPoolOracleTxOs[],
+  }
+
+  const day2: DailyUTxOs = {
+    day: "2025-02-02",
+    startIso: "2025-02-02T00:00:00.000Z",
+    endIso: "2025-02-02T23:59:59.999Z",
+    entries: [
+      {
+        key: "oracle",
+        value: {
+          oracleDatum: oracleDatumB, // oracle updates first on day2
+          timestamp: "2025-02-02T01:00:00.000Z",
+          block_hash: "day2-oracle-B",
+          block_slot: 20,
+        },
+      },
+      {
+        key: "pool",
+        value: {
+          poolDatum: poolDatumB, // pool updates later on day2 (last)
+          timestamp: "2025-02-02T02:00:00.000Z",
+          block_hash: "day2-pool-B",
+          block_slot: 21,
+        },
+      },
+    ] as OrderedPoolOracleTxOs[],
+  }
+
+  const result = assignTimeWeightsToReserveRatioDailyUTxOs([day1, day2])
+
+  const day1Entries = result[0].entries
+  const day2Entries = result[1].entries
+
+  // Day2 entry[0] (oracle @ 01:00) should compute ratio using Pool(A) + Oracle(A) from day 1
+  expect(day2Entries[0].usedPoolDatum).toEqual(poolDatumA)
+  expect(day2Entries[0].usedOracleDatum).toEqual(oracleDatumA)
+  expect(day2Entries[0].ratio).toBe(
+    calculateReserveRatio(poolDatumA, oracleDatumA).toNumber(),
+  )
+  expect(day2Entries[0].period).toEqual({
+    start: "2025-02-02T00:00:00.000Z",
+    end: "2025-02-02T01:00:00.000Z",
+  })
+
+  // Day2 entry[1] (pool @ 02:00) should use compute ratio using Pool(A) + Oracle(B)
+  expect(day2Entries[1].usedPoolDatum).toEqual(poolDatumA)
+  expect(day2Entries[1].usedOracleDatum).toEqual(oracleDatumB)
+  expect(day2Entries[1].ratio).toBe(
+    calculateReserveRatio(poolDatumA, oracleDatumB).toNumber(),
+  )
+  expect(day2Entries[1].period).toEqual({
+    start: "2025-02-02T02:00:00.000Z",
+    end: "2025-02-02T23:59:59.999Z",
+  })
+
+  expect(day2Entries[1].weight).toBe(79_199_999)
+})
+//#endregion "TC-4"
