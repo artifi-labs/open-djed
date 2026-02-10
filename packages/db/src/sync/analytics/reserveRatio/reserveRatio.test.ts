@@ -507,7 +507,6 @@ describe("assignTimeWeightsToReserveRatioDailyUTxOs", () => {
 
     const result = assignTimeWeightsToReserveRatioDailyUTxOs([day1, day2])
 
-    const day1Entries = result[0].entries
     const day2Entries = result[1].entries
 
     // Day2 entry[0] (oracle @ 01:00) should compute ratio using Pool(A) + Oracle(A) from day 1
