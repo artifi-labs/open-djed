@@ -82,14 +82,14 @@ const oracleDatumB = createOracleDatum({
 
 const mockPool: PoolUTxoWithDatumAndTimestamp = {
   poolDatum: poolDatumA,
-  timestamp: "2025-02-01T00:30:00.000Z",
+  timestamp: "2026-02-01T00:30:00.000Z",
   block_hash: "mock-pool-block",
   block_slot: 1,
 }
 
 const mockOracle: OracleUTxoWithDatumAndTimestamp = {
   oracleDatum: oracleDatumA,
-  timestamp: "2025-02-01T01:15:00.000Z",
+  timestamp: "2026-02-01T01:15:00.000Z",
   block_hash: "mock-oracle-block",
   block_slot: 2,
 }
@@ -100,7 +100,7 @@ const dayEntries: OrderedPoolOracleTxOs[] = [
     value: {
       ...mockPool,
       poolDatum: poolDatumA,
-      timestamp: "2025-02-01T00:30:00.000Z",
+      timestamp: "2026-02-01T00:30:00.000Z",
       block_hash: "pool-block-A",
       block_slot: 1,
     },
@@ -110,7 +110,7 @@ const dayEntries: OrderedPoolOracleTxOs[] = [
     value: {
       ...mockOracle,
       oracleDatum: oracleDatumA,
-      timestamp: "2025-02-01T01:15:00.000Z",
+      timestamp: "2026-02-01T01:15:00.000Z",
       block_hash: "oracle-block-A",
       block_slot: 2,
     },
@@ -120,7 +120,7 @@ const dayEntries: OrderedPoolOracleTxOs[] = [
     value: {
       ...mockPool,
       poolDatum: poolDatumB,
-      timestamp: "2025-02-01T02:00:00.000Z",
+      timestamp: "2026-02-01T02:00:00.000Z",
       block_hash: "pool-block-B",
       block_slot: 3,
     },
@@ -130,7 +130,7 @@ const dayEntries: OrderedPoolOracleTxOs[] = [
     value: {
       ...mockOracle,
       oracleDatum: oracleDatumB,
-      timestamp: "2025-02-01T03:00:00.000Z",
+      timestamp: "2026-02-01T03:00:00.000Z",
       block_hash: "oracle-block-B",
       block_slot: 4,
     },
@@ -139,9 +139,9 @@ const dayEntries: OrderedPoolOracleTxOs[] = [
 
 const dailyChunks: DailyUTxOs[] = [
   {
-    day: "2025-02-01",
-    startIso: "2025-02-01T00:00:00.000Z",
-    endIso: "2025-02-01T23:59:59.999Z",
+    day: "2026-02-01",
+    startIso: "2026-02-01T00:00:00.000Z",
+    endIso: "2026-02-01T23:59:59.999Z",
     entries: dayEntries,
   },
 ]
@@ -157,15 +157,15 @@ describe("assignTimeWeightsToReserveRatioDailyUTxOs", () => {
       name: "Variant 2 - single day with only pool entries",
       chunks: [
         {
-          day: "2025-02-01",
-          startIso: "2025-02-01T00:00:00.000Z",
-          endIso: "2025-02-01T23:59:59.999Z",
+          day: "2026-02-01",
+          startIso: "2026-02-01T00:00:00.000Z",
+          endIso: "2026-02-01T23:59:59.999Z",
           entries: [
             {
               key: "pool",
               value: {
                 ...mockPool,
-                timestamp: "2025-02-01T00:30:00.000Z",
+                timestamp: "2026-02-01T00:30:00.000Z",
                 block_hash: "pool-block-1",
                 block_slot: 1,
               },
@@ -174,7 +174,7 @@ describe("assignTimeWeightsToReserveRatioDailyUTxOs", () => {
               key: "pool",
               value: {
                 ...mockPool,
-                timestamp: "2025-02-01T02:00:00.000Z",
+                timestamp: "2026-02-01T02:00:00.000Z",
                 block_hash: "pool-block-2",
                 block_slot: 2,
               },
@@ -187,15 +187,15 @@ describe("assignTimeWeightsToReserveRatioDailyUTxOs", () => {
       name: "Variant 3 - single day with only oracle entries",
       chunks: [
         {
-          day: "2025-02-01",
-          startIso: "2025-02-01T00:00:00.000Z",
-          endIso: "2025-02-01T23:59:59.999Z",
+          day: "2026-02-01",
+          startIso: "2026-02-01T00:00:00.000Z",
+          endIso: "2026-02-01T23:59:59.999Z",
           entries: [
             {
               key: "oracle",
               value: {
                 ...mockOracle,
-                timestamp: "2025-02-01T01:15:00.000Z",
+                timestamp: "2026-02-01T01:15:00.000Z",
                 block_hash: "oracle-block-1",
                 block_slot: 1,
               },
@@ -204,7 +204,7 @@ describe("assignTimeWeightsToReserveRatioDailyUTxOs", () => {
               key: "oracle",
               value: {
                 ...mockOracle,
-                timestamp: "2025-02-01T03:00:00.000Z",
+                timestamp: "2026-02-01T03:00:00.000Z",
                 block_hash: "oracle-block-2",
                 block_slot: 2,
               },
@@ -234,15 +234,15 @@ describe("assignTimeWeightsToReserveRatioDailyUTxOs", () => {
     {
       name: "Variant 1 - ordered timestamps starting at dayStart - first weight is 0, last covers to dayEnd",
       chunk: {
-        day: "2025-02-01",
-        startIso: "2025-02-01T00:00:00.000Z",
-        endIso: "2025-02-01T23:59:59.999Z",
+        day: "2026-02-01",
+        startIso: "2026-02-01T00:00:00.000Z",
+        endIso: "2026-02-01T23:59:59.999Z",
         entries: [
           {
             key: "pool",
             value: {
               poolDatum: poolDatumA,
-              timestamp: "2025-02-01T00:00:00.000Z",
+              timestamp: "2026-02-01T00:00:00.000Z",
               block_hash: "pool-block-1",
               block_slot: 1,
             },
@@ -251,7 +251,7 @@ describe("assignTimeWeightsToReserveRatioDailyUTxOs", () => {
             key: "oracle",
             value: {
               oracleDatum: oracleDatumA,
-              timestamp: "2025-02-01T01:00:00.000Z",
+              timestamp: "2026-02-01T01:00:00.000Z",
               block_hash: "oracle-block-1",
               block_slot: 2,
             },
@@ -260,7 +260,7 @@ describe("assignTimeWeightsToReserveRatioDailyUTxOs", () => {
             key: "pool",
             value: {
               poolDatum: poolDatumB,
-              timestamp: "2025-02-01T02:00:00.000Z",
+              timestamp: "2026-02-01T02:00:00.000Z",
               block_hash: "pool-block-2",
               block_slot: 3,
             },
@@ -269,7 +269,7 @@ describe("assignTimeWeightsToReserveRatioDailyUTxOs", () => {
             key: "oracle",
             value: {
               oracleDatum: oracleDatumB,
-              timestamp: "2025-02-01T04:00:00.000Z",
+              timestamp: "2026-02-01T04:00:00.000Z",
               block_hash: "oracle-block-2",
               block_slot: 4,
             },
@@ -281,15 +281,15 @@ describe("assignTimeWeightsToReserveRatioDailyUTxOs", () => {
     {
       name: "Variant 2 - first entry after dayStart (gap at start)",
       chunk: {
-        day: "2025-02-01",
-        startIso: "2025-02-01T00:00:00.000Z",
-        endIso: "2025-02-01T23:59:59.999Z",
+        day: "2026-02-01",
+        startIso: "2026-02-01T00:00:00.000Z",
+        endIso: "2026-02-01T23:59:59.999Z",
         entries: [
           {
             key: "pool",
             value: {
               poolDatum: poolDatumA,
-              timestamp: "2025-02-01T00:30:00.000Z",
+              timestamp: "2026-02-01T00:30:00.000Z",
               block_hash: "pool-block-1",
               block_slot: 1,
             },
@@ -298,7 +298,7 @@ describe("assignTimeWeightsToReserveRatioDailyUTxOs", () => {
             key: "oracle",
             value: {
               oracleDatum: oracleDatumA,
-              timestamp: "2025-02-01T01:00:00.000Z",
+              timestamp: "2026-02-01T01:00:00.000Z",
               block_hash: "oracle-block-1",
               block_slot: 2,
             },
@@ -307,7 +307,7 @@ describe("assignTimeWeightsToReserveRatioDailyUTxOs", () => {
             key: "oracle",
             value: {
               oracleDatum: oracleDatumB,
-              timestamp: "2025-02-01T04:00:00.000Z",
+              timestamp: "2026-02-01T04:00:00.000Z",
               block_hash: "oracle-block-2",
               block_slot: 3,
             },
@@ -322,15 +322,15 @@ describe("assignTimeWeightsToReserveRatioDailyUTxOs", () => {
     {
       name: "Variant 3 - last entry close to dayEnd",
       chunk: {
-        day: "2025-02-01",
-        startIso: "2025-02-01T00:00:00.000Z",
-        endIso: "2025-02-01T23:59:59.999Z",
+        day: "2026-02-01",
+        startIso: "2026-02-01T00:00:00.000Z",
+        endIso: "2026-02-01T23:59:59.999Z",
         entries: [
           {
             key: "pool",
             value: {
               poolDatum: poolDatumA,
-              timestamp: "2025-02-01T00:00:00.000Z",
+              timestamp: "2026-02-01T00:00:00.000Z",
               block_hash: "pool-block-1",
               block_slot: 1,
             },
@@ -339,7 +339,7 @@ describe("assignTimeWeightsToReserveRatioDailyUTxOs", () => {
             key: "oracle",
             value: {
               oracleDatum: oracleDatumA,
-              timestamp: "2025-02-01T23:59:59.000Z",
+              timestamp: "2026-02-01T23:59:59.000Z",
               block_hash: "oracle-block-1",
               block_slot: 2,
             },
@@ -353,15 +353,15 @@ describe("assignTimeWeightsToReserveRatioDailyUTxOs", () => {
     {
       name: "Variant 4 - two consecutive entries with same timestamp",
       chunk: {
-        day: "2025-02-01",
-        startIso: "2025-02-01T00:00:00.000Z",
-        endIso: "2025-02-01T23:59:59.999Z",
+        day: "2026-02-01",
+        startIso: "2026-02-01T00:00:00.000Z",
+        endIso: "2026-02-01T23:59:59.999Z",
         entries: [
           {
             key: "pool",
             value: {
               poolDatum: poolDatumA,
-              timestamp: "2025-02-01T00:00:00.000Z",
+              timestamp: "2026-02-01T00:00:00.000Z",
               block_hash: "pool-block-1",
               block_slot: 1,
             },
@@ -370,7 +370,7 @@ describe("assignTimeWeightsToReserveRatioDailyUTxOs", () => {
             key: "oracle",
             value: {
               oracleDatum: oracleDatumA,
-              timestamp: "2025-02-01T01:00:00.000Z",
+              timestamp: "2026-02-01T01:00:00.000Z",
               block_hash: "oracle-block-1",
               block_slot: 2,
             },
@@ -379,7 +379,7 @@ describe("assignTimeWeightsToReserveRatioDailyUTxOs", () => {
             key: "pool",
             value: {
               poolDatum: poolDatumB,
-              timestamp: "2025-02-01T01:00:00.000Z", // same as previous
+              timestamp: "2026-02-01T01:00:00.000Z", // same as previous
               block_hash: "pool-block-2",
               block_slot: 3,
             },
@@ -423,8 +423,8 @@ describe("assignTimeWeightsToReserveRatioDailyUTxOs", () => {
       calculateReserveRatio(poolDatumA, oracleDatumA).toNumber(),
     )
     expect(entries[1].period).toEqual({
-      start: "2025-02-01T00:30:00.000Z",
-      end: "2025-02-01T01:15:00.000Z",
+      start: "2026-02-01T00:30:00.000Z",
+      end: "2026-02-01T01:15:00.000Z",
     })
 
     // entry[2] (pool @ 02:00) should use PREVIOUS active datums: pool(A) + oracle(A)
@@ -434,8 +434,8 @@ describe("assignTimeWeightsToReserveRatioDailyUTxOs", () => {
       calculateReserveRatio(poolDatumA, oracleDatumA).toNumber(),
     )
     expect(entries[2].period).toEqual({
-      start: "2025-02-01T01:15:00.000Z",
-      end: "2025-02-01T02:00:00.000Z",
+      start: "2026-02-01T01:15:00.000Z",
+      end: "2026-02-01T02:00:00.000Z",
     })
 
     // entry[3] (oracle @ 03:00) should use PREVIOUS active datums: Pool(B) + Oracle(A)
@@ -445,8 +445,8 @@ describe("assignTimeWeightsToReserveRatioDailyUTxOs", () => {
       calculateReserveRatio(poolDatumB, oracleDatumA).toNumber(),
     )
     expect(entries[3].period).toEqual({
-      start: "2025-02-01T03:00:00.000Z",
-      end: "2025-02-01T23:59:59.999Z",
+      start: "2026-02-01T03:00:00.000Z",
+      end: "2026-02-01T23:59:59.999Z",
     })
   })
   //#endregion "TC-3"
@@ -454,15 +454,15 @@ describe("assignTimeWeightsToReserveRatioDailyUTxOs", () => {
   //#region "TC-4"
   test("TC-4: active pool/oracle datums persist across day chunks", () => {
     const day1: DailyUTxOs = {
-      day: "2025-02-01",
-      startIso: "2025-02-01T00:00:00.000Z",
-      endIso: "2025-02-01T23:59:59.999Z",
+      day: "2026-02-01",
+      startIso: "2026-02-01T00:00:00.000Z",
+      endIso: "2026-02-01T23:59:59.999Z",
       entries: [
         {
           key: "pool",
           value: {
             poolDatum: poolDatumA,
-            timestamp: "2025-02-01T22:00:00.000Z",
+            timestamp: "2026-02-01T22:00:00.000Z",
             block_hash: "day1-pool-A",
             block_slot: 10,
           },
@@ -471,7 +471,7 @@ describe("assignTimeWeightsToReserveRatioDailyUTxOs", () => {
           key: "oracle",
           value: {
             oracleDatum: oracleDatumA,
-            timestamp: "2025-02-01T23:00:00.000Z",
+            timestamp: "2026-02-01T23:00:00.000Z",
             block_hash: "day1-oracle-A",
             block_slot: 11,
           },
@@ -480,15 +480,15 @@ describe("assignTimeWeightsToReserveRatioDailyUTxOs", () => {
     }
 
     const day2: DailyUTxOs = {
-      day: "2025-02-02",
-      startIso: "2025-02-02T00:00:00.000Z",
-      endIso: "2025-02-02T23:59:59.999Z",
+      day: "2026-02-02",
+      startIso: "2026-02-02T00:00:00.000Z",
+      endIso: "2026-02-02T23:59:59.999Z",
       entries: [
         {
           key: "oracle",
           value: {
             oracleDatum: oracleDatumB, // oracle updates first on day2
-            timestamp: "2025-02-02T01:00:00.000Z",
+            timestamp: "2026-02-02T01:00:00.000Z",
             block_hash: "day2-oracle-B",
             block_slot: 20,
           },
@@ -497,7 +497,7 @@ describe("assignTimeWeightsToReserveRatioDailyUTxOs", () => {
           key: "pool",
           value: {
             poolDatum: poolDatumB, // pool updates later on day2 (last)
-            timestamp: "2025-02-02T02:00:00.000Z",
+            timestamp: "2026-02-02T02:00:00.000Z",
             block_hash: "day2-pool-B",
             block_slot: 21,
           },
@@ -516,8 +516,8 @@ describe("assignTimeWeightsToReserveRatioDailyUTxOs", () => {
       calculateReserveRatio(poolDatumA, oracleDatumA).toNumber(),
     )
     expect(day2Entries[0].period).toEqual({
-      start: "2025-02-02T00:00:00.000Z",
-      end: "2025-02-02T01:00:00.000Z",
+      start: "2026-02-02T00:00:00.000Z",
+      end: "2026-02-02T01:00:00.000Z",
     })
 
     // Day2 entry[1] (pool @ 02:00) should use compute ratio using Pool(A) + Oracle(B)
@@ -527,8 +527,8 @@ describe("assignTimeWeightsToReserveRatioDailyUTxOs", () => {
       calculateReserveRatio(poolDatumA, oracleDatumB).toNumber(),
     )
     expect(day2Entries[1].period).toEqual({
-      start: "2025-02-02T02:00:00.000Z",
-      end: "2025-02-02T23:59:59.999Z",
+      start: "2026-02-02T02:00:00.000Z",
+      end: "2026-02-02T23:59:59.999Z",
     })
 
     expect(day2Entries[1].weight).toBe(79_199_999)
