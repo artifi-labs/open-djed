@@ -6,8 +6,13 @@ import type {
   OracleUTxoWithDatumAndTimestamp,
   OrderedPoolOracleTxOs,
   PoolUTxoWithDatumAndTimestamp,
+  DailyReserveRatioUTxOsWithWeights,
 } from "../../types"
-import { assignTimeWeightsToReserveRatioDailyUTxOs } from "./reserveRatio"
+import {
+  assignTimeWeightsToReserveRatioDailyUTxOs,
+  getTimeWeightedDailyReserveRatio,
+} from "./reserveRatio"
+import { MS_PER_DAY } from "../../utils"
 
 const createOutputReference = (hash: string, index: bigint) => ({
   txHash: [hash] as [string],
@@ -96,7 +101,7 @@ const dayEntries: OrderedPoolOracleTxOs[] = [
       ...mockPool,
       poolDatum: poolDatumA,
       timestamp: "2025-02-01T00:30:00.000Z",
-      block_hash: "pool-block-1",
+      block_hash: "pool-block-A",
       block_slot: 1,
     },
   },
@@ -106,7 +111,7 @@ const dayEntries: OrderedPoolOracleTxOs[] = [
       ...mockOracle,
       oracleDatum: oracleDatumA,
       timestamp: "2025-02-01T01:15:00.000Z",
-      block_hash: "oracle-block-1",
+      block_hash: "oracle-block-A",
       block_slot: 2,
     },
   },
@@ -116,7 +121,7 @@ const dayEntries: OrderedPoolOracleTxOs[] = [
       ...mockPool,
       poolDatum: poolDatumB,
       timestamp: "2025-02-01T02:00:00.000Z",
-      block_hash: "pool-block-2",
+      block_hash: "pool-block-B",
       block_slot: 3,
     },
   },
@@ -126,7 +131,7 @@ const dayEntries: OrderedPoolOracleTxOs[] = [
       ...mockOracle,
       oracleDatum: oracleDatumB,
       timestamp: "2025-02-01T03:00:00.000Z",
-      block_hash: "oracle-block-2",
+      block_hash: "oracle-block-B",
       block_slot: 4,
     },
   },
@@ -404,51 +409,7 @@ describe("assignTimeWeightsToReserveRatioDailyUTxOs", () => {
 
   //#region "TC-3"
   test("TC-3: active pool/oracle datums are propagated within a single day", () => {
-    const chunk: DailyUTxOs = {
-      day: "2025-02-01",
-      startIso: "2025-02-01T00:00:00.000Z",
-      endIso: "2025-02-01T23:59:59.999Z",
-      entries: [
-        {
-          key: "pool",
-          value: {
-            poolDatum: poolDatumA, // pool(A)
-            timestamp: "2025-02-01T00:00:00.000Z",
-            block_hash: "pool-block-A",
-            block_slot: 1,
-          },
-        },
-        {
-          key: "oracle",
-          value: {
-            oracleDatum: oracleDatumA, // oracle(A)
-            timestamp: "2025-02-01T01:00:00.000Z",
-            block_hash: "oracle-block-A",
-            block_slot: 2,
-          },
-        },
-        {
-          key: "pool",
-          value: {
-            poolDatum: poolDatumB, // pool(B)
-            timestamp: "2025-02-01T02:00:00.000Z",
-            block_hash: "pool-block-B",
-            block_slot: 3,
-          },
-        },
-        {
-          key: "oracle",
-          value: {
-            oracleDatum: oracleDatumB, // oracle(B)
-            timestamp: "2025-02-01T03:00:00.000Z",
-            block_hash: "oracle-block-B",
-            block_slot: 4,
-          },
-        },
-      ] as OrderedPoolOracleTxOs[],
-    }
-
-    const result = assignTimeWeightsToReserveRatioDailyUTxOs([chunk])
+    const result = assignTimeWeightsToReserveRatioDailyUTxOs(dailyChunks)
     const entries = result[0].entries
 
     // First entry still lacks a complete pair.
@@ -462,8 +423,8 @@ describe("assignTimeWeightsToReserveRatioDailyUTxOs", () => {
       calculateReserveRatio(poolDatumA, oracleDatumA).toNumber(),
     )
     expect(entries[1].period).toEqual({
-      start: "2025-02-01T00:00:00.000Z",
-      end: "2025-02-01T01:00:00.000Z",
+      start: "2025-02-01T00:30:00.000Z",
+      end: "2025-02-01T01:15:00.000Z",
     })
 
     // entry[2] (pool @ 02:00) should use PREVIOUS active datums: pool(A) + oracle(A)
@@ -473,7 +434,7 @@ describe("assignTimeWeightsToReserveRatioDailyUTxOs", () => {
       calculateReserveRatio(poolDatumA, oracleDatumA).toNumber(),
     )
     expect(entries[2].period).toEqual({
-      start: "2025-02-01T01:00:00.000Z",
+      start: "2025-02-01T01:15:00.000Z",
       end: "2025-02-01T02:00:00.000Z",
     })
 
@@ -576,3 +537,67 @@ describe("assignTimeWeightsToReserveRatioDailyUTxOs", () => {
   //#endregion "TC-4"
 })
 
+describe("getTimeWeightedDailyReserveRatio", () => {
+  //#region "TC-1"
+  test("TC-1: computes correct time-weighted daily reserve ratio", () => {
+    const resultWeighted =
+      assignTimeWeightsToReserveRatioDailyUTxOs(dailyChunks)
+
+    expect(resultWeighted).toHaveLength(1)
+
+    const weightedDay = resultWeighted[0]
+    if (!weightedDay) {
+      throw new Error("Expected one weighted day chunk but got none")
+    }
+
+    /**
+     * - dayStart = 00:00:00.000Z
+     * - entry[0] @ 00:30:00.000Z => weight = 00:30 - 00:00 = 1,800,000ms
+     * - entry[1] @ 01:15:00.000Z => weight = 01:15 - 00:30 = 2,700,000ms
+     * - entry[2] @ 02:00:00.000Z => weight = 02:00 - 01:15 = 2,700,000ms
+     * - entry[3] @ 03:00:00.000Z => weight = dayEnd(23:59:59.999) - 03:00 = 75,599,999ms
+     */
+    expect(weightedDay.entries.map((e) => e.weight)).toEqual([
+      1_800_000, 2_700_000, 2_700_000, 75_599_999,
+    ])
+
+    const enriched: DailyReserveRatioUTxOsWithWeights = {
+      ...weightedDay,
+      entries: weightedDay.entries.map((e) => {
+        if (e.usedPoolDatum && e.usedOracleDatum) {
+          return {
+            ...e,
+            ratio: calculateReserveRatio(
+              e.usedPoolDatum,
+              e.usedOracleDatum,
+            ).toNumber(),
+          }
+        }
+        return e
+      }),
+    }
+
+    const result = getTimeWeightedDailyReserveRatio([enriched])
+
+    const expected =
+      enriched.entries.reduce((sum, e) => {
+        if (e.ratio === undefined || e.weight <= 0) return sum
+        return sum + e.ratio * e.weight
+      }, 0) / MS_PER_DAY
+
+    expect(result).toHaveLength(1)
+
+    const latest = enriched.entries.at(-1)?.value
+    if (!latest) {
+      throw new Error("Expected at least one entry in the daily chunk")
+    }
+
+    expect(result[0]).toEqual({
+      timestamp: new Date(latest.timestamp),
+      reserveRatio: expected,
+      block: latest.block_hash,
+      slot: latest.block_slot,
+    })
+  })
+  //#endregion "TC-1"
+})
