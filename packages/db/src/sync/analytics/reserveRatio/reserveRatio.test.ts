@@ -48,7 +48,7 @@ const createOracleDatum = (rate: {
       lowerBound: [{ Value: [0n] as [bigint] }, null],
       upperBound: [{ Value: [1n] as [bigint] }, null],
     },
-    expressedIn: "USD",
+    expressedIn: "555344",
   },
   oracleTokenPolicyId: "mock-oracle-policy",
 })
@@ -153,7 +153,7 @@ test.each([
       {
         day: "2025-02-01",
         startIso: "2025-02-01T00:00:00.000Z",
-        endIso: "2025-02-02T00:00:00.000Z",
+        endIso: "2025-02-01T23:59:59.999Z",
         entries: [
           {
             key: "pool",
@@ -183,7 +183,7 @@ test.each([
       {
         day: "2025-02-01",
         startIso: "2025-02-01T00:00:00.000Z",
-        endIso: "2025-02-02T00:00:00.000Z",
+        endIso: "2025-02-01T23:59:59.999Z",
         entries: [
           {
             key: "oracle",
@@ -272,7 +272,6 @@ test.each([
     } satisfies DailyUTxOs,
     expectedWeights: [0, 3_600_000, 3_600_000, 71_999_999],
   },
-
   {
     name: "first entry after dayStart (gap at start) - first weight equals (entryTime - dayStart)",
     chunk: {
@@ -314,7 +313,6 @@ test.each([
     // last: 04:00 -> dayEnd = 19:59:59.999 = 71,999,999ms
     expectedWeights: [1_800_000, 1_800_000, 71_999_999],
   },
-
   {
     name: "last entry close to dayEnd - last weight is small and matches (dayEnd - lastTimestamp)",
     chunk: {
@@ -346,7 +344,6 @@ test.each([
     // last: 23:59:59.999 - 23:59:59.000 = 999ms
     expectedWeights: [0, 999],
   },
-
   {
     name: "two consecutive entries with same timestamp",
     chunk: {
