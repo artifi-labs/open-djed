@@ -21,7 +21,7 @@ import {
   type PoolUTxO,
 } from "@open-djed/txs"
 import { registryByNetwork } from "@open-djed/registry"
-import { Hono } from "hono"
+import { Hono, type Context, type Env, type Input } from "hono"
 import { cors } from "hono/cors"
 import { logger } from "hono/logger"
 import { env } from "./env"
@@ -45,7 +45,7 @@ import {
 import JSONbig from "json-bigint"
 import {
   getOrdersByAddressKeys,
-  getPeriodAdaShenPricesGrouped,
+  getPeriodAdaShenPrices,
   getPeriodDjedMC,
   getPeriodReserveRatio,
 } from "@open-djed/db"
@@ -285,11 +285,53 @@ async function completeTransaction(createOrderFn: () => TxBuilder) {
   }
 }
 
+const historicalDataHandler = <T>(
+  dataFetcher: (period: Period) => Promise<T>,
+) => {
+  return async (
+    c: Context<
+      Env,
+      string,
+      Input & {
+        out: {
+          query: { period: PeriodType }
+        }
+      }
+    >,
+  ) => {
+    let param
+    try {
+      param = c.req.valid("query")
+      if (!param?.period) {
+        throw new ValidationError("Missing period in request.")
+      }
+    } catch (e) {
+      console.error("Invalid or missing request payload.", e)
+      throw new ValidationError("Invalid or missing request payload.")
+    }
+    try {
+      const data = await dataFetcher(param.period.toUpperCase() as Period)
+      return c.json(data)
+    } catch (err) {
+      if (err instanceof AppError) {
+        throw err
+      }
+      console.error("Unhandled error in historical data endpoint:", err)
+      throw new InternalServerError()
+    }
+  }
+}
+
 const tokenSchema = z.enum(["DJED", "SHEN"]).openapi({ example: "DJED" })
 export type TokenType = z.infer<typeof tokenSchema>
 
 const actionSchema = z.enum(["Mint", "Burn"]).openapi({ example: "Mint" })
 export type ActionType = z.infer<typeof actionSchema>
+
+const periodSchema = z
+  .enum(["D", "W", "M", "Y", "All", "d", "w", "m", "y", "all"])
+  .openapi({ example: "D" })
+export type PeriodType = z.infer<typeof periodSchema>
 
 const app = new Hono()
   .basePath("/api")
@@ -709,33 +751,10 @@ const app = new Hono()
     zValidator(
       "query",
       z.object({
-        period: z.enum(["D", "W", "M", "Y", "All", "d", "w", "m", "y", "all"]),
+        period: periodSchema,
       }),
     ),
-    async (c) => {
-      let param
-      try {
-        param = c.req.valid("query")
-        if (!param?.period) {
-          throw new ValidationError("Missing period in request.")
-        }
-      } catch (e) {
-        console.error("Invalid or missing request payload.", e)
-        throw new ValidationError("Invalid or missing request payload.")
-      }
-      try {
-        const reserveRatios = await getPeriodReserveRatio(
-          param.period.toUpperCase() as Period,
-        )
-        return c.json(reserveRatios)
-      } catch (err) {
-        if (err instanceof AppError) {
-          throw err
-        }
-        console.error("Unhandled error in orders endpoint:", err)
-        throw new InternalServerError()
-      }
-    },
+    historicalDataHandler(getPeriodReserveRatio),
   )
   .get(
     "/historical-djed-market-cap",
@@ -773,33 +792,10 @@ const app = new Hono()
     zValidator(
       "query",
       z.object({
-        period: z.enum(["D", "W", "M", "Y", "All", "d", "w", "m", "y", "all"]),
+        period: periodSchema,
       }),
     ),
-    async (c) => {
-      let param
-      try {
-        param = c.req.valid("query")
-        if (!param?.period) {
-          throw new ValidationError("Missing period in request.")
-        }
-      } catch (e) {
-        console.error("Invalid or missing request payload.", e)
-        throw new ValidationError("Invalid or missing request payload.")
-      }
-      try {
-        const djedMarketCaps = await getPeriodDjedMC(
-          param.period.toUpperCase() as Period,
-        )
-        return c.json(djedMarketCaps)
-      } catch (err) {
-        if (err instanceof AppError) {
-          throw err
-        }
-        console.error("Unhandled error in orders endpoint:", err)
-        throw new InternalServerError()
-      }
-    },
+    historicalDataHandler(getPeriodDjedMC),
   )
   .get(
     "/historical-shen-ada-price",
@@ -807,21 +803,12 @@ const app = new Hono()
     zValidator(
       "query",
       z.object({
-        period: z.enum(["D", "W", "M", "Y", "All", "d", "w", "m", "y", "all"]),
+        period: periodSchema,
       }),
     ),
-    async (c) => {
-      const { period } = c.req.valid("query")
-
-      try {
-        return c.json(
-          await getPeriodAdaShenPricesGrouped(period.toUpperCase() as Period),
-        )
-      } catch (err) {
-        console.error(err)
-        throw new InternalServerError()
-      }
-    },
+    historicalDataHandler((period) =>
+      getPeriodAdaShenPrices({ period, grouped: true }),
+    ),
   )
 
 serve(

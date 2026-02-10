@@ -2,7 +2,7 @@ import type { Block } from "typescript"
 import { prisma } from "../../../../lib/prisma"
 import {
   getLatestPriceTimestamp,
-  getPricesByTimestamp,
+  getPriceByTimestamp,
 } from "../../../client/price"
 import { logger } from "../../../utils/logger"
 import { blockfrostFetch } from "../../utils"
@@ -10,10 +10,11 @@ import { blockfrostFetch } from "../../utils"
 export async function rollbackTokenPrices() {
   const latestTokenPrice = await getLatestPriceTimestamp()
   if (!latestTokenPrice || !latestTokenPrice._max.timestamp) return
-  const latestToken = await getPricesByTimestamp(
+  const latestToken = await getPriceByTimestamp(
     "DJED",
     latestTokenPrice._max.timestamp,
   )
+  if (!latestToken) return
 
   const syncIsValid = await blockfrostFetch(`/blocks/${latestToken.block}`)
     .then(() => true)
@@ -29,7 +30,7 @@ export async function rollbackTokenPrices() {
 
   logger.warn(`Checking rollback from: ${latestToken.block}`)
 
-  const storedBlocks = await prisma.price.findMany({
+  const storedBlocks = await prisma.tokenPrice.findMany({
     where: { slot: { lte: latestToken.slot } },
     select: { block: true, slot: true },
     orderBy: { slot: "desc" },
@@ -46,7 +47,7 @@ export async function rollbackTokenPrices() {
     if (exists) {
       logger.warn(`Rollback anchor found at block ${b.block} slot ${b.slot}`)
 
-      await prisma.price.deleteMany({
+      await prisma.tokenPrice.deleteMany({
         where: { slot: { gt: b.slot } },
       })
 

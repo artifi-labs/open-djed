@@ -73,17 +73,21 @@ export function useAnalyticsData() {
 
         if (res.ok) {
           const historicalData = (await res.json()) as ReserveRatioChartEntry[]
+          const updatedHistoricalData = historicalData.map((entry) => ({
+            ...entry,
+            reserveRatio: Number(entry.reserveRatio) * 100,
+          }))
 
           if (reserveRatio !== undefined) {
             const todayKey = new Date().toISOString()
-            historicalData.push({
+            updatedHistoricalData.push({
               id: -1,
               timestamp: todayKey,
               reserveRatio: reserveRatio,
             })
           }
 
-          setReserveRatioData(historicalData)
+          setReserveRatioData(updatedHistoricalData)
         }
       } catch (err) {
         console.error("Action failed:", err)
@@ -115,6 +119,11 @@ export function useAnalyticsData() {
 
         if (res.ok) {
           const historicalData = (await res.json()) as DjedMChartEntry[]
+          historicalData.map((entry) => ({
+            ...entry,
+            usdValue: Number(entry.usdValue),
+            adaValue: Number(entry.adaValue),
+          }))
 
           if (!isLoading) {
             const todayKey = new Date().toISOString()
@@ -156,9 +165,18 @@ export function useAnalyticsData() {
 
         if (!res.ok) return
 
-        const json = await res.json()
-
-        setShenAdaHistoricalData(json as TokenPriceByToken)
+        const historicalData = (await res.json()) as TokenPriceByToken
+        historicalData.ADA = historicalData.ADA.map((entry) => ({
+          ...entry,
+          adaValue: Number(entry.adaValue),
+          usdValue: Number(entry.usdValue),
+        }))
+        historicalData.SHEN = historicalData.SHEN.map((entry) => ({
+          ...entry,
+          adaValue: Number(entry.adaValue),
+          usdValue: Number(entry.usdValue),
+        }))
+        setShenAdaHistoricalData(historicalData)
       } catch (err) {
         console.error("Action failed:", err)
 

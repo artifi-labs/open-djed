@@ -82,28 +82,20 @@ export const assignTimeWeightsToTokenPriceDailyUTxOs = (
       ) {
         currentEntry.usedPoolDatum = previousPoolDatum
         currentEntry.usedOracleDatum = previousOracleDatum
-        currentEntry.djedUsdValue = 1n
-        currentEntry.djedAdaValue = djedADARate(previousOracleDatum)
-          .mul(1000000n)
-          .toBigInt()
-        currentEntry.adaAdaValue = 1n
+        currentEntry.djedUsdValue = 1
+        currentEntry.djedAdaValue = djedADARate(previousOracleDatum).toNumber()
+        currentEntry.adaAdaValue = 1
         currentEntry.adaUsdValue = new Rational(
           previousOracleDatum.oracleFields.adaUSDExchangeRate,
-        )
-          .mul(1000000n)
-          .toBigInt()
+        ).toNumber()
         currentEntry.shenAdaValue = shenADARate(
           previousPoolDatum,
           previousOracleDatum,
-        )
-          .mul(1000000n)
-          .toBigInt()
+        ).toNumber()
         currentEntry.shenUsdValue = shenUSDRate(
           previousPoolDatum,
           previousOracleDatum,
-        )
-          .mul(1000000n)
-          .toBigInt()
+        ).toNumber()
         currentEntry.period = {
           start: intervalStartIso,
           end: intervalEndIso,
@@ -156,11 +148,11 @@ export const getTimeWeightedDailyTokenPrices = (
   }
 
   for (const chunk of dailyChunks) {
-    let weightedDjedADASum = 0n
-    let weightedAdaUSDSum = 0n
-    let weightedShenUSDSum = 0n
-    let weightedShenADASum = 0n
-    let durationSum = 0n
+    let weightedDjedADASum = 0
+    let weightedAdaUSDSum = 0
+    let weightedShenUSDSum = 0
+    let weightedShenADASum = 0
+    let durationSum = 0
 
     for (const entry of chunk.entries) {
       if (
@@ -173,15 +165,15 @@ export const getTimeWeightedDailyTokenPrices = (
         entry.weight <= 0
       )
         continue
-      const duration = BigInt(entry.weight)
+      const duration = entry.weight
       durationSum += duration
-      weightedDjedADASum += BigInt(entry.djedAdaValue) * duration
-      weightedAdaUSDSum += BigInt(entry.adaUsdValue) * duration
-      weightedShenADASum += BigInt(entry.shenAdaValue) * duration
-      weightedShenUSDSum += BigInt(entry.shenUsdValue) * duration
+      weightedDjedADASum += entry.djedAdaValue * duration
+      weightedAdaUSDSum += entry.adaUsdValue * duration
+      weightedShenADASum += entry.shenAdaValue * duration
+      weightedShenUSDSum += entry.shenUsdValue * duration
     }
 
-    if (durationSum === 0n) continue
+    if (durationSum === 0) continue
 
     const latestEntry = chunk.entries.at(-1)
     if (!latestEntry) continue
@@ -195,20 +187,20 @@ export const getTimeWeightedDailyTokenPrices = (
     dailyTokenPrices.ADA.push({
       ...base,
       token: "ADA",
-      adaValue: 1n,
-      usdValue: weightedAdaUSDSum / BigInt(MS_PER_DAY),
+      adaValue: 1,
+      usdValue: weightedAdaUSDSum / MS_PER_DAY,
     })
     dailyTokenPrices.DJED.push({
       ...base,
       token: "DJED",
-      adaValue: weightedDjedADASum / BigInt(MS_PER_DAY),
-      usdValue: 1n,
+      adaValue: weightedDjedADASum / MS_PER_DAY,
+      usdValue: 1,
     })
     dailyTokenPrices.SHEN.push({
       ...base,
       token: "SHEN",
-      adaValue: weightedShenADASum / BigInt(MS_PER_DAY),
-      usdValue: weightedShenUSDSum / BigInt(MS_PER_DAY),
+      adaValue: weightedShenADASum / MS_PER_DAY,
+      usdValue: weightedShenUSDSum / MS_PER_DAY,
     })
   }
 
@@ -235,7 +227,7 @@ export async function processTokenPrices(orderedTxOs: OrderedPoolOracleTxOs[]) {
   }
 
   logger.info(`Inserting ${dataToInsert.length} Token Prices into database...`)
-  await prisma.price.createMany({
+  await prisma.tokenPrice.createMany({
     data: dataToInsert,
     skipDuplicates: true,
   })

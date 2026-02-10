@@ -231,8 +231,8 @@ export type ReserveRatio = {
 
 export type DjedMarketCap = {
   timestamp: Date
-  usdValue: bigint
-  adaValue: bigint
+  usdValue: number
+  adaValue: number
   block: string
   slot: number
   token: "DJED"
@@ -240,8 +240,8 @@ export type DjedMarketCap = {
 
 export type TokenPrice = {
   timestamp: Date
-  usdValue: bigint
-  adaValue: bigint
+  usdValue: number
+  adaValue: number
   block: string
   slot: number
   token: AllTokens
@@ -272,8 +272,8 @@ export type DailyReserveRatioUTxOsWithWeights = Omit<DailyUTxOs, "entries"> & {
 
 export type WeightedDjedMarketCapEntry = OrderedPoolOracleTxOs & {
   weight: number
-  usdValue?: bigint
-  adaValue?: bigint
+  usdValue?: number
+  adaValue?: number
   period?: {
     start: string
     end: string
@@ -288,12 +288,12 @@ export type DailyDjedMarketCapUTxOsWithWeights = Omit<DailyUTxOs, "entries"> & {
 
 export type WeightedTokenPriceEntry = OrderedPoolOracleTxOs & {
   weight: number
-  djedUsdValue?: bigint
-  djedAdaValue?: bigint
-  shenUsdValue?: bigint
-  shenAdaValue?: bigint
-  adaUsdValue?: bigint
-  adaAdaValue?: bigint
+  djedUsdValue?: number
+  djedAdaValue?: number
+  shenUsdValue?: number
+  shenAdaValue?: number
+  adaUsdValue?: number
+  adaAdaValue?: number
   period?: {
     start: string
     end: string

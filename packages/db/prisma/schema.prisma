@@ -72,20 +72,20 @@ model MarketCap {
   id        Int            @id @default(autoincrement())
   timestamp DateTime       @db.Date
   token     TokenMarketCap
-  usdValue  BigInt
-  adaValue  BigInt
+  usdValue  Decimal
+  adaValue  Decimal
   block     String // block hash
   slot      BigInt // block slot
 
   @@unique([token, timestamp])
 }
 
-model Price {
+model TokenPrice {
   id        Int            @id @default(autoincrement())
   timestamp DateTime       @db.Date
   token     AllTokens
-  usdValue  BigInt
-  adaValue  BigInt
+  usdValue  Decimal
+  adaValue  Decimal
   block     String // block hash
   slot      BigInt // block slot
 

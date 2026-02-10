@@ -133,7 +133,7 @@ export async function updateAnalytics() {
     (await prisma.marketCap.count({
       where: { token: "DJED" },
     })) === 0
-  const isPriceEmpty = (await prisma.price.count()) === 0
+  const isPriceEmpty = (await prisma.tokenPrice.count()) === 0
 
   const toUpdate: DbProcessor[] = [
     {

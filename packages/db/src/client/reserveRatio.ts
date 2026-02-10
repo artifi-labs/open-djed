@@ -1,4 +1,3 @@
-import { Prisma } from "../../generated/prisma/client"
 import { prisma } from "../../lib/prisma"
 import type { Period } from "../sync/types"
 import { getStartIso } from "../sync/utils"
@@ -6,21 +5,19 @@ import { getStartIso } from "../sync/utils"
 export const getPeriodReserveRatio = (period: Period) => {
   const startIso = getStartIso(period)
 
-  return prisma.$queryRaw<
-    {
-      id: number
-      timestamp: Date
-      reserveRatio: number
-    }[]
-  >`
-    SELECT
-      id,
-      timestamp,
-      ("reserveRatio" * 100)::float AS "reserveRatio"
-    FROM "ReserveRatio"
-    ${startIso ? Prisma.sql`WHERE timestamp >= ${startIso}` : Prisma.empty}
-    ORDER BY timestamp ASC
-  `
+  return prisma.reserveRatio.findMany({
+    where: {
+      ...(startIso && { timestamp: { gte: startIso } }),
+    },
+    select: {
+      id: true,
+      timestamp: true,
+      reserveRatio: true,
+    },
+    orderBy: {
+      timestamp: "asc",
+    },
+  })
 }
 
 export const getLatestReserveRatio = async () => {

@@ -1,151 +1,108 @@
-import { Prisma } from "../../generated/prisma/client"
+import type { AllTokens } from "../../generated/prisma/client"
 import { prisma } from "../../lib/prisma"
 import type { Period, Tokens } from "../sync/types"
 import { getStartIso } from "../sync/utils"
 
-export const getPeriodPricesForToken = (token: Tokens, period?: Period) => {
+export const getPeriodPricesForAllTokens = async (
+  period?: Period,
+  token?: Tokens,
+) => {
   const startIso = period ? getStartIso(period) : undefined
 
-  return prisma.$queryRaw<
-    {
-      id: number
-      timestamp: Date
-      token: string
-      usdValue: bigint
-      adaValue: bigint
-    }[]
-  >`
-    SELECT
-      id,
-      timestamp,
-      token,
-      ("usdValue" / 1000000.0)::float AS "usdValue",
-      ("adaValue" / 1000000.0)::float AS "adaValue"
-    FROM "Price"
-    WHERE token = ${token}
-    ${startIso ? Prisma.sql`AND timestamp >= ${startIso}` : Prisma.empty}
-    ORDER BY timestamp ASC
-  `
+  const entries = await prisma.tokenPrice.findMany({
+    where: {
+      ...(token && { token }),
+      ...(startIso && { timestamp: { gte: startIso } }),
+    },
+    select: {
+      id: true,
+      timestamp: true,
+      token: true,
+      usdValue: true,
+      adaValue: true,
+    },
+    orderBy: [{ token: "asc" }, { timestamp: "asc" }],
+  })
+
+  if (!token) {
+    return entries.reduce<Record<Tokens, typeof entries>>(
+      (acc, row) => {
+        acc[row.token as Tokens].push(row)
+        return acc
+      },
+      {
+        ADA: [],
+        DJED: [],
+        SHEN: [],
+      },
+    )
+  }
+  return entries
 }
 
-export const getPeriodPricesForAllTokens = (period?: Period) => {
+export async function getPeriodAdaShenPrices(options?: {
+  period?: Period
+  token?: "ADA" | "SHEN"
+  grouped?: boolean
+}) {
+  const { period, token, grouped = false } = options ?? {}
   const startIso = period ? getStartIso(period) : undefined
 
-  return prisma.$queryRaw<
-    {
-      id: number
-      timestamp: Date
-      token: Tokens
-      usdValue: number
-      adaValue: number
-    }[]
-  >`
-    SELECT
-      id,
-      timestamp,
-      token,
-      ("usdValue" / 1000000.0)::float AS "usdValue",
-      ("adaValue" / 1000000.0)::float AS "adaValue"
-    FROM "Price"
-    ${startIso ? Prisma.sql`WHERE timestamp >= ${startIso}` : Prisma.empty}
-    ORDER BY token ASC, timestamp ASC
-  `
-}
-
-export async function getPeriodPricesGroupedByToken(period?: Period) {
-  const rows = await getPeriodPricesForAllTokens(period)
-
-  return rows.reduce<Record<Tokens, typeof rows>>(
-    (acc, row) => {
-      acc[row.token].push(row)
-      return acc
+  const rows = await prisma.tokenPrice.findMany({
+    where: {
+      token: token ? token : { in: ["ADA", "SHEN"] },
+      ...(startIso && { timestamp: { gte: startIso } }),
     },
-    {
-      ADA: [],
-      DJED: [],
-      SHEN: [],
+    select: {
+      id: true,
+      timestamp: true,
+      token: true,
+      usdValue: true,
+      adaValue: true,
     },
-  )
-}
+    orderBy: [{ token: "asc" }, { timestamp: "asc" }],
+  })
 
-export const getPeriodPricesForAdaAndShen = (period?: Period) => {
-  const startIso = period ? getStartIso(period) : undefined
+  if (grouped || !token) {
+    return rows.reduce(
+      (acc, row) => {
+        acc[row.token as "ADA" | "SHEN"].push(row)
+        return acc
+      },
+      {
+        ADA: [],
+        SHEN: [],
+      } as Record<"ADA" | "SHEN", typeof rows>,
+    )
+  }
 
-  return prisma.$queryRaw<
-    {
-      id: number
-      timestamp: Date
-      token: "ADA" | "SHEN"
-      usdValue: number
-      adaValue: number
-    }[]
-  >`
-    SELECT
-      id,
-      timestamp,
-      token,
-      ("usdValue" / 1000000.0)::float AS "usdValue",
-      ("adaValue" / 1000000.0)::float AS "adaValue"
-    FROM "Price"
-    WHERE token IN ('ADA', 'SHEN')
-    ${startIso ? Prisma.sql`AND timestamp >= ${startIso}` : Prisma.empty}
-    ORDER BY token ASC, timestamp ASC
-  `
-}
-
-export async function getPeriodAdaShenPricesGrouped(period?: Period): Promise<
-  Record<
-    "ADA" | "SHEN",
-    {
-      id: number
-      timestamp: Date
-      token: "ADA" | "SHEN"
-      usdValue: number
-      adaValue: number
-    }[]
-  >
-> {
-  const rows = await getPeriodPricesForAdaAndShen(period)
-
-  return rows.reduce(
-    (acc, row) => {
-      acc[row.token].push(row)
-      return acc
-    },
-    {
-      ADA: [],
-      SHEN: [],
-    } as Record<"ADA" | "SHEN", typeof rows>,
-  )
+  return rows
 }
 
 export const getLatestPriceTimestamp = async () =>
-  await prisma.price.aggregate({
+  await prisma.tokenPrice.aggregate({
     _max: {
       timestamp: true,
     },
   })
 
-export const getPricesByTimestamp = (token: string, timestamp: Date) => {
-  return prisma.$queryRaw<{
-    id: number
-    timestamp: Date
-    token: string
-    usdValue: bigint
-    adaValue: bigint
-    block: string
-    slot: bigint
-  }>`
-    SELECT
-      timestamp,
+export const getPriceByTimestamp = (token: AllTokens, timestamp: Date) => {
+  return prisma.tokenPrice.findFirst({
+    where: {
       token,
-      ("usdValue" / 1000000.0)::float AS "usdValue",
-      ("adaValue" / 1000000.0)::float AS "adaValue",
-      block,
-      slot
-    FROM "Price"
-    WHERE token = ${token}
-      AND timestamp = ${timestamp}
-    ORDER BY timestamp ASC
-  `
+      timestamp,
+    },
+    select: {
+      id: true,
+      timestamp: true,
+      token: true,
+      usdValue: true,
+      adaValue: true,
+      block: true,
+      slot: true,
+    },
+    orderBy: {
+      timestamp: "asc",
+    },
+  })
 }
