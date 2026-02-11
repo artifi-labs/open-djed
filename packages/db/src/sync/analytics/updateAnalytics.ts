@@ -1,3 +1,4 @@
+import { TokenMarketCap } from "../../../generated/prisma/enums"
 import { prisma } from "../../../lib/prisma"
 import { logger } from "../../utils/logger"
 import type { OrderedPoolOracleTxOs } from "../types"
@@ -10,8 +11,10 @@ import {
 import {
   processDjedMarketCap,
   updateDjedMC,
-} from "./marketCap/djed/djedMarketCap"
-import { rollbackDjedMC } from "./marketCap/djed/rollbackDjedMC"
+  processShenMarketCap,
+  updateShenMC,
+} from "./marketCap/marketCap"
+import { rollbackTokenMarketCap } from "./marketCap/rollbackTokenMarketCap"
 import { rollbackTokenPrices } from "./price/rollbackTokenPrice"
 import {
   processTokenPrices,
@@ -32,7 +35,8 @@ type DbProcessor = {
 async function handleRollbacks() {
   await Promise.all([
     rollbackReserveRatios(),
-    rollbackDjedMC(),
+    rollbackTokenMarketCap(TokenMarketCap.DJED),
+    rollbackTokenMarketCap(TokenMarketCap.SHEN),
     rollbackTokenPrices(),
   ])
 }
@@ -133,6 +137,10 @@ export async function updateAnalytics() {
     (await prisma.marketCap.count({
       where: { token: "DJED" },
     })) === 0
+  const isShenMCEmpty =
+    (await prisma.marketCap.count({
+      where: { token: "SHEN" },
+    })) === 0
   const isPriceEmpty = (await prisma.tokenPrice.count()) === 0
 
   const toUpdate: DbProcessor[] = [
@@ -145,6 +153,11 @@ export async function updateAnalytics() {
       isEmpty: isDjedMCEmpty,
       populateDbProcessor: processDjedMarketCap,
       updateDbProcessor: updateDjedMC,
+    },
+    {
+      isEmpty: isShenMCEmpty,
+      populateDbProcessor: processShenMarketCap,
+      updateDbProcessor: updateShenMC,
     },
     {
       isEmpty: isPriceEmpty,

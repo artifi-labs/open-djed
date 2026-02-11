@@ -46,9 +46,10 @@ import JSONbig from "json-bigint"
 import {
   getOrdersByAddressKeys,
   getPeriodAdaShenPrices,
-  getPeriodDjedMC,
+  getPeriodMarketCap,
   getPeriodReserveRatio,
 } from "@open-djed/db"
+import { TokenMarketCap } from "@open-djed/db/generated/prisma/enums"
 import { type Order, type Period } from "@open-djed/db"
 export type { Order } from "@open-djed/db"
 
@@ -332,6 +333,47 @@ const periodSchema = z
   .enum(["D", "W", "M", "Y", "All", "d", "w", "m", "y", "all"])
   .openapi({ example: "D" })
 export type PeriodType = z.infer<typeof periodSchema>
+
+const marketCapQuerySchema = z.object({
+  period: periodSchema,
+  token: tokenSchema.optional(),
+})
+
+const historicalMarketCapHandler = async (
+  c: Context<
+    Env,
+    string,
+    Input & {
+      out: {
+        query: z.infer<typeof marketCapQuerySchema>
+      }
+    }
+  >,
+) => {
+  let param
+  try {
+    param = c.req.valid("query")
+    if (!param?.period) {
+      throw new ValidationError("Missing period in request.")
+    }
+  } catch (e) {
+    console.error("Invalid or missing request payload.", e)
+    throw new ValidationError("Invalid or missing request payload.")
+  }
+
+  try {
+    const normalizedPeriod = param.period.toUpperCase() as Period
+    const token = param.token ?? TokenMarketCap.DJED
+    const data = await getPeriodMarketCap(normalizedPeriod, token)
+    return c.json(data)
+  } catch (err) {
+    if (err instanceof AppError) {
+      throw err
+    }
+    console.error("Unhandled error in historical data endpoint:", err)
+    throw new InternalServerError()
+  }
+}
 
 const app = new Hono()
   .basePath("/api")
@@ -757,17 +799,17 @@ const app = new Hono()
     historicalDataHandler(getPeriodReserveRatio),
   )
   .get(
-    "/historical-djed-market-cap",
+    "/historical-market-cap",
     cacheMiddleware,
     describeRoute({
-      description: "Get the historical djed market cap",
+      description: "Get the historical market cap for DJED or SHEN",
       tags: ["Action"],
       responses: {
         200: {
-          description: "Successfully got the historical djed market cap",
+          description: "Successfully got the historical market cap",
           content: {
             "text/plain": {
-              example: "djed market cap",
+              example: "DJED market cap",
             },
           },
         },
@@ -789,13 +831,8 @@ const app = new Hono()
         },
       },
     }),
-    zValidator(
-      "query",
-      z.object({
-        period: periodSchema,
-      }),
-    ),
-    historicalDataHandler(getPeriodDjedMC),
+    zValidator("query", marketCapQuerySchema),
+    historicalMarketCapHandler,
   )
   .get(
     "/historical-shen-ada-price",
