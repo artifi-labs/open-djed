@@ -9,6 +9,7 @@ import {
   djedADABurnRate,
   adaDJEDRate,
   toAdaUsdExchangeRate,
+  shenUSDRate,
 } from "./rate"
 
 test("adaSHENRate", () => {
@@ -54,6 +55,29 @@ test("shenADARate", () => {
   ).toEqual({
     numerator: 5623088872975956835n,
     denominator: 5088149833027271553n,
+  })
+})
+
+test("shenUSDRate", () => {
+  expect(
+    shenUSDRate(
+      {
+        adaInReserve: 31240837671805n,
+        djedInCirculation: 3041800103658n,
+        shenInCirculation: 23950207971999n,
+      },
+      {
+        oracleFields: {
+          adaUSDExchangeRate: {
+            denominator: 1000000n,
+            numerator: 637341n,
+          },
+        },
+      },
+    ).simplify(),
+  ).toEqual({
+    numerator: 1124617774595191367n,
+    denominator: 1596680531466600000n,
   })
 })
 

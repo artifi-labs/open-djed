@@ -12,6 +12,11 @@ import {
   updateDjedMC,
 } from "./marketCap/djed/djedMarketCap"
 import { rollbackDjedMC } from "./marketCap/djed/rollbackDjedMC"
+import { rollbackTokenPrices } from "./price/rollbackTokenPrice"
+import {
+  processTokenPrices,
+  updateTokenPrices,
+} from "./price/updateTokenPrices"
 import {
   processReserveRatio,
   updateReserveRatios,
@@ -25,7 +30,11 @@ type DbProcessor = {
 }
 
 async function handleRollbacks() {
-  await Promise.all([rollbackReserveRatios(), rollbackDjedMC()])
+  await Promise.all([
+    rollbackReserveRatios(),
+    rollbackDjedMC(),
+    rollbackTokenPrices(),
+  ])
 }
 
 // with this we can reuse the same data for every analytics process
@@ -47,6 +56,13 @@ async function handlePopulateDb(toUpdate: DbProcessor[]) {
     return
   }
 
+  // await writeOrderedTxOsToFile(orderedTxOs, "./orderedTxOs.json")
+
+  // const orderedTxOs = await readOrderedTxOsFromFile("./orderedTxOs.json")
+  // if (!orderedTxOs) {
+  //   logger.warn("No orderedTxOs read from file — skipping DB population")
+  //   return
+  // }
   const end = Date.now() - start
   logger.info(
     `=== Fetching data to populate database took sec: ${(end / 1000).toFixed(2)} ===`,
@@ -117,6 +133,7 @@ export async function updateAnalytics() {
     (await prisma.marketCap.count({
       where: { token: "DJED" },
     })) === 0
+  const isPriceEmpty = (await prisma.tokenPrice.count()) === 0
 
   const toUpdate: DbProcessor[] = [
     {
@@ -128,6 +145,11 @@ export async function updateAnalytics() {
       isEmpty: isDjedMCEmpty,
       populateDbProcessor: processDjedMarketCap,
       updateDbProcessor: updateDjedMC,
+    },
+    {
+      isEmpty: isPriceEmpty,
+      populateDbProcessor: processTokenPrices,
+      updateDbProcessor: updateTokenPrices,
     },
   ]
 

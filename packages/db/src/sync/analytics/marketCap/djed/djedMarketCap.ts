@@ -78,11 +78,11 @@ export const assignTimeWeightsToDailyDjedMCUTxOs = (
       ) {
         currentEntry.usedPoolDatum = previousPoolDatum
         currentEntry.usedOracleDatum = previousOracleDatum
-        currentEntry.usdValue = djedUSDMarketCap(previousPoolDatum).toBigInt()
+        currentEntry.usdValue = djedUSDMarketCap(previousPoolDatum).toNumber()
         currentEntry.adaValue = djedADAMarketCap(
           previousPoolDatum,
           previousOracleDatum,
-        ).toBigInt()
+        ).toNumber()
         currentEntry.period = {
           start: intervalStartIso,
           end: intervalEndIso,
@@ -133,9 +133,9 @@ export const getTimeWeightedDailyDjedMC = (
   const dailyReserveRatios: DjedMarketCap[] = []
 
   for (const chunk of dailyChunks) {
-    let weightedUSDSum = 0n
-    let weightedADASum = 0n
-    let durationSum = 0n
+    let weightedUSDSum = 0
+    let weightedADASum = 0
+    let durationSum = 0
 
     for (const entry of chunk.entries) {
       if (
@@ -144,16 +144,16 @@ export const getTimeWeightedDailyDjedMC = (
         entry.adaValue === undefined
       )
         continue
-      const duration = BigInt(entry.weight)
+      const duration = entry.weight
       durationSum += duration
-      weightedUSDSum += BigInt(entry.usdValue) * duration
-      weightedADASum += BigInt(entry.adaValue) * duration
+      weightedUSDSum += entry.usdValue * duration
+      weightedADASum += entry.adaValue * duration
     }
 
-    if (durationSum === 0n) continue
+    if (durationSum === 0) continue
 
-    const averageUSDValue = weightedUSDSum / BigInt(MS_PER_DAY)
-    const averageADAValue = weightedADASum / BigInt(MS_PER_DAY)
+    const averageUSDValue = weightedUSDSum / MS_PER_DAY
+    const averageADAValue = weightedADASum / MS_PER_DAY
 
     const latestEntry = chunk.entries.at(-1)
     if (!latestEntry) continue
