@@ -7,7 +7,7 @@ import { ChartTooltip } from "@/components/charts/tooltips/ChartTooltip"
 import type { ChartData } from "recharts/types/state/chartDataSlice"
 
 type FinanceLineChartProps = {
-  title: string
+  title?: string
   data: ChartData | undefined
   xKey: string
   lines: {
@@ -21,7 +21,7 @@ type FinanceLineChartProps = {
 }
 
 export const FinanceLineChart: React.FC<FinanceLineChartProps> = ({
-  title,
+  title = "",
   data,
   xKey,
   lines,

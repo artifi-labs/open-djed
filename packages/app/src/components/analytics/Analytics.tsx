@@ -1,5 +1,6 @@
 "use client"
 
+import { useReserveDetails } from "@/hooks/useReserveDetails"
 import ChartCard from "../card/ChartCard"
 import { DjedMarketCapChart } from "./charts/DjedMarketCapChart"
 import { ReserveRatioOverTimeChart } from "./charts/ReserveRatioOverTimeChart"
@@ -24,6 +25,8 @@ const AnalyticsPage = () => {
     shenAdaCurrency,
     setShenAdaCurrency,
   } = useAnalyticsData()
+  const { reserveRatio, reserveBounds, percentage, reserveChartWarning } =
+    useReserveDetails()
   return (
     <div className="desktop:pt-32 desktop:pb-64 mx-auto flex w-full max-w-280 flex-1 flex-col">
       <div className="px-page-margin flex w-full flex-col items-center justify-center gap-8 py-32">
@@ -40,12 +43,31 @@ const AnalyticsPage = () => {
           period={reserveRatioPeriod}
           periodItems={[...CHART_PERIOD_OPTIONS]}
           onPeriodChange={setReserveRatioPeriod}
+          title="Reserve Ratio Over Time"
+          warning={
+            reserveChartWarning
+              ? {
+                  message: reserveChartWarning,
+                  type: "warning",
+                }
+              : undefined
+          }
+          info={
+            reserveBounds !== "in-bounds"
+              ? {
+                  currentRatio: Number(reserveRatio.toFixed(0)),
+                  percentage: Number(percentage.toFixed(0)),
+                  type: reserveBounds,
+                }
+              : undefined
+          }
         >
           <ReserveRatioOverTimeChart data={reserveRatioData} />
         </ChartCard>
       </div>
       <div className="desktop:grid-cols-2 desktop:gap-24 grid grid-cols-1 gap-16 py-24">
         <ChartCard
+          title="DJED Market Cap"
           period={djedMCPeriod}
           periodItems={[...CHART_PERIOD_OPTIONS]}
           onPeriodChange={setDjedMCPeriod}
@@ -59,6 +81,7 @@ const AnalyticsPage = () => {
           currency={shenAdaCurrency}
           onCurrencyChange={setShenAdaCurrency}
           currencyItems={[...CURRENCY_OPTIONS]}
+          title="SHEN Price & ADA Price"
         >
           <ShenAdaPriceChart
             data={shenAdaHistoricalData}
