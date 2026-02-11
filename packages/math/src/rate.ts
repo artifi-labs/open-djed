@@ -10,6 +10,12 @@ export type PartialPoolDatum = Pick<
   "adaInReserve" | "djedInCirculation" | "shenInCirculation"
 >
 
+export const shenUSDRate = (
+  pool: PartialPoolDatum,
+  oracle: PartialOracleDatum,
+): Rational =>
+  shenADARate(pool, oracle).mul(oracle.oracleFields.adaUSDExchangeRate)
+
 export const shenADARate = (
   { adaInReserve, djedInCirculation, shenInCirculation }: PartialPoolDatum,
   { oracleFields: { adaUSDExchangeRate } }: PartialOracleDatum,

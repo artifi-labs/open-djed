@@ -21,7 +21,7 @@ import {
   type PoolUTxO,
 } from "@open-djed/txs"
 import { registryByNetwork } from "@open-djed/registry"
-import { Hono } from "hono"
+import { Hono, type Context, type Env, type Input } from "hono"
 import { cors } from "hono/cors"
 import { logger } from "hono/logger"
 import { env } from "./env"
@@ -43,8 +43,13 @@ import {
   ValidationError,
 } from "./errors"
 import JSONbig from "json-bigint"
-import { getOrdersByAddressKeys } from "@open-djed/db"
-import type { Order } from "@open-djed/db"
+import {
+  getOrdersByAddressKeys,
+  getPeriodAdaShenPrices,
+  getPeriodDjedMC,
+  getPeriodReserveRatio,
+} from "@open-djed/db"
+import { type Order, type Period } from "@open-djed/db"
 export type { Order } from "@open-djed/db"
 
 //NOTE: We only need this cache for transactions, not for other requests. Using this for `protocol-data` sligltly increases the response time.
@@ -280,11 +285,53 @@ async function completeTransaction(createOrderFn: () => TxBuilder) {
   }
 }
 
+const historicalDataHandler = <T>(
+  dataFetcher: (period: Period) => Promise<T>,
+) => {
+  return async (
+    c: Context<
+      Env,
+      string,
+      Input & {
+        out: {
+          query: { period: PeriodType }
+        }
+      }
+    >,
+  ) => {
+    let param
+    try {
+      param = c.req.valid("query")
+      if (!param?.period) {
+        throw new ValidationError("Missing period in request.")
+      }
+    } catch (e) {
+      console.error("Invalid or missing request payload.", e)
+      throw new ValidationError("Invalid or missing request payload.")
+    }
+    try {
+      const data = await dataFetcher(param.period.toUpperCase() as Period)
+      return c.json(data)
+    } catch (err) {
+      if (err instanceof AppError) {
+        throw err
+      }
+      console.error("Unhandled error in historical data endpoint:", err)
+      throw new InternalServerError()
+    }
+  }
+}
+
 const tokenSchema = z.enum(["DJED", "SHEN"]).openapi({ example: "DJED" })
 export type TokenType = z.infer<typeof tokenSchema>
 
 const actionSchema = z.enum(["Mint", "Burn"]).openapi({ example: "Mint" })
 export type ActionType = z.infer<typeof actionSchema>
+
+const periodSchema = z
+  .enum(["D", "W", "M", "Y", "All", "d", "w", "m", "y", "all"])
+  .openapi({ example: "D" })
+export type PeriodType = z.infer<typeof periodSchema>
 
 const app = new Hono()
   .basePath("/api")
@@ -667,6 +714,101 @@ const app = new Hono()
         throw new InternalServerError()
       }
     },
+  )
+  .get(
+    "/historical-reserve-ratio",
+    cacheMiddleware,
+    describeRoute({
+      description: "Get the historical reserve ratio",
+      tags: ["Action"],
+      responses: {
+        200: {
+          description: "Successfully got the historical reserve ratio",
+          content: {
+            "text/plain": {
+              example: "reserve ratio",
+            },
+          },
+        },
+        400: {
+          description: "Bad Request",
+          content: {
+            "text/plain": {
+              example: "Bad Request",
+            },
+          },
+        },
+        500: {
+          description: "Internal Server Error",
+          content: {
+            "text/plain": {
+              example: "Internal Server Error",
+            },
+          },
+        },
+      },
+    }),
+    zValidator(
+      "query",
+      z.object({
+        period: periodSchema,
+      }),
+    ),
+    historicalDataHandler(getPeriodReserveRatio),
+  )
+  .get(
+    "/historical-djed-market-cap",
+    cacheMiddleware,
+    describeRoute({
+      description: "Get the historical djed market cap",
+      tags: ["Action"],
+      responses: {
+        200: {
+          description: "Successfully got the historical djed market cap",
+          content: {
+            "text/plain": {
+              example: "djed market cap",
+            },
+          },
+        },
+        400: {
+          description: "Bad Request",
+          content: {
+            "text/plain": {
+              example: "Bad Request",
+            },
+          },
+        },
+        500: {
+          description: "Internal Server Error",
+          content: {
+            "text/plain": {
+              example: "Internal Server Error",
+            },
+          },
+        },
+      },
+    }),
+    zValidator(
+      "query",
+      z.object({
+        period: periodSchema,
+      }),
+    ),
+    historicalDataHandler(getPeriodDjedMC),
+  )
+  .get(
+    "/historical-shen-ada-price",
+    cacheMiddleware,
+    zValidator(
+      "query",
+      z.object({
+        period: periodSchema,
+      }),
+    ),
+    historicalDataHandler((period) =>
+      getPeriodAdaShenPrices({ period, grouped: true }),
+    ),
   )
 
 serve(
