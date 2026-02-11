@@ -28,30 +28,9 @@ export const DjedMarketCapChart: React.FC<DjedMarketCapChartProps> = ({
   const { isMobile } = useViewport()
   const valueKey = currency === "USD" ? "usdValue" : "adaValue"
 
-  const { rows, xTickFormatter } = useMemo(() => {
+  const { rows } = useMemo(() => {
     if (!data?.length) {
-      return { rows: [], xTickFormatter: undefined }
-    }
-
-    const totalDays = data.length
-
-    const formatter = (value: string | number, index?: number) => {
-      const date = new Date(value)
-      if (isNaN(date.getTime())) return String(value)
-
-      const month = date.toLocaleString(undefined, { month: "short" })
-      const year = date.getFullYear()
-
-      if (totalDays <= 365) {
-        return date.toLocaleDateString(undefined, {
-          month: "short",
-          day: "numeric",
-        })
-      }
-
-      if (index === 0) return `${month} ${year}`
-
-      return totalDays > 365 * 2 ? String(year) : month
+      return { rows: [] }
     }
 
     const mapped: ChartRow[] = data.map((entry) => ({
@@ -60,7 +39,7 @@ export const DjedMarketCapChart: React.FC<DjedMarketCapChartProps> = ({
       usdValue: entry.usdValue,
     }))
 
-    return { rows: mapped, xTickFormatter: formatter }
+    return { rows: mapped }
   }, [data, isMobile])
 
   const formatAxisValue = (val: number) => {
@@ -91,7 +70,6 @@ export const DjedMarketCapChart: React.FC<DjedMarketCapChartProps> = ({
       data={rows}
       xKey="date"
       lines={lines}
-      xTickFormatter={xTickFormatter}
       yTickFormatter={yTickFormatter}
     />
   )

@@ -73,6 +73,8 @@ export function useAnalyticsData() {
 
         if (res.ok) {
           const historicalData = (await res.json()) as ReserveRatioChartEntry[]
+          if (period === "All") historicalData.shift()
+
           const updatedHistoricalData = historicalData.map((entry) => ({
             ...entry,
             reserveRatio: Number(entry.reserveRatio) * 100,
@@ -119,6 +121,8 @@ export function useAnalyticsData() {
 
         if (res.ok) {
           const historicalData = (await res.json()) as DjedMChartEntry[]
+          if (period === "All") historicalData.shift()
+
           historicalData.map((entry) => ({
             ...entry,
             usdValue: Number(entry.usdValue),
@@ -166,6 +170,11 @@ export function useAnalyticsData() {
         if (!res.ok) return
 
         const historicalData = (await res.json()) as TokenPriceByToken
+        if (period === "All") {
+          historicalData.ADA.shift()
+          historicalData.SHEN.shift()
+        }
+
         historicalData.ADA = historicalData.ADA.map((entry) => ({
           ...entry,
           adaValue: Number(entry.adaValue),

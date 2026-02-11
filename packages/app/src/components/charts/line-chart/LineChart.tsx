@@ -9,7 +9,7 @@ import {
   type LineProps as BaseLineProps,
 } from "recharts"
 import React from "react"
-import type { Percent } from "recharts/types/util/types"
+import type { AxisTick, Percent } from "recharts/types/util/types"
 import { ChartLegend } from "../legend/ChartLegend"
 import { ChartTooltip } from "../tooltips/ChartTooltip"
 
@@ -23,6 +23,7 @@ type LineChartProps = {
   children?: React.ReactNode
   width?: Percent | number
   height?: Percent | number
+  yTicks?: AxisTick[]
 } & Omit<BaseLineProps, "children">
 
 export function LineChart({
@@ -35,6 +36,7 @@ export function LineChart({
   xKey = "x",
   yTickFormatter,
   xTickFormatter,
+  yTicks,
   children,
 }: LineChartProps) {
   const childrenArray = React.Children.toArray(children)
@@ -76,7 +78,6 @@ export function LineChart({
               dataKey={xKey}
               axisLine={false}
               tickLine={false}
-              minTickGap={5}
               padding={{ left: 5, right: 5 }}
               tick={{
                 dy: 12,
@@ -86,6 +87,7 @@ export function LineChart({
                 fontWeight: 400,
               }}
               tickFormatter={xTickFormatter}
+              interval="preserveStart"
             />
           )}
 
@@ -94,6 +96,7 @@ export function LineChart({
               width={24}
               axisLine={false}
               tickLine={false}
+              ticks={yTicks || undefined}
               tickFormatter={yTickFormatter}
               tick={{
                 fontSize: 10,

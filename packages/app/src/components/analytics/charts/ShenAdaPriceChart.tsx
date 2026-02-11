@@ -23,36 +23,15 @@ export const ShenAdaPriceChart: React.FC<ShenAdaPriceChartProps> = ({
 }) => {
   const { isMobile } = useViewport()
 
-  const { rows, xTickFormatter } = useMemo(() => {
+  const { rows } = useMemo(() => {
     if (!data?.SHEN?.length) {
       return {
         rows: [] as ChartRow[],
-        xTickFormatter: (v: string | number) => String(v),
       }
     }
 
     const shenData = data.SHEN
     const adaData = data.ADA ?? []
-    const totalDays = shenData.length
-
-    const formatter = (value: string | number, index?: number) => {
-      const date = new Date(value)
-      if (isNaN(date.getTime())) return String(value)
-
-      const month = date.toLocaleString(undefined, { month: "short" })
-      const year = date.getFullYear()
-
-      if (totalDays <= 365) {
-        return date.toLocaleDateString(undefined, {
-          month: "short",
-          day: "numeric",
-        })
-      }
-
-      if (index === 0) return `${month} ${year}`
-
-      return totalDays > 365 * 2 ? String(year) : month
-    }
 
     const mapped: ChartRow[] = shenData.map((shenEntry, i) => {
       const adaEntry = adaData[i]
@@ -71,7 +50,7 @@ export const ShenAdaPriceChart: React.FC<ShenAdaPriceChartProps> = ({
       }
     })
 
-    return { rows: mapped, xTickFormatter: formatter }
+    return { rows: mapped }
   }, [data, currency, isMobile])
 
   const yTickFormatter = (value: number | string) =>
@@ -106,7 +85,6 @@ export const ShenAdaPriceChart: React.FC<ShenAdaPriceChartProps> = ({
       data={rows}
       xKey="date"
       lines={lines}
-      xTickFormatter={xTickFormatter}
       yTickFormatter={yTickFormatter}
     />
   )
