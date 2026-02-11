@@ -8,7 +8,7 @@ import type {
 import {
   assignTimeWeightsToReserveRatioDailyUTxOs,
   getTimeWeightedDailyReserveRatio,
-} from "../../../../src/sync/analytics/reserveRatio/reserveRatio"
+} from "../../../../src/sync/analytics/reserveRatio/timeWeighting"
 import { MS_PER_DAY } from "../../../../src/sync/utils"
 import { mockPool, mockOracle, dailyChunks } from "../../../utils/helpers"
 import {
