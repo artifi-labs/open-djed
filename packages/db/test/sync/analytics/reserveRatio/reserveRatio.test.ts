@@ -1,150 +1,22 @@
 import { describe, expect, test } from "vitest"
 import { reserveRatio as calculateReserveRatio } from "@open-djed/math"
-import type { OracleDatum, PoolDatum } from "@open-djed/data"
 import type {
   DailyUTxOs,
-  OracleUTxoWithDatumAndTimestamp,
   OrderedPoolOracleTxOs,
-  PoolUTxoWithDatumAndTimestamp,
   DailyReserveRatioUTxOsWithWeights,
-} from "../../types"
+} from "../../../../src/sync/types"
 import {
   assignTimeWeightsToReserveRatioDailyUTxOs,
   getTimeWeightedDailyReserveRatio,
-} from "./reserveRatio"
-import { MS_PER_DAY } from "../../utils"
-
-const createOutputReference = (hash: string, index: bigint) => ({
-  txHash: [hash] as [string],
-  outputIndex: index,
-})
-
-const createPoolDatum = (
-  overrides: Partial<
-    Pick<PoolDatum, "adaInReserve" | "djedInCirculation" | "shenInCirculation">
-  > = {},
-): PoolDatum => ({
-  adaInReserve: 1_000n,
-  djedInCirculation: 500n,
-  shenInCirculation: 250n,
-  lastOrder: [
-    {
-      order: createOutputReference("mock-pool-last-order", 0n),
-      time: 1n,
-    },
-  ],
-  minADA: 1n,
-  _1: 0n,
-  _2: null,
-  mintingPolicyId: "mock-pool-policy",
-  mintingPolicyUniqRef: createOutputReference("mock-pool-uniq", 1n),
-  _3: createOutputReference("mock-pool-ref", 2n),
-  ...overrides,
-})
-
-const createOracleDatum = (rate: {
-  numerator: bigint
-  denominator: bigint
-}): OracleDatum => ({
-  _0: "mock-oracle-datum",
-  oracleFields: {
-    adaUSDExchangeRate: rate,
-    validityRange: {
-      lowerBound: [{ Value: [0n] as [bigint] }, null],
-      upperBound: [{ Value: [1n] as [bigint] }, null],
-    },
-    expressedIn: "555344",
-  },
-  oracleTokenPolicyId: "mock-oracle-policy",
-})
-
-const poolDatumA = createPoolDatum({
-  adaInReserve: 1_000n,
-  djedInCirculation: 250n,
-  shenInCirculation: 100n,
-})
-
-const poolDatumB = createPoolDatum({
-  adaInReserve: 2_000n,
-  djedInCirculation: 350n,
-  shenInCirculation: 150n,
-})
-
-const oracleDatumA = createOracleDatum({
-  numerator: 3n,
-  denominator: 1n,
-})
-
-const oracleDatumB = createOracleDatum({
-  numerator: 5n,
-  denominator: 2n,
-})
-
-const mockPool: PoolUTxoWithDatumAndTimestamp = {
-  poolDatum: poolDatumA,
-  timestamp: "2026-02-01T00:30:00.000Z",
-  block_hash: "mock-pool-block",
-  block_slot: 1,
-}
-
-const mockOracle: OracleUTxoWithDatumAndTimestamp = {
-  oracleDatum: oracleDatumA,
-  timestamp: "2026-02-01T01:15:00.000Z",
-  block_hash: "mock-oracle-block",
-  block_slot: 2,
-}
-
-const dayEntries: OrderedPoolOracleTxOs[] = [
-  {
-    key: "pool",
-    value: {
-      ...mockPool,
-      poolDatum: poolDatumA,
-      timestamp: "2026-02-01T00:30:00.000Z",
-      block_hash: "pool-block-A",
-      block_slot: 1,
-    },
-  },
-  {
-    key: "oracle",
-    value: {
-      ...mockOracle,
-      oracleDatum: oracleDatumA,
-      timestamp: "2026-02-01T01:15:00.000Z",
-      block_hash: "oracle-block-A",
-      block_slot: 2,
-    },
-  },
-  {
-    key: "pool",
-    value: {
-      ...mockPool,
-      poolDatum: poolDatumB,
-      timestamp: "2026-02-01T02:00:00.000Z",
-      block_hash: "pool-block-B",
-      block_slot: 3,
-    },
-  },
-  {
-    key: "oracle",
-    value: {
-      ...mockOracle,
-      oracleDatum: oracleDatumB,
-      timestamp: "2026-02-01T03:00:00.000Z",
-      block_hash: "oracle-block-B",
-      block_slot: 4,
-    },
-  },
-]
-
-const dailyChunks: DailyUTxOs[] = [
-  {
-    day: "2026-02-01",
-    startIso: "2026-02-01T00:00:00.000Z",
-    endIso: "2026-02-01T23:59:59.999Z",
-    entries: dayEntries,
-  },
-]
+} from "../../../../src/sync/analytics/reserveRatio/reserveRatio"
+import { MS_PER_DAY } from "../../../../src/sync/utils"
+import { mockPool, mockOracle, dailyChunks } from "../../../utils/helpers"
+import {
+  oracleDatumA,
+  oracleDatumB,
+  poolDatumA,
+  poolDatumB,
+} from "../../../factories/datumFactory"
 
 describe("assignTimeWeightsToReserveRatioDailyUTxOs", () => {
   //#region "TC-1"
