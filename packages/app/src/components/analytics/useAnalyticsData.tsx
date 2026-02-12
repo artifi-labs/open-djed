@@ -113,8 +113,8 @@ export function useAnalyticsData() {
   const fetchDjedMCHistoricalData = useCallback(
     async (period: ChartPeriod) => {
       try {
-        const res = await client.api["historical-djed-market-cap"].$get({
-          query: { period },
+        const res = await client.api["historical-market-cap"].$get({
+          query: { period, token: "DJED" },
         })
 
         if (res.ok) {
