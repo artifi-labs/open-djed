@@ -11,7 +11,7 @@ import {
   CURRENCY_OPTIONS,
 } from "./useAnalyticsData"
 
-const AnalyticsPage = () => {
+const Analytics = () => {
   const {
     reserveRatioData,
     reserveRatioPeriod,
@@ -41,7 +41,9 @@ const AnalyticsPage = () => {
       <div className="desktop:gap-24 grid grid-cols-1 gap-16">
         <ChartCard
           period={reserveRatioPeriod}
-          periodItems={[...CHART_PERIOD_OPTIONS]}
+          periodItems={[...CHART_PERIOD_OPTIONS].filter(
+            (option) => option !== "D",
+          )}
           onPeriodChange={setReserveRatioPeriod}
           title="Reserve Ratio Over Time"
           warning={
@@ -93,4 +95,4 @@ const AnalyticsPage = () => {
   )
 }
 
-export default AnalyticsPage
+export default Analytics

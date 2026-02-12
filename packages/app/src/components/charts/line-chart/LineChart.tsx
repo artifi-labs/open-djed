@@ -79,6 +79,7 @@ export function LineChart({
               axisLine={false}
               tickLine={false}
               padding={{ left: 5, right: 5 }}
+              minTickGap={20}
               tick={{
                 dy: 12,
                 fontSize: 10,
@@ -87,7 +88,6 @@ export function LineChart({
                 fontWeight: 400,
               }}
               tickFormatter={xTickFormatter}
-              interval="preserveStart"
             />
           )}
 
