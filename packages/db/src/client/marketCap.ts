@@ -29,6 +29,37 @@ export const getPeriodMarketCap = async (
   return rows
 }
 
+export const getLatestMarketCapTimestamp = async () =>
+  await prisma.marketCap.aggregate({
+    _max: {
+      timestamp: true,
+    },
+  })
+
+export const getMarketCapByTimestamp = (
+  token: TokenMarketCap,
+  timestamp: Date,
+) => {
+  return prisma.marketCap.findFirst({
+    where: {
+      token,
+      timestamp,
+    },
+    select: {
+      id: true,
+      timestamp: true,
+      token: true,
+      usdValue: true,
+      adaValue: true,
+      block: true,
+      slot: true,
+    },
+    orderBy: {
+      timestamp: "asc",
+    },
+  })
+}
+
 export const getLatestMarketCap = async (token?: TokenMarketCap) => {
   return await prisma.marketCap.findFirst({
     orderBy: {

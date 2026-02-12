@@ -1,4 +1,4 @@
-import { TokenMarketCap } from "../../../../generated/prisma/enums"
+import type { TokenMarketCap } from "../../../../generated/prisma/enums"
 import {
   djedADAMarketCap,
   djedUSDMarketCap,
@@ -119,46 +119,65 @@ export const assignTimeWeightsToDailyMarketCapUTxOs = (
   })
 }
 
+/**
+ * Reduces each day’s weighted entries into a single average market cap
+ * entry, skipping days with no coverage and keeping metadata such as the
+ * block hash/slot from the last entry.
+ * @param dailyChunks the weighted daily chunks that include time coverage
+ * @returns the averaged daily market cap rows that are persisted
+ */
 export const getTimeWeightedDailyMarketCap = (
   dailyChunks: DailyMarketCapUTxOsWithWeights[],
-  token: TokenMarketCap,
-): MarketCap[] => {
-  const dailyMarketCaps: MarketCap[] = []
+): Record<TokenMarketCap, MarketCap[]> => {
+  const dailyMarketCaps: Record<TokenMarketCap, MarketCap[]> = {
+    DJED: [],
+    SHEN: [],
+  }
 
   for (const chunk of dailyChunks) {
-    let weightedUSDSum = 0
-    let weightedADASum = 0
+    let weightedDjedUSDSum = 0
+    let weightedDjedADASum = 0
+    let weightedSHENUSDSum = 0
+    let weightedSHENADASum = 0
     let durationSum = 0
 
     for (const entry of chunk.entries) {
-      const usdValue =
-        token === TokenMarketCap.DJED ? entry.djedUsdValue : entry.shenUsdValue
-      const adaValue =
-        token === TokenMarketCap.DJED ? entry.djedAdaValue : entry.shenAdaValue
-
-      if (entry.weight <= 0 || usdValue === undefined || adaValue === undefined)
+      if (
+        entry.weight <= 0 ||
+        entry.djedUsdValue === undefined ||
+        entry.djedAdaValue === undefined ||
+        entry.shenUsdValue === undefined ||
+        entry.shenAdaValue === undefined
+      )
         continue
       const duration = entry.weight
       durationSum += duration
-      weightedUSDSum += usdValue * duration
-      weightedADASum += adaValue * duration
+      weightedDjedUSDSum += entry.djedUsdValue * duration
+      weightedDjedADASum += entry.djedAdaValue * duration
+      weightedSHENUSDSum += entry.shenUsdValue * duration
+      weightedSHENADASum += entry.shenAdaValue * duration
     }
 
     if (durationSum === 0) continue
-
-    const averageUSDValue = weightedUSDSum / MS_PER_DAY
-    const averageADAValue = weightedADASum / MS_PER_DAY
-
     const latestEntry = chunk.entries.at(-1)
     if (!latestEntry) continue
 
-    dailyMarketCaps.push({
+    const base = {
       timestamp: new Date(latestEntry.value.timestamp),
-      usdValue: averageUSDValue,
-      adaValue: averageADAValue,
       block: latestEntry.value.block_hash,
       slot: latestEntry.value.block_slot,
-      token,
+    }
+    dailyMarketCaps.DJED.push({
+      ...base,
+      token: "DJED",
+      adaValue: weightedDjedADASum / MS_PER_DAY,
+      usdValue: weightedDjedUSDSum / MS_PER_DAY,
+    })
+    dailyMarketCaps.SHEN.push({
+      ...base,
+      token: "SHEN",
+      adaValue: weightedSHENADASum / MS_PER_DAY,
+      usdValue: weightedSHENUSDSum / MS_PER_DAY,
     })
   }
 

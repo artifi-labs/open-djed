@@ -2,46 +2,31 @@ import { logger } from "../../../utils/logger"
 import { breakIntoDays, processAnalyticsDataToInsert } from "../../utils"
 import { getLatestMarketCap } from "../../../client/marketCap"
 import { handleAnalyticsUpdates } from "../updateAnalytics"
-import { TokenMarketCap } from "../../../../generated/prisma/enums"
+import type { TokenMarketCap } from "../../../../generated/prisma/enums"
 import { prisma } from "../../../../lib/prisma"
 import {
   assignTimeWeightsToDailyMarketCapUTxOs,
   getTimeWeightedDailyMarketCap,
 } from "./timeWeighting"
-import type { OrderedPoolOracleTxOs } from "../../types"
-
-const MARKET_CAP_TOKENS: { token: TokenMarketCap; label: string }[] = [
-  { token: TokenMarketCap.DJED, label: "DJED" },
-  { token: TokenMarketCap.SHEN, label: "SHEN" },
-]
+import type { MarketCap, OrderedPoolOracleTxOs } from "../../types"
 
 export async function processMarketCap(orderedTxOs: OrderedPoolOracleTxOs[]) {
   const start = Date.now()
   logger.info(`=== Processing Market Cap ===`)
   const dailyTxOs = breakIntoDays(orderedTxOs)
-
-  const dataToInsert = []
   const weightedDailyTxOs = assignTimeWeightsToDailyMarketCapUTxOs(dailyTxOs)
+  const dailyMarketCaps = getTimeWeightedDailyMarketCap(weightedDailyTxOs)
 
-  for (const { token, label } of MARKET_CAP_TOKENS) {
-    const dailyMarketCaps = getTimeWeightedDailyMarketCap(
-      weightedDailyTxOs,
-      token,
-    )
+  const dataToInsert: MarketCap[] = []
 
-    if (dailyMarketCaps.length === 0) {
-      logger.warn(`No daily ${label} market caps computed`)
-      continue
-    }
+  for (const token of Object.keys(dailyMarketCaps) as TokenMarketCap[]) {
+    const tokenPrices = dailyMarketCaps[token]
 
-    logger.info(`Processing ${label} market cap data...`)
-    const processed = processAnalyticsDataToInsert(dailyMarketCaps)
+    if (tokenPrices.length === 0) continue
+
+    const processed = processAnalyticsDataToInsert(tokenPrices)
+
     dataToInsert.push(...processed)
-  }
-
-  if (dataToInsert.length === 0) {
-    logger.warn("No market cap entries to insert")
-    return
   }
 
   logger.info(

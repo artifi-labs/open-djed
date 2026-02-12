@@ -1,11 +1,19 @@
 import { prisma } from "../../../../lib/prisma"
-import { getLatestMarketCap } from "../../../client/marketCap"
+import {
+  getLatestMarketCapTimestamp,
+  getMarketCapByTimestamp,
+} from "../../../client/marketCap"
 import { logger } from "../../../utils/logger"
 import type { Block } from "typescript"
 import { blockfrostFetch } from "../../utils"
 
 export async function rollbackMarketCap() {
-  const latestMarketCap = await getLatestMarketCap()
+  const latestTimestamp = await getLatestMarketCapTimestamp()
+  if (!latestTimestamp || !latestTimestamp._max.timestamp) return
+  const latestMarketCap = await getMarketCapByTimestamp(
+    "DJED",
+    latestTimestamp._max.timestamp,
+  )
   if (!latestMarketCap) return
 
   const syncIsValid = await blockfrostFetch(`/blocks/${latestMarketCap.block}`)

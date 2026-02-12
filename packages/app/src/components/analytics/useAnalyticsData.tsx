@@ -129,15 +129,15 @@ export function useAnalyticsData() {
 
         if (res.ok) {
           const historicalData = (await res.json()) as DjedMChartEntry[]
-          historicalData.map((entry) => ({
+          const dataToSave = historicalData.map((entry) => ({
             ...entry,
-            usdValue: Number(entry.usdValue),
-            adaValue: Number(entry.adaValue),
+            usdValue: (Number(entry.usdValue) / 1e6).toString(),
+            adaValue: (Number(entry.adaValue) / 1e6).toString(),
           }))
 
           if (!isLoading) {
             const todayKey = new Date().toISOString()
-            historicalData.push({
+            dataToSave.push({
               id: -1,
               timestamp: todayKey,
               adaValue: (
@@ -149,7 +149,7 @@ export function useAnalyticsData() {
             })
           }
 
-          setDjedMCHistoricalData(historicalData)
+          setDjedMCHistoricalData(dataToSave)
         }
       } catch (err) {
         console.error("Action failed:", err)
@@ -179,15 +179,15 @@ export function useAnalyticsData() {
 
         if (res.ok) {
           const historicalData = (await res.json()) as ShenMChartEntry[]
-          historicalData.map((entry) => ({
+          const dataToSave = historicalData.map((entry) => ({
             ...entry,
-            usdValue: Number(entry.usdValue),
-            adaValue: Number(entry.adaValue),
+            usdValue: (Number(entry.usdValue) / 1e6).toString(),
+            adaValue: (Number(entry.adaValue) / 1e6).toString(),
           }))
 
           if (!isLoading) {
             const todayKey = new Date().toISOString()
-            historicalData.push({
+            dataToSave.push({
               id: -1,
               timestamp: todayKey,
               adaValue: (
@@ -199,7 +199,8 @@ export function useAnalyticsData() {
             })
           }
 
-          setShenMCHistoricalData(historicalData)
+          console.log("Fetched SHEN MC historical data:", dataToSave)
+          setShenMCHistoricalData(dataToSave)
         }
       } catch (err) {
         console.error("Action failed:", err)
