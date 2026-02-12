@@ -1,8 +1,9 @@
 import {
   djedADAMarketCap,
   djedUSDMarketCap,
+  shenADAMarketCap,
+  shenUSDMarketCap,
 } from "@open-djed/math/src/market-cap"
-import { shenADARate, shenUSDRate } from "@open-djed/math/src/rate"
 import { logger } from "../../../utils/logger"
 import { breakIntoDays, processAnalyticsDataToInsert } from "../../utils"
 import { getLatestMarketCap } from "../../../client/marketCap"
@@ -96,13 +97,9 @@ const djedMarketCap: MarketCapCalculator = {
 
 const shenMarketCap: MarketCapCalculator = {
   UsdValue: (poolDatum, oracleDatum) =>
-    shenUSDRate(poolDatum, oracleDatum)
-      .mul(poolDatum.shenInCirculation)
-      .toNumber(),
+    shenUSDMarketCap(poolDatum, oracleDatum).toNumber(),
   AdaValue: (poolDatum, oracleDatum) =>
-    shenADARate(poolDatum, oracleDatum)
-      .mul(poolDatum.shenInCirculation)
-      .toNumber(),
+    shenADAMarketCap(poolDatum, oracleDatum).toNumber(),
 }
 
 const {
