@@ -1,9 +1,3 @@
-import {
-  djedADAMarketCap,
-  djedUSDMarketCap,
-  shenADAMarketCap,
-  shenUSDMarketCap,
-} from "@open-djed/math/src/market-cap"
 import { logger } from "../../../utils/logger"
 import { breakIntoDays, processAnalyticsDataToInsert } from "../../utils"
 import { getLatestMarketCap } from "../../../client/marketCap"
@@ -14,47 +8,11 @@ import {
   assignTimeWeightsToDailyMarketCapUTxOs,
   getTimeWeightedDailyMarketCap,
 } from "./timeWeighting"
-import type {
-  OracleUTxoWithDatumAndTimestamp,
-  OrderedPoolOracleTxOs,
-  PoolUTxoWithDatumAndTimestamp,
-} from "../../types"
+import type { OrderedPoolOracleTxOs } from "../../types"
 
-type MarketConfig = {
-  token: TokenMarketCap
-  label: string
-  calculator: {
-    UsdValue: (
-      poolDatum: PoolUTxoWithDatumAndTimestamp["poolDatum"],
-      oracleDatum: OracleUTxoWithDatumAndTimestamp["oracleDatum"],
-    ) => number
-    AdaValue: (
-      poolDatum: PoolUTxoWithDatumAndTimestamp["poolDatum"],
-      oracleDatum: OracleUTxoWithDatumAndTimestamp["oracleDatum"],
-    ) => number
-  }
-}
-
-const marketCapConfigs: MarketConfig[] = [
-  {
-    label: "DJED",
-    token: TokenMarketCap.DJED,
-    calculator: {
-      UsdValue: (poolDatum) => djedUSDMarketCap(poolDatum).toNumber(),
-      AdaValue: (poolDatum, oracleDatum) =>
-        djedADAMarketCap(poolDatum, oracleDatum).toNumber(),
-    },
-  },
-  {
-    label: "SHEN",
-    token: TokenMarketCap.SHEN,
-    calculator: {
-      UsdValue: (poolDatum, oracleDatum) =>
-        shenUSDMarketCap(poolDatum, oracleDatum).toNumber(),
-      AdaValue: (poolDatum, oracleDatum) =>
-        shenADAMarketCap(poolDatum, oracleDatum).toNumber(),
-    },
-  },
+const MARKET_CAP_TOKENS: { token: TokenMarketCap; label: string }[] = [
+  { token: TokenMarketCap.DJED, label: "DJED" },
+  { token: TokenMarketCap.SHEN, label: "SHEN" },
 ]
 
 export async function processMarketCap(orderedTxOs: OrderedPoolOracleTxOs[]) {
@@ -63,12 +21,9 @@ export async function processMarketCap(orderedTxOs: OrderedPoolOracleTxOs[]) {
   const dailyTxOs = breakIntoDays(orderedTxOs)
 
   const dataToInsert = []
+  const weightedDailyTxOs = assignTimeWeightsToDailyMarketCapUTxOs(dailyTxOs)
 
-  for (const { token, label, calculator } of marketCapConfigs) {
-    const weightedDailyTxOs = assignTimeWeightsToDailyMarketCapUTxOs(
-      dailyTxOs,
-      calculator,
-    )
+  for (const { token, label } of MARKET_CAP_TOKENS) {
     const dailyMarketCaps = getTimeWeightedDailyMarketCap(
       weightedDailyTxOs,
       token,

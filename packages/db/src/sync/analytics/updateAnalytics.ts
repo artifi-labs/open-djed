@@ -8,7 +8,7 @@ import {
   registry,
 } from "../utils"
 import { processMarketCap, updateMarketCap } from "./marketCap/marketCap"
-import { rollbackTokenMarketCap } from "./marketCap/rollbackTokenMarketCap"
+import { rollbackMarketCap } from "./marketCap/rollbackMarketCap"
 import { rollbackTokenPrices } from "./price/rollbackTokenPrice"
 import {
   processTokenPrices,
@@ -29,7 +29,7 @@ type DbProcessor = {
 async function handleRollbacks() {
   await Promise.all([
     rollbackReserveRatios(),
-    rollbackTokenMarketCap(),
+    rollbackMarketCap(),
     rollbackTokenPrices(),
   ])
 }

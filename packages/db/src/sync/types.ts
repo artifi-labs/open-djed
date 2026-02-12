@@ -276,8 +276,10 @@ export type DailyReserveRatioUTxOsWithWeights = Omit<DailyUTxOs, "entries"> & {
 
 export type WeightedMarketCapEntry = OrderedPoolOracleTxOs & {
   weight: number
-  usdValue?: number
-  adaValue?: number
+  djedUsdValue?: number
+  djedAdaValue?: number
+  shenUsdValue?: number
+  shenAdaValue?: number
   period?: {
     start: string
     end: string

@@ -4,7 +4,7 @@ import { logger } from "../../../utils/logger"
 import type { Block } from "typescript"
 import { blockfrostFetch } from "../../utils"
 
-export async function rollbackTokenMarketCap() {
+export async function rollbackMarketCap() {
   const latestMarketCap = await getLatestMarketCap()
   if (!latestMarketCap) return
 

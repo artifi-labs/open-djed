@@ -1,4 +1,10 @@
-import type { TokenMarketCap } from "../../../../generated/prisma/enums"
+import { TokenMarketCap } from "../../../../generated/prisma/enums"
+import {
+  djedADAMarketCap,
+  djedUSDMarketCap,
+  shenADAMarketCap,
+  shenUSDMarketCap,
+} from "@open-djed/math/src/market-cap"
 import { MS_PER_DAY } from "../../utils"
 import type {
   DailyMarketCapUTxOsWithWeights,
@@ -9,11 +15,9 @@ import type {
   PoolUTxoWithDatumAndTimestamp,
   WeightedMarketCapEntry,
 } from "../../types"
-import type { MarketCapCalculator } from "./marketCap"
 
 export const assignTimeWeightsToDailyMarketCapUTxOs = (
   dailyChunks: DailyUTxOs[],
-  calculator: MarketCapCalculator,
 ): DailyMarketCapUTxOsWithWeights[] => {
   let previousDayLastTimestampMs: number | null = null
   let activePoolDatum: PoolUTxoWithDatumAndTimestamp["poolDatum"] | null = null
@@ -63,14 +67,22 @@ export const assignTimeWeightsToDailyMarketCapUTxOs = (
       ) {
         currentEntry.usedPoolDatum = previousPoolDatum
         currentEntry.usedOracleDatum = previousOracleDatum
-        currentEntry.usdValue = calculator.UsdValue(
+
+        currentEntry.djedUsdValue =
+          djedUSDMarketCap(previousPoolDatum).toNumber()
+        currentEntry.djedAdaValue = djedADAMarketCap(
           previousPoolDatum,
           previousOracleDatum,
-        )
-        currentEntry.adaValue = calculator.AdaValue(
+        ).toNumber()
+        currentEntry.shenUsdValue = shenUSDMarketCap(
           previousPoolDatum,
           previousOracleDatum,
-        )
+        ).toNumber()
+        currentEntry.shenAdaValue = shenADAMarketCap(
+          previousPoolDatum,
+          previousOracleDatum,
+        ).toNumber()
+
         currentEntry.period = {
           start: intervalStartIso,
           end: intervalEndIso,
@@ -119,16 +131,17 @@ export const getTimeWeightedDailyMarketCap = (
     let durationSum = 0
 
     for (const entry of chunk.entries) {
-      if (
-        entry.weight <= 0 ||
-        entry.usdValue === undefined ||
-        entry.adaValue === undefined
-      )
+      const usdValue =
+        token === TokenMarketCap.DJED ? entry.djedUsdValue : entry.shenUsdValue
+      const adaValue =
+        token === TokenMarketCap.DJED ? entry.djedAdaValue : entry.shenAdaValue
+
+      if (entry.weight <= 0 || usdValue === undefined || adaValue === undefined)
         continue
       const duration = entry.weight
       durationSum += duration
-      weightedUSDSum += entry.usdValue * duration
-      weightedADASum += entry.adaValue * duration
+      weightedUSDSum += usdValue * duration
+      weightedADASum += adaValue * duration
     }
 
     if (durationSum === 0) continue
