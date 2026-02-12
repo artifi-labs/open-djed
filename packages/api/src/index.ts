@@ -287,10 +287,7 @@ async function completeTransaction(createOrderFn: () => TxBuilder) {
 }
 
 const historicalDataHandler = <T>(
-  dataFetcher: (
-    period: Period,
-    params?: Record<string, string | undefined>,
-  ) => Promise<T>,
+  dataFetcher: (period: Period) => Promise<T>,
 ) => {
   return async (
     c: Context<
@@ -305,9 +302,7 @@ const historicalDataHandler = <T>(
   ) => {
     let param
     try {
-      param = c.req.valid("query") as Record<string, string | undefined> & {
-        period?: PeriodType
-      }
+      param = c.req.valid("query")
       if (!param?.period) {
         throw new ValidationError("Missing period in request.")
       }
@@ -316,10 +311,7 @@ const historicalDataHandler = <T>(
       throw new ValidationError("Invalid or missing request payload.")
     }
     try {
-      const data = await dataFetcher(
-        param.period.toUpperCase() as Period,
-        param,
-      )
+      const data = await dataFetcher(param.period.toUpperCase() as Period)
       return c.json(data)
     } catch (err) {
       if (err instanceof AppError) {
@@ -805,9 +797,12 @@ const app = new Hono()
         token: tokenSchema,
       }),
     ),
-    historicalDataHandler((period, { token } = {}) =>
-      getPeriodMarketCap(period, token as TokenMarketCap),
-    ),
+    (c) => {
+      const params = c.req.valid("query")
+      return historicalDataHandler((period) =>
+        getPeriodMarketCap(period, params.token as TokenMarketCap),
+      )(c)
+    },
   )
   .get(
     "/historical-shen-ada-price",
