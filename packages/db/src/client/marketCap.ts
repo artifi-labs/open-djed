@@ -1,29 +1,38 @@
-import { Prisma, type TokenMarketCap } from "../../generated/prisma/client"
+import { type TokenMarketCap } from "../../generated/prisma/client"
 import { prisma } from "../../lib/prisma"
 import type { Period } from "../sync/types"
 import { getStartIso } from "../sync/utils"
 
-export const getPeriodMarketCap = (period: Period, token: TokenMarketCap) => {
+export const getPeriodMarketCap = async (
+  period: Period,
+  token: TokenMarketCap,
+) => {
   const startIso = getStartIso(period)
+  const rows = await prisma.marketCap.findMany({
+    where: {
+      token,
+      ...(startIso ? { timestamp: { gte: startIso } } : {}),
+    },
+    select: {
+      id: true,
+      timestamp: true,
+      usdValue: true,
+      adaValue: true,
+    },
+    orderBy: [
+      {
+        timestamp: "asc",
+      },
+    ],
+  })
 
-  return prisma.$queryRaw<
-    {
-      id: number
-      timestamp: Date
-      usdValue: number
-      adaValue: number
-    }[]
-  >`
-    SELECT
-      id,
-      timestamp,
-      ("usdValue" / 1000000.0)::float AS "usdValue",
-      ("adaValue" / 1000000.0)::float AS "adaValue"
-    FROM "MarketCap"
-    WHERE token = ${token}
-    ${startIso ? Prisma.sql`AND timestamp >= ${startIso}` : Prisma.empty}
-    ORDER BY timestamp ASC
-  `
+  const scaledRows = rows.map((row) => ({
+    ...row,
+    usdValue: Number(row.usdValue) / 1_000_000,
+    adaValue: Number(row.adaValue) / 1_000_000,
+  }))
+
+  return scaledRows
 }
 
 export const getLatestMarketCap = async (token: TokenMarketCap) => {
