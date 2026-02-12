@@ -49,7 +49,7 @@ import {
   getPeriodMarketCap,
   getPeriodReserveRatio,
 } from "@open-djed/db"
-import { TokenMarketCap } from "@open-djed/db/generated/prisma/enums"
+import { type TokenMarketCap } from "@open-djed/db/generated/prisma/enums"
 import { type Order, type Period } from "@open-djed/db"
 export type { Order } from "@open-djed/db"
 
@@ -287,7 +287,10 @@ async function completeTransaction(createOrderFn: () => TxBuilder) {
 }
 
 const historicalDataHandler = <T>(
-  dataFetcher: (period: Period) => Promise<T>,
+  dataFetcher: (
+    period: Period,
+    params?: Record<string, string | undefined>,
+  ) => Promise<T>,
 ) => {
   return async (
     c: Context<
@@ -302,7 +305,9 @@ const historicalDataHandler = <T>(
   ) => {
     let param
     try {
-      param = c.req.valid("query")
+      param = c.req.valid("query") as Record<string, string | undefined> & {
+        period?: PeriodType
+      }
       if (!param?.period) {
         throw new ValidationError("Missing period in request.")
       }
@@ -311,7 +316,10 @@ const historicalDataHandler = <T>(
       throw new ValidationError("Invalid or missing request payload.")
     }
     try {
-      const data = await dataFetcher(param.period.toUpperCase() as Period)
+      const data = await dataFetcher(
+        param.period.toUpperCase() as Period,
+        param,
+      )
       return c.json(data)
     } catch (err) {
       if (err instanceof AppError) {
@@ -333,47 +341,6 @@ const periodSchema = z
   .enum(["D", "W", "M", "Y", "All", "d", "w", "m", "y", "all"])
   .openapi({ example: "D" })
 export type PeriodType = z.infer<typeof periodSchema>
-
-const marketCapQuerySchema = z.object({
-  period: periodSchema,
-  token: tokenSchema.optional(),
-})
-
-const historicalMarketCapHandler = async (
-  c: Context<
-    Env,
-    string,
-    Input & {
-      out: {
-        query: z.infer<typeof marketCapQuerySchema>
-      }
-    }
-  >,
-) => {
-  let param
-  try {
-    param = c.req.valid("query")
-    if (!param?.period) {
-      throw new ValidationError("Missing period in request.")
-    }
-  } catch (e) {
-    console.error("Invalid or missing request payload.", e)
-    throw new ValidationError("Invalid or missing request payload.")
-  }
-
-  try {
-    const normalizedPeriod = param.period.toUpperCase() as Period
-    const token = param.token ?? TokenMarketCap.DJED
-    const data = await getPeriodMarketCap(normalizedPeriod, token)
-    return c.json(data)
-  } catch (err) {
-    if (err instanceof AppError) {
-      throw err
-    }
-    console.error("Unhandled error in historical data endpoint:", err)
-    throw new InternalServerError()
-  }
-}
 
 const app = new Hono()
   .basePath("/api")
@@ -831,8 +798,16 @@ const app = new Hono()
         },
       },
     }),
-    zValidator("query", marketCapQuerySchema),
-    historicalMarketCapHandler,
+    zValidator(
+      "query",
+      z.object({
+        period: periodSchema,
+        token: tokenSchema,
+      }),
+    ),
+    historicalDataHandler((period, { token } = {}) =>
+      getPeriodMarketCap(period, token as TokenMarketCap),
+    ),
   )
   .get(
     "/historical-shen-ada-price",
