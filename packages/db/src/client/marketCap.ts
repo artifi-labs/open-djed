@@ -26,13 +26,7 @@ export const getPeriodMarketCap = async (
     ],
   })
 
-  const scaledRows = rows.map((row) => ({
-    ...row,
-    usdValue: Number(row.usdValue) / 1_000_000,
-    adaValue: Number(row.adaValue) / 1_000_000,
-  }))
-
-  return scaledRows
+  return rows
 }
 
 export const getLatestMarketCap = async (token?: TokenMarketCap) => {
