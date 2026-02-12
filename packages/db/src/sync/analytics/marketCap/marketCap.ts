@@ -112,9 +112,14 @@ const {
   updateMarketCap: updateShenMC,
 } = createMarketCapProcessor(TokenMarketCap.SHEN, "SHEN", shenMarketCap)
 
-export {
-  processDjedMarketCap,
-  updateDjedMC,
-  processShenMarketCap,
-  updateShenMC,
+const processMarketCap = async (orderedTxOs: OrderedPoolOracleTxOs[]) => {
+  await processDjedMarketCap(orderedTxOs)
+  await processShenMarketCap(orderedTxOs)
 }
+
+const updateMarketCap = async () => {
+  await updateDjedMC()
+  await updateShenMC()
+}
+
+export { processMarketCap, updateMarketCap }

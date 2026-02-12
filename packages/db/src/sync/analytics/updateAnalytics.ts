@@ -7,12 +7,7 @@ import {
   processPoolOracleTxs,
   registry,
 } from "../utils"
-import {
-  processDjedMarketCap,
-  updateDjedMC,
-  processShenMarketCap,
-  updateShenMC,
-} from "./marketCap/marketCap"
+import { processMarketCap, updateMarketCap } from "./marketCap/marketCap"
 import { rollbackTokenMarketCap } from "./marketCap/rollbackTokenMarketCap"
 import { rollbackTokenPrices } from "./price/rollbackTokenPrice"
 import {
@@ -131,14 +126,7 @@ export async function updateAnalytics() {
   await handleRollbacks()
 
   const isReserveRatioEmpty = (await prisma.reserveRatio.count()) === 0
-  const isDjedMCEmpty =
-    (await prisma.marketCap.count({
-      where: { token: "DJED" },
-    })) === 0
-  const isShenMCEmpty =
-    (await prisma.marketCap.count({
-      where: { token: "SHEN" },
-    })) === 0
+  const isMarketCapEmpty = (await prisma.marketCap.count()) === 0
   const isPriceEmpty = (await prisma.tokenPrice.count()) === 0
 
   const toUpdate: DbProcessor[] = [
@@ -148,14 +136,9 @@ export async function updateAnalytics() {
       updateDbProcessor: updateReserveRatios,
     },
     {
-      isEmpty: isDjedMCEmpty,
-      populateDbProcessor: processDjedMarketCap,
-      updateDbProcessor: updateDjedMC,
-    },
-    {
-      isEmpty: isShenMCEmpty,
-      populateDbProcessor: processShenMarketCap,
-      updateDbProcessor: updateShenMC,
+      isEmpty: isMarketCapEmpty,
+      populateDbProcessor: processMarketCap,
+      updateDbProcessor: updateMarketCap,
     },
     {
       isEmpty: isPriceEmpty,
