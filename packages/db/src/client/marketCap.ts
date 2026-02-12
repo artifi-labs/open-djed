@@ -35,14 +35,12 @@ export const getPeriodMarketCap = async (
   return scaledRows
 }
 
-export const getLatestMarketCap = async (token: TokenMarketCap) => {
+export const getLatestMarketCap = async (token?: TokenMarketCap) => {
   return await prisma.marketCap.findFirst({
     orderBy: {
       timestamp: "desc",
     },
-    where: {
-      token,
-    },
+    where: token ? { token } : {},
   })
 }
 
