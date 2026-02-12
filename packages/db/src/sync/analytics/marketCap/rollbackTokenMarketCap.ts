@@ -3,10 +3,9 @@ import { getLatestMarketCap } from "../../../client/marketCap"
 import { logger } from "../../../utils/logger"
 import type { Block } from "typescript"
 import { blockfrostFetch } from "../../utils"
-import type { TokenMarketCap } from "../../../../generated/prisma/enums"
 
-export async function rollbackTokenMarketCap(token: TokenMarketCap) {
-  const latestMarketCap = await getLatestMarketCap(token)
+export async function rollbackTokenMarketCap() {
+  const latestMarketCap = await getLatestMarketCap()
   if (!latestMarketCap) return
 
   const syncIsValid = await blockfrostFetch(`/blocks/${latestMarketCap.block}`)
@@ -17,14 +16,14 @@ export async function rollbackTokenMarketCap(token: TokenMarketCap) {
     })
 
   if (syncIsValid) {
-    logger.info("No rollback detected for ${token} Market Cap")
+    logger.info("No rollback detected")
     return
   }
 
   logger.warn(`Checking rollback from: ${latestMarketCap.block}`)
 
   const storedBlocks = await prisma.marketCap.findMany({
-    where: { slot: { lte: latestMarketCap.slot }, token },
+    where: { slot: { lte: latestMarketCap.slot } },
     select: { block: true, slot: true },
     orderBy: { slot: "desc" },
     distinct: ["block"],
@@ -41,7 +40,7 @@ export async function rollbackTokenMarketCap(token: TokenMarketCap) {
       logger.warn(`Rollback anchor found at block ${b.block} slot ${b.slot}`)
 
       await prisma.marketCap.deleteMany({
-        where: { slot: { gt: b.slot }, token },
+        where: { slot: { gt: b.slot } },
       })
 
       logger.info("Rollback completed")

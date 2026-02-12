@@ -1,4 +1,3 @@
-import { TokenMarketCap } from "../../../generated/prisma/enums"
 import { prisma } from "../../../lib/prisma"
 import { logger } from "../../utils/logger"
 import type { OrderedPoolOracleTxOs } from "../types"
@@ -35,8 +34,7 @@ type DbProcessor = {
 async function handleRollbacks() {
   await Promise.all([
     rollbackReserveRatios(),
-    rollbackTokenMarketCap(TokenMarketCap.DJED),
-    rollbackTokenMarketCap(TokenMarketCap.SHEN),
+    rollbackTokenMarketCap(),
     rollbackTokenPrices(),
   ])
 }
