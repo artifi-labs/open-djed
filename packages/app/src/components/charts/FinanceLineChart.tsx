@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { LineChart } from "@/components/charts/line-chart/LineChart"
-import { Legend, Line, ReferenceArea, Tooltip } from "recharts"
+import { Legend, Line, Tooltip } from "recharts"
 import { ChartLegend } from "@/components/charts/legend/ChartLegend"
 import { dateFormatter, UsdFormatter } from "@/components/charts/utils"
 import { ChartTooltip } from "@/components/charts/tooltips/ChartTooltip"
@@ -11,7 +11,7 @@ type FinanceLineChartProps = {
   title?: string
   data: ChartData | undefined
   xKey: string
-  lines: {
+  lines?: {
     dataKey: string
     name: string
     stroke: string
@@ -19,15 +19,8 @@ type FinanceLineChartProps = {
   }[]
   xTickFormatter?: (value: number | string) => string
   yTickFormatter?: (value: number | string) => string
-  referenceAreas?: {
-    x1?: number | string
-    x2?: number | string
-    y1?: number
-    y2?: number
-    fill?: string
-    fillOpacity?: number
-  }[]
   yTicks?: AxisTick[]
+  children?: React.ReactNode
 }
 
 export const FinanceLineChart: React.FC<FinanceLineChartProps> = ({
@@ -37,10 +30,15 @@ export const FinanceLineChart: React.FC<FinanceLineChartProps> = ({
   lines,
   xTickFormatter,
   yTickFormatter,
-  referenceAreas,
   yTicks,
+  children,
 }) => {
+  const childrenArray = React.Children.toArray(children)
   const [hiddenLines, setHiddenLines] = useState<Record<string, boolean>>({})
+
+  const hasLines = childrenArray.some(
+    (child) => React.isValidElement(child) && child.type === Line,
+  )
 
   const toggleLine = (dataKey: string) => {
     setHiddenLines((prev) => ({
@@ -80,28 +78,19 @@ export const FinanceLineChart: React.FC<FinanceLineChartProps> = ({
           }
         />
 
-        {lines.map((line) => (
-          <Line
-            key={line.dataKey}
-            strokeWidth={2}
-            dot={false}
-            hide={hiddenLines[line.dataKey]}
-            activeDot={{ stroke: "transparent", r: 3.5 }}
-            {...line}
-          />
-        ))}
+        {!hasLines &&
+          lines?.map((line) => (
+            <Line
+              key={line.dataKey}
+              strokeWidth={2}
+              dot={false}
+              hide={hiddenLines[line.dataKey]}
+              activeDot={{ stroke: "transparent", r: 3.5 }}
+              {...line}
+            />
+          ))}
 
-        {referenceAreas?.map((area, index) => (
-          <ReferenceArea
-            key={index}
-            x1={area.x1}
-            x2={area.x2}
-            y1={area.y1}
-            y2={area.y2}
-            fill={area.fill ?? "var(--color-supportive-2-100)"}
-            fillOpacity={area.fillOpacity ?? 0.2}
-          />
-        ))}
+        {children}
       </LineChart>
     </div>
   )
