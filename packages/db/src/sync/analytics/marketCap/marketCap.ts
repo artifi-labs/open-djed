@@ -20,26 +20,51 @@ import type {
   PoolUTxoWithDatumAndTimestamp,
 } from "../../types"
 
-export type MarketCapCalculator = {
-  UsdValue: (
-    poolDatum: PoolUTxoWithDatumAndTimestamp["poolDatum"],
-    oracleDatum: OracleUTxoWithDatumAndTimestamp["oracleDatum"],
-  ) => number
-  AdaValue: (
-    poolDatum: PoolUTxoWithDatumAndTimestamp["poolDatum"],
-    oracleDatum: OracleUTxoWithDatumAndTimestamp["oracleDatum"],
-  ) => number
+type MarketConfig = {
+  token: TokenMarketCap
+  label: string
+  calculator: {
+    UsdValue: (
+      poolDatum: PoolUTxoWithDatumAndTimestamp["poolDatum"],
+      oracleDatum: OracleUTxoWithDatumAndTimestamp["oracleDatum"],
+    ) => number
+    AdaValue: (
+      poolDatum: PoolUTxoWithDatumAndTimestamp["poolDatum"],
+      oracleDatum: OracleUTxoWithDatumAndTimestamp["oracleDatum"],
+    ) => number
+  }
 }
 
-const createMarketCapProcessor = (
-  token: TokenMarketCap,
-  label: string,
-  calculator: MarketCapCalculator,
-) => {
-  const processMarketCap = async (orderedTxOs: OrderedPoolOracleTxOs[]) => {
-    const start = Date.now()
-    logger.info(`=== Processing ${label} Market Cap ===`)
-    const dailyTxOs = breakIntoDays(orderedTxOs)
+const marketCapConfigs: MarketConfig[] = [
+  {
+    label: "DJED",
+    token: TokenMarketCap.DJED,
+    calculator: {
+      UsdValue: (poolDatum) => djedUSDMarketCap(poolDatum).toNumber(),
+      AdaValue: (poolDatum, oracleDatum) =>
+        djedADAMarketCap(poolDatum, oracleDatum).toNumber(),
+    },
+  },
+  {
+    label: "SHEN",
+    token: TokenMarketCap.SHEN,
+    calculator: {
+      UsdValue: (poolDatum, oracleDatum) =>
+        shenUSDMarketCap(poolDatum, oracleDatum).toNumber(),
+      AdaValue: (poolDatum, oracleDatum) =>
+        shenADAMarketCap(poolDatum, oracleDatum).toNumber(),
+    },
+  },
+]
+
+export async function processMarketCap(orderedTxOs: OrderedPoolOracleTxOs[]) {
+  const start = Date.now()
+  logger.info(`=== Processing Market Cap ===`)
+  const dailyTxOs = breakIntoDays(orderedTxOs)
+
+  const dataToInsert = []
+
+  for (const { token, label, calculator } of marketCapConfigs) {
     const weightedDailyTxOs = assignTimeWeightsToDailyMarketCapUTxOs(
       dailyTxOs,
       calculator,
@@ -51,75 +76,44 @@ const createMarketCapProcessor = (
 
     if (dailyMarketCaps.length === 0) {
       logger.warn(`No daily ${label} market caps computed`)
+      continue
     }
 
     logger.info(`Processing ${label} market cap data...`)
-
-    const dataToInsert = processAnalyticsDataToInsert(dailyMarketCaps)
-
-    logger.info(
-      `Inserting ${dataToInsert.length} ${label} market cap entries into database...`,
-    )
-    await prisma.marketCap.createMany({
-      data: dataToInsert,
-      skipDuplicates: true,
-    })
-    logger.info(
-      `Historic ${label} market cap sync complete. Inserted ${dataToInsert.length} ${label} market cap entries`,
-    )
-    const end = Date.now() - start
-    logger.info(
-      `=== Processing ${label} Market Cap took sec: ${(end / 1000).toFixed(2)} ===`,
-    )
+    const processed = processAnalyticsDataToInsert(dailyMarketCaps)
+    dataToInsert.push(...processed)
   }
 
-  const updateMarketCap = async () => {
-    const start = Date.now()
-    logger.info(`=== Updating ${label} Market Cap ===`)
-    const latestMarketCap = await getLatestMarketCap(token)
-    if (!latestMarketCap) return
-
-    await handleAnalyticsUpdates(latestMarketCap.timestamp, processMarketCap)
-    const end = Date.now() - start
-    logger.info(
-      `=== Updating ${label} Market Cap took sec: ${(end / 1000).toFixed(2)} ===`,
-    )
+  if (dataToInsert.length === 0) {
+    logger.warn("No market cap entries to insert")
+    return
   }
 
-  return { processMarketCap, updateMarketCap }
+  logger.info(
+    `Inserting ${dataToInsert.length} market cap entries into database...`,
+  )
+  await prisma.marketCap.createMany({
+    data: dataToInsert,
+    skipDuplicates: true,
+  })
+  logger.info(
+    `Historic market cap sync complete. Inserted ${dataToInsert.length} market cap entries`,
+  )
+
+  const end = Date.now() - start
+  logger.info(
+    `=== Processing Market Cap took sec: ${(end / 1000).toFixed(2)} ===`,
+  )
 }
 
-const djedMarketCap: MarketCapCalculator = {
-  UsdValue: (poolDatum) => djedUSDMarketCap(poolDatum).toNumber(),
-  AdaValue: (poolDatum, oracleDatum) =>
-    djedADAMarketCap(poolDatum, oracleDatum).toNumber(),
+export async function updateMarketCap() {
+  const start = Date.now()
+  logger.info(`=== Updating Market Cap ===`)
+  const latestMarketCap = await getLatestMarketCap()
+  if (!latestMarketCap) return
+  await handleAnalyticsUpdates(latestMarketCap.timestamp, processMarketCap)
+  const end = Date.now() - start
+  logger.info(
+    `=== Updating Market Cap took sec: ${(end / 1000).toFixed(2)} ===`,
+  )
 }
-
-const shenMarketCap: MarketCapCalculator = {
-  UsdValue: (poolDatum, oracleDatum) =>
-    shenUSDMarketCap(poolDatum, oracleDatum).toNumber(),
-  AdaValue: (poolDatum, oracleDatum) =>
-    shenADAMarketCap(poolDatum, oracleDatum).toNumber(),
-}
-
-const {
-  processMarketCap: processDjedMarketCap,
-  updateMarketCap: updateDjedMC,
-} = createMarketCapProcessor(TokenMarketCap.DJED, "DJED", djedMarketCap)
-
-const {
-  processMarketCap: processShenMarketCap,
-  updateMarketCap: updateShenMC,
-} = createMarketCapProcessor(TokenMarketCap.SHEN, "SHEN", shenMarketCap)
-
-const processMarketCap = async (orderedTxOs: OrderedPoolOracleTxOs[]) => {
-  await processDjedMarketCap(orderedTxOs)
-  await processShenMarketCap(orderedTxOs)
-}
-
-const updateMarketCap = async () => {
-  await updateDjedMC()
-  await updateShenMC()
-}
-
-export { processMarketCap, updateMarketCap }
