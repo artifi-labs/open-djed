@@ -8,8 +8,8 @@ type DjedMarketCapChartProps = {
   title?: string
   data: {
     timestamp: string
-    adaValue: number
-    usdValue: number
+    adaValue: string
+    usdValue: string
   }[]
   currency: "USD" | "ADA"
 }
@@ -20,12 +20,21 @@ export const DjedMarketCapChart: React.FC<DjedMarketCapChartProps> = ({
   currency,
 }) => {
   const valueKey = currency === "USD" ? "usdValue" : "adaValue"
+  const numericData = useMemo(
+    () =>
+      data.map((entry) => ({
+        ...entry,
+        adaValue: Number(entry.adaValue),
+        usdValue: Number(entry.usdValue),
+      })),
+    [data],
+  )
   const { isMobile } = useViewport()
   const { formattedData, xAxisFormatter } = useMemo(() => {
-    if (!data || data.length === 0)
+    if (!numericData || numericData.length === 0)
       return { formattedData: [], xAxisFormatter: undefined }
 
-    const totalDays = data.length
+    const totalDays = numericData.length
 
     const formatter = (value: string | number, index?: number) => {
       const date = new Date(value)
@@ -44,8 +53,8 @@ export const DjedMarketCapChart: React.FC<DjedMarketCapChartProps> = ({
 
       if (index === 0) return `${month}, ${displayedYear}`
 
-      if (index !== undefined && data[index - 1]) {
-        const prevDate = new Date(data[index - 1].timestamp as string)
+      if (index !== undefined && numericData[index - 1]) {
+        const prevDate = new Date(numericData[index - 1].timestamp as string)
         if (year !== prevDate.getFullYear()) {
           return `${month}, ${displayedYear}`
         }
@@ -57,18 +66,18 @@ export const DjedMarketCapChart: React.FC<DjedMarketCapChartProps> = ({
     const newInterval = getAnalyticsTimeInterval(totalDays, isMobile)
 
     const dataRows: DataRow[] = []
-    for (let i = 0; i < data.length - 1; i++) {
+    for (let i = 0; i < numericData.length - 1; i++) {
       dataRows.push({
-        date: data[i].timestamp,
-        adaValue: data[i].adaValue,
-        usdValue: data[i].usdValue,
+        date: numericData[i].timestamp,
+        adaValue: numericData[i].adaValue,
+        usdValue: numericData[i].usdValue,
       } as unknown as DataRow)
     }
 
     const results = aggregateByBucket(
       dataRows,
       newInterval ?? 0,
-      new Date(data[0].timestamp),
+      new Date(numericData[0].timestamp),
       {
         adaValue: ["avg"],
         usdValue: ["avg"],
@@ -76,7 +85,7 @@ export const DjedMarketCapChart: React.FC<DjedMarketCapChartProps> = ({
     )
 
     return { formattedData: results, xAxisFormatter: formatter }
-  }, [data, isMobile])
+  }, [numericData, isMobile])
 
   const formatSmall = (val: number) => {
     const rounded = val.toFixed(3)
@@ -121,6 +130,12 @@ export const DjedMarketCapChart: React.FC<DjedMarketCapChartProps> = ({
     },
   ]
 
+  const maxValue =
+    numericData.length > 0
+      ? Math.max(0, ...numericData.map((entry) => entry[valueKey]))
+      : 0
+  const domainMax = maxValue > 0 ? maxValue * 1.1 : 1
+
   return (
     <MultiAreaChart
       title={title}
@@ -129,7 +144,7 @@ export const DjedMarketCapChart: React.FC<DjedMarketCapChartProps> = ({
       interval={0}
       xTickFormatter={xAxisFormatter}
       tickFormatter={yTickFormatter}
-      yDomain={[0, Math.max(...data.map((entry) => entry.usdValue)) * 1.1]}
+      yDomain={[0, domainMax]}
       graphWidth={20}
       margin={{ top: 6, right: 14, left: 24, bottom: 6 }}
       areas={areas}

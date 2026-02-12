@@ -16,14 +16,14 @@ export type ReserveRatioChartEntry = {
 export type DjedMChartEntry = {
   id: number
   timestamp: string
-  usdValue: number
-  adaValue: number
+  usdValue: string
+  adaValue: string
 }
 export type ShenMChartEntry = {
   id: number
   timestamp: string
-  usdValue: number
-  adaValue: number
+  usdValue: string
+  adaValue: string
 }
 
 export type TokenPriceChartEntry = {
@@ -59,7 +59,7 @@ export function useAnalyticsData() {
   >([])
   const [djedMCPeriod, setDjedMCPeriod] = useState<ChartPeriod>("W")
   const [shenMCHistoricalData, setShenMCHistoricalData] = useState<
-    DjedMChartEntry[]
+    ShenMChartEntry[]
   >([])
   const [shenMCPeriod, setShenMCPeriod] = useState<ChartPeriod>("W")
 
@@ -140,8 +140,12 @@ export function useAnalyticsData() {
             historicalData.push({
               id: -1,
               timestamp: todayKey,
-              adaValue: Number(data?.protocolData.DJED.marketCap.ADA) / 1e6,
-              usdValue: Number(data?.protocolData.DJED.marketCap.USD) / 1e6,
+              adaValue: (
+                Number(data?.protocolData.DJED.marketCap.ADA) / 1e6
+              ).toString(),
+              usdValue: (
+                Number(data?.protocolData.DJED.marketCap.USD) / 1e6
+              ).toString(),
             })
           }
 
@@ -186,8 +190,12 @@ export function useAnalyticsData() {
             historicalData.push({
               id: -1,
               timestamp: todayKey,
-              adaValue: Number(data?.protocolData.SHEN.marketCap.ADA) / 1e6,
-              usdValue: Number(data?.protocolData.SHEN.marketCap.USD) / 1e6,
+              adaValue: (
+                Number(data?.protocolData.SHEN.marketCap.ADA) / 1e6
+              ).toString(),
+              usdValue: (
+                Number(data?.protocolData.SHEN.marketCap.USD) / 1e6
+              ).toString(),
             })
           }
 
