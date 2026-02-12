@@ -1,6 +1,11 @@
 import { FinanceLineChart } from "@/components/charts/FinanceLineChart"
 import { type ReserveRatioChartEntry } from "../useAnalyticsData"
-import { type DotProps, Line, ReferenceArea, ReferenceLine } from "recharts"
+import {
+  type BarShapeProps,
+  type DotProps,
+  Line,
+  ReferenceArea,
+} from "recharts"
 import React from "react"
 
 type ReserveRatioOverTimeChartProps = {
@@ -15,8 +20,8 @@ export const ReserveRatioOverTimeChart: React.FC<
 
   const minReserveRatio = 400
   const maxReserveRatio = 800
-  const referenceLineStrokeColor = "var(--color-supportive-2-500)"
-  const maxMinColor = "#ff0000"
+  const referenceLineStrokeColor = "var(--color-border-secondary)"
+  const maxMinColor = "var(--color-alerts-error-text)"
   const baseLineColor = "var(--color-supportive-2-500)"
 
   const values = data.map((d) => d.reserveRatio ?? 0)
@@ -86,25 +91,44 @@ export const ReserveRatioOverTimeChart: React.FC<
       </defs>
 
       {referenceAreas.map((area, index) => (
-        <React.Fragment key={index}>
-          <ReferenceArea
-            y1={area.y1}
-            y2={area.y2}
-            fill={area.fill}
-            fillOpacity={area.fillOpacity}
-          />
-
-          <ReferenceLine
-            y={area.y1}
-            stroke={referenceLineStrokeColor}
-            strokeWidth={1}
-          />
-          <ReferenceLine
-            y={area.y2}
-            stroke={referenceLineStrokeColor}
-            strokeWidth={1}
-          />
-        </React.Fragment>
+        <ReferenceArea
+          key={index}
+          y1={area.y1}
+          y2={area.y2}
+          fill={area.fill}
+          fillOpacity={area.fillOpacity}
+          shape={(props: BarShapeProps) => {
+            const { x, y, width, height } = props
+            return (
+              <g>
+                <rect
+                  x={x}
+                  y={y}
+                  width={width}
+                  height={height}
+                  fill={area.fill}
+                  fillOpacity={area.fillOpacity}
+                />
+                <line
+                  x1={x}
+                  y1={y}
+                  x2={x + width}
+                  y2={y}
+                  stroke={referenceLineStrokeColor}
+                  strokeWidth={1}
+                />
+                <line
+                  x1={x}
+                  y1={y + height}
+                  x2={x + width}
+                  y2={y + height}
+                  stroke={referenceLineStrokeColor}
+                  strokeWidth={1}
+                />
+              </g>
+            )
+          }}
+        />
       ))}
 
       {lines.map((line) => (
