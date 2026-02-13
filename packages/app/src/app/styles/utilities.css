@@ -73,3 +73,11 @@
 @utility bg-gradient-badge {
   background: var(--color-gradient-badge);
 }
+
+.text-gradient-angular-1 {
+  background: var(--color-gradient-angular-1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: inline-block;
+}

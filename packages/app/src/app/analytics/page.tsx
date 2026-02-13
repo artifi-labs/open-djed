@@ -1,11 +1,11 @@
-import AnalyticsPage from "@/components/analytics/Analytics"
+import Analytics from "@/components/analytics/Analytics"
 import { buildTitle } from "@/lib/metadata"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: buildTitle("Orders"),
+  title: buildTitle("Analytics"),
 }
 
-export default function OrderPage() {
-  return <AnalyticsPage />
+export default function AnalyticsPage() {
+  return <Analytics />
 }

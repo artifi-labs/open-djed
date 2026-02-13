@@ -5,12 +5,13 @@ import { ChartLegend } from "@/components/charts/legend/ChartLegend"
 import { dateFormatter, UsdFormatter } from "@/components/charts/utils"
 import { ChartTooltip } from "@/components/charts/tooltips/ChartTooltip"
 import type { ChartData } from "recharts/types/state/chartDataSlice"
+import type { AxisTick } from "recharts/types/util/types"
 
 type FinanceLineChartProps = {
-  title: string
+  title?: string
   data: ChartData | undefined
   xKey: string
-  lines: {
+  lines?: {
     dataKey: string
     name: string
     stroke: string
@@ -18,17 +19,30 @@ type FinanceLineChartProps = {
   }[]
   xTickFormatter?: (value: number | string) => string
   yTickFormatter?: (value: number | string) => string
+  yTicks?: AxisTick[]
+  children?: React.ReactNode
 }
 
 export const FinanceLineChart: React.FC<FinanceLineChartProps> = ({
-  title,
+  title = "",
   data,
   xKey,
   lines,
   xTickFormatter,
   yTickFormatter,
+  yTicks,
+  children,
 }) => {
+  const childrenArray = React.Children.toArray(children)
   const [hiddenLines, setHiddenLines] = useState<Record<string, boolean>>({})
+
+  const hasLines = childrenArray.some(
+    (child) => React.isValidElement(child) && child.type === Line,
+  )
+
+  const hasLegend = childrenArray.some(
+    (child) => React.isValidElement(child) && child.type === Legend,
+  )
 
   const toggleLine = (dataKey: string) => {
     setHiddenLines((prev) => ({
@@ -49,34 +63,41 @@ export const FinanceLineChart: React.FC<FinanceLineChartProps> = ({
         margin={{ top: 22, right: 22, left: 22, bottom: 0 }}
         yTickFormatter={defaultYTickFormatter}
         xTickFormatter={defaultXTickFormatter}
+        yTicks={yTicks}
       >
-        <Legend
-          content={
-            <ChartLegend onToggle={toggleLine} hiddenLines={hiddenLines} />
-          }
-          verticalAlign="top"
-          wrapperStyle={{ left: 0, width: "100%", top: 0 }}
-        />
+        {!hasLegend && (
+          <Legend
+            content={
+              <ChartLegend onToggle={toggleLine} hiddenLines={hiddenLines} />
+            }
+            verticalAlign="top"
+            wrapperStyle={{ left: 0, width: "100%", top: 0 }}
+          />
+        )}
 
         <Tooltip
           content={
             <ChartTooltip
               tickFormatter={defaultYTickFormatter}
               labelFormatter={(value) => dateFormatter(value)}
+              hasEntryColor={false}
             />
           }
         />
 
-        {lines.map((line) => (
-          <Line
-            key={line.dataKey}
-            strokeWidth={2}
-            dot={false}
-            hide={hiddenLines[line.dataKey]}
-            activeDot={{ stroke: "transparent", r: 3.5 }}
-            {...line}
-          />
-        ))}
+        {!hasLines &&
+          lines?.map((line) => (
+            <Line
+              key={line.dataKey}
+              strokeWidth={2}
+              dot={false}
+              hide={hiddenLines[line.dataKey]}
+              activeDot={{ stroke: "transparent", r: 3.5 }}
+              {...line}
+            />
+          ))}
+
+        {children}
       </LineChart>
     </div>
   )

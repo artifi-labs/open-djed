@@ -26,6 +26,20 @@ export const useReserveDetails = () => {
         ? `DJED minting and SHEN burning is not permitted when the reserve ratio drops below ${minRatio}%.`
         : `SHEN minting is not permitted when the reserve ratio rises above ${maxRatio}%.`
 
+  const reserveChartWarning: string | null =
+    reserveBounds === "in-bounds"
+      ? null
+      : reserveBounds === "below"
+        ? `DJED/SHEN minting unavailable: reserve ratio below minimum.`
+        : `SHEN minting unavailable: reserve ratio above maximum.`
+
+  const percentage =
+    reserveBounds === "in-bounds"
+      ? 0
+      : reserveBounds === "below"
+        ? ((minRatio - reserveRatio) / minRatio) * 100
+        : ((reserveRatio - maxRatio) / maxRatio) * 100
+
   return {
     hasData: !!data,
     reserveValueADA,
@@ -35,6 +49,8 @@ export const useReserveDetails = () => {
     reserveBounds,
     reserveRatio,
     reserveWarning,
+    reserveChartWarning,
+    percentage,
     isLoading,
   }
 }

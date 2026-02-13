@@ -1,142 +1,165 @@
-"use client"
-
-import { MultiAreaChart } from "@/components/MultiAreaChart"
-import { useViewport } from "@/hooks/useViewport"
-import { aggregateByBucket, type DataRow } from "@/utils/timeseries"
-import { useMemo } from "react"
+import { FinanceLineChart } from "@/components/charts/FinanceLineChart"
 import { type ReserveRatioChartEntry } from "../useAnalyticsData"
-import { getAnalyticsTimeInterval } from "@/lib/utils"
+import {
+  type BarShapeProps,
+  type DotProps,
+  Legend,
+  Line,
+  ReferenceArea,
+} from "recharts"
+import React from "react"
 
 type ReserveRatioOverTimeChartProps = {
-  title?: string
   data: ReserveRatioChartEntry[]
 }
 
 export const ReserveRatioOverTimeChart: React.FC<
   ReserveRatioOverTimeChartProps
-> = ({ title = "Reserve Ratio Over Time", data }) => {
-  const { isMobile } = useViewport()
-  const { formattedData, xAxisFormatter } = useMemo(() => {
-    if (!data || data.length === 0)
-      return { formattedData: [], xAxisFormatter: undefined }
+> = ({ data }) => {
+  const yTickFormatter = (value: number | string) =>
+    `${Number(value).toFixed(0)}%`
 
-    const totalDays = data.length
+  const minReserveRatio = 400
+  const maxReserveRatio = 800
+  const referenceLineStrokeColor = "var(--color-border-secondary)"
+  const maxMinColor = "var(--color-alerts-error-text)"
+  const baseLineColor = "var(--color-supportive-2-500)"
 
-    const formatter = (value: string | number, index?: number) => {
-      const date = new Date(value)
-      if (isNaN(date.getTime())) return String(value)
+  const values = data.map((d) => d.reserveRatio ?? 0)
+  const dataMin = Math.min(...values)
+  const dataMax = Math.max(...values)
+  const range = dataMax - dataMin
 
-      const month = date.toLocaleString(undefined, { month: "short" })
-      const year = date.getFullYear()
-      const displayedYear = date.toLocaleString(undefined, { year: "numeric" })
+  const minThresholdPercent =
+    range > 0
+      ? Math.max(0, Math.min(100, ((dataMax - minReserveRatio) / range) * 100))
+      : 50
+  const maxThresholdPercent =
+    range > 0
+      ? Math.max(0, Math.min(100, ((dataMax - maxReserveRatio) / range) * 100))
+      : 50
 
-      if (totalDays <= 365) {
-        return date.toLocaleDateString(undefined, {
-          month: "short",
-          day: "numeric",
-        })
-      }
-
-      if (index === 0) return `${month}, ${displayedYear}`
-
-      if (index !== undefined && data[index - 1]) {
-        const prevDate = new Date(data[index - 1].timestamp as string)
-        if (year !== prevDate.getFullYear()) {
-          return `${month}, ${displayedYear}`
-        }
-      }
-
-      return totalDays > 365 * 2 ? displayedYear : month
-    }
-
-    const newInterval = getAnalyticsTimeInterval(totalDays, isMobile)
-
-    const dataRows: DataRow[] = []
-    for (let i = 0; i < data.length - 1; i++) {
-      dataRows.push({
-        date: data[i].timestamp,
-        reserveRatio: data[i].reserveRatio,
-      } as unknown as DataRow)
-    }
-
-    const results = aggregateByBucket(
-      dataRows,
-      newInterval ?? 0,
-      new Date(data[0].timestamp),
-      {
-        reserveRatio: ["avg"],
-      },
-    )
-
-    if (totalDays > 365) {
-      results[results.length - 1] = {
-        date: new Date(data[data.length - 1].timestamp).toISOString(),
-        reserveRatio_avg: data[data.length - 1].reserveRatio,
-      } as unknown as DataRow
-    } else {
-      results.push({
-        date: new Date(data[data.length - 1].timestamp).toISOString(),
-        reserveRatio_avg: data[data.length - 1].reserveRatio,
-      } as unknown as DataRow)
-    }
-
-    return { formattedData: results, xAxisFormatter: formatter }
-  }, [data])
-
-  const tickFormatter = (value: number) => `${value}\u00A0%`
-  const areas = [
-    {
-      dataKey: "reserveRatio_avg",
-      name: "Reserve Ratio",
-      tooltipLabel: "Reserve Ratio",
-      strokeColor: `var(--color-supportive-2-500)`,
-      fillColor: "transparent",
-      fillOpacity: 0,
-      strokeWidth: 2,
-    },
-  ]
-  const referenceLines = [
-    { y: 400, label: "400%", stroke: "#EF4444" },
-    { y: 800, label: "800%", stroke: "#10B981" },
-  ]
-
-  let currentPoint = undefined
-  const lastEntry = formattedData[formattedData.length - 1]
-
-  if (lastEntry && lastEntry.reserveRatio_avg !== undefined) {
-    const currentRatio = Number(lastEntry.reserveRatio_avg)
-    const currentDate = lastEntry.date as string | number
-
-    currentPoint = {
-      x: currentDate,
-      y: currentRatio,
-      label: {
-        text: "Current Ratio",
-        size: 10,
-        color: "var(--color-offwhite)",
-      },
-      dot: {
-        fill: "var(--color-supportive-2-500)",
-        stroke: "var(--color-offwhite)",
-      },
-    }
+  type DataPoint = (typeof data)[0]
+  interface CustomDotProps extends DotProps {
+    payload?: DataPoint
+    dataKey?: string
+    value?: number
   }
 
+  const ConditionalDot = (props: CustomDotProps) => {
+    const { cx, cy, payload } = props
+
+    if (!cx || !cy || !payload) return null
+
+    const value = payload.reserveRatio ?? 0
+
+    let color = baseLineColor
+    if (value < minReserveRatio || value > maxReserveRatio) {
+      color = maxMinColor
+    }
+
+    return <circle cx={cx} cy={cy} r={4} fill={color} strokeWidth={2} />
+  }
+
+  const lines = [
+    {
+      dataKey: "reserveRatio",
+      name: "Reserve Ratio",
+    },
+  ]
+
+  const referenceAreas = [
+    {
+      y1: minReserveRatio,
+      y2: maxReserveRatio,
+      fill: "url(#referenceGradient)",
+      fillOpacity: 0.1,
+    },
+  ]
+
   return (
-    <MultiAreaChart
-      title={title}
-      data={formattedData}
-      xKey="date"
-      interval={0}
-      xTickFormatter={xAxisFormatter}
-      tickFormatter={tickFormatter}
-      yDomain={[0, 1000]}
-      graphWidth={20}
-      margin={{ top: 6, right: 14, left: 24, bottom: 6 }}
-      referenceLines={referenceLines}
-      currentPoint={currentPoint}
-      areas={areas}
-      showLegend={true}
-    />
+    <FinanceLineChart
+      data={data}
+      xKey="timestamp"
+      yTickFormatter={yTickFormatter}
+      yTicks={[0, 200, 400, 600, 800, 1000, 1200]}
+    >
+      <Legend content={() => null} />
+      <defs>
+        <linearGradient id="splitColorGradient" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={maxMinColor} />
+          <stop offset={`${maxThresholdPercent}%`} stopColor={maxMinColor} />
+
+          <stop offset={`${maxThresholdPercent}%`} stopColor={baseLineColor} />
+          <stop offset={`${minThresholdPercent}%`} stopColor={baseLineColor} />
+
+          <stop offset={`${minThresholdPercent}%`} stopColor={maxMinColor} />
+          <stop offset="100%" stopColor={maxMinColor} />
+        </linearGradient>
+
+        <linearGradient
+          id="referenceGradient"
+          x1="0.95"
+          y1="0.1"
+          x2="0.05"
+          y2="0.9"
+        >
+          <stop offset="1%" stopColor="var(--color-supportive-1-500)" />
+          <stop offset="118.71%" stopColor="var(--color-supportive-2-500)" />
+        </linearGradient>
+      </defs>
+
+      {referenceAreas.map((area, index) => (
+        <ReferenceArea
+          key={index}
+          y1={area.y1}
+          y2={area.y2}
+          fill={area.fill}
+          fillOpacity={area.fillOpacity}
+          shape={(props: BarShapeProps) => {
+            const { x, y, width, height } = props
+            return (
+              <g>
+                <rect
+                  x={x}
+                  y={y}
+                  width={width}
+                  height={height}
+                  fill={area.fill}
+                  fillOpacity={area.fillOpacity}
+                />
+                <line
+                  x1={x}
+                  y1={y}
+                  x2={x + width}
+                  y2={y}
+                  stroke={referenceLineStrokeColor}
+                  strokeWidth={1}
+                />
+                <line
+                  x1={x}
+                  y1={y + height}
+                  x2={x + width}
+                  y2={y + height}
+                  stroke={referenceLineStrokeColor}
+                  strokeWidth={1}
+                />
+              </g>
+            )
+          }}
+        />
+      ))}
+
+      {lines.map((line) => (
+        <Line
+          key={line.dataKey}
+          strokeWidth={2}
+          stroke="url(#splitColorGradient)"
+          dot={false}
+          activeDot={<ConditionalDot />}
+          {...line}
+        />
+      ))}
+    </FinanceLineChart>
   )
 }
