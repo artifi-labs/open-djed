@@ -1,7 +1,7 @@
 "use client"
 
 import { useMemo } from "react"
-import { FinanceLineChart } from "@/components/charts/FinanceLineChart"
+import { FinancialAreaChart } from "@/components/charts/FinancialAreaChart"
 import { useViewport } from "@/hooks/useViewport"
 import type { Currency, TokenPriceByToken } from "../useAnalyticsData"
 
@@ -81,7 +81,7 @@ export const ShenAdaPriceChart: React.FC<ShenAdaPriceChartProps> = ({
         ]
 
   return (
-    <FinanceLineChart
+    <FinancialAreaChart
       data={rows}
       xKey="date"
       lines={lines}
