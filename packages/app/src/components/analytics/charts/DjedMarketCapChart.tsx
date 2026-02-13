@@ -4,6 +4,8 @@ import { FinanceLineChart } from "@/components/charts/FinanceLineChart"
 import { useViewport } from "@/hooks/useViewport"
 import { useMemo } from "react"
 import { type Currency } from "../useAnalyticsData"
+import { Legend } from "recharts"
+import { ChartLegend } from "@/components/charts/legend/ChartLegend"
 
 type DjedMarketCapChartProps = {
   title?: string
@@ -65,14 +67,18 @@ export const DjedMarketCapChart: React.FC<DjedMarketCapChartProps> = ({
     },
   ]
 
-  console.log("DjedMarketCapChart rows:", rows)
-
   return (
     <FinanceLineChart
       data={rows}
       xKey="date"
       lines={lines}
       yTickFormatter={yTickFormatter}
-    />
+    >
+      <Legend
+        content={<ChartLegend />}
+        verticalAlign="top"
+        wrapperStyle={{ left: 0, width: "100%", top: 0 }}
+      />
+    </FinanceLineChart>
   )
 }

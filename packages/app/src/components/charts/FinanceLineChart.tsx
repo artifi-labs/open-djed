@@ -40,6 +40,10 @@ export const FinanceLineChart: React.FC<FinanceLineChartProps> = ({
     (child) => React.isValidElement(child) && child.type === Line,
   )
 
+  const hasLegend = childrenArray.some(
+    (child) => React.isValidElement(child) && child.type === Legend,
+  )
+
   const toggleLine = (dataKey: string) => {
     setHiddenLines((prev) => ({
       ...prev,
@@ -61,19 +65,22 @@ export const FinanceLineChart: React.FC<FinanceLineChartProps> = ({
         xTickFormatter={defaultXTickFormatter}
         yTicks={yTicks}
       >
-        <Legend
-          content={
-            <ChartLegend onToggle={toggleLine} hiddenLines={hiddenLines} />
-          }
-          verticalAlign="top"
-          wrapperStyle={{ left: 0, width: "100%", top: 0 }}
-        />
+        {!hasLegend && (
+          <Legend
+            content={
+              <ChartLegend onToggle={toggleLine} hiddenLines={hiddenLines} />
+            }
+            verticalAlign="top"
+            wrapperStyle={{ left: 0, width: "100%", top: 0 }}
+          />
+        )}
 
         <Tooltip
           content={
             <ChartTooltip
               tickFormatter={defaultYTickFormatter}
               labelFormatter={(value) => dateFormatter(value)}
+              hasEntryColor={false}
             />
           }
         />
