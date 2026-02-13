@@ -10,6 +10,7 @@ import {
   CHART_PERIOD_OPTIONS,
   CURRENCY_OPTIONS,
 } from "./useAnalyticsData"
+import { ShenMarketCapChart } from "./charts/ShenMarketCapChart"
 
 const Analytics = () => {
   const {
@@ -26,6 +27,11 @@ const Analytics = () => {
     setShenAdaPricePeriod,
     shenAdaCurrency,
     setShenAdaCurrency,
+    shenMCPeriod,
+    shenMCCurrency,
+    setShenMCCurrency,
+    setShenMCPeriod,
+    shenMCHistoricalData,
   } = useAnalyticsData()
   const { reserveRatio, reserveBounds, percentage, reserveChartWarning } =
     useReserveDetails()
@@ -82,14 +88,28 @@ const Analytics = () => {
             currency={djedMCCurrency}
           />
         </ChartCard>
-        <ChartCard title="SHEN Market Cap "></ChartCard>
+        <ChartCard
+          title="SHEN Market Cap"
+          period={shenMCPeriod}
+          periodItems={[...CHART_PERIOD_OPTIONS]}
+          onPeriodChange={setShenMCPeriod}
+          currency={shenMCCurrency}
+          onCurrencyChange={setShenMCCurrency}
+          currencyItems={[...CURRENCY_OPTIONS]}
+        >
+          <ShenMarketCapChart
+            data={shenMCHistoricalData}
+            currency={shenMCCurrency}
+          />
+        </ChartCard>
       </div>
 
       {/* <div className="desktop:gap-24 grid grid-cols-1 gap-16">
         <ChartCard title="Volume Analytics"></ChartCard>
       </div> */}
 
-      <div className="desktop:grid-cols-2 desktop:gap-24 grid grid-cols-1 gap-16 py-24">
+      {/*<div className="desktop:grid-cols-2 desktop:gap-24 grid grid-cols-1 gap-16 py-24">*/}
+      <div className="desktop:gap-24 grid grid-cols-1 gap-16">
         <ChartCard
           period={shenAdaPricePeriod}
           periodItems={[...CHART_PERIOD_OPTIONS]}
