@@ -215,7 +215,7 @@ export function useAnalyticsData() {
     async (period: ChartPeriod) => {
       try {
         const res = await client.api["historical-market-cap"].$get({
-          query: { period, token: "SHEN" },
+          query: { period: period.value, token: "SHEN" },
         })
 
         if (res.ok) {
