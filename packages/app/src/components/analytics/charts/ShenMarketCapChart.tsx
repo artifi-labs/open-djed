@@ -4,7 +4,7 @@ import { getAnalyticsTimeInterval } from "@/lib/utils"
 import { type DataRow, aggregateByBucket } from "@/utils/timeseries"
 import { useMemo } from "react"
 
-type DjedMarketCapChartProps = {
+type ShenMarketCapChartProps = {
   title?: string
   data: {
     timestamp: string
@@ -14,8 +14,8 @@ type DjedMarketCapChartProps = {
   currency: "USD" | "ADA"
 }
 
-export const DjedMarketCapChart: React.FC<DjedMarketCapChartProps> = ({
-  title = "DJED Market Cap Over Time",
+export const ShenMarketCapChart: React.FC<ShenMarketCapChartProps> = ({
+  title = "SHEN Market Cap Over Time",
   data,
   currency,
 }) => {

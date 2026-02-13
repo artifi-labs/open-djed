@@ -1,5 +1,10 @@
 import type { OrderDatum, PoolDatum, OracleDatum } from "@open-djed/data"
-import type { Actions, AllTokens, Token } from "../../generated/prisma/enums"
+import type {
+  Actions,
+  AllTokens,
+  Token,
+  TokenMarketCap,
+} from "../../generated/prisma/enums"
 
 export type Transaction = {
   tx_hash: string
@@ -228,14 +233,13 @@ export type ReserveRatio = {
   block: string
   slot: number
 }
-
-export type DjedMarketCap = {
+export type MarketCap = {
   timestamp: Date
   usdValue: number
   adaValue: number
   block: string
   slot: number
-  token: "DJED"
+  token: TokenMarketCap
 }
 
 export type TokenPrice = {
@@ -270,10 +274,12 @@ export type DailyReserveRatioUTxOsWithWeights = Omit<DailyUTxOs, "entries"> & {
   entries: WeightedReserveEntry[]
 }
 
-export type WeightedDjedMarketCapEntry = OrderedPoolOracleTxOs & {
+export type WeightedMarketCapEntry = OrderedPoolOracleTxOs & {
   weight: number
-  usdValue?: number
-  adaValue?: number
+  djedUsdValue?: number
+  djedAdaValue?: number
+  shenUsdValue?: number
+  shenAdaValue?: number
   period?: {
     start: string
     end: string
@@ -282,8 +288,8 @@ export type WeightedDjedMarketCapEntry = OrderedPoolOracleTxOs & {
   usedOracleDatum?: OracleUTxoWithDatumAndTimestamp["oracleDatum"]
 }
 
-export type DailyDjedMarketCapUTxOsWithWeights = Omit<DailyUTxOs, "entries"> & {
-  entries: WeightedDjedMarketCapEntry[]
+export type DailyMarketCapUTxOsWithWeights = Omit<DailyUTxOs, "entries"> & {
+  entries: WeightedMarketCapEntry[]
 }
 
 export type WeightedTokenPriceEntry = OrderedPoolOracleTxOs & {

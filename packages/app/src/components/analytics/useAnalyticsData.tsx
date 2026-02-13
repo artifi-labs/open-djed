@@ -16,8 +16,14 @@ export type ReserveRatioChartEntry = {
 export type DjedMChartEntry = {
   id: number
   timestamp: string
-  usdValue: number
-  adaValue: number
+  usdValue: string
+  adaValue: string
+}
+export type ShenMChartEntry = {
+  id: number
+  timestamp: string
+  usdValue: string
+  adaValue: string
 }
 
 export type TokenPriceChartEntry = {
@@ -52,6 +58,10 @@ export function useAnalyticsData() {
     DjedMChartEntry[]
   >([])
   const [djedMCPeriod, setDjedMCPeriod] = useState<ChartPeriod>("W")
+  const [shenMCHistoricalData, setShenMCHistoricalData] = useState<
+    ShenMChartEntry[]
+  >([])
+  const [shenMCPeriod, setShenMCPeriod] = useState<ChartPeriod>("W")
 
   const [shenAdaHistoricalData, setShenAdaHistoricalData] =
     useState<TokenPriceByToken>({
@@ -113,29 +123,33 @@ export function useAnalyticsData() {
   const fetchDjedMCHistoricalData = useCallback(
     async (period: ChartPeriod) => {
       try {
-        const res = await client.api["historical-djed-market-cap"].$get({
-          query: { period },
+        const res = await client.api["historical-market-cap"].$get({
+          query: { period, token: "DJED" },
         })
 
         if (res.ok) {
           const historicalData = (await res.json()) as DjedMChartEntry[]
-          historicalData.map((entry) => ({
+          const dataToSave = historicalData.map((entry) => ({
             ...entry,
-            usdValue: Number(entry.usdValue),
-            adaValue: Number(entry.adaValue),
+            usdValue: (Number(entry.usdValue) / 1e6).toString(),
+            adaValue: (Number(entry.adaValue) / 1e6).toString(),
           }))
 
           if (!isLoading) {
             const todayKey = new Date().toISOString()
-            historicalData.push({
+            dataToSave.push({
               id: -1,
               timestamp: todayKey,
-              adaValue: Number(data?.protocolData.DJED.marketCap.ADA) / 1e6,
-              usdValue: Number(data?.protocolData.DJED.marketCap.USD) / 1e6,
+              adaValue: (
+                Number(data?.protocolData.DJED.marketCap.ADA) / 1e6
+              ).toString(),
+              usdValue: (
+                Number(data?.protocolData.DJED.marketCap.USD) / 1e6
+              ).toString(),
             })
           }
 
-          setDjedMCHistoricalData(historicalData)
+          setDjedMCHistoricalData(dataToSave)
         }
       } catch (err) {
         console.error("Action failed:", err)
@@ -149,6 +163,57 @@ export function useAnalyticsData() {
 
         showToast({
           message: `Failed to get historical DJED market cap data.`,
+          type: "error",
+        })
+      }
+    },
+    [data],
+  )
+
+  const fetchShenMCHistoricalData = useCallback(
+    async (period: ChartPeriod) => {
+      try {
+        const res = await client.api["historical-market-cap"].$get({
+          query: { period, token: "SHEN" },
+        })
+
+        if (res.ok) {
+          const historicalData = (await res.json()) as ShenMChartEntry[]
+          const dataToSave = historicalData.map((entry) => ({
+            ...entry,
+            usdValue: (Number(entry.usdValue) / 1e6).toString(),
+            adaValue: (Number(entry.adaValue) / 1e6).toString(),
+          }))
+
+          if (!isLoading) {
+            const todayKey = new Date().toISOString()
+            dataToSave.push({
+              id: -1,
+              timestamp: todayKey,
+              adaValue: (
+                Number(data?.protocolData.SHEN.marketCap.ADA) / 1e6
+              ).toString(),
+              usdValue: (
+                Number(data?.protocolData.SHEN.marketCap.USD) / 1e6
+              ).toString(),
+            })
+          }
+
+          console.log("Fetched SHEN MC historical data:", dataToSave)
+          setShenMCHistoricalData(dataToSave)
+        }
+      } catch (err) {
+        console.error("Action failed:", err)
+        if (err instanceof AppError) {
+          showToast({
+            message: `${err.message}`,
+            type: "error",
+          })
+          return
+        }
+
+        showToast({
+          message: `Failed to get historical SHEN market cap data.`,
           type: "error",
         })
       }
@@ -210,6 +275,12 @@ export function useAnalyticsData() {
   }, [djedMCPeriod, data])
 
   useEffect(() => {
+    fetchShenMCHistoricalData(shenMCPeriod).catch((err) => {
+      console.error("fetchShenMC error:", err)
+    })
+  }, [shenMCPeriod, data])
+
+  useEffect(() => {
     fetchShenAdaPriceHistoricalData(shenAdaPricePeriod).catch((err) => {
       console.error("fetchShenAdaPrice error:", err)
     })
@@ -222,6 +293,9 @@ export function useAnalyticsData() {
     djedMCHistoricalData,
     djedMCPeriod,
     setDjedMCPeriod,
+    shenMCHistoricalData,
+    shenMCPeriod,
+    setShenMCPeriod,
     shenAdaHistoricalData,
     shenAdaPricePeriod,
     setShenAdaPricePeriod,

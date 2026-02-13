@@ -1,36 +1,24 @@
+import type { TokenMarketCap } from "../../../../generated/prisma/enums"
 import {
-  djedUSDMarketCap,
   djedADAMarketCap,
+  djedUSDMarketCap,
+  shenADAMarketCap,
+  shenUSDMarketCap,
 } from "@open-djed/math/src/market-cap"
-import { prisma } from "../../../../../lib/prisma"
-import { logger } from "../../../../utils/logger"
+import { MS_PER_DAY } from "../../utils"
 import type {
-  DailyDjedMarketCapUTxOsWithWeights,
+  DailyMarketCapUTxOsWithWeights,
   DailyUTxOs,
-  DjedMarketCap,
+  MarketCap,
   OracleUTxoWithDatumAndTimestamp,
   OrderedPoolOracleTxOs,
   PoolUTxoWithDatumAndTimestamp,
-  WeightedDjedMarketCapEntry,
-} from "../../../types"
-import {
-  breakIntoDays,
-  MS_PER_DAY,
-  processAnalyticsDataToInsert,
-} from "../../../utils"
-import { getLatestDjedMC } from "../../../../client/djedMarketCap"
-import { handleAnalyticsUpdates } from "../../updateAnalytics"
+  WeightedMarketCapEntry,
+} from "../../types"
 
-/**
- * Assigns a millisecond-based weight to every UTxO by tracking the interval
- * until the next observation within the same day. Records the pool/oracle datum
- * that would back each interval so the market cap can later be computed.
- * @param dailyChunks grouped entries per day emitted from `breakIntoDays`
- * @returns the same chunks enriched with weight, market cap values, and datum references
- */
-export const assignTimeWeightsToDailyDjedMCUTxOs = (
+export const assignTimeWeightsToDailyMarketCapUTxOs = (
   dailyChunks: DailyUTxOs[],
-): DailyDjedMarketCapUTxOsWithWeights[] => {
+): DailyMarketCapUTxOsWithWeights[] => {
   let previousDayLastTimestampMs: number | null = null
   let activePoolDatum: PoolUTxoWithDatumAndTimestamp["poolDatum"] | null = null
   let activeOracleDatum: OracleUTxoWithDatumAndTimestamp["oracleDatum"] | null =
@@ -38,12 +26,13 @@ export const assignTimeWeightsToDailyDjedMCUTxOs = (
   let activePoolEntry: OrderedPoolOracleTxOs | null = null
   let activeOracleEntry: OrderedPoolOracleTxOs | null = null
 
-  const returnArr = dailyChunks.map((dailyDayChunk, chunkIndex) => {
-    const timedEntries: WeightedDjedMarketCapEntry[] =
-      dailyDayChunk.entries.map((entry) => ({
+  return dailyChunks.map((dailyDayChunk, chunkIndex) => {
+    const timedEntries: WeightedMarketCapEntry[] = dailyDayChunk.entries.map(
+      (entry) => ({
         ...entry,
         weight: 0,
-      }))
+      }),
+    )
 
     const dayStartMs = Date.parse(dailyDayChunk.startIso)
     const dayEndMs = Date.parse(dailyDayChunk.endIso)
@@ -78,16 +67,28 @@ export const assignTimeWeightsToDailyDjedMCUTxOs = (
       ) {
         currentEntry.usedPoolDatum = previousPoolDatum
         currentEntry.usedOracleDatum = previousOracleDatum
-        currentEntry.usdValue = djedUSDMarketCap(previousPoolDatum).toNumber()
-        currentEntry.adaValue = djedADAMarketCap(
+
+        currentEntry.djedUsdValue =
+          djedUSDMarketCap(previousPoolDatum).toNumber()
+        currentEntry.djedAdaValue = djedADAMarketCap(
           previousPoolDatum,
           previousOracleDatum,
         ).toNumber()
+        currentEntry.shenUsdValue = shenUSDMarketCap(
+          previousPoolDatum,
+          previousOracleDatum,
+        ).toNumber()
+        currentEntry.shenAdaValue = shenADAMarketCap(
+          previousPoolDatum,
+          previousOracleDatum,
+        ).toNumber()
+
         currentEntry.period = {
           start: intervalStartIso,
           end: intervalEndIso,
         }
       }
+
       let duration = Math.max(0, currentTimestampMs - previousTimestampMs)
 
       if (index === timedEntries.length - 1) {
@@ -116,8 +117,6 @@ export const assignTimeWeightsToDailyDjedMCUTxOs = (
       entries: timedEntries,
     }
   })
-
-  return returnArr
 }
 
 /**
@@ -127,92 +126,60 @@ export const assignTimeWeightsToDailyDjedMCUTxOs = (
  * @param dailyChunks the weighted daily chunks that include time coverage
  * @returns the averaged daily market cap rows that are persisted
  */
-export const getTimeWeightedDailyDjedMC = (
-  dailyChunks: DailyDjedMarketCapUTxOsWithWeights[],
-): DjedMarketCap[] => {
-  const dailyReserveRatios: DjedMarketCap[] = []
+export const getTimeWeightedDailyMarketCap = (
+  dailyChunks: DailyMarketCapUTxOsWithWeights[],
+): Record<TokenMarketCap, MarketCap[]> => {
+  const dailyMarketCaps: Record<TokenMarketCap, MarketCap[]> = {
+    DJED: [],
+    SHEN: [],
+  }
 
   for (const chunk of dailyChunks) {
-    let weightedUSDSum = 0
-    let weightedADASum = 0
+    let weightedDjedUSDSum = 0
+    let weightedDjedADASum = 0
+    let weightedSHENUSDSum = 0
+    let weightedSHENADASum = 0
     let durationSum = 0
 
     for (const entry of chunk.entries) {
       if (
         entry.weight <= 0 ||
-        entry.usdValue === undefined ||
-        entry.adaValue === undefined
+        entry.djedUsdValue === undefined ||
+        entry.djedAdaValue === undefined ||
+        entry.shenUsdValue === undefined ||
+        entry.shenAdaValue === undefined
       )
         continue
       const duration = entry.weight
       durationSum += duration
-      weightedUSDSum += entry.usdValue * duration
-      weightedADASum += entry.adaValue * duration
+      weightedDjedUSDSum += entry.djedUsdValue * duration
+      weightedDjedADASum += entry.djedAdaValue * duration
+      weightedSHENUSDSum += entry.shenUsdValue * duration
+      weightedSHENADASum += entry.shenAdaValue * duration
     }
 
     if (durationSum === 0) continue
-
-    const averageUSDValue = weightedUSDSum / MS_PER_DAY
-    const averageADAValue = weightedADASum / MS_PER_DAY
-
     const latestEntry = chunk.entries.at(-1)
     if (!latestEntry) continue
 
-    dailyReserveRatios.push({
+    const base = {
       timestamp: new Date(latestEntry.value.timestamp),
-      usdValue: averageUSDValue,
-      adaValue: averageADAValue,
       block: latestEntry.value.block_hash,
       slot: latestEntry.value.block_slot,
+    }
+    dailyMarketCaps.DJED.push({
+      ...base,
       token: "DJED",
+      adaValue: weightedDjedADASum / MS_PER_DAY,
+      usdValue: weightedDjedUSDSum / MS_PER_DAY,
+    })
+    dailyMarketCaps.SHEN.push({
+      ...base,
+      token: "SHEN",
+      adaValue: weightedSHENADASum / MS_PER_DAY,
+      usdValue: weightedSHENUSDSum / MS_PER_DAY,
     })
   }
 
-  return dailyReserveRatios
-}
-
-export async function processDjedMarketCap(
-  orderedTxOs: OrderedPoolOracleTxOs[],
-) {
-  const start = Date.now()
-  logger.info(`=== Processing DJED Market Cap ===`)
-  const dailyTxOs = breakIntoDays(orderedTxOs)
-  const weightedDailyTxOs = assignTimeWeightsToDailyDjedMCUTxOs(dailyTxOs)
-  const dailyDjedMC = getTimeWeightedDailyDjedMC(weightedDailyTxOs)
-
-  if (dailyDjedMC.length === 0) {
-    logger.warn("No daily DJED market caps computed")
-  }
-
-  logger.info("Processing DJED market cap data...")
-
-  const dataToInsert = processAnalyticsDataToInsert(dailyDjedMC)
-
-  logger.info(
-    `Inserting ${dataToInsert.length} DJED market cap entries into database...`,
-  )
-  await prisma.marketCap.createMany({
-    data: dataToInsert,
-    skipDuplicates: true,
-  })
-  logger.info(
-    `Historic DJED market cap sync complete. Inserted ${dataToInsert.length} DJED market cap entries`,
-  )
-  const end = Date.now() - start
-  logger.info(
-    `=== Processing DJED Market Cap took sec: ${(end / 1000).toFixed(2)} ===`,
-  )
-}
-
-export async function updateDjedMC() {
-  const start = Date.now()
-  logger.info(`=== Updating DJED Market Cap ===`)
-  const latestDjedMC = await getLatestDjedMC()
-  if (!latestDjedMC) return
-
-  await handleAnalyticsUpdates(latestDjedMC.timestamp, processDjedMarketCap)
-  const end = Date.now() - start
-  logger.info(
-    `=== Updating DJED Market Cap took sec: ${(end / 1000).toFixed(2)} ===`,
-  )
+  return dailyMarketCaps
 }
