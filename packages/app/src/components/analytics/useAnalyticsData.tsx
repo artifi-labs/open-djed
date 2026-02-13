@@ -5,8 +5,10 @@ import { useToast } from "@/context/ToastContext"
 import { useProtocolData } from "@/hooks/useProtocolData"
 import { useReserveDetails } from "@/hooks/useReserveDetails"
 import { AppError } from "@open-djed/api/src/errors"
-import type { Tokens } from "@open-djed/db"
 import { useCallback, useEffect, useState } from "react"
+import type { TokenMarketCap } from "../../../../db/generated/prisma/enums"
+import { capitalize } from "@/lib/utils"
+import type { Token } from "@/lib/tokens"
 
 export type ReserveRatioChartEntry = {
   id: number
@@ -31,10 +33,10 @@ export type TokenPriceChartEntry = {
   timestamp: string
   adaValue: number
   usdValue: number
-  token: Exclude<Tokens, "DJED">
+  token: Exclude<Token, "DJED">
 }
 export type TokenPriceByToken = Record<
-  Exclude<Tokens, "DJED">,
+  Exclude<Token, "DJED">,
   TokenPriceChartEntry[]
 >
 
@@ -166,63 +168,11 @@ export function useAnalyticsData() {
     [reserveRatio],
   )
 
-  const fetchDjedMCHistoricalData = useCallback(
-    async (period: ChartPeriod) => {
-      try {
-        const res = await client.api["historical-djed-market-cap"].$get({
-          query: { period: period.value },
-        })
-
-        if (res.ok) {
-          const historicalData = (await res.json()) as DjedMChartEntry[]
-          if (period.value === "All") historicalData.shift()
-
-          const dataToSave = historicalData.map((entry) => ({
-            ...entry,
-            usdValue: (Number(entry.usdValue) / 1e6).toString(),
-            adaValue: (Number(entry.adaValue) / 1e6).toString(),
-          }))
-
-          if (!isLoading) {
-            const todayKey = new Date().toISOString()
-            dataToSave.push({
-              id: -1,
-              timestamp: todayKey,
-              adaValue: (
-                Number(data?.protocolData.DJED.marketCap.ADA) / 1e6
-              ).toString(),
-              usdValue: (
-                Number(data?.protocolData.DJED.marketCap.USD) / 1e6
-              ).toString(),
-            })
-          }
-
-          setDjedMCHistoricalData(dataToSave)
-        }
-      } catch (err) {
-        console.error("Action failed:", err)
-        if (err instanceof AppError) {
-          showToast({
-            message: `${err.message}`,
-            type: "error",
-          })
-          return
-        }
-
-        showToast({
-          message: `Failed to get historical DJED market cap data.`,
-          type: "error",
-        })
-      }
-    },
-    [data],
-  )
-
-  const fetchShenMCHistoricalData = useCallback(
-    async (period: ChartPeriod) => {
+  const fetchMCHistoricalData = useCallback(
+    async (period: ChartPeriod, token: TokenMarketCap) => {
       try {
         const res = await client.api["historical-market-cap"].$get({
-          query: { period: period.value, token: "SHEN" },
+          query: { period: period.value, token: token },
         })
 
         if (res.ok) {
@@ -247,7 +197,11 @@ export function useAnalyticsData() {
             })
           }
 
-          setShenMCHistoricalData(dataToSave)
+          if (token === "DJED") {
+            setDjedMCHistoricalData(dataToSave)
+          } else if (token === "SHEN") {
+            setShenMCHistoricalData(dataToSave)
+          }
         }
       } catch (err) {
         console.error("Action failed:", err)
@@ -260,7 +214,7 @@ export function useAnalyticsData() {
         }
 
         showToast({
-          message: `Failed to get historical SHEN market cap data.`,
+          message: `Failed to get historical ${capitalize(token)} market cap data.`,
           type: "error",
         })
       }
@@ -321,13 +275,13 @@ export function useAnalyticsData() {
   }, [reserveRatioPeriod, data])
 
   useEffect(() => {
-    fetchDjedMCHistoricalData(djedMCPeriod).catch((err) => {
+    fetchMCHistoricalData(djedMCPeriod, "DJED").catch((err) => {
       console.error("fetchDjedMC error:", err)
     })
   }, [djedMCPeriod, data])
 
   useEffect(() => {
-    fetchShenMCHistoricalData(shenMCPeriod).catch((err) => {
+    fetchMCHistoricalData(shenMCPeriod, "SHEN").catch((err) => {
       console.error("fetchShenMC error:", err)
     })
   }, [shenMCPeriod, data])
