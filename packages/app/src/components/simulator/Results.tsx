@@ -8,7 +8,7 @@ import { type ScenarioInputs, useSimulatorResults } from "./calculations"
 import Tooltip from "../tooltip/Tooltip"
 import Icon from "../icons/Icon"
 import { isEmptyValue, useTimeInterval } from "@/lib/utils"
-import { FinanceLineChart } from "../charts/FinanceLineChart"
+import { FinancialAreaChart } from "../charts/FinancialAreaChart"
 import { useToast } from "@/context/ToastContext"
 import Divider from "../Divider"
 import { useLocalStorage } from "usehooks-ts"
@@ -390,7 +390,7 @@ const Results: React.FC<ResultsProps> = ({ inputs }) => {
         </div>
 
         {/* Chart */}
-        <FinanceLineChart
+        <FinancialAreaChart
           title="Profit Over Time"
           data={results}
           xKey="date"

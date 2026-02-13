@@ -1,6 +1,6 @@
 "use client"
 
-import { FinanceLineChart } from "@/components/charts/FinanceLineChart"
+import { FinancialAreaChart } from "@/components/charts/FinancialAreaChart"
 import { useViewport } from "@/hooks/useViewport"
 import { useMemo } from "react"
 import { type Currency } from "../useAnalyticsData"
@@ -68,7 +68,7 @@ export const DjedMarketCapChart: React.FC<DjedMarketCapChartProps> = ({
   ]
 
   return (
-    <FinanceLineChart
+    <FinancialAreaChart
       data={rows}
       xKey="date"
       lines={lines}
@@ -79,6 +79,6 @@ export const DjedMarketCapChart: React.FC<DjedMarketCapChartProps> = ({
         verticalAlign="top"
         wrapperStyle={{ left: 0, width: "100%", top: 0 }}
       />
-    </FinanceLineChart>
+    </FinancialAreaChart>
   )
 }

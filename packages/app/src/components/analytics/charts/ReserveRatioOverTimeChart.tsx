@@ -1,4 +1,4 @@
-import { FinanceLineChart } from "@/components/charts/FinanceLineChart"
+import { FinancialAreaChart } from "@/components/charts/FinancialAreaChart"
 import { type ReserveRatioChartEntry } from "../useAnalyticsData"
 import {
   type BarShapeProps,
@@ -78,7 +78,7 @@ export const ReserveRatioOverTimeChart: React.FC<
   ]
 
   return (
-    <FinanceLineChart
+    <FinancialAreaChart
       data={data}
       xKey="timestamp"
       yTickFormatter={yTickFormatter}
@@ -160,6 +160,6 @@ export const ReserveRatioOverTimeChart: React.FC<
           {...line}
         />
       ))}
-    </FinanceLineChart>
+    </FinancialAreaChart>
   )
 }

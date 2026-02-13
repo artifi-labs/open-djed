@@ -1,13 +1,13 @@
 import React, { useState } from "react"
-import { LineChart } from "@/components/charts/line-chart/LineChart"
-import { Legend, Line, Tooltip } from "recharts"
+import { Area, Legend, Line, Tooltip } from "recharts"
 import { ChartLegend } from "@/components/charts/legend/ChartLegend"
 import { dateFormatter, UsdFormatter } from "@/components/charts/utils"
 import { ChartTooltip } from "@/components/charts/tooltips/ChartTooltip"
 import type { ChartData } from "recharts/types/state/chartDataSlice"
 import type { AxisTick } from "recharts/types/util/types"
+import { AreaChart } from "./area-chart/AreaChart"
 
-type FinanceLineChartProps = {
+type FinancialAreaChartProps = {
   title?: string
   data: ChartData | undefined
   xKey: string
@@ -23,7 +23,7 @@ type FinanceLineChartProps = {
   children?: React.ReactNode
 }
 
-export const FinanceLineChart: React.FC<FinanceLineChartProps> = ({
+export const FinancialAreaChart: React.FC<FinancialAreaChartProps> = ({
   title = "",
   data,
   xKey,
@@ -57,7 +57,7 @@ export const FinanceLineChart: React.FC<FinanceLineChartProps> = ({
   return (
     <div className="flex flex-col gap-24 font-medium">
       <p className="text-md text-primary">{title}</p>
-      <LineChart
+      <AreaChart
         data={data ? [...data] : undefined}
         xKey={xKey}
         margin={{ top: 22, right: 22, left: 22, bottom: 0 }}
@@ -85,20 +85,53 @@ export const FinanceLineChart: React.FC<FinanceLineChartProps> = ({
           }
         />
 
+        <defs>
+          <radialGradient
+            id="lineAreaGradient"
+            cx="-0.65%"
+            cy="67.17%"
+            r="142.05%"
+            fx="-0.65%"
+            fy="67.17%"
+          >
+            <stop offset="0%" stopColor="#F3F4F6" stopOpacity={0.03} />
+            <stop
+              offset="1.17%"
+              stopColor="rgba(21, 162, 183, 0)"
+              stopOpacity={0.03}
+            />
+            <stop offset="100%" stopColor="#F3F4F6" stopOpacity={0.03} />
+          </radialGradient>
+        </defs>
+
         {!hasLines &&
           lines?.map((line) => (
-            <Line
-              key={line.dataKey}
-              strokeWidth={2}
-              dot={false}
-              hide={hiddenLines[line.dataKey]}
-              activeDot={{ stroke: "transparent", r: 3.5 }}
-              {...line}
-            />
+            <React.Fragment key={line.dataKey}>
+              <Line
+                key={line.dataKey}
+                strokeWidth={2}
+                dot={false}
+                hide={hiddenLines[line.dataKey]}
+                activeDot={{ stroke: "transparent", r: 3.5 }}
+                {...line}
+              />
+
+              <Area
+                type="linear"
+                dataKey={line.dataKey}
+                stroke="none"
+                fill="url(#lineAreaGradient)"
+                baseValue="dataMin"
+                dot={false}
+                activeDot={false}
+                legendType="none"
+                tooltipType="none"
+              />
+            </React.Fragment>
           ))}
 
         {children}
-      </LineChart>
+      </AreaChart>
     </div>
   )
 }

@@ -9,7 +9,7 @@ import {
   type LineProps as BaseLineProps,
 } from "recharts"
 import React from "react"
-import type { Percent } from "recharts/types/util/types"
+import type { AxisTick, Percent } from "recharts/types/util/types"
 import { ChartLegend } from "../legend/ChartLegend"
 import { ChartTooltip } from "../tooltips/ChartTooltip"
 
@@ -23,6 +23,7 @@ type AreaChartProps = {
   children?: React.ReactNode
   width?: Percent | number
   height?: Percent | number
+  yTicks?: AxisTick[]
 } & Omit<BaseLineProps, "children">
 
 export function AreaChart({
@@ -35,6 +36,7 @@ export function AreaChart({
   xKey = "x",
   yTickFormatter = (value) => `${(Number(value) / 1000).toFixed(1)}K`,
   xTickFormatter,
+  yTicks,
   children,
 }: AreaChartProps) {
   const childrenArray = React.Children.toArray(children)
@@ -74,11 +76,10 @@ export function AreaChart({
           {!hasXAxis && (
             <XAxis
               dataKey={xKey}
-              interval={1}
               axisLine={false}
               tickLine={false}
-              minTickGap={30}
               padding={{ left: 10, right: 20 }}
+              minTickGap={20}
               tick={{
                 dy: 12,
                 fontSize: 10,
@@ -95,6 +96,7 @@ export function AreaChart({
               width={24}
               axisLine={false}
               tickLine={false}
+              ticks={yTicks || undefined}
               tickFormatter={yTickFormatter}
               tick={{
                 fontSize: 10,
