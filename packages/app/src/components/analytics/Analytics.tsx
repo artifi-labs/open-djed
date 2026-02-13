@@ -2,6 +2,7 @@
 
 import ChartCard from "../card/ChartCard"
 import { DjedMarketCapChart } from "./charts/DjedMarketCapChart"
+import { ShenMarketCapChart } from "./charts/ShenMarketCapChart"
 import { ReserveRatioOverTimeChart } from "./charts/ReserveRatioOverTimeChart"
 import { ShenAdaPriceChart } from "./charts/ShenAdaPriceChart"
 import {
@@ -18,6 +19,9 @@ const AnalyticsPage = () => {
     djedMCPeriod,
     djedMCHistoricalData,
     setDjedMCPeriod,
+    shenMCPeriod,
+    shenMCHistoricalData,
+    setShenMCPeriod,
     shenAdaHistoricalData,
     shenAdaPricePeriod,
     setShenAdaPricePeriod,
@@ -52,6 +56,15 @@ const AnalyticsPage = () => {
         >
           <DjedMarketCapChart data={djedMCHistoricalData} currency="USD" />
         </ChartCard>
+
+        <ChartCard
+          period={shenMCPeriod}
+          periodItems={[...CHART_PERIOD_OPTIONS]}
+          onPeriodChange={setShenMCPeriod}
+        >
+          <ShenMarketCapChart data={shenMCHistoricalData} currency="USD" />
+        </ChartCard>
+
         <ChartCard
           period={shenAdaPricePeriod}
           periodItems={[...CHART_PERIOD_OPTIONS]}
