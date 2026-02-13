@@ -35,7 +35,32 @@ export type TokenPriceByToken = Record<
 export const CURRENCY_OPTIONS = ["ADA", "USD"] as const
 export type Currency = (typeof CURRENCY_OPTIONS)[number]
 
-export const CHART_PERIOD_OPTIONS = ["W", "M", "Y", "All"] as const
+export type ChartPeriodValue = "D" | "W" | "M" | "Y" | "All"
+export const CHART_PERIOD_OPTIONS: Array<{
+  label: string
+  value: ChartPeriodValue
+}> = [
+  {
+    label: "Today",
+    value: "D",
+  },
+  {
+    label: "This Week",
+    value: "W",
+  },
+  {
+    label: "This Month",
+    value: "M",
+  },
+  {
+    label: "This Year",
+    value: "Y",
+  },
+  {
+    label: "All Time",
+    value: "All",
+  },
+]
 export type ChartPeriod = (typeof CHART_PERIOD_OPTIONS)[number]
 
 export function useAnalyticsData() {
@@ -47,12 +72,16 @@ export function useAnalyticsData() {
   const [reserveRatioData, setReserveRatioData] = useState<
     ReserveRatioChartEntry[]
   >([])
-  const [reserveRatioPeriod, setReserveRatioPeriod] = useState<ChartPeriod>("W")
+  const [reserveRatioPeriod, setReserveRatioPeriod] = useState<ChartPeriod>(
+    CHART_PERIOD_OPTIONS[1],
+  )
 
   const [djedMCHistoricalData, setDjedMCHistoricalData] = useState<
     DjedMChartEntry[]
   >([])
-  const [djedMCPeriod, setDjedMCPeriod] = useState<ChartPeriod>("W")
+  const [djedMCPeriod, setDjedMCPeriod] = useState<ChartPeriod>(
+    CHART_PERIOD_OPTIONS[1],
+  )
   const [djedMCCurrency, setDjedMCCurrency] = useState<Currency>("USD")
 
   const [shenAdaHistoricalData, setShenAdaHistoricalData] =
@@ -60,7 +89,9 @@ export function useAnalyticsData() {
       ADA: [],
       SHEN: [],
     })
-  const [shenAdaPricePeriod, setShenAdaPricePeriod] = useState<ChartPeriod>("W")
+  const [shenAdaPricePeriod, setShenAdaPricePeriod] = useState<ChartPeriod>(
+    CHART_PERIOD_OPTIONS[1],
+  )
   const [shenAdaCurrency, setShenAdaCurrency] = useState<Currency>("USD")
 
   const [isLoadingReserve, setIsLoadingReserve] = useState(false)
@@ -70,12 +101,12 @@ export function useAnalyticsData() {
       setIsLoadingReserve(true)
       try {
         const res = await client.api["historical-reserve-ratio"].$get({
-          query: { period },
+          query: { period: period.value },
         })
 
         if (res.ok) {
           const historicalData = (await res.json()) as ReserveRatioChartEntry[]
-          if (period === "All") historicalData.shift()
+          if (period.value === "All") historicalData.shift()
 
           const updatedHistoricalData = historicalData.map((entry) => ({
             ...entry,
@@ -118,12 +149,12 @@ export function useAnalyticsData() {
     async (period: ChartPeriod) => {
       try {
         const res = await client.api["historical-djed-market-cap"].$get({
-          query: { period },
+          query: { period: period.value },
         })
 
         if (res.ok) {
           const historicalData = (await res.json()) as DjedMChartEntry[]
-          if (period === "All") historicalData.shift()
+          if (period.value === "All") historicalData.shift()
 
           historicalData.map((entry) => ({
             ...entry,
@@ -166,13 +197,13 @@ export function useAnalyticsData() {
     async (period: ChartPeriod) => {
       try {
         const res = await client.api["historical-shen-ada-price"].$get({
-          query: { period },
+          query: { period: period.value },
         })
 
         if (!res.ok) return
 
         const historicalData = (await res.json()) as TokenPriceByToken
-        if (period === "All") {
+        if (period.value === "All") {
           historicalData.ADA.shift()
           historicalData.SHEN.shift()
         }
