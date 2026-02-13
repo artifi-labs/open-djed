@@ -5,6 +5,7 @@ import ChartCard from "../card/ChartCard"
 import { DjedMarketCapChart } from "./charts/DjedMarketCapChart"
 import { ShenMarketCapChart } from "./charts/ShenMarketCapChart"
 import { ReserveRatioOverTimeChart } from "./charts/ReserveRatioOverTimeChart"
+import { ShenAdaPriceChart } from "./charts/ShenAdaPriceChart"
 import {
   useAnalyticsData,
   CHART_PERIOD_OPTIONS,
@@ -26,6 +27,11 @@ const Analytics = () => {
     setShenMCPeriod,
     shenMCCurrency,
     setShenMCCurrency,
+    shenAdaHistoricalData,
+    shenAdaPricePeriod,
+    setShenAdaPricePeriod,
+    shenAdaCurrency,
+    setShenAdaCurrency,
   } = useAnalyticsData()
   const { reserveRatio, reserveBounds, percentage, reserveChartWarning } =
     useReserveDetails()
@@ -98,18 +104,12 @@ const Analytics = () => {
           />
         </ChartCard>
       </div>
-      {/*<div className="desktop:gap-24 grid grid-cols-1 gap-16">
-        <ChartCard title="Volume Analytics"></ChartCard>
-      </div>
-      <div className="desktop:grid-cols-2 desktop:gap-24 grid grid-cols-1 gap-16 py-24">
 
-        <ChartCard
-          period={shenMCPeriod}
-          periodItems={[...CHART_PERIOD_OPTIONS]}
-          onPeriodChange={setShenMCPeriod}
-        >
-          <ShenMarketCapChart data={shenMCHistoricalData} currency="USD" />
-        </ChartCard>
+      {/* <div className="desktop:gap-24 grid grid-cols-1 gap-16">
+        <ChartCard title="Volume Analytics"></ChartCard>
+      </div> */}
+
+      <div className="desktop:grid-cols-2 desktop:gap-24 grid grid-cols-1 gap-16 py-24">
         <ChartCard
           period={shenAdaPricePeriod}
           periodItems={[...CHART_PERIOD_OPTIONS]}
@@ -124,14 +124,14 @@ const Analytics = () => {
             currency={shenAdaCurrency}
           />
         </ChartCard>
-        <ChartCard title="SHEN Yield"></ChartCard>
+
+        {/* <ChartCard title="SHEN Yield"></ChartCard> */}
       </div>
-      
-      <div className="desktop:gap-24 grid grid-cols-1 gap-16">
+
+      {/* <div className="desktop:gap-24 grid grid-cols-1 gap-16">
         <ChartCard title="DJED Price vs Secondary Markets">
         </ChartCard>
-      </div>
-      */}
+      </div> */}
     </div>
   )
 }
