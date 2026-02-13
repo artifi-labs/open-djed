@@ -36,7 +36,7 @@ export const ShenAdaPriceChart: React.FC<ShenAdaPriceChartProps> = ({
     const mapped: ChartRow[] = shenData.map((shenEntry, i) => {
       const adaEntry = adaData[i]
 
-      if (currency === "USD") {
+      if (currency.value === "USD") {
         return {
           date: shenEntry.timestamp,
           shenUsd: shenEntry.usdValue,
@@ -54,12 +54,12 @@ export const ShenAdaPriceChart: React.FC<ShenAdaPriceChartProps> = ({
   }, [data, currency, isMobile])
 
   const yTickFormatter = (value: number | string) =>
-    currency === "USD"
+    currency.value === "USD"
       ? `$${Number(value).toFixed(2)}`
       : Number(value).toFixed(4)
 
   const lines =
-    currency === "USD"
+    currency.value === "USD"
       ? [
           {
             dataKey: "shenUsd",

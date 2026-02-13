@@ -43,7 +43,7 @@ const Analytics = () => {
       <div className="desktop:gap-24 grid grid-cols-1 gap-16">
         <ChartCard
           period={reserveRatioPeriod}
-          periodItems={[...CHART_PERIOD_OPTIONS].filter((p) => p.value !== "D")}
+          periodItems={[...CHART_PERIOD_OPTIONS]}
           onPeriodChange={setReserveRatioPeriod}
           title="Reserve Ratio Over Time"
           warning={

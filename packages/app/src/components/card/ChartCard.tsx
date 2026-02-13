@@ -1,4 +1,4 @@
-import { type ChartPeriod } from "../analytics/useAnalyticsData"
+import type { Currency, ChartPeriod } from "../analytics/useAnalyticsData"
 import { type ContextualMenuItem } from "../ContextualMenu"
 import { type ReserveBoundsType } from "../dashboard/useMintBurnAction"
 import Dropdown from "../Dropdown"
@@ -16,14 +16,14 @@ type InfoBannerProps = {
   type: Exclude<ReserveBoundsType, "in-bounds">
 }
 
-type ChartCardProps<T extends string> = {
+type ChartCardProps = {
   children?: React.ReactNode
   period?: ChartPeriod
   periodItems?: ChartPeriod[]
   onPeriodChange?: (period: ChartPeriod) => void
-  currency?: T
-  currencyItems?: T[]
-  onCurrencyChange?: (currency: T) => void
+  currency?: Currency
+  currencyItems?: Currency[]
+  onCurrencyChange?: (currency: Currency) => void
   title?: string
   warning?: WarningBannerProps
   info?: InfoBannerProps
@@ -74,7 +74,7 @@ export const InfoBanner: React.FC<InfoBannerProps> = ({
   </div>
 )
 
-export default function ChartCard<T extends string, T extends string>({
+export default function ChartCard({
   children,
   period,
   periodItems = [],
@@ -85,7 +85,7 @@ export default function ChartCard<T extends string, T extends string>({
   title,
   warning,
   info,
-}: ChartCardProps<T>) {
+}: ChartCardProps) {
   const periodMenuItems: ContextualMenuItem[] = periodItems.map((item) => ({
     key: item.value,
     text: item.label,
@@ -93,14 +93,14 @@ export default function ChartCard<T extends string, T extends string>({
   }))
 
   const currencyMenuItems: ContextualMenuItem[] = currencyItems.map((item) => ({
-    key: item,
-    text: item,
+    key: item.value,
+    text: item.label,
     onClick: () => onCurrencyChange?.(item),
   }))
 
   const handleCurrencyChange = (item: ContextualMenuItem) => {
-    const selectedCurrency = item.text
-    if (onCurrencyChange !== undefined) onCurrencyChange(selectedCurrency as T)
+    const selectedCurrency = currencyItems.find((c) => c.value === item.key)
+    if (selectedCurrency !== undefined) onCurrencyChange?.(selectedCurrency)
   }
 
   const handlePeriodChange = (item: ContextualMenuItem) => {
@@ -132,7 +132,7 @@ export default function ChartCard<T extends string, T extends string>({
             {currency && currencyItems && onCurrencyChange && (
               <div className="desktop:w-17.75 inline-flex w-full justify-end">
                 <Dropdown
-                  text={currency as string}
+                  text={currency.label ?? currency.value}
                   menuItems={currencyMenuItems}
                   onChange={handleCurrencyChange}
                   hasTag={false}

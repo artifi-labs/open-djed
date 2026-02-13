@@ -38,7 +38,12 @@ export type TokenPriceByToken = Record<
   TokenPriceChartEntry[]
 >
 
-export const CURRENCY_OPTIONS = ["ADA", "USD"] as const
+export type CurrencyValue = "ADA" | "USD"
+export const CURRENCY_OPTIONS: Array<{ label: string; value: CurrencyValue }> =
+  [
+    { label: "USD", value: "USD" },
+    { label: "ADA", value: "ADA" },
+  ]
 export type Currency = (typeof CURRENCY_OPTIONS)[number]
 
 export type ChartPeriodValue = "W" | "M" | "Y" | "All"
@@ -84,7 +89,9 @@ export function useAnalyticsData() {
   const [djedMCPeriod, setDjedMCPeriod] = useState<ChartPeriod>(
     CHART_PERIOD_OPTIONS[0],
   )
-  const [djedMCCurrency, setDjedMCCurrency] = useState<Currency>("USD")
+  const [djedMCCurrency, setDjedMCCurrency] = useState<Currency>(
+    CURRENCY_OPTIONS[0],
+  )
 
   const [shenMCHistoricalData, setShenMCHistoricalData] = useState<
     ShenMChartEntry[]
@@ -92,7 +99,9 @@ export function useAnalyticsData() {
   const [shenMCPeriod, setShenMCPeriod] = useState<ChartPeriod>(
     CHART_PERIOD_OPTIONS[0],
   )
-  const [shenMCCurrency, setShenMCCurrency] = useState<Currency>("USD")
+  const [shenMCCurrency, setShenMCCurrency] = useState<Currency>(
+    CURRENCY_OPTIONS[0],
+  )
 
   const [shenAdaHistoricalData, setShenAdaHistoricalData] =
     useState<TokenPriceByToken>({
@@ -102,7 +111,9 @@ export function useAnalyticsData() {
   const [shenAdaPricePeriod, setShenAdaPricePeriod] = useState<ChartPeriod>(
     CHART_PERIOD_OPTIONS[1],
   )
-  const [shenAdaCurrency, setShenAdaCurrency] = useState<Currency>("USD")
+  const [shenAdaCurrency, setShenAdaCurrency] = useState<Currency>(
+    CURRENCY_OPTIONS[0],
+  )
 
   const [isLoadingReserve, setIsLoadingReserve] = useState(false)
 
@@ -236,7 +247,6 @@ export function useAnalyticsData() {
             })
           }
 
-          console.log("Fetched SHEN MC historical data:", dataToSave)
           setShenMCHistoricalData(dataToSave)
         }
       } catch (err) {
