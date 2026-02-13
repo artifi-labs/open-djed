@@ -64,19 +64,19 @@ export const ShenAdaPriceChart: React.FC<ShenAdaPriceChartProps> = ({
           {
             dataKey: "shenUsd",
             name: "SHEN (USD)",
-            stroke: "var(--color-accent-3)",
+            stroke: "var(--color-supportive-1-500)",
           },
           {
             dataKey: "adaUsd",
             name: "ADA (USD)",
-            stroke: "var(--color-accent-1)",
+            stroke: "var(--color-supportive-2-500)",
           },
         ]
       : [
           {
             dataKey: "shenAda",
             name: "SHEN (ADA)",
-            stroke: "var(--color-accent-3)",
+            stroke: "var(--color-supportive-1-500)",
           },
         ]
 

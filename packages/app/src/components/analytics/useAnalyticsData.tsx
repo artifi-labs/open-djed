@@ -35,7 +35,7 @@ export type TokenPriceByToken = Record<
 export const CURRENCY_OPTIONS = ["ADA", "USD"] as const
 export type Currency = (typeof CURRENCY_OPTIONS)[number]
 
-export const CHART_PERIOD_OPTIONS = ["D", "W", "M", "Y", "All"] as const
+export const CHART_PERIOD_OPTIONS = ["W", "M", "Y", "All"] as const
 export type ChartPeriod = (typeof CHART_PERIOD_OPTIONS)[number]
 
 export function useAnalyticsData() {
@@ -48,10 +48,12 @@ export function useAnalyticsData() {
     ReserveRatioChartEntry[]
   >([])
   const [reserveRatioPeriod, setReserveRatioPeriod] = useState<ChartPeriod>("W")
+
   const [djedMCHistoricalData, setDjedMCHistoricalData] = useState<
     DjedMChartEntry[]
   >([])
   const [djedMCPeriod, setDjedMCPeriod] = useState<ChartPeriod>("W")
+  const [djedMCCurrency, setDjedMCCurrency] = useState<Currency>("USD")
 
   const [shenAdaHistoricalData, setShenAdaHistoricalData] =
     useState<TokenPriceByToken>({
@@ -231,6 +233,8 @@ export function useAnalyticsData() {
     djedMCHistoricalData,
     djedMCPeriod,
     setDjedMCPeriod,
+    djedMCCurrency,
+    setDjedMCCurrency,
     shenAdaHistoricalData,
     shenAdaPricePeriod,
     setShenAdaPricePeriod,

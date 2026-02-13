@@ -59,7 +59,9 @@ export const DjedMarketCapChart: React.FC<DjedMarketCapChartProps> = ({
       dataKey: valueKey,
       name: currency === "USD" ? "USD Value" : "ADA Value",
       stroke:
-        currency === "USD" ? "var(--color-accent-1)" : "var(--color-accent-1)",
+        currency === "USD"
+          ? "var(--color-supportive-1-500)"
+          : "var(--color-supportive-2-500)",
     },
   ]
 

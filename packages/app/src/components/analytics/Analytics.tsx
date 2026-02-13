@@ -19,6 +19,8 @@ const Analytics = () => {
     djedMCPeriod,
     djedMCHistoricalData,
     setDjedMCPeriod,
+    djedMCCurrency,
+    setDjedMCCurrency,
     shenAdaHistoricalData,
     shenAdaPricePeriod,
     setShenAdaPricePeriod,
@@ -41,9 +43,7 @@ const Analytics = () => {
       <div className="desktop:gap-24 grid grid-cols-1 gap-16">
         <ChartCard
           period={reserveRatioPeriod}
-          periodItems={[...CHART_PERIOD_OPTIONS].filter(
-            (option) => option !== "D",
-          )}
+          periodItems={[...CHART_PERIOD_OPTIONS]}
           onPeriodChange={setReserveRatioPeriod}
           title="Reserve Ratio Over Time"
           warning={
@@ -73,9 +73,21 @@ const Analytics = () => {
           period={djedMCPeriod}
           periodItems={[...CHART_PERIOD_OPTIONS]}
           onPeriodChange={setDjedMCPeriod}
+          currency={djedMCCurrency}
+          onCurrencyChange={setDjedMCCurrency}
+          currencyItems={[...CURRENCY_OPTIONS]}
         >
-          <DjedMarketCapChart data={djedMCHistoricalData} currency="USD" />
+          <DjedMarketCapChart
+            data={djedMCHistoricalData}
+            currency={djedMCCurrency}
+          />
         </ChartCard>
+        <ChartCard title="SHEN Market Cap ">{/** SHEN Market Cap */}</ChartCard>
+      </div>
+      <div className="desktop:gap-24 grid grid-cols-1 gap-16">
+        <ChartCard title="Volume Analytics">{/** VOLUME */}</ChartCard>
+      </div>
+      <div className="desktop:grid-cols-2 desktop:gap-24 grid grid-cols-1 gap-16 py-24">
         <ChartCard
           period={shenAdaPricePeriod}
           periodItems={[...CHART_PERIOD_OPTIONS]}
@@ -89,6 +101,12 @@ const Analytics = () => {
             data={shenAdaHistoricalData}
             currency={shenAdaCurrency}
           />
+        </ChartCard>
+        <ChartCard title="SHEN Yield">{/** SHEN YIELD */}</ChartCard>
+      </div>
+      <div className="desktop:gap-24 grid grid-cols-1 gap-16">
+        <ChartCard title="DJED Price vs Secondary Markets">
+          {/** DJED Price vs Secondary Markets */}
         </ChartCard>
       </div>
     </div>

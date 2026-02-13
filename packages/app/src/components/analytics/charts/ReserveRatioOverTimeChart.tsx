@@ -65,7 +65,7 @@ export const ReserveRatioOverTimeChart: React.FC<
     {
       y1: minReserveRatio,
       y2: maxReserveRatio,
-      fill: "var(--color-gradient-angular-2)",
+      fill: "var(--color-supportive-1-500)",
       fillOpacity: 0.05,
     },
   ]
