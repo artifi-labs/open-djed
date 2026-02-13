@@ -1,11 +1,13 @@
 import type { TooltipContentProps } from "recharts"
 
 type ChartTooltipProps = Partial<TooltipContentProps<number, string>> & {
+  hasEntryColor?: boolean
   labelFormatter?: (label: number | string) => string
   tickFormatter?: (value: number | string) => string
 }
 
 export function ChartTooltip({
+  hasEntryColor = true,
   labelFormatter,
   tickFormatter,
   ...props
@@ -31,10 +33,12 @@ export function ChartTooltip({
       {visiblePayload.map((entry, index: number) => (
         <div key={index} className="flex w-full items-center justify-between">
           <div className="flex items-center gap-3">
-            <div
-              className="h-10 w-10 shrink-0 rounded-full"
-              style={{ backgroundColor: entry.stroke }}
-            />
+            {hasEntryColor && (
+              <div
+                className="h-10 w-10 shrink-0 rounded-full"
+                style={{ backgroundColor: entry.stroke }}
+              />
+            )}
             <p className="text-xxs text-primary">
               {entry.name ?? entry.dataKey}
             </p>

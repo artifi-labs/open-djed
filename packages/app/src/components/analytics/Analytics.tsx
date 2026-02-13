@@ -4,7 +4,6 @@ import { useReserveDetails } from "@/hooks/useReserveDetails"
 import ChartCard from "../card/ChartCard"
 import { DjedMarketCapChart } from "./charts/DjedMarketCapChart"
 import { ReserveRatioOverTimeChart } from "./charts/ReserveRatioOverTimeChart"
-import { ShenAdaPriceChart } from "./charts/ShenAdaPriceChart"
 import {
   useAnalyticsData,
   CHART_PERIOD_OPTIONS,
@@ -21,22 +20,17 @@ const Analytics = () => {
     setDjedMCPeriod,
     djedMCCurrency,
     setDjedMCCurrency,
-    shenAdaHistoricalData,
-    shenAdaPricePeriod,
-    setShenAdaPricePeriod,
-    shenAdaCurrency,
-    setShenAdaCurrency,
   } = useAnalyticsData()
   const { reserveRatio, reserveBounds, percentage, reserveChartWarning } =
     useReserveDetails()
   return (
     <div className="desktop:pt-32 desktop:pb-64 mx-auto flex w-full max-w-280 flex-1 flex-col">
-      <div className="px-page-margin flex w-full flex-col items-center justify-center gap-8 py-32">
-        <p className="text-3xl font-bold">
-          <span className="text-supportive-2-500">Analytics</span> Overview
-        </p>
-        <p className="text-secondary text-xs font-normal">
-          Real-time insights into protocol metrics
+      <div className="desktop:py-32 flex w-full flex-col items-center justify-center gap-8 py-16 text-center">
+        <h1 className="font-bold">
+          <span className="text-gradient-angular-1">Analytics</span> Overview
+        </h1>
+        <p className="text-secondary text-xs">
+          Real-time insights into protocol metrics and market dynamics
         </p>
       </div>
 
@@ -82,10 +76,10 @@ const Analytics = () => {
             currency={djedMCCurrency}
           />
         </ChartCard>
-        <ChartCard title="SHEN Market Cap ">{/** SHEN Market Cap */}</ChartCard>
+        <ChartCard title="SHEN Market Cap "></ChartCard>
       </div>
-      <div className="desktop:gap-24 grid grid-cols-1 gap-16">
-        <ChartCard title="Volume Analytics">{/** VOLUME */}</ChartCard>
+      {/*<div className="desktop:gap-24 grid grid-cols-1 gap-16">
+        <ChartCard title="Volume Analytics"></ChartCard>
       </div>
       <div className="desktop:grid-cols-2 desktop:gap-24 grid grid-cols-1 gap-16 py-24">
         <ChartCard
@@ -102,13 +96,14 @@ const Analytics = () => {
             currency={shenAdaCurrency}
           />
         </ChartCard>
-        <ChartCard title="SHEN Yield">{/** SHEN YIELD */}</ChartCard>
+        <ChartCard title="SHEN Yield"></ChartCard>
       </div>
+      
       <div className="desktop:gap-24 grid grid-cols-1 gap-16">
         <ChartCard title="DJED Price vs Secondary Markets">
-          {/** DJED Price vs Secondary Markets */}
         </ChartCard>
       </div>
+      */}
     </div>
   )
 }

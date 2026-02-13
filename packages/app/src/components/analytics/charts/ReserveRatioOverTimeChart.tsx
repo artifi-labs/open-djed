@@ -3,6 +3,7 @@ import { type ReserveRatioChartEntry } from "../useAnalyticsData"
 import {
   type BarShapeProps,
   type DotProps,
+  Legend,
   Line,
   ReferenceArea,
 } from "recharts"
@@ -46,7 +47,7 @@ export const ReserveRatioOverTimeChart: React.FC<
 
     const value = payload.reserveRatio ?? 0
 
-    let color = "var(--color-supportive-2-500)"
+    let color = baseLineColor
     if (value < minReserveRatio || value > maxReserveRatio) {
       color = maxMinColor
     }
@@ -65,8 +66,8 @@ export const ReserveRatioOverTimeChart: React.FC<
     {
       y1: minReserveRatio,
       y2: maxReserveRatio,
-      fill: "var(--color-supportive-1-500)",
-      fillOpacity: 0.05,
+      fill: "url(#referenceGradient)",
+      fillOpacity: 0.1,
     },
   ]
 
@@ -77,6 +78,7 @@ export const ReserveRatioOverTimeChart: React.FC<
       yTickFormatter={yTickFormatter}
       yTicks={[0, 200, 400, 600, 800, 1000, 1200]}
     >
+      <Legend content={() => null} />
       <defs>
         <linearGradient id="splitColorGradient" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor={maxMinColor} />
@@ -87,6 +89,17 @@ export const ReserveRatioOverTimeChart: React.FC<
 
           <stop offset={`${minThresholdPercent}%`} stopColor={maxMinColor} />
           <stop offset="100%" stopColor={maxMinColor} />
+        </linearGradient>
+
+        <linearGradient
+          id="referenceGradient"
+          x1="0.95"
+          y1="0.1"
+          x2="0.05"
+          y2="0.9"
+        >
+          <stop offset="1%" stopColor="var(--color-supportive-1-500)" />
+          <stop offset="118.71%" stopColor="var(--color-supportive-2-500)" />
         </linearGradient>
       </defs>
 
