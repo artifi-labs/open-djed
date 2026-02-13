@@ -3,7 +3,6 @@
 import { useReserveDetails } from "@/hooks/useReserveDetails"
 import ChartCard from "../card/ChartCard"
 import { DjedMarketCapChart } from "./charts/DjedMarketCapChart"
-import { ShenMarketCapChart } from "./charts/ShenMarketCapChart"
 import { ReserveRatioOverTimeChart } from "./charts/ReserveRatioOverTimeChart"
 import { ShenAdaPriceChart } from "./charts/ShenAdaPriceChart"
 import {
@@ -22,11 +21,6 @@ const Analytics = () => {
     djedMCCurrency,
     setDjedMCCurrency,
     setDjedMCPeriod,
-    shenMCPeriod,
-    shenMCHistoricalData,
-    setShenMCPeriod,
-    shenMCCurrency,
-    setShenMCCurrency,
     shenAdaHistoricalData,
     shenAdaPricePeriod,
     setShenAdaPricePeriod,
@@ -88,21 +82,7 @@ const Analytics = () => {
             currency={djedMCCurrency}
           />
         </ChartCard>
-
-        <ChartCard
-          title="SHEN Market Cap"
-          period={shenMCPeriod}
-          periodItems={[...CHART_PERIOD_OPTIONS]}
-          onPeriodChange={setShenMCPeriod}
-          currency={shenMCCurrency}
-          onCurrencyChange={setShenMCCurrency}
-          currencyItems={[...CURRENCY_OPTIONS]}
-        >
-          <ShenMarketCapChart
-            data={shenMCHistoricalData}
-            currency={shenMCCurrency}
-          />
-        </ChartCard>
+        <ChartCard title="SHEN Market Cap "></ChartCard>
       </div>
 
       {/* <div className="desktop:gap-24 grid grid-cols-1 gap-16">

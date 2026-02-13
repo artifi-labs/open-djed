@@ -30,8 +30,14 @@ export const ReserveRatioOverTimeChart: React.FC<
   const dataMax = Math.max(...values)
   const range = dataMax - dataMin
 
-  const minThresholdPercent = ((dataMax - minReserveRatio) / range) * 100
-  const maxThresholdPercent = ((dataMax - maxReserveRatio) / range) * 100
+  const minThresholdPercent =
+    range > 0
+      ? Math.max(0, Math.min(100, ((dataMax - minReserveRatio) / range) * 100))
+      : 50
+  const maxThresholdPercent =
+    range > 0
+      ? Math.max(0, Math.min(100, ((dataMax - maxReserveRatio) / range) * 100))
+      : 50
 
   type DataPoint = (typeof data)[0]
   interface CustomDotProps extends DotProps {
