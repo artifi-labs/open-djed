@@ -28,7 +28,7 @@ export const ShenMarketCapChart: React.FC<ShenMarketCapChartProps> = ({
   currency,
 }) => {
   const { isMobile } = useViewport()
-  const valueKey = currency === "USD" ? "usdValue" : "adaValue"
+  const valueKey = currency.value === "USD" ? "usdValue" : "adaValue"
 
   const { rows } = useMemo(() => {
     if (!data?.length) {
@@ -59,9 +59,9 @@ export const ShenMarketCapChart: React.FC<ShenMarketCapChartProps> = ({
   const lines = [
     {
       dataKey: valueKey,
-      name: currency === "USD" ? "USD Value" : "ADA Value",
+      name: currency.value === "USD" ? "USD Value" : "ADA Value",
       stroke:
-        currency === "USD"
+        currency.value === "USD"
           ? "var(--color-supportive-1-500)"
           : "var(--color-supportive-2-500)",
     },
