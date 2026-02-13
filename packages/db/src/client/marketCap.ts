@@ -29,12 +29,33 @@ export const getPeriodMarketCap = async (
   return rows
 }
 
-export const getLatestMarketCapTimestamp = async () =>
-  await prisma.marketCap.aggregate({
-    _max: {
-      timestamp: true,
-    },
-  })
+export const getLatestSyncedMarketCaps = async () => {
+  const result = await prisma.$queryRaw<
+    {
+      id: number
+      timestamp: Date
+      token: string
+      usdValue: number
+      adaValue: number
+      block: number
+      slot: number
+    }[]
+  >`
+    SELECT *
+    FROM "MarketCap"
+    WHERE timestamp = (
+      SELECT timestamp
+      FROM "MarketCap"
+      WHERE token IN ('DJED', 'SHEN')
+      GROUP BY timestamp
+      HAVING COUNT(DISTINCT token) = 2
+      ORDER BY timestamp DESC
+      LIMIT 1
+    )
+    AND token IN ('DJED', 'SHEN')
+  `
+  return result
+}
 
 export const getMarketCapByTimestamp = (
   token: TokenMarketCap,
