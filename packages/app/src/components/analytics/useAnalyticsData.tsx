@@ -187,6 +187,7 @@ export function useAnalyticsData() {
 
         if (res.ok) {
           const historicalData = (await res.json()) as ShenMChartEntry[]
+          if (period === "All") historicalData.shift()
           const dataToSave = historicalData.map((entry) => ({
             ...entry,
             usdValue: (Number(entry.usdValue) / 1e6).toString(),
