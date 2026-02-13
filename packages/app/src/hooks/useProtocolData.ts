@@ -23,6 +23,8 @@ import {
   shenADARate,
   djedUSDMarketCap,
   djedADAMarketCap,
+  shenUSDMarketCap,
+  shenADAMarketCap,
 } from "@open-djed/math"
 import { registryByNetwork } from "@open-djed/registry"
 import { useQuery } from "@tanstack/react-query"
@@ -225,8 +227,8 @@ export function useProtocolData() {
                     ) / 1e6,
                 },
                 marketCap: {
-                  USD: djedUSDMarketCap(poolDatum).toBigInt(),
-                  ADA: djedADAMarketCap(poolDatum, oracleDatum).toBigInt(),
+                  USD: shenUSDMarketCap(poolDatum, oracleDatum).toBigInt(),
+                  ADA: shenADAMarketCap(poolDatum, oracleDatum).toBigInt(),
                 },
               },
               reserve: {

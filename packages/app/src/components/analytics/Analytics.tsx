@@ -3,6 +3,7 @@
 import { useReserveDetails } from "@/hooks/useReserveDetails"
 import ChartCard from "../card/ChartCard"
 import { DjedMarketCapChart } from "./charts/DjedMarketCapChart"
+import { ShenMarketCapChart } from "./charts/ShenMarketCapChart"
 import { ReserveRatioOverTimeChart } from "./charts/ReserveRatioOverTimeChart"
 import {
   useAnalyticsData,
@@ -17,9 +18,14 @@ const Analytics = () => {
     setReserveRatioPeriod,
     djedMCPeriod,
     djedMCHistoricalData,
-    setDjedMCPeriod,
     djedMCCurrency,
     setDjedMCCurrency,
+    setDjedMCPeriod,
+    shenMCPeriod,
+    shenMCHistoricalData,
+    setShenMCPeriod,
+    shenMCCurrency,
+    setShenMCCurrency,
   } = useAnalyticsData()
   const { reserveRatio, reserveBounds, percentage, reserveChartWarning } =
     useReserveDetails()
@@ -76,12 +82,34 @@ const Analytics = () => {
             currency={djedMCCurrency}
           />
         </ChartCard>
-        <ChartCard title="SHEN Market Cap "></ChartCard>
+
+        <ChartCard
+          title="SHEN Market Cap"
+          period={shenMCPeriod}
+          periodItems={[...CHART_PERIOD_OPTIONS]}
+          onPeriodChange={setShenMCPeriod}
+          currency={shenMCCurrency}
+          onCurrencyChange={setShenMCCurrency}
+          currencyItems={[...CURRENCY_OPTIONS]}
+        >
+          <ShenMarketCapChart
+            data={shenMCHistoricalData}
+            currency={shenMCCurrency}
+          />
+        </ChartCard>
       </div>
       {/*<div className="desktop:gap-24 grid grid-cols-1 gap-16">
         <ChartCard title="Volume Analytics"></ChartCard>
       </div>
       <div className="desktop:grid-cols-2 desktop:gap-24 grid grid-cols-1 gap-16 py-24">
+
+        <ChartCard
+          period={shenMCPeriod}
+          periodItems={[...CHART_PERIOD_OPTIONS]}
+          onPeriodChange={setShenMCPeriod}
+        >
+          <ShenMarketCapChart data={shenMCHistoricalData} currency="USD" />
+        </ChartCard>
         <ChartCard
           period={shenAdaPricePeriod}
           periodItems={[...CHART_PERIOD_OPTIONS]}
