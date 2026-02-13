@@ -1,13 +1,13 @@
-import { prisma } from "../../../../../lib/prisma"
-import { getLatestDjedMC } from "../../../../client/djedMarketCap"
-import { logger } from "../../../../utils/logger"
-import type { Block } from "../../../types"
-import { blockfrostFetch } from "../../../utils"
+import { prisma } from "../../../../lib/prisma"
+import { getLatestSyncedMarketCaps } from "../../../client/marketCap"
+import { logger } from "../../../utils/logger"
+import type { Block } from "typescript"
+import { blockfrostFetch } from "../../utils"
 
-// TODO: when SHEN market is implemented, we should make a general rollback for this table
-export async function rollbackDjedMC() {
-  const latestMarketCap = await getLatestDjedMC()
-  if (!latestMarketCap) return
+export async function rollbackMarketCap() {
+  const latestTimestamp = await getLatestSyncedMarketCaps()
+  const latestMarketCap = latestTimestamp[0]
+  if (!latestTimestamp || !latestMarketCap) return
 
   const syncIsValid = await blockfrostFetch(`/blocks/${latestMarketCap.block}`)
     .then(() => true)
@@ -17,14 +17,14 @@ export async function rollbackDjedMC() {
     })
 
   if (syncIsValid) {
-    logger.info("No rollback detected for DJED Market Cap")
+    logger.info("No rollback detected")
     return
   }
 
   logger.warn(`Checking rollback from: ${latestMarketCap.block}`)
 
   const storedBlocks = await prisma.marketCap.findMany({
-    where: { slot: { lte: latestMarketCap.slot }, token: "DJED" },
+    where: { slot: { lte: latestMarketCap.slot } },
     select: { block: true, slot: true },
     orderBy: { slot: "desc" },
     distinct: ["block"],
@@ -41,7 +41,7 @@ export async function rollbackDjedMC() {
       logger.warn(`Rollback anchor found at block ${b.block} slot ${b.slot}`)
 
       await prisma.marketCap.deleteMany({
-        where: { slot: { gt: b.slot }, token: "DJED" },
+        where: { slot: { gt: b.slot } },
       })
 
       logger.info("Rollback completed")

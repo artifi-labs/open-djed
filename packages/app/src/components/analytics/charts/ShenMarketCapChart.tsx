@@ -7,7 +7,7 @@ import { type Currency } from "../useAnalyticsData"
 import { Legend } from "recharts"
 import { ChartLegend } from "@/components/charts/legend/ChartLegend"
 
-type DjedMarketCapChartProps = {
+type ShenMarketCapChartProps = {
   title?: string
   data: {
     timestamp: string
@@ -23,7 +23,7 @@ type ChartRow = {
   usdValue?: number
 }
 
-export const DjedMarketCapChart: React.FC<DjedMarketCapChartProps> = ({
+export const ShenMarketCapChart: React.FC<ShenMarketCapChartProps> = ({
   data,
   currency,
 }) => {

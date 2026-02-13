@@ -46,9 +46,10 @@ import JSONbig from "json-bigint"
 import {
   getOrdersByAddressKeys,
   getPeriodAdaShenPrices,
-  getPeriodDjedMC,
+  getPeriodMarketCap,
   getPeriodReserveRatio,
 } from "@open-djed/db"
+import { type TokenMarketCap } from "@open-djed/db/generated/prisma/enums"
 import { type Order, type Period } from "@open-djed/db"
 export type { Order } from "@open-djed/db"
 
@@ -757,17 +758,17 @@ const app = new Hono()
     historicalDataHandler(getPeriodReserveRatio),
   )
   .get(
-    "/historical-djed-market-cap",
+    "/historical-market-cap",
     cacheMiddleware,
     describeRoute({
-      description: "Get the historical djed market cap",
+      description: "Get the historical market cap for DJED or SHEN",
       tags: ["Action"],
       responses: {
         200: {
-          description: "Successfully got the historical djed market cap",
+          description: "Successfully got the historical market cap",
           content: {
             "text/plain": {
-              example: "djed market cap",
+              example: "DJED market cap",
             },
           },
         },
@@ -793,9 +794,15 @@ const app = new Hono()
       "query",
       z.object({
         period: periodSchema,
+        token: tokenSchema,
       }),
     ),
-    historicalDataHandler(getPeriodDjedMC),
+    (c) => {
+      const params = c.req.valid("query")
+      return historicalDataHandler((period) =>
+        getPeriodMarketCap(period, params.token as TokenMarketCap),
+      )(c)
+    },
   )
   .get(
     "/historical-shen-ada-price",

@@ -3,6 +3,7 @@
 import { useReserveDetails } from "@/hooks/useReserveDetails"
 import ChartCard from "../card/ChartCard"
 import { DjedMarketCapChart } from "./charts/DjedMarketCapChart"
+import { ShenMarketCapChart } from "./charts/ShenMarketCapChart"
 import { ReserveRatioOverTimeChart } from "./charts/ReserveRatioOverTimeChart"
 import {
   useAnalyticsData,
@@ -17,7 +18,6 @@ const Analytics = () => {
     setReserveRatioPeriod,
     djedMCPeriod,
     djedMCHistoricalData,
-    setDjedMCPeriod,
     djedMCCurrency,
     setDjedMCCurrency,
   } = useAnalyticsData()
@@ -82,6 +82,14 @@ const Analytics = () => {
         <ChartCard title="Volume Analytics"></ChartCard>
       </div>
       <div className="desktop:grid-cols-2 desktop:gap-24 grid grid-cols-1 gap-16 py-24">
+
+        <ChartCard
+          period={shenMCPeriod}
+          periodItems={[...CHART_PERIOD_OPTIONS]}
+          onPeriodChange={setShenMCPeriod}
+        >
+          <ShenMarketCapChart data={shenMCHistoricalData} currency="USD" />
+        </ChartCard>
         <ChartCard
           period={shenAdaPricePeriod}
           periodItems={[...CHART_PERIOD_OPTIONS]}

@@ -1,5 +1,5 @@
 export * from "./client/orders"
 export * from "./client/reserveRatio"
-export * from "./client/djedMarketCap"
+export * from "./client/marketCap"
 export * from "./client/price"
 export * from "./sync/types"
