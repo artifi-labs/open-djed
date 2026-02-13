@@ -3,7 +3,6 @@
 import { useReserveDetails } from "@/hooks/useReserveDetails"
 import ChartCard from "../card/ChartCard"
 import { DjedMarketCapChart } from "./charts/DjedMarketCapChart"
-import { ShenMarketCapChart } from "./charts/ShenMarketCapChart"
 import { ReserveRatioOverTimeChart } from "./charts/ReserveRatioOverTimeChart"
 import {
   useAnalyticsData,
@@ -20,6 +19,7 @@ const Analytics = () => {
     djedMCHistoricalData,
     djedMCCurrency,
     setDjedMCCurrency,
+    setDjedMCPeriod,
   } = useAnalyticsData()
   const { reserveRatio, reserveBounds, percentage, reserveChartWarning } =
     useReserveDetails()

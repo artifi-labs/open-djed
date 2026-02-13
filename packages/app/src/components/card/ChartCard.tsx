@@ -109,7 +109,7 @@ export default function ChartCard<T extends string, T extends string>({
   }
 
   return (
-    <BaseCard>
+    <BaseCard border="border-1 border-border-primary">
       <div className="desktop:flex-row desktop:items-center desktop:justify-between flex w-full flex-col items-start justify-start gap-12">
         <div className="desktop:flex-row desktop:items-center flex w-full flex-col items-start justify-between gap-12">
           <div className="desktop:flex-row desktop:items-center desktop:gap-12 flex flex-col items-start gap-8">

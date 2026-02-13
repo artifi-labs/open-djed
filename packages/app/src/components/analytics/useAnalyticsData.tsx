@@ -93,7 +93,9 @@ export function useAnalyticsData() {
   const [shenMCHistoricalData, setShenMCHistoricalData] = useState<
     ShenMChartEntry[]
   >([])
-  const [shenMCPeriod, setShenMCPeriod] = useState<ChartPeriod>("W")
+  const [shenMCPeriod, setShenMCPeriod] = useState<ChartPeriod>(
+    CHART_PERIOD_OPTIONS[1],
+  )
   const [shenMCCurrency, setShenMCCurrency] = useState<Currency>("USD")
 
   const [shenAdaHistoricalData, setShenAdaHistoricalData] =
