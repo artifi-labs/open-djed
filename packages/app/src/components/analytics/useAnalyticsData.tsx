@@ -275,8 +275,6 @@ export function useAnalyticsData() {
           })
         }
 
-        console.log("Fetched historical Shen-ADA price data:", historicalData)
-
         historicalData.ADA = historicalData.ADA.map((entry) => ({
           ...entry,
           adaValue: Number(entry.adaValue),
