@@ -30,7 +30,7 @@ export const useReserveDetails = () => {
     reserveBounds === "in-bounds"
       ? null
       : reserveBounds === "below"
-        ? `DJED/SHEN minting unavailable: reserve ratio below minimum.`
+        ? `DJED minting/SHEN burning unavailable: reserve ratio below minimum.`
         : `SHEN minting unavailable: reserve ratio above maximum.`
 
   const percentage =
