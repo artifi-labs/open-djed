@@ -249,7 +249,7 @@ export function useAnalyticsData() {
           historicalData.SHEN.shift()
         }
 
-        if (!isLoading) {
+        if (!isLoading && data) {
           const todayKey = new Date().toISOString()
           historicalData.ADA.push({
             id: -1,
