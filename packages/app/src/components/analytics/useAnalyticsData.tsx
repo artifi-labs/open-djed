@@ -9,6 +9,7 @@ import { useCallback, useEffect, useState } from "react"
 import type { TokenMarketCap } from "../../../../db/generated/prisma/enums"
 import { capitalize } from "@/lib/utils"
 import type { Token } from "@/lib/tokens"
+import { Rational, shenADARate, shenUSDRate } from "@open-djed/math"
 
 export type ReserveRatioChartEntry = {
   id: number
@@ -192,10 +193,18 @@ export function useAnalyticsData() {
               id: -1,
               timestamp: todayKey,
               adaValue: (
-                Number(data?.protocolData.SHEN.marketCap.ADA) / 1e6
+                Number(
+                  token === "DJED"
+                    ? data?.protocolData.DJED.marketCap.ADA
+                    : data?.protocolData.SHEN.marketCap.ADA,
+                ) / 1e6
               ).toString(),
               usdValue: (
-                Number(data?.protocolData.SHEN.marketCap.USD) / 1e6
+                Number(
+                  token === "DJED"
+                    ? data?.protocolData.DJED.marketCap.USD
+                    : data?.protocolData.SHEN.marketCap.USD,
+                ) / 1e6
               ).toString(),
             })
           }
@@ -238,6 +247,32 @@ export function useAnalyticsData() {
         if (period.value === "All") {
           historicalData.ADA.shift()
           historicalData.SHEN.shift()
+        }
+
+        if (!isLoading) {
+          const todayKey = new Date().toISOString()
+          historicalData.ADA.push({
+            id: -1,
+            timestamp: todayKey,
+            token: "ADA",
+            adaValue: 1,
+            usdValue: new Rational(
+              data.oracleDatum.oracleFields.adaUSDExchangeRate,
+            ).toNumber(),
+          })
+          historicalData.SHEN.push({
+            id: -2,
+            timestamp: todayKey,
+            token: "SHEN",
+            adaValue: shenADARate(
+              data?.poolDatum,
+              data?.oracleDatum,
+            ).toNumber(),
+            usdValue: shenUSDRate(
+              data?.poolDatum,
+              data?.oracleDatum,
+            ).toNumber(),
+          })
         }
 
         historicalData.ADA = historicalData.ADA.map((entry) => ({
