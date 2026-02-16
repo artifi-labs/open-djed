@@ -192,10 +192,18 @@ export function useAnalyticsData() {
               id: -1,
               timestamp: todayKey,
               adaValue: (
-                Number(data?.protocolData.SHEN.marketCap.ADA) / 1e6
+                Number(
+                  token === "DJED"
+                    ? data?.protocolData.DJED.marketCap.ADA
+                    : data?.protocolData.SHEN.marketCap.ADA,
+                ) / 1e6
               ).toString(),
               usdValue: (
-                Number(data?.protocolData.SHEN.marketCap.USD) / 1e6
+                Number(
+                  token === "DJED"
+                    ? data?.protocolData.DJED.marketCap.USD
+                    : data?.protocolData.SHEN.marketCap.USD,
+                ) / 1e6
               ).toString(),
             })
           }
