@@ -9,6 +9,7 @@ import { useCallback, useEffect, useState } from "react"
 import type { TokenMarketCap } from "../../../../db/generated/prisma/enums"
 import { capitalize } from "@/lib/utils"
 import type { Token } from "@/lib/tokens"
+import { Rational, shenADARate, shenUSDRate } from "@open-djed/math"
 
 export type ReserveRatioChartEntry = {
   id: number
@@ -247,6 +248,34 @@ export function useAnalyticsData() {
           historicalData.ADA.shift()
           historicalData.SHEN.shift()
         }
+
+        if (!isLoading) {
+          const todayKey = new Date().toISOString()
+          historicalData.ADA.push({
+            id: -1,
+            timestamp: todayKey,
+            token: "ADA",
+            adaValue: 1,
+            usdValue: new Rational(
+              data.oracleDatum.oracleFields.adaUSDExchangeRate,
+            ).toNumber(),
+          })
+          historicalData.SHEN.push({
+            id: -2,
+            timestamp: todayKey,
+            token: "SHEN",
+            adaValue: shenADARate(
+              data?.poolDatum,
+              data?.oracleDatum,
+            ).toNumber(),
+            usdValue: shenUSDRate(
+              data?.poolDatum,
+              data?.oracleDatum,
+            ).toNumber(),
+          })
+        }
+
+        console.log("Fetched historical Shen-ADA price data:", historicalData)
 
         historicalData.ADA = historicalData.ADA.map((entry) => ({
           ...entry,
