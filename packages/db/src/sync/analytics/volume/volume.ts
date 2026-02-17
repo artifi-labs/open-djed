@@ -1,11 +1,25 @@
+import { OrderDatum, PoolDatum } from "@open-djed/data"
 import { logger } from "../../../utils/logger"
-import type { UTxO } from "../../types"
+import type { Input, Output, UTxO, TransactionData } from "../../types"
 import {
+  blockfrost,
   blockfrostFetch,
   getEveryResultFromPaginatedEndpoint,
+  network,
   processBatch,
   registry,
 } from "../../utils"
+import { credentialToAddress, Data } from "@lucid-evolution/lucid"
+import path from "path"
+import JSONbig from "json-bigint"
+import fsPromises from "fs/promises"
+import {
+  djedADARate,
+  Rational,
+  shenADARate,
+  shenUSDRate,
+} from "@open-djed/math"
+import type { Actions, AllTokens } from "../../../../generated/prisma/enums"
 
 export async function volume() {
   const everyOrderTx = await getEveryResultFromPaginatedEndpoint(
@@ -35,7 +49,6 @@ export async function volume() {
 
   logger.info(`Fetched UTxOs for ${everyOrderUTxO.length} transactions`)
 
-  // filter utxos to get only those that consumed and created a pool utxo and that spends a utxo with a order ticket
   const ordersThatChangedPool = everyOrderUTxO.filter(
     (utxo) =>
       utxo.inputs.some((input) =>
@@ -45,218 +58,363 @@ export async function volume() {
       utxo.outputs.some((output) => output.address === registry.poolAddress),
   )
 
-  const txTimeByHash = new Map(
-    everyOrderTx.map((tx) => [tx.tx_hash, tx.block_time] as const),
+  const txInfoEntries = await processBatch(
+    everyOrderTx,
+    async (tx) => {
+      const txData = (await blockfrostFetch(
+        `/txs/${tx.tx_hash}`,
+      )) as TransactionData
+      return [
+        tx.tx_hash,
+        {
+          block_time: tx.block_time,
+          block_hash: txData.block,
+          block_slot: txData.slot,
+        },
+      ] as const
+    },
+    10,
+    500,
   )
 
+  const txInfoByHash = new Map(txInfoEntries)
+
   const utxosWithTimestamp = ordersThatChangedPool.flatMap((utxo) => {
-    const blockTime = txTimeByHash.get(utxo.hash)
-    if (blockTime === undefined) return []
+    const txInfo = txInfoByHash.get(utxo.hash)
+    if (txInfo === undefined) return []
 
     return {
       ...utxo,
-      block_time: new Date(blockTime * 1000).toISOString(),
+      timestamp: new Date(txInfo.block_time * 1000).toISOString(),
+      block_hash: txInfo.block_hash,
+      block_slot: txInfo.block_slot,
     }
   })
 
-  // const absolutePath = path.resolve("./utxosWithTimestamp.json")
+  logger.info(`Found ${utxosWithTimestamp.length} UTxOs that changed the pool`)
 
-  // const json = JSONbig.stringify(utxosWithTimestamp)
+  const orders = await processBatch(
+    utxosWithTimestamp,
+    async (utxo) => {
+      const inputWithOrderTicket = utxo.inputs.find((input) =>
+        input.amount.some((asset) => asset.unit === registry.orderAssetId),
+      )
+      if (!inputWithOrderTicket || !inputWithOrderTicket.data_hash) {
+        return {
+          orderDatum: null,
+          poolDatum: null,
+          timestamp: utxo.timestamp,
+          block: utxo.block_hash,
+          slot: utxo.block_slot,
+        }
+      }
+
+      let inputOrderDatum
+      let addrOrder: string
+      try {
+        const rawDatum = await blockfrost.getDatum(
+          inputWithOrderTicket.data_hash,
+        )
+        inputOrderDatum = Data.from(rawDatum, OrderDatum)
+        addrOrder = credentialToAddress(
+          network,
+          { type: "Key", hash: inputOrderDatum.address.paymentKeyHash[0] },
+          { type: "Key", hash: inputOrderDatum.address.stakeKeyHash[0][0][0] },
+        )
+      } catch (error) {
+        logger.error(
+          error,
+          `Error decoding datum for UTxO ${utxo.hash}, skipping:`,
+        )
+        return {
+          orderDatum: null,
+          poolDatum: null,
+          timestamp: utxo.timestamp,
+          block: utxo.block_hash,
+          slot: utxo.block_slot,
+        }
+      }
+
+      const orderOutput = utxo.outputs.find(
+        (output) => output.address === addrOrder,
+      )
+      if (!orderOutput) {
+        return {
+          orderDatum: inputOrderDatum,
+          poolDatum: null,
+          timestamp: utxo.timestamp,
+          block: utxo.block_hash,
+          slot: utxo.block_slot,
+        }
+      }
+
+      const poolOutput = utxo.outputs.find(
+        (output) => output.address === registry.poolAddress,
+      )
+      if (!poolOutput) {
+        return {
+          orderDatum: inputOrderDatum,
+          poolDatum: null,
+          timestamp: utxo.timestamp,
+          block: utxo.block_hash,
+          slot: utxo.block_slot,
+        }
+      }
+
+      if (!poolOutput.data_hash) {
+        return {
+          orderDatum: inputOrderDatum,
+          poolDatum: null,
+          timestamp: utxo.timestamp,
+          block: utxo.block_hash,
+          slot: utxo.block_slot,
+        }
+      }
+
+      try {
+        const rawDatum = await blockfrost.getDatum(poolOutput.data_hash)
+        const decodedDatum = Data.from(rawDatum, PoolDatum)
+        return {
+          orderDatum: inputOrderDatum,
+          poolDatum: decodedDatum,
+          timestamp: utxo.timestamp,
+          block: utxo.block_hash,
+          slot: utxo.block_slot,
+        }
+      } catch (error) {
+        return {
+          orderDatum: inputOrderDatum,
+          poolDatum: null,
+          timestamp: utxo.timestamp,
+          block: utxo.block_hash,
+          slot: utxo.block_slot,
+        }
+      }
+    },
+    10,
+    500,
+  )
+
+  const volumeData = orders.filter(
+    (order) => order.orderDatum !== null && order.poolDatum !== null,
+  )
+
+  // const absolutePath = path.resolve("./volumeData.json")
+
+  // const json = JSONbig.stringify(orders)
 
   // await fsPromises.writeFile(absolutePath, json, {
   //   encoding: "utf-8",
   // })
 
-  // const absolutePath = path.resolve("./utxosWithTimestamp.json")
+  // const absolutePath = path.resolve("./volumeData.json")
 
   // const raw = await fsPromises.readFile(absolutePath, "utf-8")
-  // const utxosWithTimestamp = JSONbig.parse(raw) as {
-  //   block_time: string
-  //   hash: string
-  //   inputs: Input[]
-  //   outputs: Output[]
+  // const volumeData = JSONbig.parse(raw) as {
+  //   orderDatum: null | OrderDatum
+  //   poolDatum: null | PoolDatum
+  //   timestamp: string
+  //   block: string
+  //   slot: number
+  //   orderOutput: Output | null
   // }[]
 
-  const volumeData = utxosWithTimestamp
-    .map((utxo) => {
-      const poolInput = utxo.inputs.find(
-        (input) => input.address === registry.poolAddress,
-      )
-      const poolOutput = utxo.outputs.find(
-        (output) => output.address === registry.poolAddress,
-      )
+  logger.info(`volumeData: ${volumeData.length}`)
 
-      if (!poolInput || !poolOutput) {
-        logger.warn(`Transaction ${utxo.hash} missing pool input or output`)
-        return null
-      }
-      
-      const getAmount = (
-        amounts: Array<{ unit: string; quantity: string }>,
-        unit: string,
-      ) => {
-        return BigInt(amounts.find((a) => a.unit === unit)?.quantity || "0")
-      }
+  const getVolumeFromDatum = (datum: OrderDatum) => {
+    const adaUsdRate = new Rational(datum.adaUSDExchangeRate)
+    const [actionName, values] = Object.entries(datum.actionFields)[0] ?? []
 
-      const djedInputAmount = getAmount(poolInput.amount, registry.djedAssetId)
-      const djedOutputAmount = getAmount(
-        poolOutput.amount,
-        registry.djedAssetId,
-      )
-      const djedDelta = djedOutputAmount - djedInputAmount
+    if (!actionName || !values) {
+      throw new Error("OrderDatum has no actionFields")
+    }
 
-      const shenInputAmount = getAmount(poolInput.amount, registry.shenAssetId)
-      const shenOutputAmount = getAmount(
-        poolOutput.amount,
-        registry.shenAssetId,
-      )
-      const shenDelta = shenOutputAmount - shenInputAmount
+    const action: Actions = actionName.startsWith("Mint") ? "Mint" : "Burn"
 
-      let operationType:
-        | "mint_djed"
-        | "burn_djed"
-        | "mint_shen"
-        | "burn_shen"
-        | "unknown"
-      let volume = 0n
+    const token: Exclude<AllTokens, "ADA"> | null = actionName.includes("SHEN")
+      ? "SHEN"
+      : actionName.includes("DJED")
+        ? "DJED"
+        : null
 
-      if (djedDelta > 0n) {
-        operationType = "burn_djed"
-        volume = djedDelta
-      } else if (djedDelta < 0n) {
-        operationType = "mint_djed"
-        volume = -djedDelta
-      } else if (shenDelta > 0n) {
-        operationType = "burn_shen"
-        volume = shenDelta
-      } else if (shenDelta < 0n) {
-        operationType = "mint_shen"
-        volume = -shenDelta
-      } else {
-        operationType = "unknown"
-      }
+    if (!token) {
+      logger.info(`Token null`)
+      return null
+    }
 
-      const date = utxo.block_time.split("T")[0]
+    const amount: bigint | null =
+      "shenAmount" in values && typeof values.shenAmount === "bigint"
+        ? BigInt(values.shenAmount)
+        : "djedAmount" in values && typeof values.djedAmount === "bigint"
+          ? BigInt(values.djedAmount)
+          : null
+
+    if (!amount) {
+      logger.info(`Amount null`)
+      return null
+    }
+
+    return { action, token, amount, adaUsdRate }
+  }
+
+  const txVolumes = volumeData
+    .map((entry) => {
+      if (!entry.orderDatum) return null
+
+      const volume = getVolumeFromDatum(entry.orderDatum)
+      if (!volume) return null
 
       return {
-        tx_hash: utxo.hash,
-        operationType,
-        volume,
-        date,
-        timestamp: utxo.block_time,
+        ...volume,
+        date: entry.timestamp.split("T")[0] || entry.timestamp,
+        poolDatum: entry.poolDatum,
+        block: entry.block,
+        slot: entry.slot,
       }
     })
-    .filter(Boolean)
+    .filter((tx): tx is NonNullable<typeof tx> => tx !== null)
 
-  const volumeByDay = volumeData.reduce(
-    (acc, tx) => {
-      if (!acc[tx.date]) {
-        acc[tx.date] = {
-          date: tx.date,
-          djedMinted: 0n,
-          djedBurned: 0n,
-          shenMinted: 0n,
-          shenBurned: 0n,
-          totalTransactions: 0,
-        }
-      }
+  logger.info(`txVolumes: ${txVolumes.length}`)
 
-      const day = acc[tx.date]
-      day.totalTransactions++
+  const txVolumesByDay: Record<
+    string,
+    {
+      action: Actions
+      token: Exclude<AllTokens, "ADA">
+      usd: bigint
+      ada: bigint
+    }[]
+  > = {}
 
-      switch (tx.operationType) {
-        case "mint_djed":
-          day.djedMinted += tx.volume
-          break
-        case "burn_djed":
-          day.djedBurned += tx.volume
-          break
-        case "mint_shen":
-          day.shenMinted += tx.volume
-          break
-        case "burn_shen":
-          day.shenBurned += tx.volume
-          break
-      }
+  for (const tx of txVolumes) {
+    const date = tx.date
+    if (!txVolumesByDay[date]) txVolumesByDay[date] = []
 
-      return acc
-    },
-    {} as Record<
-      string,
-      {
-        date: string
-        djedMinted: bigint
-        djedBurned: bigint
-        shenMinted: bigint
-        shenBurned: bigint
-        totalTransactions: number
-      }
-    >,
-  )
+    if (tx.token === "DJED") {
+      const r = djedADARate({
+        oracleFields: { adaUSDExchangeRate: tx.adaUsdRate },
+      })
 
-  // this only has the volumes for the days where txs were made
-  // there are several days with no txs therefore there are several gaps
-  const dailyVolumes = Object.values(volumeByDay)
-    .sort((a, b) => a.date.localeCompare(b.date))
-    .map((day) => ({
-      date: day.date,
-      djedMinted: day.djedMinted.toString(),
-      djedBurned: day.djedBurned.toString(),
-      shenMinted: day.shenMinted.toString(),
-      shenBurned: day.shenBurned.toString(),
-      totalDjedVolume: (day.djedMinted + day.djedBurned).toString(),
-      totalShenVolume: (day.shenMinted + day.shenBurned).toString(),
-      totalTransactions: day.totalTransactions,
-    }))
+      const rate = (r.numerator * 1000000n) / r.denominator
 
-  // Fill the gaps with zero volume days
-  const allDates = dailyVolumes.map((d) => d.date)
+      const ada = tx.amount * rate
+      const usd = tx.amount
+
+      txVolumesByDay[date].push({
+        action: tx.action,
+        token: tx.token,
+        usd,
+        ada,
+      })
+
+      continue
+    }
+
+    if (tx.token === "SHEN") {
+      if (!tx.poolDatum) continue
+
+      const adaRate = shenADARate(tx.poolDatum, {
+        oracleFields: { adaUSDExchangeRate: tx.adaUsdRate },
+      })
+
+      const usdRate = shenUSDRate(tx.poolDatum, {
+        oracleFields: { adaUSDExchangeRate: tx.adaUsdRate },
+      })
+
+      txVolumesByDay[date].push({
+        action: tx.action,
+        token: tx.token,
+        ada: tx.amount * adaRate.toBigInt(),
+        usd: tx.amount * usdRate.toBigInt(),
+      })
+    }
+  }
+
+  logger.info(`txVolumesByDay: ${Object.entries(txVolumesByDay).length}`)
+
+  const volumeByDay = Object.entries(txVolumesByDay).map(([date, txs]) => {
+    const sum = (
+      token: Exclude<AllTokens, "ADA">,
+      action: Actions,
+      field: "usd" | "ada",
+    ) =>
+      txs
+        .filter((tx) => tx.token === token && tx.action === action)
+        .reduce((acc, tx) => acc + Number(tx[field]), 0)
+
+    const djedMintedUSD = sum("DJED", "Mint", "usd")
+    const djedBurnedUSD = sum("DJED", "Burn", "usd")
+    const shenMintedUSD = sum("SHEN", "Mint", "usd")
+    const shenBurnedUSD = sum("SHEN", "Burn", "usd")
+    const djedMintedADA = sum("DJED", "Mint", "ada")
+    const djedBurnedADA = sum("DJED", "Burn", "ada")
+    const shenMintedADA = sum("SHEN", "Mint", "ada")
+    const shenBurnedADA = sum("SHEN", "Burn", "ada")
+
+    return {
+      date,
+      djedMintedUSD,
+      djedBurnedUSD,
+      shenMintedUSD,
+      shenBurnedUSD,
+      djedMintedADA,
+      djedBurnedADA,
+      shenMintedADA,
+      shenBurnedADA,
+      totalDjedVolumeUSD: djedMintedUSD + djedBurnedUSD,
+      totalShenVolumeUSD: shenMintedUSD + shenBurnedUSD,
+      totalDjedVolumeADA: djedMintedADA + djedBurnedADA,
+      totalShenVolumeADA: shenMintedADA + shenBurnedADA,
+      totalVolumeUSD:
+        djedMintedUSD + djedBurnedUSD + shenMintedUSD + shenBurnedUSD,
+      totalVolumeADA:
+        djedMintedADA + djedBurnedADA + shenMintedADA + shenBurnedADA,
+      totalTransactions: txs.length,
+    }
+  })
+
+  logger.info(`volumeByDay: ${volumeByDay.length}`)
+
+  const allDates = volumeByDay.map((d) => d.date)
   const minDate = new Date(
     Math.min(...allDates.map((d) => new Date(d).getTime())),
   )
   const maxDate = new Date(
     Math.max(...allDates.map((d) => new Date(d).getTime())),
   )
+  const volumeMap = new Map(volumeByDay.map((d) => [d.date, d]))
 
-  const volumeMap = new Map(dailyVolumes.map((d) => [d.date, d]))
+  const zeroDay = (date: string) => ({
+    date,
+    djedMintedUSD: 0,
+    djedBurnedUSD: 0,
+    shenMintedUSD: 0,
+    shenBurnedUSD: 0,
+    djedMintedADA: 0,
+    djedBurnedADA: 0,
+    shenMintedADA: 0,
+    shenBurnedADA: 0,
+    totalDjedVolumeUSD: 0,
+    totalShenVolumeUSD: 0,
+    totalDjedVolumeADA: 0,
+    totalShenVolumeADA: 0,
+    totalVolumeUSD: 0,
+    totalVolumeADA: 0,
+    totalTransactions: 0,
+  })
 
   const completeVolumes = []
   const currentDate = new Date(minDate)
 
   while (currentDate <= maxDate) {
     const dateStr = currentDate.toISOString().split("T")[0]
-
-    const existingData = volumeMap.get(dateStr)
-
-    if (existingData) {
-      completeVolumes.push(existingData)
-    } else {
-      completeVolumes.push({
-        date: dateStr,
-        djedMinted: "0",
-        djedBurned: "0",
-        shenMinted: "0",
-        shenBurned: "0",
-        totalDjedVolume: "0",
-        totalShenVolume: "0",
-        totalTransactions: 0,
-      })
-    }
-
+    if (!dateStr) return
+    completeVolumes.push(volumeMap.get(dateStr) ?? zeroDay(dateStr))
     currentDate.setDate(currentDate.getDate() + 1)
   }
 
-  logger.info(
-    `Filled data from ${minDate.toISOString().split("T")[0]} to ${maxDate.toISOString().split("T")[0]}`,
-  )
-  logger.info(
-    `Total days: ${completeVolumes.length} (was ${dailyVolumes.length})`,
-  )
-
   logger.info("Daily Volume Summary:")
-  completeVolumes.forEach((day) => {
-    logger.info(
-      `${day.date}: ${day.totalTransactions} txs, Djed: ${day.totalDjedVolume}, Shen: ${day.totalShenVolume}`,
-    )
-  })
+  logger.info({ completeVolumes })
+
+  return completeVolumes
 }
