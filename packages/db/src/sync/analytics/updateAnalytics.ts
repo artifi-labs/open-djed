@@ -9,6 +9,7 @@ import {
 } from "../utils"
 import { processMarketCap, updateMarketCap } from "./marketCap/marketCap"
 import { rollbackMarketCap } from "./marketCap/rollbackMarketCap"
+import { getDexsTokenPrices } from "./price/dexs/dexTokenPrice"
 import { rollbackTokenPrices } from "./price/rollbackTokenPrice"
 import {
   processTokenPrices,
@@ -40,7 +41,7 @@ async function handlePopulateDb(toUpdate: DbProcessor[]) {
   if (toUpdate.every((item) => !item.isEmpty)) return
   const start = Date.now()
   logger.info("=== Populating Database ===")
-  const everyPoolTx = await getEveryResultFromPaginatedEndpoint(
+  /*const everyPoolTx = await getEveryResultFromPaginatedEndpoint(
     `/assets/${registry.poolAssetId}/transactions`,
   ) //txs from pool
   const everyOracleTx = await getEveryResultFromPaginatedEndpoint(
@@ -51,7 +52,9 @@ async function handlePopulateDb(toUpdate: DbProcessor[]) {
   if (!orderedTxOs) {
     logger.warn("No orderedTxOs produced — skipping DB population")
     return
-  }
+  }*/
+
+  await getDexsTokenPrices()
 
   // await writeOrderedTxOsToFile(orderedTxOs, "./orderedTxOs.json")
 
@@ -123,23 +126,13 @@ export async function handleAnalyticsUpdates(
 export async function updateAnalytics() {
   logger.info("=== Syncing Analytics ===")
 
-  await handleRollbacks()
+  //await handleRollbacks()
 
   const isReserveRatioEmpty = (await prisma.reserveRatio.count()) === 0
   const isMarketCapEmpty = (await prisma.marketCap.count()) === 0
-  const isPriceEmpty = (await prisma.tokenPrice.count()) === 0
+  const isPriceEmpty = true
 
   const toUpdate: DbProcessor[] = [
-    {
-      isEmpty: isReserveRatioEmpty,
-      populateDbProcessor: processReserveRatio,
-      updateDbProcessor: updateReserveRatios,
-    },
-    {
-      isEmpty: isMarketCapEmpty,
-      populateDbProcessor: processMarketCap,
-      updateDbProcessor: updateMarketCap,
-    },
     {
       isEmpty: isPriceEmpty,
       populateDbProcessor: processTokenPrices,
@@ -151,5 +144,5 @@ export async function updateAnalytics() {
   // We want to run these in parallel because handlePopulateDb takes several hours
   // to run due to the sheer volume of data fetched, therefore we do not want the update
   // to get stuck behind it.
-  await Promise.all([handlePopulateDb(toUpdate), handleUpdateDb(toUpdate)])
+  await Promise.all([handlePopulateDb(toUpdate)])
 }

@@ -86,6 +86,10 @@ model TokenPrice {
   token     AllTokens
   usdValue  Decimal
   adaValue  Decimal
+  minswapDjedAdaPrice Decimal
+  minswapDjedUsdPrice Decimal
+  wingridersDjedAdaPrice Decimal
+  wingridersDjedUsdPrice Decimal
   block     String // block hash
   slot      BigInt // block slot
 
