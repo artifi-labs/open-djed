@@ -62,7 +62,7 @@ model Block {
 
 model ReserveRatio {
   id           Int      @id @default(autoincrement())
-  timestamp    DateTime @db.Date @unique
+  timestamp    DateTime @unique @db.Date
   reserveRatio Decimal // Stored as ratio (e.g. 300% => 3.0)
   block        String // block hash
   slot         BigInt // block slot
@@ -81,8 +81,8 @@ model MarketCap {
 }
 
 model TokenPrice {
-  id        Int            @id @default(autoincrement())
-  timestamp DateTime       @db.Date
+  id        Int       @id @default(autoincrement())
+  timestamp DateTime  @db.Date
   token     AllTokens
   usdValue  Decimal
   adaValue  Decimal
@@ -90,4 +90,14 @@ model TokenPrice {
   slot      BigInt // block slot
 
   @@unique([token, timestamp])
+}
+
+model ADAStakingRewards {
+  id             Int      @id @default(autoincrement())
+  epoch          Int      @unique
+  startTimestamp DateTime @unique @db.Date
+  endTimestamp   DateTime @unique @db.Date
+  rate           Decimal // Staking rewards rate by epoch
+  block          String
+  slot           BigInt
 }
