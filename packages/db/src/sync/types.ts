@@ -320,19 +320,14 @@ export type ADAStakingRewards = {
   startTimestamp: Date
   endTimestamp: Date
   rate: number
-  block: string
-  slot: number
 }
 
 export type Rewards = {
   epoch: number
-  reward: string
-  poolID: string
-  type: string
+  amount: string //Rewards
 }
 
 export type History = {
-  epoch: number
-  activeStake: string
-  poolID: string
+  active_epoch: number
+  amount: string //Active Stake
 }

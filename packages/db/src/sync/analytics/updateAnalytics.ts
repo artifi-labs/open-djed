@@ -1,6 +1,6 @@
 import { prisma } from "../../../lib/prisma"
 import { logger } from "../../utils/logger"
-import type { OrderedPoolOracleTxOs } from "../types"
+import type { OrderedPoolOracleTxOs, Transaction } from "../types"
 import {
   getAssetTxsUpUntilSpecifiedTime,
   getEveryResultFromPaginatedEndpoint,
@@ -19,6 +19,11 @@ import {
   updateReserveRatios,
 } from "./reserveRatio/reserveRatio"
 import { rollbackReserveRatios } from "./reserveRatio/rollbackReserveRatios"
+import {
+  processStakingRewards,
+  updateStakingRewards,
+} from "./shenYield/stakingRewards/stakingRewards"
+import { rollbackStakingRewards } from "./shenYield/stakingRewards/rollbackStakingRewards"
 
 type DbProcessor = {
   isEmpty: boolean
@@ -31,6 +36,7 @@ async function handleRollbacks() {
     rollbackReserveRatios(),
     rollbackMarketCap(),
     rollbackTokenPrices(),
+    rollbackStakingRewards(),
   ])
 }
 
@@ -40,10 +46,10 @@ async function handlePopulateDb(toUpdate: DbProcessor[]) {
   if (toUpdate.every((item) => !item.isEmpty)) return
   const start = Date.now()
   logger.info("=== Populating Database ===")
-  const everyPoolTx = await getEveryResultFromPaginatedEndpoint(
+  const everyPoolTx = await getEveryResultFromPaginatedEndpoint<Transaction>(
     `/assets/${registry.poolAssetId}/transactions`,
   ) //txs from pool
-  const everyOracleTx = await getEveryResultFromPaginatedEndpoint(
+  const everyOracleTx = await getEveryResultFromPaginatedEndpoint<Transaction>(
     `/assets/${registry.oracleAssetId}/transactions`,
   ) //txs from oracle
 
@@ -128,6 +134,7 @@ export async function updateAnalytics() {
   const isReserveRatioEmpty = (await prisma.reserveRatio.count()) === 0
   const isMarketCapEmpty = (await prisma.marketCap.count()) === 0
   const isPriceEmpty = (await prisma.tokenPrice.count()) === 0
+  const isStakingRewardsEmpty = (await prisma.aDAStakingRewards.count()) === 0
 
   const toUpdate: DbProcessor[] = [
     {
@@ -144,6 +151,11 @@ export async function updateAnalytics() {
       isEmpty: isPriceEmpty,
       populateDbProcessor: processTokenPrices,
       updateDbProcessor: updateTokenPrices,
+    },
+    {
+      isEmpty: isStakingRewardsEmpty,
+      populateDbProcessor: processStakingRewards,
+      updateDbProcessor: updateStakingRewards,
     },
   ]
 
