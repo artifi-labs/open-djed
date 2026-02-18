@@ -1,16 +1,18 @@
-import type { ApiQueryParams } from "../types"
+import { z } from "zod"
+import type { RequestOrderOptions } from "../types"
 
-export type AddressTransactionQueryParams = ApiQueryParams
+const AddressTransactionSchema = z.object({
+  tx_hash: z.string(),
+  tx_index: z.number(),
+  block_height: z.number(),
+  block_time: z.number(),
+})
 
-export type AddressTransactionsParams = {
+export const AddressTransactionsSchema = z.array(AddressTransactionSchema)
+
+export type AddressTransaction = z.infer<typeof AddressTransactionSchema>
+export type AddressTransactionsResponse = z.infer<typeof AddressTransactionsSchema>
+
+export type GetAddressTransactionsParams = {
   address: string
-}
-
-export type AddressTransaction = {
-  tx_hash: string
-  tx_index: number
-  block_height: number
-  block_time: number
-}
-
-export type AddressTransactionsResponse = AddressTransaction[]
+} & RequestOrderOptions

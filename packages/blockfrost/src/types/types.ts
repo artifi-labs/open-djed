@@ -1,5 +1,15 @@
-export type ApiQueryParams = {
+export type RequestOrderOptions = {
+  order?: "asc" | "desc"
+}
+
+export type RequestRetryOptions = {
+  retry?: number
+  retryDelayMs?: number
+}
+
+export type RequestPaginationOptions = RequestRetryOptions & {
   count?: number
   page?: number
-  order?: "asc" | "desc"
+  maxPages?: number
+  allPages?: boolean
 }

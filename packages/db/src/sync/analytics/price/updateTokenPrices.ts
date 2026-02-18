@@ -17,12 +17,12 @@ import type {
 import {
   breakIntoDays,
   MS_PER_DAY,
-  processAnalyticsDataToInsert,
 } from "../../utils"
 import type { AllTokens } from "../../../../generated/prisma/enums"
-import { prisma } from "../../../../lib/prisma"
 import { handleAnalyticsUpdates } from "../updateAnalytics"
 import { getLatestPriceTimestamp } from "../../../client/price"
+import { findOracleByTimestamp } from "../../../oracle"
+import { getDexsTokenPrices } from "./dexs/dexTokenPrice"
 
 /**
  * Assigns a millisecond-based weight to every UTxO by tracking the interval
@@ -216,7 +216,9 @@ export async function processTokenPrices(orderedTxOs: OrderedPoolOracleTxOs[]) {
 
   const dataToInsert: TokenPrice[] = []
 
-  for (const token of Object.keys(dailyTokenPrices) as AllTokens[]) {
+  const dexsPricesPerDay = await getDexsTokenPrices(dailyTxOs)
+
+  /*for (const token of Object.keys(dailyTokenPrices) as AllTokens[]) {
     const tokenPrices = dailyTokenPrices[token]
 
     if (tokenPrices.length === 0) continue
@@ -230,7 +232,7 @@ export async function processTokenPrices(orderedTxOs: OrderedPoolOracleTxOs[]) {
   await prisma.tokenPrice.createMany({
     data: dataToInsert,
     skipDuplicates: true,
-  })
+  })*/
   logger.info(
     `Historic Token Prices sync complete. Inserted ${dataToInsert.length} Token Prices`,
   )

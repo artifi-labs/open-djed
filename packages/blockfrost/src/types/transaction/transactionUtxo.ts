@@ -1,40 +1,41 @@
-import type { ApiQueryParams } from "../types"
+import z from "zod"
 
-export type TransactionUtxoQueryParams = ApiQueryParams
+const TransactionUtxoAmountSchema = z.object({
+  unit: z.string(),
+  quantity: z.string(),
+})
 
-export type TransactionUtxoParams = {
-  hash: string
-}
+const TransactionBaseUtxoInputSchema = z.object({
+  address: z.string(),
+  amount: z.array(TransactionUtxoAmountSchema),
+  output_index: z.number(),
+  data_hash: z.string().nullable(),
+  inline_datum: z.string().nullable(),
+  reference_script_hash: z.string().nullable(),
+  collateral: z.boolean(),
+})
 
-export type TransactionUtxoAmount = {
-  unit: string
-  quantity: string
-}
+const TransactionUtxoInputSchema = TransactionBaseUtxoInputSchema.extend({
+  tx_hash: z.string(),
+  reference: z.boolean(),
+})
 
-export type TransactionBaseUtxoInput = {
-  address: string
-  amount: TransactionUtxoAmount[]
-  output_index: number
-  data_hash: string
-  inline_datum: string
-  reference_script_hash: string
-  collateral: boolean
-}
+const TransactionUtxoOutputSchema = TransactionBaseUtxoInputSchema.extend({
+  consumed_by_tx: z.string().nullable(),
+})
 
-export type TransactionUtxoInput = TransactionBaseUtxoInput & {
-  tx_hash: string
-  reference: boolean
-}
+const TransactionUtxoSchema = z.object({
+  hash: z.string(),
+  inputs: z.array(TransactionUtxoInputSchema),
+  outputs: z.array(TransactionUtxoOutputSchema),
+})
 
-export type TransactionUtxoOutput = TransactionBaseUtxoInput & {
-  consumed_by_tx: string
-}
-
-export type TransactionUtxo = {
-  hash: string
-  inputs: TransactionUtxoInput[]
-  outputs: TransactionUtxoOutput[]
-}
-
+export type TransactionUtxo = z.infer<typeof TransactionUtxoSchema>
+export type TransactionUtxoOutput = z.infer<typeof TransactionUtxoOutputSchema>
+export type TransactionUtxoInput = z.infer<typeof TransactionUtxoInputSchema>
+export type TransactionUtxoAmount = z.infer<typeof TransactionUtxoAmountSchema>
 export type TransactionUtxoResponse = TransactionUtxo
 
+export type GetTransactionUTxOsParams = {
+  hash: string
+}

@@ -1,3 +1,4 @@
+import { blockfrost } from "../.."
 import { prisma } from "../../../lib/prisma"
 import { logger } from "../../utils/logger"
 import type { OrderedPoolOracleTxOs } from "../types"
@@ -5,7 +6,9 @@ import {
   getAssetTxsUpUntilSpecifiedTime,
   getEveryResultFromPaginatedEndpoint,
   processPoolOracleTxs,
+  readOrderedTxOsFromFile,
   registry,
+  writeOrderedTxOsToFile,
 } from "../utils"
 import { processMarketCap, updateMarketCap } from "./marketCap/marketCap"
 import { rollbackMarketCap } from "./marketCap/rollbackMarketCap"
@@ -41,28 +44,32 @@ async function handlePopulateDb(toUpdate: DbProcessor[]) {
   if (toUpdate.every((item) => !item.isEmpty)) return
   const start = Date.now()
   logger.info("=== Populating Database ===")
-  /*const everyPoolTx = await getEveryResultFromPaginatedEndpoint(
-    `/assets/${registry.poolAssetId}/transactions`,
-  ) //txs from pool
-  const everyOracleTx = await getEveryResultFromPaginatedEndpoint(
-    `/assets/${registry.oracleAssetId}/transactions`,
-  ) //txs from oracle
+  /*const everyPoolTx = await blockfrost.getAssetTransactions({
+    asset: registry.poolAssetId,
+    order: "desc",
+  }).allPages({ maxPages:10 }).retry() //txs from pool
 
+  logger.info(`Fetched ${everyPoolTx.length} transactions for pool asset ${registry.poolAssetId}`)
+
+  const everyOracleTx = await blockfrost.getAssetTransactions({
+    asset: registry.oracleAssetId,
+    order: "desc",
+  }).allPages({ maxPages: 10 }).retry() //txs from oracle
+  
   const orderedTxOs = await processPoolOracleTxs(everyPoolTx, everyOracleTx)
   if (!orderedTxOs) {
     logger.warn("No orderedTxOs produced — skipping DB population")
     return
   }*/
 
-  await getDexsTokenPrices()
+  //await writeOrderedTxOsToFile(orderedTxOs, "./orderedTxOs2.json")
 
-  // await writeOrderedTxOsToFile(orderedTxOs, "./orderedTxOs.json")
-
-  // const orderedTxOs = await readOrderedTxOsFromFile("./orderedTxOs.json")
-  // if (!orderedTxOs) {
-  //   logger.warn("No orderedTxOs read from file — skipping DB population")
-  //   return
-  // }
+  const orderedTxOs = await readOrderedTxOsFromFile("./orderedTxOs2.json")
+  if (!orderedTxOs) {
+    logger.warn("No orderedTxOs read from file — skipping DB population")
+    return
+  }
+  
   const end = Date.now() - start
   logger.info(
     `=== Fetching data to populate database took sec: ${(end / 1000).toFixed(2)} ===`,
