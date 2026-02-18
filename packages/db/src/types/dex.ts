@@ -1,9 +1,9 @@
-import type { DexKey } from "../dex.config"
+import type { DEX_CONFIG } from "../dex.config"
 
 export type Dex = "minswap" | "wingriders"
 
 export type DexPriceEntry = {
-  dex: string
+  dex: DexName
   djedAda: number
 }
 
@@ -12,7 +12,8 @@ export type DexDailyPrices = {
   prices: DexPriceEntry[]
 }
 
+export type DexName = keyof typeof DEX_CONFIG
 
 export type DexDjedAdaPriceFields = {
-  [K in DexKey as `${K}DjedAdaPrice`]: number
+  [K in DexName as `${K}DjedAdaPrice`]: number
 }

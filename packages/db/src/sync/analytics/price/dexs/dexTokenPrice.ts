@@ -7,8 +7,8 @@ import {  Rational } from "@open-djed/math";
 import { calculateMedian } from "@open-djed/math/src/number";
 import { env } from "../../../../../lib/env";
 import type { Network } from "../../../../types/network";
-import type { DexDailyPrices, DexPriceEntry } from "../../../../types/dex";
-import { aggegatedDexPricesPerDay } from "./utils";
+import type { DexDailyPrices, DexName, DexPriceEntry } from "../../../../types/dex";
+import { aggegatedDexPricesPerDay, normalizeDexKey, readAddressTxFromFile, readDexPricesFromFile } from "./utils";
 import { DJED_POLICY_ID_AND_NAME } from "./constants";
 
 export async function getDexsTokenPrices(): Promise<DexDailyPrices[]> {
@@ -16,18 +16,24 @@ export async function getDexsTokenPrices(): Promise<DexDailyPrices[]> {
 
   const dexPromises = Object.values(DEX_CONFIG).map(async (dex) => {
     const networkConfig = dex[network]
+    const dexName = normalizeDexKey(dex.displayName)
+  
+    if (!networkConfig || !dexName) {
+      logger.warn(`Skipping dex ${dex.displayName} because it has no valid network config or name`)
+      return null
+    }
+
     const hasAddress = !!networkConfig.address
-
-    logger.info(`Processing dex ${dex.displayName}`)
-
     if (!hasAddress) {
       logger.warn(`Skipping dex ${dex.displayName} because it has no valid address`)
       return null
     }
 
-    const dexPrices = await getDexTokenPrices(dex.displayName, networkConfig)
+    logger.info(`Processing dex ${dexName}`)
+
+    const dexPrices = await getDexTokenPrices(dexName, networkConfig)
     if (!dexPrices || dexPrices.length === 0) {
-      logger.warn(`No prices found for dex ${dex.displayName}`)
+      logger.warn(`No prices found for dex ${dexName}`)
       return null
     }
 
@@ -46,7 +52,7 @@ export async function getDexsTokenPrices(): Promise<DexDailyPrices[]> {
   return aggregated
 }
 
-export async function getDexTokenPrices(dexName: string, dexConfig: DexNetworkConfig) {
+export async function getDexTokenPrices(dexName: DexName, dexConfig: DexNetworkConfig) {
 
   let dexTransactions: AddressTransactionsResponse = [] // todo change this to const
   let dayEntries: DexDailyPrices[] = [] // todo change this to const

@@ -22,9 +22,11 @@ import {
 import type { AllTokens } from "../../../../generated/prisma/enums"
 import { handleAnalyticsUpdates } from "../updateAnalytics"
 import { getLatestPriceTimestamp } from "../../../client/price"
-import { getDexsTokenPrices, normalizeDexKey, type DexDjedAdaPriceFields } from "./dexs/dexTokenPrice"
+import { getDexsTokenPrices } from "./dexs/dexTokenPrice"
 import { prisma } from "../../../../lib/prisma"
 import { DEX_CONFIG } from "../../../dex.config"
+import { normalizeDexKey } from "./dexs/utils"
+import type { DexDjedAdaPriceFields } from "../../../types/dex"
 
 /**
  * Assigns a millisecond-based weight to every UTxO by tracking the interval
@@ -241,7 +243,7 @@ export async function processTokenPrices(orderedTxOs: OrderedPoolOracleTxOs[]) {
       const dexFields = Object.keys(DEX_CONFIG).reduce(
         (acc, dexKey) => {
           const price = prices.find(
-            (p) => normalizeDexKey(p.dex) === dexKey
+            (p) => normalizeDexKey(p.dex) === normalizeDexKey(dexKey)
           )?.djedAda
 
           acc[`${dexKey}DjedAdaPrice` as keyof DexDjedAdaPriceFields] =

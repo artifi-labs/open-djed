@@ -5,6 +5,7 @@ import {
   blockfrost,
   getAssetTxsUpUntilSpecifiedTime,
   processPoolOracleTxs,
+  readOrderedTxOsFromFile,
   registry,
 } from "../utils"
 import { processMarketCap, updateMarketCap } from "./marketCap/marketCap"

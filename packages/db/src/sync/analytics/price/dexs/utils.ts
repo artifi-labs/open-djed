@@ -2,8 +2,9 @@ import type { TransactionUtxoResponse } from "@open-djed/blockfrost/src/types/tr
 import path from "path"
 import JSONbig from "json-bigint"
 import fsPromises from "fs/promises"
-import { DEX_CONFIG, type DexKey } from "../../../../dex.config"
-import type { DexDailyPrices, DexPriceEntry } from "../../../../types/dex"
+import { DEX_CONFIG } from "../../../../dex.config"
+import type { DexDailyPrices, DexName, DexPriceEntry } from "../../../../types/dex"
+import type { AddressTransactionsResponse } from "@open-djed/blockfrost/src/types/address/addressTransaction"
 
 // TODO: DELETE THIS
 export async function readUtxoFile(
@@ -39,12 +40,22 @@ export async function readDexPricesFromFile(
   }))
 }
 
-export const normalizeDexKey = (dex: string): DexKey | null => {
+export async function readAddressTxFromFile(
+  filePath: string,
+): Promise<AddressTransactionsResponse> {
+  const absolutePath = path.resolve(filePath)
+
+  const raw = await fsPromises.readFile(absolutePath, "utf-8")
+  const parsed = JSONbig.parse(raw) as AddressTransactionsResponse
+  return parsed
+}
+
+export const normalizeDexKey = (dex: string): DexName | null => {
   const normalized = dex.toLowerCase()
 
   return (normalized in DEX_CONFIG
     ? normalized
-    : null) as DexKey | null
+    : null) as DexName | null
 }
 
 export function aggegatedDexPricesPerDay(dexsPricesPerDay: DexDailyPrices[][]): DexDailyPrices[] {
