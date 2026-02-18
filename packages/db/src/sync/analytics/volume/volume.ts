@@ -1,6 +1,13 @@
 import { OrderDatum, PoolDatum } from "@open-djed/data"
 import { logger } from "../../../utils/logger"
-import type { Input, Output, UTxO, TransactionData } from "../../types"
+import type {
+  UTxO,
+  TransactionData,
+  UnprocessedVolumeData,
+  Transaction,
+  Volume,
+  OrderVolume,
+} from "../../types"
 import {
   blockfrost,
   blockfrostFetch,
@@ -10,9 +17,6 @@ import {
   registry,
 } from "../../utils"
 import { credentialToAddress, Data } from "@lucid-evolution/lucid"
-import path from "path"
-import JSONbig from "json-bigint"
-import fsPromises from "fs/promises"
 import {
   djedADARate,
   Rational,
@@ -21,20 +25,28 @@ import {
 } from "@open-djed/math"
 import type { Actions, AllTokens } from "../../../../generated/prisma/enums"
 
-export async function volume() {
-  const everyOrderTx = await getEveryResultFromPaginatedEndpoint(
-    `/addresses/${registry.orderAddress}/transactions`,
-  )
+const createZeroVolumeDay = (timestamp: string) => ({
+  timestamp,
+  djedMintedUSD: 0,
+  djedBurnedUSD: 0,
+  shenMintedUSD: 0,
+  shenBurnedUSD: 0,
+  djedMintedADA: 0,
+  djedBurnedADA: 0,
+  shenMintedADA: 0,
+  shenBurnedADA: 0,
+  totalDjedVolumeUSD: 0,
+  totalShenVolumeUSD: 0,
+  totalDjedVolumeADA: 0,
+  totalShenVolumeADA: 0,
+  totalVolumeUSD: 0,
+  totalVolumeADA: 0,
+})
 
-  if (everyOrderTx.length === 0) {
-    logger.info("No transactions found")
-    return
-  }
-  logger.info(`Found ${everyOrderTx.length} transactions`)
-
+const processVolumeTxs = async (volumeOrderTx: Transaction[]) => {
   logger.info("Fetching UTxOs...")
   const everyOrderUTxO: UTxO[] = await processBatch(
-    everyOrderTx,
+    volumeOrderTx,
     async (order) => {
       try {
         return (await blockfrostFetch(`/txs/${order.tx_hash}/utxos`)) as UTxO
@@ -59,7 +71,7 @@ export async function volume() {
   )
 
   const txInfoEntries = await processBatch(
-    everyOrderTx,
+    volumeOrderTx,
     async (tx) => {
       const txData = (await blockfrostFetch(
         `/txs/${tx.tx_hash}`,
@@ -103,12 +115,16 @@ export async function volume() {
         return {
           orderDatum: null,
           poolDatum: null,
+          orderOutput: null,
           timestamp: utxo.timestamp,
           block: utxo.block_hash,
           slot: utxo.block_slot,
         }
       }
 
+      // decodes datum of the input
+      // bc the output no longer is an order
+      // and we dont know the datum structure
       let inputOrderDatum
       let addrOrder: string
       try {
@@ -129,42 +145,39 @@ export async function volume() {
         return {
           orderDatum: null,
           poolDatum: null,
+          orderOutput: null,
           timestamp: utxo.timestamp,
           block: utxo.block_hash,
           slot: utxo.block_slot,
         }
       }
 
-      const orderOutput = utxo.outputs.find(
+      // this verifies is the order was accomplished
+      // by checkinbg if there is an output sent to the address
+      // present in the input with the order ticket
+      const orderOutput = utxo.outputs.filter(
         (output) => output.address === addrOrder,
       )
       if (!orderOutput) {
         return {
           orderDatum: inputOrderDatum,
           poolDatum: null,
+          orderOutput: null,
           timestamp: utxo.timestamp,
           block: utxo.block_hash,
           slot: utxo.block_slot,
         }
       }
 
+      // gets the new pool output
       const poolOutput = utxo.outputs.find(
         (output) => output.address === registry.poolAddress,
       )
-      if (!poolOutput) {
+      if (!poolOutput || !poolOutput.data_hash) {
         return {
           orderDatum: inputOrderDatum,
           poolDatum: null,
-          timestamp: utxo.timestamp,
-          block: utxo.block_hash,
-          slot: utxo.block_slot,
-        }
-      }
-
-      if (!poolOutput.data_hash) {
-        return {
-          orderDatum: inputOrderDatum,
-          poolDatum: null,
+          orderOutput,
           timestamp: utxo.timestamp,
           block: utxo.block_hash,
           slot: utxo.block_slot,
@@ -177,6 +190,7 @@ export async function volume() {
         return {
           orderDatum: inputOrderDatum,
           poolDatum: decodedDatum,
+          orderOutput,
           timestamp: utxo.timestamp,
           block: utxo.block_hash,
           slot: utxo.block_slot,
@@ -185,6 +199,7 @@ export async function volume() {
         return {
           orderDatum: inputOrderDatum,
           poolDatum: null,
+          orderOutput,
           timestamp: utxo.timestamp,
           block: utxo.block_hash,
           slot: utxo.block_slot,
@@ -195,69 +210,52 @@ export async function volume() {
     500,
   )
 
-  const volumeData = orders.filter(
-    (order) => order.orderDatum !== null && order.poolDatum !== null,
+  return orders.filter(
+    (order) =>
+      order.orderDatum !== null &&
+      order.poolDatum !== null &&
+      order.orderOutput !== null,
   )
+}
 
-  // const absolutePath = path.resolve("./volumeData.json")
+const getVolumeFromDatum = (datum: OrderDatum) => {
+  const adaUsdRate = new Rational(datum.adaUSDExchangeRate)
+  const [actionName, values] = Object.entries(datum.actionFields)[0] ?? []
 
-  // const json = JSONbig.stringify(orders)
-
-  // await fsPromises.writeFile(absolutePath, json, {
-  //   encoding: "utf-8",
-  // })
-
-  // const absolutePath = path.resolve("./volumeData.json")
-
-  // const raw = await fsPromises.readFile(absolutePath, "utf-8")
-  // const volumeData = JSONbig.parse(raw) as {
-  //   orderDatum: null | OrderDatum
-  //   poolDatum: null | PoolDatum
-  //   timestamp: string
-  //   block: string
-  //   slot: number
-  //   orderOutput: Output | null
-  // }[]
-
-  logger.info(`volumeData: ${volumeData.length}`)
-
-  const getVolumeFromDatum = (datum: OrderDatum) => {
-    const adaUsdRate = new Rational(datum.adaUSDExchangeRate)
-    const [actionName, values] = Object.entries(datum.actionFields)[0] ?? []
-
-    if (!actionName || !values) {
-      throw new Error("OrderDatum has no actionFields")
-    }
-
-    const action: Actions = actionName.startsWith("Mint") ? "Mint" : "Burn"
-
-    const token: Exclude<AllTokens, "ADA"> | null = actionName.includes("SHEN")
-      ? "SHEN"
-      : actionName.includes("DJED")
-        ? "DJED"
-        : null
-
-    if (!token) {
-      logger.info(`Token null`)
-      return null
-    }
-
-    const amount: bigint | null =
-      "shenAmount" in values && typeof values.shenAmount === "bigint"
-        ? BigInt(values.shenAmount)
-        : "djedAmount" in values && typeof values.djedAmount === "bigint"
-          ? BigInt(values.djedAmount)
-          : null
-
-    if (!amount) {
-      logger.info(`Amount null`)
-      return null
-    }
-
-    return { action, token, amount, adaUsdRate }
+  if (!actionName || !values) {
+    throw new Error("OrderDatum has no actionFields")
   }
 
-  const txVolumes = volumeData
+  const action: Actions = actionName.startsWith("Mint") ? "Mint" : "Burn"
+
+  const token: Exclude<AllTokens, "ADA"> | null = actionName.includes("SHEN")
+    ? "SHEN"
+    : actionName.includes("DJED")
+      ? "DJED"
+      : null
+
+  if (!token) {
+    logger.info(`Token null`)
+    return null
+  }
+
+  const amount: bigint | null =
+    "shenAmount" in values && typeof values.shenAmount === "bigint"
+      ? BigInt(values.shenAmount)
+      : "djedAmount" in values && typeof values.djedAmount === "bigint"
+        ? BigInt(values.djedAmount)
+        : null
+
+  if (!amount) {
+    logger.info(`Amount null`)
+    return null
+  }
+
+  return { action, token, amount, adaUsdRate }
+}
+
+const processVolumeData = async (volumeData: UnprocessedVolumeData[]) => {
+  const txVolumes: OrderVolume[] = volumeData
     .map((entry) => {
       if (!entry.orderDatum) return null
 
@@ -266,41 +264,67 @@ export async function volume() {
 
       return {
         ...volume,
-        date: entry.timestamp.split("T")[0] || entry.timestamp,
+        timestamp: entry.timestamp,
         poolDatum: entry.poolDatum,
         block: entry.block,
         slot: entry.slot,
+        orderOutput: entry.orderOutput,
       }
     })
     .filter((tx): tx is NonNullable<typeof tx> => tx !== null)
 
-  logger.info(`txVolumes: ${txVolumes.length}`)
+  // check if an order was valid
+  // If it was a mint order, the user receives the tokens asked
+  // if canceled, the user receives lovelace.
+  // If it was a burn order, the user receives lovelace
+  // if canceled, the user receives the tokens back
+  const validVolumes = txVolumes.filter((vol) => {
+    if (vol.action === "Mint") {
+      return vol.orderOutput?.some((output) =>
+        output.amount.some(
+          (amt) =>
+            amt.unit ===
+            (vol.token === "DJED"
+              ? registry.djedAssetId
+              : registry.shenAssetId),
+        ),
+      )
+    } else {
+      return vol.orderOutput?.some((output) =>
+        output.amount.every((amt) => amt.unit === "lovelace"),
+      )
+    }
+  })
 
   const txVolumesByDay: Record<
     string,
     {
       action: Actions
       token: Exclude<AllTokens, "ADA">
-      usd: bigint
-      ada: bigint
+      usd: number
+      ada: number
+      slot: number
+      block: string
+      timestamp: string
     }[]
   > = {}
 
-  for (const tx of txVolumes) {
-    const date = tx.date
+  for (const tx of validVolumes) {
+    const date = tx.timestamp.split("T")[0] || tx.timestamp
     if (!txVolumesByDay[date]) txVolumesByDay[date] = []
 
     if (tx.token === "DJED") {
-      const r = djedADARate({
+      const rate = djedADARate({
         oracleFields: { adaUSDExchangeRate: tx.adaUsdRate },
-      })
+      }).toNumber()
 
-      const rate = (r.numerator * 1000000n) / r.denominator
-
-      const ada = tx.amount * rate
-      const usd = tx.amount
+      const ada = (Number(tx.amount) * rate) / 1e6
+      const usd = Number(tx.amount) / 1e6
 
       txVolumesByDay[date].push({
+        block: tx.block,
+        slot: tx.slot,
+        timestamp: tx.timestamp,
         action: tx.action,
         token: tx.token,
         usd,
@@ -315,32 +339,33 @@ export async function volume() {
 
       const adaRate = shenADARate(tx.poolDatum, {
         oracleFields: { adaUSDExchangeRate: tx.adaUsdRate },
-      })
+      }).toNumber()
 
       const usdRate = shenUSDRate(tx.poolDatum, {
         oracleFields: { adaUSDExchangeRate: tx.adaUsdRate },
-      })
+      }).toNumber()
 
       txVolumesByDay[date].push({
+        block: tx.block,
+        slot: tx.slot,
+        timestamp: tx.timestamp,
         action: tx.action,
         token: tx.token,
-        ada: tx.amount * adaRate.toBigInt(),
-        usd: tx.amount * usdRate.toBigInt(),
+        ada: (Number(tx.amount) * adaRate) / 1e6,
+        usd: (Number(tx.amount) * usdRate) / 1e6,
       })
     }
   }
 
-  logger.info(`txVolumesByDay: ${Object.entries(txVolumesByDay).length}`)
-
-  const volumeByDay = Object.entries(txVolumesByDay).map(([date, txs]) => {
+  const volumeByDay = Object.entries(txVolumesByDay).map(([timestamp, txs]) => {
     const sum = (
       token: Exclude<AllTokens, "ADA">,
       action: Actions,
-      field: "usd" | "ada",
+      currency: "usd" | "ada",
     ) =>
       txs
         .filter((tx) => tx.token === token && tx.action === action)
-        .reduce((acc, tx) => acc + Number(tx[field]), 0)
+        .reduce((acc, tx) => acc + tx[currency], 0)
 
     const djedMintedUSD = sum("DJED", "Mint", "usd")
     const djedBurnedUSD = sum("DJED", "Burn", "usd")
@@ -351,8 +376,14 @@ export async function volume() {
     const shenMintedADA = sum("SHEN", "Mint", "ada")
     const shenBurnedADA = sum("SHEN", "Burn", "ada")
 
+    const latestEntryDay = [...txs].sort((a, b) =>
+      b.timestamp.localeCompare(a.timestamp),
+    )[0]
+
     return {
-      date,
+      timestamp,
+      block: latestEntryDay?.block,
+      slot: latestEntryDay?.slot,
       djedMintedUSD,
       djedBurnedUSD,
       shenMintedUSD,
@@ -369,52 +400,44 @@ export async function volume() {
         djedMintedUSD + djedBurnedUSD + shenMintedUSD + shenBurnedUSD,
       totalVolumeADA:
         djedMintedADA + djedBurnedADA + shenMintedADA + shenBurnedADA,
-      totalTransactions: txs.length,
     }
   })
 
-  logger.info(`volumeByDay: ${volumeByDay.length}`)
-
-  const allDates = volumeByDay.map((d) => d.date)
+  const allDates = volumeByDay.map((d) => d.timestamp)
   const minDate = new Date(
     Math.min(...allDates.map((d) => new Date(d).getTime())),
   )
   const maxDate = new Date(
     Math.max(...allDates.map((d) => new Date(d).getTime())),
   )
-  const volumeMap = new Map(volumeByDay.map((d) => [d.date, d]))
+  const volumeMap = new Map(volumeByDay.map((d) => [d.timestamp, d]))
 
-  const zeroDay = (date: string) => ({
-    date,
-    djedMintedUSD: 0,
-    djedBurnedUSD: 0,
-    shenMintedUSD: 0,
-    shenBurnedUSD: 0,
-    djedMintedADA: 0,
-    djedBurnedADA: 0,
-    shenMintedADA: 0,
-    shenBurnedADA: 0,
-    totalDjedVolumeUSD: 0,
-    totalShenVolumeUSD: 0,
-    totalDjedVolumeADA: 0,
-    totalShenVolumeADA: 0,
-    totalVolumeUSD: 0,
-    totalVolumeADA: 0,
-    totalTransactions: 0,
-  })
-
-  const completeVolumes = []
+  const completeVolumes: Volume[] = []
   const currentDate = new Date(minDate)
 
   while (currentDate <= maxDate) {
     const dateStr = currentDate.toISOString().split("T")[0]
     if (!dateStr) return
-    completeVolumes.push(volumeMap.get(dateStr) ?? zeroDay(dateStr))
+    completeVolumes.push(volumeMap.get(dateStr) ?? createZeroVolumeDay(dateStr))
     currentDate.setDate(currentDate.getDate() + 1)
   }
 
-  logger.info("Daily Volume Summary:")
-  logger.info({ completeVolumes })
-
   return completeVolumes
+}
+
+export async function handleInitialVolumeDbPopulation() {
+  const everyOrderTx = await getEveryResultFromPaginatedEndpoint(
+    `/addresses/${registry.orderAddress}/transactions`,
+  )
+
+  if (everyOrderTx.length === 0) {
+    logger.info("No transactions found")
+    return
+  }
+  logger.info(`Found ${everyOrderTx.length} transactions`)
+
+  const volumeData = await processVolumeTxs(everyOrderTx)
+  const processedVolumes = await processVolumeData(volumeData)
+
+  // insert into db
 }
