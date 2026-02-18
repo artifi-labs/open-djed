@@ -1,18 +1,14 @@
-import { blockfrost } from "../.."
 import { prisma } from "../../../lib/prisma"
 import { logger } from "../../utils/logger"
 import type { OrderedPoolOracleTxOs } from "../types"
 import {
+  blockfrost,
   getAssetTxsUpUntilSpecifiedTime,
-  getEveryResultFromPaginatedEndpoint,
   processPoolOracleTxs,
-  readOrderedTxOsFromFile,
   registry,
-  writeOrderedTxOsToFile,
 } from "../utils"
 import { processMarketCap, updateMarketCap } from "./marketCap/marketCap"
 import { rollbackMarketCap } from "./marketCap/rollbackMarketCap"
-import { getDexsTokenPrices } from "./price/dexs/dexTokenPrice"
 import { rollbackTokenPrices } from "./price/rollbackTokenPrice"
 import {
   processTokenPrices,
@@ -42,34 +38,30 @@ async function handleRollbacks() {
 // saving hundreds of thousands of requests
 async function handlePopulateDb(toUpdate: DbProcessor[]) {
   if (toUpdate.every((item) => !item.isEmpty)) return
-  const start = Date.now()
+
   logger.info("=== Populating Database ===")
-  /*const everyPoolTx = await blockfrost.getAssetTransactions({
+  const start = Date.now()
+
+  const everyPoolTx = await blockfrost.getAssetTransactions({
     asset: registry.poolAssetId,
-    order: "desc",
-  }).allPages({ maxPages:10 }).retry() //txs from pool
-
-  logger.info(`Fetched ${everyPoolTx.length} transactions for pool asset ${registry.poolAssetId}`)
-
+  }).allPages().retry() //txs from pool
   const everyOracleTx = await blockfrost.getAssetTransactions({
     asset: registry.oracleAssetId,
-    order: "desc",
-  }).allPages({ maxPages: 10 }).retry() //txs from oracle
-  
+  }).allPages().retry() //txs from oracle
+
   const orderedTxOs = await processPoolOracleTxs(everyPoolTx, everyOracleTx)
   if (!orderedTxOs) {
     logger.warn("No orderedTxOs produced — skipping DB population")
     return
-  }*/
+  }
 
-  //await writeOrderedTxOsToFile(orderedTxOs, "./orderedTxOs2.json")
+  // await writeOrderedTxOsToFile(orderedTxOs, "./orderedTxOs.json")
 
-  const orderedTxOs = await readOrderedTxOsFromFile("./orderedTxOs2.json")
+  /*const orderedTxOs = await readOrderedTxOsFromFile("./orderedTxOs.json")
   if (!orderedTxOs) {
     logger.warn("No orderedTxOs read from file — skipping DB population")
-    return
-  }
-  
+   return
+  }*/
   const end = Date.now() - start
   logger.info(
     `=== Fetching data to populate database took sec: ${(end / 1000).toFixed(2)} ===`,
@@ -133,13 +125,23 @@ export async function handleAnalyticsUpdates(
 export async function updateAnalytics() {
   logger.info("=== Syncing Analytics ===")
 
-  //await handleRollbacks()
+  await handleRollbacks()
 
   const isReserveRatioEmpty = (await prisma.reserveRatio.count()) === 0
   const isMarketCapEmpty = (await prisma.marketCap.count()) === 0
-  const isPriceEmpty = true
+  const isPriceEmpty = (await prisma.tokenPrice.count()) === 0
 
   const toUpdate: DbProcessor[] = [
+    {
+      isEmpty: isReserveRatioEmpty,
+      populateDbProcessor: processReserveRatio,
+      updateDbProcessor: updateReserveRatios,
+    },
+    {
+      isEmpty: isMarketCapEmpty,
+      populateDbProcessor: processMarketCap,
+      updateDbProcessor: updateMarketCap,
+    },
     {
       isEmpty: isPriceEmpty,
       populateDbProcessor: processTokenPrices,
@@ -151,5 +153,5 @@ export async function updateAnalytics() {
   // We want to run these in parallel because handlePopulateDb takes several hours
   // to run due to the sheer volume of data fetched, therefore we do not want the update
   // to get stuck behind it.
-  await Promise.all([handlePopulateDb(toUpdate)])
+  await Promise.all([handlePopulateDb(toUpdate), handleUpdateDb(toUpdate)])
 }

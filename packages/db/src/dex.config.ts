@@ -29,3 +29,5 @@ export const DEX_CONFIG = {
   }
 } satisfies Record<string, DexConfigEntry>;
 
+export type DexKey = keyof typeof DEX_CONFIG
+

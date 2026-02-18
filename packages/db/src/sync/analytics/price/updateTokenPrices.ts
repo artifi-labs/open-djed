@@ -17,12 +17,14 @@ import type {
 import {
   breakIntoDays,
   MS_PER_DAY,
+  processAnalyticsDataToInsert,
 } from "../../utils"
 import type { AllTokens } from "../../../../generated/prisma/enums"
 import { handleAnalyticsUpdates } from "../updateAnalytics"
 import { getLatestPriceTimestamp } from "../../../client/price"
-import { findOracleByTimestamp } from "../../../oracle"
-import { getDexsTokenPrices } from "./dexs/dexTokenPrice"
+import { getDexsTokenPrices, normalizeDexKey, type DexDjedAdaPriceFields } from "./dexs/dexTokenPrice"
+import { prisma } from "../../../../lib/prisma"
+import { DEX_CONFIG } from "../../../dex.config"
 
 /**
  * Assigns a millisecond-based weight to every UTxO by tracking the interval
@@ -216,25 +218,54 @@ export async function processTokenPrices(orderedTxOs: OrderedPoolOracleTxOs[]) {
 
   const dataToInsert: TokenPrice[] = []
 
-  const dexsPricesPerDay = await getDexsTokenPrices(dailyTxOs)
+  const dexsPricesPerDay = await getDexsTokenPrices()
 
-  /*for (const token of Object.keys(dailyTokenPrices) as AllTokens[]) {
+  for (const token of Object.keys(dailyTokenPrices) as AllTokens[]) {
     const tokenPrices = dailyTokenPrices[token]
 
     if (tokenPrices.length === 0) continue
 
-    const processed = processAnalyticsDataToInsert(tokenPrices)
+    const processed = processAnalyticsDataToInsert(tokenPrices).map((row) => {
+      const dayKey = new Date(row.timestamp).toISOString().slice(0, 10)
 
+      const dayEntry = dexsPricesPerDay.find(
+        (e) => new Date(e.day).toISOString().slice(0, 10) === dayKey
+      )
+
+      if (token !== "DJED") {
+        return row
+      }
+
+      const prices = dayEntry?.prices ?? []
+
+      const dexFields = Object.keys(DEX_CONFIG).reduce(
+        (acc, dexKey) => {
+          const price = prices.find(
+            (p) => normalizeDexKey(p.dex) === dexKey
+          )?.djedAda
+
+          acc[`${dexKey}DjedAdaPrice` as keyof DexDjedAdaPriceFields] =
+            Number(price ?? 0)
+
+          return acc
+        },
+        {} as DexDjedAdaPriceFields
+      )
+
+      return {
+        ...row,
+        ...dexFields,
+      }
+    })
     dataToInsert.push(...processed)
   }
 
-  logger.info(`Inserting ${dataToInsert.length} Token Prices into database...`)
-  await prisma.tokenPrice.createMany({
+  const result = await prisma.tokenPrice.createMany({
     data: dataToInsert,
     skipDuplicates: true,
-  })*/
+  })
   logger.info(
-    `Historic Token Prices sync complete. Inserted ${dataToInsert.length} Token Prices`,
+    `Historic Token Prices sync complete. Inserted ${result.count} Token Prices from a total of ${dataToInsert.length} to insert.`,
   )
 
   const end = Date.now() - start
