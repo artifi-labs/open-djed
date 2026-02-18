@@ -1,14 +1,12 @@
 import { DEX_CONFIG, type DexKey, type DexNetworkConfig } from "../../../../dex.config";
 import { logger } from "../../../../utils/logger";
 import { blockfrost, MS_PER_DAY, normalizeToDay } from "../../../utils";
-import type { AddressTransaction, AddressTransactionsResponse } from "@open-djed/blockfrost/src/types/address/addressTransaction";
+import type { AddressTransactionsResponse } from "@open-djed/blockfrost/src/types/address/addressTransaction";
 import path from "path"
 import JSONbig from "json-bigint"
 import fsPromises from "fs/promises"
 import type { TransactionUtxoAmount, TransactionUtxoOutput, TransactionUtxoResponse } from "@open-djed/blockfrost/src/types/transaction/transactionUtxo";
-import type { DailyUTxOs } from "../../../types";
-import { findOracleByTimestamp } from "../../../../oracle";
-import { adaDJEDRate, djedToUsdPrice, Rational } from "@open-djed/math";
+import {  Rational } from "@open-djed/math";
 import { calculateMedian } from "@open-djed/math/src/number";
 import { env } from "../../../../../lib/env";
 import type { Network } from "../../../../types/network";
@@ -35,10 +33,9 @@ export function aggegatedDexPricesPerDay(dexsPricesPerDay: DexPricesByDay[][]): 
 }
 
 export async function getDexsTokenPrices(): Promise<DexDailyPrices[]> {
-  const allDexPrices: DexPricesByDay[][] = []
   const network = env.NETWORK.toLowerCase() as Network
 
-  for (const dex of Object.values(DEX_CONFIG)) {
+  const dexPromises = Object.values(DEX_CONFIG).map(async (dex) => {
     const networkConfig = dex[network]
     const hasAddress = !!networkConfig.address
 
@@ -46,27 +43,24 @@ export async function getDexsTokenPrices(): Promise<DexDailyPrices[]> {
 
     if (!hasAddress) {
       logger.warn(`Skipping dex ${dex.displayName} because it has no valid address`)
-      continue
+      return null
     }
 
     const dexPrices = await getDexTokenPrices(dex.displayName, networkConfig)
     if (!dexPrices || dexPrices.length === 0) {
       logger.warn(`No prices found for dex ${dex.displayName}`)
-      continue
+      return null
     }
 
-    allDexPrices.push(dexPrices)
-  }
+    return dexPrices
+  })
+
+  const allDexPrices = (await Promise.all(dexPromises))
+    .filter((p): p is DexPricesByDay[] => p !== null)
 
   if (allDexPrices.length === 0) {
     return []
   }
-
-  allDexPrices.map(dayEntries => {
-      dayEntries.map(dayEntry => {
-        console.log(dayEntry)
-      })
-  })
 
   const aggregated = aggegatedDexPricesPerDay(allDexPrices)
 
@@ -177,13 +171,24 @@ export const normalizeDexKey = (dex: string): DexKey | null => {
     : null) as DexKey | null
 }
 
+function calculateDexPricesEntries(
+  dexPrices: DexPriceEntry[],
+  dexName: string,
+) {
+  const values = dexPrices
+    .filter(p => p.dex === dexName)
+    .map(p => Number(p.djedAda))
+
+  const djedAdaMedian = calculateMedian(
+    values
+  ) 
+
+  return { djedAda: djedAdaMedian }
+}
 
 export async function getDexTokenPrices(dexName: string, dexConfig: DexNetworkConfig) {
 
-  let dexTransactions: AddressTransactionsResponse = []
-
-  const tokenUtxos: TransactionUtxoResponse[] = []
-
+  let dexTransactions: AddressTransactionsResponse = [] // todo change this to const
   let dayEntries: DexPricesByDay[] = [] // todo change this to const
 
   if (!dexConfig.address) {
@@ -191,13 +196,12 @@ export async function getDexTokenPrices(dexName: string, dexConfig: DexNetworkCo
   }
 
   // Get all Transaction for the dex Address, sort by block_time
-  /*try { 
+  try { 
     dexTransactions = await blockfrost.getAddressTransactions(
       {
         address: dexConfig.address,
-        order: "desc",
       }
-    ).allPages({ maxPages: 30 }).retry() // TODO: REMOVE maxPages
+    ).allPages().retry()
   
     if (dexTransactions.length === 0) {
       logger.warn(`No transactions found for dex ${dexName} at address ${dexConfig.address}`)
@@ -209,33 +213,30 @@ export async function getDexTokenPrices(dexName: string, dexConfig: DexNetworkCo
   } catch (error) {
     logger.error(error, `Error fetching transactions for dex ${dexName}`)
     return []
-  }*/
+  }
 
   // TODO: REMOVE THIS
   //await writeAddressTxToFile(dexTransactions, `./dexTransactions${dexName}.json`)
 
-  dexTransactions = await readAddressTxFromFile(`./dexTransactions${dexName}.json`)
+  /*dexTransactions = await readAddressTxFromFile(`./dexTransactions${dexName}.json`)
   if (dexTransactions.length === 0) {
     logger.warn(`No transactions read from file for dex ${dexName}`)
     return []
   }
-  logger.info(`Read ${dexTransactions.length} transactions from file for dex ${dexName}`)
+  logger.info(`Read ${dexTransactions.length} transactions from file for dex ${dexName}`)*/
   
 
   // Get all UTXOS for the dex Address
   try {
     const concurrency = 5
     let index = 0
-    let stop = false
 
-    /*const workers = Array.from({ length: concurrency }, async () => {
-     // while (index == 0) { // TODO: CHANGE THIS BACK TO true
+    const workers = Array.from({ length: concurrency }, async () => {
       while (index < dexTransactions.length) {
-        if (stop) break
         const tx = dexTransactions[index++]
         if (!tx) break
 
-        const blockTimeInMs = tx.block_time * 1000
+        const blockTimeInMs = tx.block_time * MS_PER_DAY
 
         const transactionUtxos: TransactionUtxoResponse = await blockfrost.getTransactionUTxOs(
           { hash: tx.tx_hash }
@@ -284,9 +285,9 @@ export async function getDexTokenPrices(dexName: string, dexConfig: DexNetworkCo
     })
 
     await Promise.all(workers)
-    */
+
     // TODO: REMOVE THIS
-    dayEntries = await readDexPricesFromFile(`./dexPrices${dexName}.json`)
+    //dayEntries = await readDexPricesFromFile(`./dexPrices${dexName}.json`)
 
     dayEntries = dayEntries.map((dayEntry) => {
       const medianPrices = calculateDexPricesEntries(dayEntry.prices, dexName)
@@ -305,20 +306,6 @@ export async function getDexTokenPrices(dexName: string, dexConfig: DexNetworkCo
     return []
   }
 
-  function calculateDexPricesEntries(
-    dexPrices: DexPriceEntry[],
-    dexName: string,
-  ) {
-    const values = dexPrices
-      .filter(p => p.dex === dexName)
-      .map(p => Number(p.djedAda))
-
-    const djedAdaMedian = calculateMedian(
-      values
-    ) 
-
-    return { djedAda: djedAdaMedian }
-  }
   return dayEntries
 }
 
