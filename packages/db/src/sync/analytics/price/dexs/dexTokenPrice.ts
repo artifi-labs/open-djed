@@ -1,36 +1,15 @@
-import { DEX_CONFIG, type DexKey, type DexNetworkConfig } from "../../../../dex.config";
+import { DEX_CONFIG, type DexNetworkConfig } from "../../../../dex.config";
 import { logger } from "../../../../utils/logger";
 import { blockfrost, MS_PER_DAY, normalizeToDay } from "../../../utils";
 import type { AddressTransactionsResponse } from "@open-djed/blockfrost/src/types/address/addressTransaction";
-import path from "path"
-import JSONbig from "json-bigint"
-import fsPromises from "fs/promises"
 import type { TransactionUtxoAmount, TransactionUtxoOutput, TransactionUtxoResponse } from "@open-djed/blockfrost/src/types/transaction/transactionUtxo";
 import {  Rational } from "@open-djed/math";
 import { calculateMedian } from "@open-djed/math/src/number";
 import { env } from "../../../../../lib/env";
 import type { Network } from "../../../../types/network";
-
-const DJED_POLICY_ID_AND_NAME = "8db269c3ec630e06ae29f74bc39edd1f87c819f1056206e879a1cd61446a65644d6963726f555344"
-
-export function aggegatedDexPricesPerDay(dexsPricesPerDay: DexPricesByDay[][]): DexDailyPrices[] {
-  const aggregated: Record<string, DexPriceEntry[]> = {}
-  
-  dexsPricesPerDay.forEach(dexPrices => {
-    dexPrices.forEach(dayEntry => {
-      const dayKey = dayEntry.day.toISOString()
-      if (!aggregated[dayKey]) {
-        aggregated[dayKey] = []
-      }
-      aggregated[dayKey].push(...dayEntry.prices)
-    })
-  })
-
-  return Object.entries(aggregated).map(([day, prices]) => ({
-    day: new Date(day),
-    prices,
-  }))
-}
+import type { DexDailyPrices, DexPriceEntry } from "../../../../types/dex";
+import { aggegatedDexPricesPerDay } from "./utils";
+import { DJED_POLICY_ID_AND_NAME } from "./constants";
 
 export async function getDexsTokenPrices(): Promise<DexDailyPrices[]> {
   const network = env.NETWORK.toLowerCase() as Network
@@ -56,7 +35,7 @@ export async function getDexsTokenPrices(): Promise<DexDailyPrices[]> {
   })
 
   const allDexPrices = (await Promise.all(dexPromises))
-    .filter((p): p is DexPricesByDay[] => p !== null)
+    .filter((p): p is DexDailyPrices[] => p !== null)
 
   if (allDexPrices.length === 0) {
     return []
@@ -67,129 +46,10 @@ export async function getDexsTokenPrices(): Promise<DexDailyPrices[]> {
   return aggregated
 }
 
-// TODO: DELETE THIS
-export async function writeAddressTxToFile(
-  data: AddressTransactionsResponse,
-  filePath: string,
-): Promise<void> {
-  const absolutePath = path.resolve(filePath)
-
-  const json = JSONbig.stringify(data)
-
-  await fsPromises.writeFile(absolutePath, json, {
-    encoding: "utf-8",
-  })
-}
-
-// TODO: DELETE THIS
-export async function readAddressTxFromFile(
-  filePath: string,
-): Promise<AddressTransactionsResponse> {
-  const absolutePath = path.resolve(filePath)
-
-  const raw = await fsPromises.readFile(absolutePath, "utf-8")
-  const parsed = JSONbig.parse(raw) as AddressTransactionsResponse
-  return parsed
-}
-
-// TODO: DELETE THIS
-export async function writeUtxoFile(
-  data: TransactionUtxoResponse[],
-  filePath: string,
-): Promise<void> {
-  const absolutePath = path.resolve(filePath)
-
-  const json = JSONbig.stringify(data)
-
-  await fsPromises.writeFile(absolutePath, json, {
-    encoding: "utf-8",
-  })
-}
-
-// TODO: DELETE THIS
-export async function readUtxoFile(
-  filePath: string,
-): Promise<TransactionUtxoResponse[]> {
-  const absolutePath = path.resolve(filePath)
-
-  const raw = await fsPromises.readFile(absolutePath, "utf-8")
-  const parsed = JSONbig.parse(raw) as TransactionUtxoResponse[]
-  return parsed
-}
-
-export async function writeDexPricesToFile(
-  data: DexPricesByDay[],
-  filePath: string = "./dexPrices.json",
-): Promise<void> {
-  const absolutePath = path.resolve(filePath)
-  const json = JSONbig.stringify(data)
-  await fsPromises.writeFile(absolutePath, json, { encoding: "utf-8" })
-}
-
-export async function readDexPricesFromFile(
-  filePath: string = "./dexPrices.json",
-): Promise<DexPricesByDay[]> {
-  const absolutePath = path.resolve(filePath)
-  const raw = await fsPromises.readFile(absolutePath, "utf-8")
-  const parsed = JSONbig.parse(raw) as DexPricesByDay[]
-  return parsed.map(entry => ({
-    ...entry,
-    day: new Date(entry.day),
-  }))
-}
-
-type DexPriceEntry = {
-  dex: string
-  djedAda: number
-}
-
-type DexDailyPrice = {
-  dex: string
-  djedAda: number
-}
-
-type DexPricesByDay = {
-  day: Date
-  prices: DexPriceEntry[]
-}
-
-type DexDailyPrices = {
-  day: Date
-  prices: DexDailyPrice[]
-}
-
-
-export type DexDjedAdaPriceFields = {
-  [K in DexKey as `${K}DjedAdaPrice`]: number
-}
-
-export const normalizeDexKey = (dex: string): DexKey | null => {
-  const normalized = dex.toLowerCase()
-
-  return (normalized in DEX_CONFIG
-    ? normalized
-    : null) as DexKey | null
-}
-
-function calculateDexPricesEntries(
-  dexPrices: DexPriceEntry[],
-  dexName: string,
-) {
-  const values = dexPrices
-    .filter(p => p.dex === dexName)
-    .map(p => Number(p.djedAda))
-
-  const djedAdaMedian = calculateMedian(
-    values
-  ) 
-
-  return { djedAda: djedAdaMedian }
-}
-
 export async function getDexTokenPrices(dexName: string, dexConfig: DexNetworkConfig) {
 
   let dexTransactions: AddressTransactionsResponse = [] // todo change this to const
-  let dayEntries: DexPricesByDay[] = [] // todo change this to const
+  let dayEntries: DexDailyPrices[] = [] // todo change this to const
 
   if (!dexConfig.address) {
     throw new Error(`Missing address or poolId for dex ${dexName}`)
@@ -280,7 +140,7 @@ export async function getDexTokenPrices(dexName: string, dexConfig: DexNetworkCo
           djedAda: djedPriceInAda.toNumber(),
         })
 
-        await writeDexPricesToFile(dayEntries, `./dexPrices${dexName}.json`)
+        //await writeDexPricesToFile(dayEntries, `./dexPrices${dexName}.json`)
       }
     })
 
@@ -307,6 +167,21 @@ export async function getDexTokenPrices(dexName: string, dexConfig: DexNetworkCo
   }
 
   return dayEntries
+}
+
+function calculateDexPricesEntries(
+  dexPrices: DexPriceEntry[],
+  dexName: string,
+) {
+  const values = dexPrices
+    .filter(p => p.dex === dexName)
+    .map(p => Number(p.djedAda))
+
+  const djedAdaMedian = calculateMedian(
+    values
+  ) 
+
+  return { djedAda: djedAdaMedian }
 }
 
 function selectPoolOutput(
