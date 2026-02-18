@@ -95,9 +95,7 @@ model TokenPrice {
 model ADAStakingRewards {
   id             Int      @id @default(autoincrement())
   epoch          Int      @unique
-  startTimestamp DateTime @unique @db.Date
-  endTimestamp   DateTime @unique @db.Date
+  startTimestamp DateTime
+  endTimestamp   DateTime
   rate           Decimal // Staking rewards rate by epoch
-  block          String
-  slot           BigInt
 }
