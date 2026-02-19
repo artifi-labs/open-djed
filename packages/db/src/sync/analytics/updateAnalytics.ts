@@ -19,6 +19,7 @@ import {
   updateReserveRatios,
 } from "./reserveRatio/reserveRatio"
 import { rollbackReserveRatios } from "./reserveRatio/rollbackReserveRatios"
+import { rollbackVolumes } from "./volume/rollbackVolumes"
 import { handleInitialVolumeDbPopulation, updateVolumes } from "./volume/volume"
 
 type DbProcessor = {
@@ -32,6 +33,7 @@ async function handleRollbacks() {
     rollbackReserveRatios(),
     rollbackMarketCap(),
     rollbackTokenPrices(),
+    rollbackVolumes(),
   ])
 }
 

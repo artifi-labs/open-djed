@@ -37,7 +37,9 @@ export const getPeriodVolume = async (period: Period) => {
 
 export const getLatestVolume = async (validBlock = false) => {
   return prisma.volume.findFirst({
-    where: validBlock ? { block: { not: null } } : undefined,
+    where: validBlock
+      ? { block: { not: null }, slot: { not: null } }
+      : undefined,
     orderBy: {
       timestamp: "desc",
     },
