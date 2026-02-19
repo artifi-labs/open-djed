@@ -19,10 +19,6 @@ import {
   updateReserveRatios,
 } from "./reserveRatio/reserveRatio"
 import { rollbackReserveRatios } from "./reserveRatio/rollbackReserveRatios"
-import {
-  processStakingRewards,
-  updateStakingRewards,
-} from "./shenYield/stakingRewards/stakingRewards"
 import { rollbackStakingRewards } from "./shenYield/stakingRewards/rollbackStakingRewards"
 
 type DbProcessor = {
@@ -134,7 +130,6 @@ export async function updateAnalytics() {
   const isReserveRatioEmpty = (await prisma.reserveRatio.count()) === 0
   const isMarketCapEmpty = (await prisma.marketCap.count()) === 0
   const isPriceEmpty = (await prisma.tokenPrice.count()) === 0
-  const isStakingRewardsEmpty = (await prisma.aDAStakingRewards.count()) === 0
 
   const toUpdate: DbProcessor[] = [
     {
@@ -151,11 +146,6 @@ export async function updateAnalytics() {
       isEmpty: isPriceEmpty,
       populateDbProcessor: processTokenPrices,
       updateDbProcessor: updateTokenPrices,
-    },
-    {
-      isEmpty: isStakingRewardsEmpty,
-      populateDbProcessor: processStakingRewards,
-      updateDbProcessor: updateStakingRewards,
     },
   ]
 
