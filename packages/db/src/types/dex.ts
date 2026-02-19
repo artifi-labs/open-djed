@@ -2,9 +2,16 @@ import type { DEX_CONFIG } from "../dex.config"
 
 export type Dex = "minswap" | "wingriders"
 
+export type PoolLiquidity = {
+  djedLiquidity: bigint
+  adaLiquidity: bigint
+}
+
 export type DexPriceEntry = {
   dex: DexName
   djedAda: number
+  djedUsd: number
+  poolLiquidity?: PoolLiquidity
 }
 
 export type DexDailyPrices = {

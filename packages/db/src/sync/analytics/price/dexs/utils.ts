@@ -40,6 +40,21 @@ export async function readDexPricesFromFile(
   }))
 }
 
+// TODO: Delete THIS
+export async function writeAddressTxToFile(
+  data: AddressTransactionsResponse,
+  filePath: string,
+): Promise<void> {
+  const absolutePath = path.resolve(filePath)
+
+  const json = JSONbig.stringify(data)
+
+  await fsPromises.writeFile(absolutePath, json, {
+    encoding: "utf-8",
+  })
+}
+
+// TODO: Delete THIS
 export async function readAddressTxFromFile(
   filePath: string,
 ): Promise<AddressTransactionsResponse> {

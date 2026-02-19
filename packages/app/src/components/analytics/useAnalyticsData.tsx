@@ -34,10 +34,14 @@ export type TokenPriceChartEntry = {
   timestamp: string
   adaValue: number
   usdValue: number
-  token: Exclude<Token, "DJED">
+  token: Token
+  minswapDjedAdaPrice?: number
+  minswapDjedUsdPrice?: number
+  wingridersDjedAdaPrice?: number
+  wingridersDjedUsdPrice?: number
 }
 export type TokenPriceByToken = Record<
-  Exclude<Token, "DJED">,
+  Token,
   TokenPriceChartEntry[]
 >
 
@@ -110,11 +114,23 @@ export function useAnalyticsData() {
     useState<TokenPriceByToken>({
       ADA: [],
       SHEN: [],
+      DJED: [], // TODO: CHANGE THIS
     })
   const [shenAdaPricePeriod, setShenAdaPricePeriod] = useState<ChartPeriod>(
     CHART_PERIOD_OPTIONS[1],
   )
   const [shenAdaCurrency, setShenAdaCurrency] = useState<Currency>(
+    CURRENCY_OPTIONS[0],
+  )
+
+  const [djedPriceHistoricalData, setDjedPriceHistoricalData] = useState<
+    TokenPriceChartEntry[]
+  >([])
+
+  const [djedPricePeriod, setDjedPricePeriod] = useState<ChartPeriod>(
+    CHART_PERIOD_OPTIONS[1],
+  )
+  const [djedPriceCurrency, setDjedPriceCurrency] = useState<Currency>(
     CURRENCY_OPTIONS[0],
   )
 
@@ -176,44 +192,44 @@ export function useAnalyticsData() {
           query: { period: period.value, token: token },
         })
 
-        if (res.ok) {
-          const historicalData = (await res.json()) as ShenMChartEntry[]
+        if (!res.ok) return
+          
+        const historicalData = (await res.json()) as ShenMChartEntry[]
 
-          if (period.value === "All") historicalData.shift()
+        if (period.value === "All") historicalData.shift()
 
-          const dataToSave = historicalData.map((entry) => ({
-            ...entry,
-            usdValue: (Number(entry.usdValue) / 1e6).toString(),
-            adaValue: (Number(entry.adaValue) / 1e6).toString(),
-          }))
+        const dataToSave = historicalData.map((entry) => ({
+          ...entry,
+          usdValue: (Number(entry.usdValue) / 1e6).toString(),
+          adaValue: (Number(entry.adaValue) / 1e6).toString(),
+        }))
 
-          if (!isLoading) {
-            const todayKey = new Date().toISOString()
-            dataToSave.push({
-              id: -1,
-              timestamp: todayKey,
-              adaValue: (
-                Number(
-                  token === "DJED"
-                    ? data?.protocolData.DJED.marketCap.ADA
-                    : data?.protocolData.SHEN.marketCap.ADA,
-                ) / 1e6
-              ).toString(),
-              usdValue: (
-                Number(
-                  token === "DJED"
-                    ? data?.protocolData.DJED.marketCap.USD
-                    : data?.protocolData.SHEN.marketCap.USD,
-                ) / 1e6
-              ).toString(),
-            })
-          }
+        if (!isLoading) {
+          const todayKey = new Date().toISOString()
+          dataToSave.push({
+            id: -1,
+            timestamp: todayKey,
+            adaValue: (
+              Number(
+                token === "DJED"
+                  ? data?.protocolData.DJED.marketCap.ADA
+                  : data?.protocolData.SHEN.marketCap.ADA,
+              ) / 1e6
+            ).toString(),
+            usdValue: (
+              Number(
+                token === "DJED"
+                  ? data?.protocolData.DJED.marketCap.USD
+                  : data?.protocolData.SHEN.marketCap.USD,
+              ) / 1e6
+            ).toString(),
+          })
+        }
 
-          if (token === "DJED") {
-            setDjedMCHistoricalData(dataToSave)
-          } else if (token === "SHEN") {
-            setShenMCHistoricalData(dataToSave)
-          }
+        if (token === "DJED") {
+          setDjedMCHistoricalData(dataToSave)
+        } else if (token === "SHEN") {
+          setShenMCHistoricalData(dataToSave)
         }
       } catch (err) {
         console.error("Action failed:", err)
@@ -234,21 +250,17 @@ export function useAnalyticsData() {
     [data],
   )
 
-  const fetchShenAdaPriceHistoricalData = useCallback(
-    async (period: ChartPeriod) => {
+  const fetchTokenHistoricalData = useCallback(
+    async (period: ChartPeriod, token?: Token[]) => {
       try {
         const res = await client.api["historical-shen-ada-price"].$get({
-          query: { period: period.value },
+          query: { period: period.value, token: token },
         })
 
         if (!res.ok) return
 
         const historicalData = (await res.json()) as TokenPriceByToken
-        if (period.value === "All") {
-          historicalData.ADA.shift()
-          historicalData.SHEN.shift()
-        }
-
+        
         if (!isLoading && data) {
           const todayKey = new Date().toISOString()
           historicalData.ADA.push({
@@ -275,20 +287,9 @@ export function useAnalyticsData() {
           })
         }
 
-        historicalData.ADA = historicalData.ADA.map((entry) => ({
-          ...entry,
-          adaValue: Number(entry.adaValue),
-          usdValue: Number(entry.usdValue),
-        }))
-        historicalData.SHEN = historicalData.SHEN.map((entry) => ({
-          ...entry,
-          adaValue: Number(entry.adaValue),
-          usdValue: Number(entry.usdValue),
-        }))
-        setShenAdaHistoricalData(historicalData)
-      } catch (err) {
-        console.error("Action failed:", err)
+        return historicalData
 
+      } catch (err) {
         if (err instanceof AppError) {
           showToast({
             message: err.message,
@@ -325,10 +326,24 @@ export function useAnalyticsData() {
   }, [shenMCPeriod, data])
 
   useEffect(() => {
-    fetchShenAdaPriceHistoricalData(shenAdaPricePeriod).catch((err) => {
-      console.error("fetchShenAdaPrice error:", err)
+    fetchTokenHistoricalData(shenAdaPricePeriod, ["SHEN", "ADA"]).then((data) => {
+      if (!data) return
+
+      setShenAdaHistoricalData(data)
+    }).catch((err) => {
+      console.error("fetchAdaPrice error:", err)
     })
   }, [shenAdaPricePeriod, shenAdaCurrency, data])
+
+  useEffect(() => {
+    fetchTokenHistoricalData(shenAdaPricePeriod, ["DJED"]).then((data) => {
+      if (!data) return
+
+      setDjedPriceHistoricalData(data.DJED)
+    }).catch((err) => {
+      console.error("fetchDjedPrice error:", err)
+    })
+  }, [djedPricePeriod, djedPriceCurrency, data])
 
   return {
     reserveRatioData,
@@ -349,6 +364,11 @@ export function useAnalyticsData() {
     setShenAdaPricePeriod,
     shenAdaCurrency,
     setShenAdaCurrency,
+    djedPriceHistoricalData,
+    djedPricePeriod,
+    setDjedPricePeriod,
+    djedPriceCurrency,
+    setDjedPriceCurrency,
     isLoadingReserve,
   }
 }

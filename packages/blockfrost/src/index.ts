@@ -36,15 +36,18 @@ type PaginationOptions = {
   maxPages?: number
 }
 
+type FilterCondition<T> = (item: T) => boolean
+
 class BlockfrostRequest<T> implements PromiseLike<T> {
   private retryTimes = 0
   private retryDelay = 10_000
   private fetchPages = false
   private paginationOptions: PaginationOptions = {}
+  private filters: FilterCondition<T extends Array<infer U> ? U : never>[] = []
 
   constructor(
     private readonly executeSingle: (opts: RetryOptions) => Promise<T>,
-    private readonly executePages?: (opts: RetryOptions, pagination: PaginationOptions) => Promise<T>,
+    private readonly executePages?: (opts: RetryOptions, pagination: PaginationOptions, itemFilter?: (item: T extends Array<infer U> ? U : never) => boolean) => Promise<T>,
   ) {}
 
   retry(times = 5, delayMs = 10_000): this {
@@ -60,14 +63,30 @@ class BlockfrostRequest<T> implements PromiseLike<T> {
     return this
   }
 
+  filter(condition: FilterCondition<T extends Array<infer U> ? U : never>): this {
+    this.filters.push(condition)
+    return this
+  }
+
+  private buildItemFilter(): ((item: T extends Array<infer U> ? U : never) => boolean) | undefined {
+    if (this.filters.length === 0) return undefined
+
+    return (item) => {
+      return this.filters.every(f => f(item))
+    }
+  }
+
   then<R1 = T, R2 = never>(
     onfulfilled?: ((value: T) => R1 | PromiseLike<R1>) | null,
     onrejected?: ((reason: unknown) => R2 | PromiseLike<R2>) | null,
   ): Promise<R1 | R2> {
     const opts: RetryOptions = { retry: this.retryTimes, retryDelayMs: this.retryDelay }
+    const itemFilter = this.buildItemFilter()
+
     const promise = this.fetchPages && this.executePages
-      ? this.executePages(opts, this.paginationOptions)
+      ? this.executePages(opts, this.paginationOptions, itemFilter)
       : this.executeSingle(opts)
+
     return promise.then(onfulfilled, onrejected)
   }
 }
@@ -110,6 +129,7 @@ export class Blockfrost extends Lucid.Blockfrost {
     endpoint: string,
     retryOptions?: RetryOptions,
     pagination: PaginationOptions = {},
+    itemFilter?: (item: T) => boolean,
   ): Promise<T[]> {
     const { count = 100, maxPages = Infinity } = pagination
     const results: T[] = []
@@ -121,7 +141,6 @@ export class Blockfrost extends Lucid.Blockfrost {
 
       let pageResult: T[]
       try {
-        console.log(url)
         pageResult = await this.request<T[]>(url, {}, retryOptions)
       } catch (err) {
         logger.error(`Error fetching page ${page} from ${endpoint}: ${err}`)
@@ -129,7 +148,13 @@ export class Blockfrost extends Lucid.Blockfrost {
       }
 
       if (!Array.isArray(pageResult) || pageResult.length === 0) break
-      results.push(...pageResult)
+
+      if (itemFilter) {
+        results.push(...pageResult.filter(itemFilter))
+      } else {
+        results.push(...pageResult)
+      }
+
       if (page >= maxPages) break
       page++
     }
@@ -150,7 +175,7 @@ export class Blockfrost extends Lucid.Blockfrost {
 
     return new BlockfrostRequest<AddressTransactionsResponse>(
       (opts) => this.request<AddressTransactionsResponse>(url, {}, opts),
-      (opts, pagination) => this.fetchAllPages<AddressTransactionsResponse[number]>(url, opts, pagination) as Promise<AddressTransactionsResponse>,
+      (opts, pagination, filter) => this.fetchAllPages<AddressTransactionsResponse[number]>(url, opts, pagination, filter) as Promise<AddressTransactionsResponse>,
     )
   }
 
@@ -165,7 +190,7 @@ export class Blockfrost extends Lucid.Blockfrost {
 
     return new BlockfrostRequest<AssetTransactionsResponse>(
       (opts) => this.request<AssetTransactionsResponse>(url, {}, opts),
-      (opts, pagination) => this.fetchAllPages<AssetTransactionsResponse[number]>(url, opts, pagination) as Promise<AssetTransactionsResponse>,
+      (opts, pagination, filter) => this.fetchAllPages<AssetTransactionsResponse[number]>(url, opts, pagination, filter) as Promise<AssetTransactionsResponse>,
     )
   }
 

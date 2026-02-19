@@ -11,6 +11,7 @@ import {
   CURRENCY_OPTIONS,
 } from "./useAnalyticsData"
 import { ShenMarketCapChart } from "./charts/ShenMarketCapChart"
+import { DjedPriceChart } from "./charts/DjedPriceChart"
 
 const Analytics = () => {
   const {
@@ -32,6 +33,11 @@ const Analytics = () => {
     setShenMCCurrency,
     setShenMCPeriod,
     shenMCHistoricalData,
+    djedPriceHistoricalData,
+    djedPricePeriod,
+    setDjedPricePeriod,
+    djedPriceCurrency,
+    setDjedPriceCurrency,
   } = useAnalyticsData()
   const { reserveRatio, reserveBounds, percentage, reserveChartWarning } =
     useReserveDetails()
@@ -126,6 +132,23 @@ const Analytics = () => {
         </ChartCard>
 
         {/* <ChartCard title="SHEN Yield"></ChartCard> */}
+      </div>
+
+      <div className="desktop:gap-24 grid grid-cols-1 gap-16">
+        <ChartCard
+          period={djedPricePeriod}
+          periodItems={[...CHART_PERIOD_OPTIONS]}
+          onPeriodChange={setDjedPricePeriod}
+          currency={djedPriceCurrency}
+          onCurrencyChange={setDjedPriceCurrency}
+          currencyItems={[...CURRENCY_OPTIONS]}
+          title="DJED Price vs Secondary Markets"
+        >
+          <DjedPriceChart
+            data={djedPriceHistoricalData}
+            currency={djedPriceCurrency}
+          />
+        </ChartCard>
       </div>
 
       {/* <div className="desktop:gap-24 grid grid-cols-1 gap-16">

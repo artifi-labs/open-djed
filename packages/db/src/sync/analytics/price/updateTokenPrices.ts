@@ -211,7 +211,7 @@ export const getTimeWeightedDailyTokenPrices = (
   return dailyTokenPrices
 }
 
-export async function processTokenPrices(orderedTxOs: OrderedPoolOracleTxOs[]) {
+export async function processTokenPrices(orderedTxOs: OrderedPoolOracleTxOs[], latestPriceTimestamp?: Date) {
   const start = Date.now()
   logger.info(`=== Processing Token Prices ===`)
   const dailyTxOs = breakIntoDays(orderedTxOs)
@@ -220,7 +220,7 @@ export async function processTokenPrices(orderedTxOs: OrderedPoolOracleTxOs[]) {
 
   const dataToInsert: TokenPrice[] = []
 
-  const dexsPricesPerDay = await getDexsTokenPrices()
+  const dexsPricesPerDay = await getDexsTokenPrices(dailyTxOs, latestPriceTimestamp)
 
   for (const token of Object.keys(dailyTokenPrices) as AllTokens[]) {
     const tokenPrices = dailyTokenPrices[token]
@@ -242,12 +242,19 @@ export async function processTokenPrices(orderedTxOs: OrderedPoolOracleTxOs[]) {
 
       const dexFields = Object.keys(DEX_CONFIG).reduce(
         (acc, dexKey) => {
-          const price = prices.find(
+          const djedAdaPrice = prices.find(
             (p) => normalizeDexKey(p.dex) === normalizeDexKey(dexKey)
           )?.djedAda
 
+          const djedUsdPrice = prices.find(
+            (p) => normalizeDexKey(p.dex) === normalizeDexKey(dexKey)
+          )?.djedUsd
+
           acc[`${dexKey}DjedAdaPrice` as keyof DexDjedAdaPriceFields] =
-            Number(price ?? 0)
+            Number(djedAdaPrice ?? 0)
+
+          acc[`${dexKey}DjedUsdPrice` as keyof DexDjedAdaPriceFields] =
+            Number(djedUsdPrice ?? 0)
 
           return acc
         },
@@ -261,6 +268,10 @@ export async function processTokenPrices(orderedTxOs: OrderedPoolOracleTxOs[]) {
     })
     dataToInsert.push(...processed)
   }
+
+  /*dexsPricesPerDay.forEach((dayEntry) => {
+    logger.info(dayEntry)
+  })*/
 
   const result = await prisma.tokenPrice.createMany({
     data: dataToInsert,
@@ -281,6 +292,10 @@ export async function updateTokenPrices() {
   logger.info(`=== Updating Token Prices ===`)
   const latestPrice = await getLatestPriceTimestamp()
   if (!latestPrice._max.timestamp) return
+  /*const testDateMs = Date.now() - 2 * 24 * 60 * 60 * 1000
+  const testDate = new Date(testDateMs)
+  console.log(testDate)
+  console.log("Latest price timestamp:", latestPrice._max.timestamp)*/
   await handleAnalyticsUpdates(latestPrice._max.timestamp, processTokenPrices)
   const end = Date.now() - start
   logger.info(
