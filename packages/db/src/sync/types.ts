@@ -5,6 +5,7 @@ import type {
   Token,
   TokenMarketCap,
 } from "../../generated/prisma/enums"
+import type { Rational } from "@open-djed/math"
 
 export type Transaction = {
   tx_hash: string
@@ -314,3 +315,44 @@ export type DailyTokenPriceUTxOsWithWeights = Omit<DailyUTxOs, "entries"> & {
 
 export type Tokens = "DJED" | "SHEN" | "ADA"
 export type Period = "D" | "W" | "M" | "Y" | "All"
+
+export type UnprocessedVolumeData = {
+  orderDatum: null | OrderDatum
+  poolDatum: null | PoolDatum
+  orderOutput: Output[] | null
+  timestamp: string
+  block: string
+  slot: number
+}
+
+export type OrderVolume = {
+  timestamp: string
+  poolDatum: PoolDatum | null
+  block: string
+  slot: number
+  orderOutput: Output[] | null
+  action: Actions
+  token: "DJED" | "SHEN"
+  amount: bigint
+  adaUsdRate: Rational
+}
+
+export type Volume = {
+  timestamp: string
+  djedMintedUSD: number
+  djedBurnedUSD: number
+  shenMintedUSD: number
+  shenBurnedUSD: number
+  djedMintedADA: number
+  djedBurnedADA: number
+  shenMintedADA: number
+  shenBurnedADA: number
+  totalDjedVolumeUSD: number
+  totalShenVolumeUSD: number
+  totalDjedVolumeADA: number
+  totalShenVolumeADA: number
+  totalVolumeUSD: number
+  totalVolumeADA: number
+  block?: string
+  slot?: bigint
+}

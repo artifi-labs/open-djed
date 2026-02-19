@@ -206,7 +206,10 @@
   --color-supportive-3-975: #010809;
   --color-supportive-3-1000: #000000;
 
+  --color-supportive-4-300: #d77edd;
   --color-supportive-4-400: #c953d2;
+
+  --color-supportive-5-300: #ee6ca7;
 
   /* Color Tokens */
   --color-primary: var(--color-offwhite);

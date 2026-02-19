@@ -833,3 +833,32 @@ export async function readOrderedTxOsFromFile(
 
   return parsed.map(normalizeOrderedTxO)
 }
+
+/**
+ * Fetches transactions from the order address using the `/addresses/{address}/transactions` endpoint.
+ * It will also handle pagination.
+ * @param fromBlock The block number to start fetching transactions from.
+ * @returns An array of transaction hashes.
+ */
+export async function fetchTransactionsFromAddress(
+  fromBlock: number,
+): Promise<Transaction[]> {
+  const transactions: Transaction[] = []
+  let page = 1
+  while (true) {
+    const pageResult = (await blockfrostFetch(
+      `/addresses/${registry.orderAddress}/transactions?page=${page}&count=100&from=${fromBlock}`,
+    )) as Transaction[]
+
+    if (!Array.isArray(pageResult) || pageResult.length === 0) break
+
+    transactions.push(...pageResult)
+    page++
+
+    await sleep(50)
+  }
+  logger.info(
+    `Found ${transactions.length} new transactions at the order address`,
+  )
+  return transactions
+}
