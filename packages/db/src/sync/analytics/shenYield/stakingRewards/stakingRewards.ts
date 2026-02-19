@@ -24,10 +24,12 @@ export async function processStakingRewards() {
     `/accounts/${registry.stakeAddress}/history`,
   )
 
-  const stakeByEpoch = new Map<number, bigint>()
-  for (const h of accountHistory) {
-    stakeByEpoch.set(h.active_epoch, BigInt(h.amount))
-  }
+  const stakeByEpoch = new Map(
+    accountHistory.map(({ active_epoch, amount }) => [
+      active_epoch,
+      BigInt(amount),
+    ]),
+  )
 
   const dataToInsert: ADAStakingRewards[] = []
 
@@ -35,7 +37,7 @@ export async function processStakingRewards() {
     const activeStake = stakeByEpoch.get(rewards.epoch)
     if (!activeStake || activeStake === 0n) continue
 
-    const rate = (Number(BigInt(rewards.amount)) / Number(activeStake)) * 100
+    const rate = (Number(rewards.amount) / Number(activeStake)) * 100
 
     const epochInfo = (await blockfrostFetch(`/epochs/${rewards.epoch}`)) as {
       start_time: number
