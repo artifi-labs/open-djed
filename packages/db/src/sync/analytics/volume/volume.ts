@@ -11,8 +11,10 @@ import type {
 import {
   blockfrost,
   blockfrostFetch,
+  fetchTransactionsFromAddress,
   getEveryResultFromPaginatedEndpoint,
   network,
+  processAnalyticsDataToInsert,
   processBatch,
   registry,
 } from "../../utils"
@@ -25,6 +27,7 @@ import {
 } from "@open-djed/math"
 import type { Actions, AllTokens } from "../../../../generated/prisma/enums"
 import { prisma } from "../../../../lib/prisma"
+import { getLatestVolume } from "../../../client/volume"
 
 const createZeroVolumeDay = (timestamp: string) => ({
   timestamp,
@@ -323,17 +326,14 @@ const processVolumeData = (volumeData: UnprocessedVolumeData[]) => {
         oracleFields: { adaUSDExchangeRate: tx.adaUsdRate },
       }).toNumber()
 
-      const ada = (Number(tx.amount) * rate) / 1e6
-      const usd = Number(tx.amount) / 1e6
-
       txVolumesByDay[date].push({
         block: tx.block,
         slot: tx.slot,
         timestamp: tx.timestamp,
         action: tx.action,
         token: tx.token,
-        usd,
-        ada,
+        usd: Number(tx.amount) / 1e6,
+        ada: (Number(tx.amount) * rate) / 1e6,
       })
 
       continue
@@ -445,13 +445,15 @@ const processVolumes = async (txs: Transaction[]) => {
     return
   }
 
-  logger.info(`Inserting ${processedVolumes.length} Volumes into database...`)
+  const dataToInsert = processAnalyticsDataToInsert(processedVolumes)
+
+  logger.info(`Inserting ${dataToInsert.length} Volumes into database...`)
   await prisma.volume.createMany({
-    data: processedVolumes,
+    data: dataToInsert,
     skipDuplicates: true,
   })
   logger.info(
-    `Historic Volumes sync complete. Inserted ${processedVolumes.length} Volumes`,
+    `Historic Volumes sync complete. Inserted ${dataToInsert.length} Volumes`,
   )
   const end = Date.now() - start
   logger.info(`=== Processing Volumes took sec: ${(end / 1000).toFixed(2)} ===`)
@@ -467,4 +469,43 @@ export async function handleInitialVolumeDbPopulation() {
   }
 
   await processVolumes(everyOrderTx)
+}
+
+export async function updateVolumes() {
+  const start = Date.now()
+  logger.info(`=== Updating Volumes ===`)
+
+  const latestVolume = await getLatestVolume()
+  if (!latestVolume) return
+
+  const yesterday = new Date()
+  yesterday.setDate(yesterday.getDate() - 1)
+  const yesterdayStr = yesterday.toISOString().split("T")[0]
+  if (!yesterdayStr) return
+  const timestampStr = latestVolume.timestamp.toISOString().split("T")[0]
+  if (!timestampStr) return
+
+  if (timestampStr >= yesterdayStr) {
+    // return if latest was less than 24h ago
+    logger.info(`=== Latest Volumes is less than 24h old, skipping update ===`)
+    return
+  }
+
+  const syncedBlock = (await blockfrostFetch(
+    `/blocks/${latestVolume.block}`,
+  )) as {
+    height: number
+  }
+  const txs = (await fetchTransactionsFromAddress(
+    syncedBlock.height,
+  )) as Transaction[]
+  if (txs.length === 0) {
+    logger.info("No new Volumes transactions since last sync")
+    return
+  }
+
+  await processVolumes(txs)
+
+  const end = Date.now() - start
+  logger.info(`=== Updating Volumes took sec: ${(end / 1000).toFixed(2)} ===`)
 }

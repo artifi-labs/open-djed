@@ -19,6 +19,7 @@ import {
   updateReserveRatios,
 } from "./reserveRatio/reserveRatio"
 import { rollbackReserveRatios } from "./reserveRatio/rollbackReserveRatios"
+import { handleInitialVolumeDbPopulation, updateVolumes } from "./volume/volume"
 
 type DbProcessor = {
   isEmpty: boolean
@@ -128,6 +129,7 @@ export async function updateAnalytics() {
   const isReserveRatioEmpty = (await prisma.reserveRatio.count()) === 0
   const isMarketCapEmpty = (await prisma.marketCap.count()) === 0
   const isPriceEmpty = (await prisma.tokenPrice.count()) === 0
+  const isVolumesEmpty = (await prisma.volume.count()) === 0
 
   const toUpdate: DbProcessor[] = [
     {
@@ -144,6 +146,11 @@ export async function updateAnalytics() {
       isEmpty: isPriceEmpty,
       populateDbProcessor: processTokenPrices,
       updateDbProcessor: updateTokenPrices,
+    },
+    {
+      isEmpty: isVolumesEmpty,
+      populateDbProcessor: handleInitialVolumeDbPopulation,
+      updateDbProcessor: updateVolumes,
     },
   ]
 
