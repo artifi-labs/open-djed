@@ -56,7 +56,7 @@ export const ShenAdaPriceChart: React.FC<ShenAdaPriceChartProps> = ({
   const yTickFormatter = (value: number | string) =>
     currency.value === "USD"
       ? `$${Number(value).toFixed(2)}`
-      : Number(value).toFixed(4)
+      : `₳${Number(value).toFixed(4)}`
 
   const lines =
     currency.value === "USD"

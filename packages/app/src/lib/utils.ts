@@ -371,3 +371,13 @@ export function getAnalyticsTimeInterval(totalDays: number, isMobile: boolean) {
 
   return newInterval
 }
+
+export const formatAxisValue = (val: number) => {
+  if (val === 0) return val
+  const abs = Math.abs(val)
+  if (abs < 1) return val.toFixed(3)
+  if (abs < 1_000) return Math.round(val).toString()
+  if (abs < 1_000_000) return `${(val / 1_000).toFixed(1)}k`
+  if (abs < 1_000_000_000) return `${(val / 1_000_000).toFixed(1)}M`
+  return `${(val / 1_000_000_000).toFixed(1)}B`
+}

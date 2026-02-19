@@ -4,6 +4,7 @@ import React, { useMemo } from "react"
 import { FinancialAreaChart } from "@/components/charts/FinancialAreaChart"
 import { useViewport } from "@/hooks/useViewport"
 import type { Currency, VolumeChartEntry } from "../useAnalyticsData"
+import { formatAxisValue } from "@/lib/utils"
 
 type VolumeChartProps = {
   title?: string
@@ -36,15 +37,6 @@ const VolumeChart: React.FC<VolumeChartProps> = ({ data, currency }) => {
       })),
     }
   }, [data, isUSD, isMobile])
-
-  const formatAxisValue = (val: number) => {
-    const abs = Math.abs(val)
-    if (abs < 1) return val.toFixed(3)
-    if (abs < 1_000) return Math.round(val).toString()
-    if (abs < 1_000_000) return `${(val / 1_000).toFixed(1)}k`
-    if (abs < 1_000_000_000) return `${(val / 1_000_000).toFixed(1)}M`
-    return `${(val / 1_000_000_000).toFixed(1)}B`
-  }
 
   const yTickFormatter = (value: number | string) =>
     currency.value === "USD"
