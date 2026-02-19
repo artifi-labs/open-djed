@@ -8,22 +8,20 @@ import {
 import {
   blockfrostFetch,
   getEveryResultFromPaginatedEndpoint,
+  registry,
 } from "../../../utils"
 import { handleAnalyticsUpdates } from "../../updateAnalytics"
 import { getLatestStakingReward } from "../../../../client/stakingRewards"
-
-const STAKE_ADDRESS =
-  "stake1uyd6tfxa3sae586zjvll7qjx8ywj9x8l3dddgc8dkc0tshssd5g6e"
 
 export async function processStakingRewards() {
   const start = Date.now()
   logger.info("=== Processing ADA staking rewards ===")
 
   const accountRewards = await getEveryResultFromPaginatedEndpoint<Rewards>(
-    `/accounts/${STAKE_ADDRESS}/rewards`,
+    `/accounts/${registry.stakeAddress}/rewards`,
   )
   const accountHistory = await getEveryResultFromPaginatedEndpoint<History>(
-    `/accounts/${STAKE_ADDRESS}/history`,
+    `/accounts/${registry.stakeAddress}/history`,
   )
 
   const stakeByEpoch = new Map<number, bigint>()
