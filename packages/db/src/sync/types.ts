@@ -246,6 +246,8 @@ export type TokenPrice = {
   timestamp: Date
   usdValue: number
   adaValue: number
+  minswapDjedAdaPrice?: number
+  wingridersDjedAdaPrice?: number
   block: string
   slot: number
   token: AllTokens

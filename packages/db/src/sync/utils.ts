@@ -46,6 +46,14 @@ export const registry = registryByNetwork[network]
 
 export const SAFETY_MARGIN = 50 // updates database 50 slots behind the tip of the blockchain
 
+export function normalizeToDay(date: Date): Date {
+  if (Number.isNaN(date.getTime())) {
+    throw new Error("Invalid timestamp format")
+  }
+
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate())
+}
+
 export const sleep = (ms: number) =>
   new Promise((resolve) => setTimeout(resolve, ms))
 

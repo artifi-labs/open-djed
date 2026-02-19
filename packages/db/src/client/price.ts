@@ -20,6 +20,10 @@ export const getPeriodPricesForAllTokens = async (
       token: true,
       usdValue: true,
       adaValue: true,
+      minswapDjedAdaPrice: true,
+      minswapDjedUsdPrice: true,
+      wingridersDjedAdaPrice: true,
+      wingridersDjedUsdPrice: true,
     },
     orderBy: [{ token: "asc" }, { timestamp: "asc" }],
   })

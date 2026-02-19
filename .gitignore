@@ -17,3 +17,5 @@ dist
 !.env.test
 
 .vscode
+
+.DS_Store

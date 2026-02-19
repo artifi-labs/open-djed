@@ -64,3 +64,7 @@ export const toAdaUsdExchangeRate = (adaUsd: number): RationalFields => ({
   numerator: BigInt(Math.round(adaUsd * 1_000_000)),
   denominator: 1_000_000n,
 })
+
+export const djedToUsdPrice = (poolRatio: Rational, oracleDatum: PartialOracleDatum): number => {
+  return poolRatio.mul(adaDJEDRate(oracleDatum)).toNumber()
+}

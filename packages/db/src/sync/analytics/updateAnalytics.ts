@@ -2,10 +2,12 @@ import { prisma } from "../../../lib/prisma"
 import { logger } from "../../utils/logger"
 import type { OrderedPoolOracleTxOs } from "../types"
 import {
+  blockfrost,
   getAssetTxsUpUntilSpecifiedTime,
-  getEveryResultFromPaginatedEndpoint,
   processPoolOracleTxs,
+  readOrderedTxOsFromFile,
   registry,
+  writeOrderedTxOsToFile,
 } from "../utils"
 import { processMarketCap, updateMarketCap } from "./marketCap/marketCap"
 import { rollbackMarketCap } from "./marketCap/rollbackMarketCap"
@@ -38,28 +40,37 @@ async function handleRollbacks() {
 // saving hundreds of thousands of requests
 async function handlePopulateDb(toUpdate: DbProcessor[]) {
   if (toUpdate.every((item) => !item.isEmpty)) return
-  const start = Date.now()
+
   logger.info("=== Populating Database ===")
-  const everyPoolTx = await getEveryResultFromPaginatedEndpoint(
-    `/assets/${registry.poolAssetId}/transactions`,
-  ) //txs from pool
-  const everyOracleTx = await getEveryResultFromPaginatedEndpoint(
-    `/assets/${registry.oracleAssetId}/transactions`,
-  ) //txs from oracle
+  const start = Date.now()
+
+  /*const startOfDay = Math.floor(new Date("2026-01-20T00:00:00Z").getTime() / 1000)
+  const endOfDay = Math.floor(new Date("2026-02-18T23:59:59Z").getTime() / 1000)
+
+  const everyPoolTx = await blockfrost.getAssetTransactions({
+    asset: registry.poolAssetId,
+    order: "desc",
+  }).allPages({maxPages: 100}).retry().filter(tx => tx.block_time >= startOfDay && tx.block_time <= endOfDay) //txs from pool
+
+  const everyOracleTx = await blockfrost.getAssetTransactions({
+    asset: registry.oracleAssetId,
+    order: "desc",
+  }).allPages({maxPages: 100}).retry().filter(tx => tx.block_time >= startOfDay && tx.block_time <= endOfDay) //txs from oracle
 
   const orderedTxOs = await processPoolOracleTxs(everyPoolTx, everyOracleTx)
   if (!orderedTxOs) {
     logger.warn("No orderedTxOs produced — skipping DB population")
     return
+  }*/
+
+  //await writeOrderedTxOsToFile(orderedTxOs, "./orderedTxOs.json")
+
+  const orderedTxOs = await readOrderedTxOsFromFile("./orderedTxOs.json")
+  if (!orderedTxOs) {
+    logger.warn("No orderedTxOs read from file — skipping DB population")
+   return
   }
 
-  // await writeOrderedTxOsToFile(orderedTxOs, "./orderedTxOs.json")
-
-  // const orderedTxOs = await readOrderedTxOsFromFile("./orderedTxOs.json")
-  // if (!orderedTxOs) {
-  //   logger.warn("No orderedTxOs read from file — skipping DB population")
-  //   return
-  // }
   const end = Date.now() - start
   logger.info(
     `=== Fetching data to populate database took sec: ${(end / 1000).toFixed(2)} ===`,
@@ -86,7 +97,7 @@ async function handleUpdateDb(toUpdate: DbProcessor[]) {
 
 export async function handleAnalyticsUpdates(
   timestamp: Date,
-  processor: (orderedTxOs: OrderedPoolOracleTxOs[]) => Promise<void>,
+  processor: (orderedTxOs: OrderedPoolOracleTxOs[], timestamp?: Date) => Promise<void>,
 ) {
   // we only want to run the update once every 24h,
   // in order to get the data relative to the lates full day
@@ -117,11 +128,15 @@ export async function handleAnalyticsUpdates(
   const orderedTxOs = await processPoolOracleTxs(newPoolTxs, newOracleTxs)
   if (!orderedTxOs) return
 
-  await processor(orderedTxOs)
+  await processor(orderedTxOs, timestamp)
 }
 
 export async function updateAnalytics() {
   logger.info("=== Syncing Analytics ===")
+
+  /*const res = await prisma.tokenPrice.deleteMany() // TODO: DELETE THIS
+  logger.info(`Deleted ${res.count} token price entries`) // TODO: DELETE THIS
+  */
 
   await handleRollbacks()
 
