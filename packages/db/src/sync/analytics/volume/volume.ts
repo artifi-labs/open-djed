@@ -24,6 +24,7 @@ import {
   shenUSDRate,
 } from "@open-djed/math"
 import type { Actions, AllTokens } from "../../../../generated/prisma/enums"
+import { prisma } from "../../../../lib/prisma"
 
 const createZeroVolumeDay = (timestamp: string) => ({
   timestamp,
@@ -140,7 +141,7 @@ const processVolumeTxs = async (volumeOrderTx: Transaction[]) => {
       } catch (error) {
         logger.error(
           error,
-          `Error decoding datum for UTxO ${utxo.hash}, skipping:`,
+          `Error decoding input order datum for UTxO ${utxo.hash}, skipping:`,
         )
         return {
           orderDatum: null,
@@ -196,6 +197,10 @@ const processVolumeTxs = async (volumeOrderTx: Transaction[]) => {
           slot: utxo.block_slot,
         }
       } catch (error) {
+        logger.error(
+          error,
+          `Error decoding pool datum for UTxO ${utxo.hash}, skipping:`,
+        )
         return {
           orderDatum: inputOrderDatum,
           poolDatum: null,
@@ -254,7 +259,7 @@ const getVolumeFromDatum = (datum: OrderDatum) => {
   return { action, token, amount, adaUsdRate }
 }
 
-const processVolumeData = async (volumeData: UnprocessedVolumeData[]) => {
+const processVolumeData = (volumeData: UnprocessedVolumeData[]) => {
   const txVolumes: OrderVolume[] = volumeData
     .map((entry) => {
       if (!entry.orderDatum) return null
@@ -422,22 +427,44 @@ const processVolumeData = async (volumeData: UnprocessedVolumeData[]) => {
     currentDate.setDate(currentDate.getDate() + 1)
   }
 
-  return completeVolumes
+  return completeVolumes.map((v) => ({
+    ...v,
+    timestamp: new Date(v.timestamp),
+  }))
+}
+
+const processVolumes = async (txs: Transaction[]) => {
+  const start = Date.now()
+  logger.info(`=== Processing Volumes ===`)
+
+  const volumeData = await processVolumeTxs(txs)
+  const processedVolumes = processVolumeData(volumeData)
+
+  if (!processedVolumes) {
+    logger.warn("Could not process data for volumes")
+    return
+  }
+
+  logger.info(`Inserting ${processedVolumes.length} Volumes into database...`)
+  await prisma.volume.createMany({
+    data: processedVolumes,
+    skipDuplicates: true,
+  })
+  logger.info(
+    `Historic Volumes sync complete. Inserted ${processedVolumes.length} Volumes`,
+  )
+  const end = Date.now() - start
+  logger.info(`=== Processing Volumes took sec: ${(end / 1000).toFixed(2)} ===`)
 }
 
 export async function handleInitialVolumeDbPopulation() {
   const everyOrderTx = await getEveryResultFromPaginatedEndpoint(
     `/addresses/${registry.orderAddress}/transactions`,
   )
-
   if (everyOrderTx.length === 0) {
     logger.info("No transactions found")
     return
   }
-  logger.info(`Found ${everyOrderTx.length} transactions`)
 
-  const volumeData = await processVolumeTxs(everyOrderTx)
-  const processedVolumes = await processVolumeData(volumeData)
-
-  // insert into db
+  await processVolumes(everyOrderTx)
 }
