@@ -48,6 +48,7 @@ import {
   getPeriodAdaShenPrices,
   getPeriodMarketCap,
   getPeriodReserveRatio,
+  getPeriodVolume,
 } from "@open-djed/db"
 import { type TokenMarketCap } from "@open-djed/db/generated/prisma/enums"
 import { type Order, type Period } from "@open-djed/db"
@@ -816,6 +817,17 @@ const app = new Hono()
     historicalDataHandler((period) =>
       getPeriodAdaShenPrices({ period, grouped: true }),
     ),
+  )
+  .get(
+    "/historical-volumes",
+    cacheMiddleware,
+    zValidator(
+      "query",
+      z.object({
+        period: periodSchema,
+      }),
+    ),
+    historicalDataHandler(getPeriodVolume),
   )
 
 serve(

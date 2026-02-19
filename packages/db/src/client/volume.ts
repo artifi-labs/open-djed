@@ -8,6 +8,23 @@ export const getPeriodVolume = async (period: Period) => {
     where: {
       ...(startIso ? { timestamp: { gte: startIso } } : {}),
     },
+    select: {
+      timestamp: true,
+      djedMintedUSD: true,
+      djedBurnedUSD: true,
+      shenMintedUSD: true,
+      shenBurnedUSD: true,
+      djedMintedADA: true,
+      djedBurnedADA: true,
+      shenMintedADA: true,
+      shenBurnedADA: true,
+      totalDjedVolumeUSD: true,
+      totalShenVolumeUSD: true,
+      totalDjedVolumeADA: true,
+      totalShenVolumeADA: true,
+      totalVolumeUSD: true,
+      totalVolumeADA: true,
+    },
     orderBy: [
       {
         timestamp: "asc",
