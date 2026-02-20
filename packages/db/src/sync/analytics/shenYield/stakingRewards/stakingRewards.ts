@@ -10,10 +10,8 @@ import {
   getEveryResultFromPaginatedEndpoint,
   registry,
 } from "../../../utils"
-import { handleAnalyticsUpdates } from "../../updateAnalytics"
-import { getLatestStakingReward } from "../../../../client/stakingRewards"
 
-export async function processStakingRewards() {
+export async function calculateStakingRewards() {
   const start = Date.now()
   logger.info("=== Processing ADA staking rewards ===")
 
@@ -65,20 +63,5 @@ export async function processStakingRewards() {
   const end = Date.now() - start
   logger.info(
     `=== Processing ADA staking rewards took sec: ${(end / 1000).toFixed(2)} ===`,
-  )
-}
-
-export async function updateStakingRewards() {
-  const start = Date.now()
-  logger.info("=== Updating ADA staking rewards ===")
-  const latestStakingReward = await getLatestStakingReward()
-  if (!latestStakingReward) return
-  await handleAnalyticsUpdates(
-    latestStakingReward.endTimestamp,
-    processStakingRewards,
-  )
-  const end = Date.now() - start
-  logger.info(
-    `=== Updating ADA staking rewards took sec: ${(end / 1000).toFixed(2)} ===`,
   )
 }

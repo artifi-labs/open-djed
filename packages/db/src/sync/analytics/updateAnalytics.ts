@@ -19,7 +19,6 @@ import {
   updateReserveRatios,
 } from "./reserveRatio/reserveRatio"
 import { rollbackReserveRatios } from "./reserveRatio/rollbackReserveRatios"
-import { rollbackStakingRewards } from "./shenYield/stakingRewards/rollbackStakingRewards"
 
 type DbProcessor = {
   isEmpty: boolean
@@ -32,7 +31,6 @@ async function handleRollbacks() {
     rollbackReserveRatios(),
     rollbackMarketCap(),
     rollbackTokenPrices(),
-    rollbackStakingRewards(),
   ])
 }
 
