@@ -12,6 +12,7 @@ export type Registry = {
   oracleAddress: string
   orderSpendingValidatorRefUTxO: UTxO
   rewardAddress: string
+  stakeAddress: string
   stakeValidatorRefUTxO: UTxO
   poolAssetId: string
   djedAssetId: string
@@ -105,6 +106,8 @@ export const registryByNetwork = {
     },
     rewardAddress:
       "stake_test17qs9cudfvax7xnrcmpuaq302wy8yya70jy6s4f8r28zwt4qmuvh0j",
+    stakeAddress:
+      "stake_test1upxqas37hga2y7jt34s3ql6e70sdyjmmkmt6uxjth45ferggqs67a",
     oracleAssetId:
       "19eb22bf803ab40b064da4ac8e8fb5853ae0454ba0593609598410ba446a65644f7261636c654e4654",
     MintDJEDFeePercentage: { numerator: 3n, denominator: 100n },
@@ -217,6 +220,7 @@ export const registryByNetwork = {
       "addr1w9ut73sw2k94pla354k97zjjxygcxx795hgkdv3hwyp4h8q694wcj",
     rewardAddress:
       "stake178g00n87tzhvmsunyx9hs6uv3dunmlxd32xh82cv9dl3r7q2p46ew",
+    stakeAddress: "stake1uyd6tfxa3sae586zjvll7qjx8ywj9x8l3dddgc8dkc0tshssd5g6e",
     oracleAssetId:
       "815aca02042ba9188a2ca4f8ce7b276046e2376b4bce56391342299e446a65644f7261636c654e4654",
     MintDJEDFeePercentage: { numerator: 3n, denominator: 200n },

@@ -1,6 +1,6 @@
 import { prisma } from "../../../lib/prisma"
 import { logger } from "../../utils/logger"
-import type { OrderedPoolOracleTxOs } from "../types"
+import type { OrderedPoolOracleTxOs, Transaction } from "../types"
 import {
   getAssetTxsUpUntilSpecifiedTime,
   getEveryResultFromPaginatedEndpoint,
@@ -40,10 +40,10 @@ async function handlePopulateDb(toUpdate: DbProcessor[]) {
   if (toUpdate.every((item) => !item.isEmpty)) return
   const start = Date.now()
   logger.info("=== Populating Database ===")
-  const everyPoolTx = await getEveryResultFromPaginatedEndpoint(
+  const everyPoolTx = await getEveryResultFromPaginatedEndpoint<Transaction>(
     `/assets/${registry.poolAssetId}/transactions`,
   ) //txs from pool
-  const everyOracleTx = await getEveryResultFromPaginatedEndpoint(
+  const everyOracleTx = await getEveryResultFromPaginatedEndpoint<Transaction>(
     `/assets/${registry.oracleAssetId}/transactions`,
   ) //txs from oracle
 
