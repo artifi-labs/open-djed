@@ -1,4 +1,5 @@
 import { prisma } from "../../../../../lib/prisma"
+import { getLatestStakingReward } from "../../../../client/stakingRewards"
 import { logger } from "../../../../utils/logger"
 import {
   type ADAStakingRewards,
@@ -10,6 +11,7 @@ import {
   getEveryResultFromPaginatedEndpoint,
   registry,
 } from "../../../utils"
+import { handleAnalyticsUpdates } from "../../updateAnalytics"
 
 export async function calculateStakingRewards() {
   const start = Date.now()
@@ -63,5 +65,20 @@ export async function calculateStakingRewards() {
   const end = Date.now() - start
   logger.info(
     `=== Processing ADA staking rewards took sec: ${(end / 1000).toFixed(2)} ===`,
+  )
+}
+
+export async function updateStakingRewards() {
+  const start = Date.now()
+  logger.info("=== Updating ADA staking rewards ===")
+  const latestStakingReward = await getLatestStakingReward()
+  if (!latestStakingReward) return
+  await handleAnalyticsUpdates(
+    latestStakingReward.endTimestamp,
+    calculateStakingRewards,
+  )
+  const end = Date.now() - start
+  logger.info(
+    `=== Updating ADA staking rewards took sec: ${(end / 1000).toFixed(2)} ===`,
   )
 }
