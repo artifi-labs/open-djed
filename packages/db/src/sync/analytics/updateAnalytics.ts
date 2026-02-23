@@ -19,6 +19,11 @@ import {
   updateReserveRatios,
 } from "./reserveRatio/reserveRatio"
 import { rollbackReserveRatios } from "./reserveRatio/rollbackReserveRatios"
+import {
+  calculateStakingRewards,
+  updateStakingRewards,
+} from "./shenYield/stakingRewards/stakingRewards"
+import { rollbackStakingRewards } from "./shenYield/stakingRewards/rollbackStakingRewards"
 
 type DbProcessor = {
   isEmpty: boolean
@@ -31,6 +36,7 @@ async function handleRollbacks() {
     rollbackReserveRatios(),
     rollbackMarketCap(),
     rollbackTokenPrices(),
+    rollbackStakingRewards(),
   ])
 }
 
@@ -128,6 +134,7 @@ export async function updateAnalytics() {
   const isReserveRatioEmpty = (await prisma.reserveRatio.count()) === 0
   const isMarketCapEmpty = (await prisma.marketCap.count()) === 0
   const isPriceEmpty = (await prisma.tokenPrice.count()) === 0
+  const isStakingRewardsEmpty = (await prisma.aDAStakingRewards.count()) === 0
 
   const toUpdate: DbProcessor[] = [
     {
@@ -151,5 +158,9 @@ export async function updateAnalytics() {
   // We want to run these in parallel because handlePopulateDb takes several hours
   // to run due to the sheer volume of data fetched, therefore we do not want the update
   // to get stuck behind it.
-  await Promise.all([handlePopulateDb(toUpdate), handleUpdateDb(toUpdate)])
+  await Promise.all([
+    handlePopulateDb(toUpdate),
+    handleUpdateDb(toUpdate),
+    isStakingRewardsEmpty ? calculateStakingRewards() : updateStakingRewards(),
+  ])
 }
