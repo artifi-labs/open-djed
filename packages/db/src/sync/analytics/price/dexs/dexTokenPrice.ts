@@ -63,19 +63,16 @@ export async function getDexTokenPrices(dexName: DexName, dexConfig: DexNetworkC
     throw new Error(`Missing address or poolId for dex ${dexName}`)
   }
 
-  // Get all Transaction for the dex Address, sort by block_time
   try {
     let request = blockfrost.getAddressTransactions({ address: dexConfig.address, order: "desc"})
 
-    // TODO: THIS NEED TO STOP AFTER A CERTAIN POINT I WILL FOR NOW THROW AN ERROR
-    throw new Error("This code needs to be fixed to stop after a certain point, otherwise it will fetch all transactions for the dex address.")
     if (latestPriceTimestamp) {
-      request = request.filter(tx => {
-        const blockTime = tx.block_time
-        return blockTime >= latestPriceTimestamp.getTime() // TODO: THIS NEED TO STOP AFTER A CERTAIN POINT
-      })
+      request = request.withFilter(() => ({
+        filter: (item) => item.block_time >= latestPriceTimestamp.getTime(),
+        stop: (item) => item.block_time < latestPriceTimestamp.getTime(),
+      }))
     }
-    dexTransactions = await request.allPages({ maxPages: 100 }).retry()
+    dexTransactions = await request.allPages().retry()
   
     if (dexTransactions.length === 0) {
       logger.warn(`No transactions found for dex ${dexName} at address ${dexConfig.address}`)
@@ -112,7 +109,7 @@ export async function getDexTokenPrices(dexName: DexName, dexConfig: DexNetworkC
         if (!tx) break
 
         const blockTimeInMs = tx.block_time * 1000
-
+        
         const transactionUtxos: TransactionUtxoResponse = await blockfrost.getTransactionUTxOs(
           { hash: tx.tx_hash }
         ).retry()
@@ -180,6 +177,7 @@ export async function getDexTokenPrices(dexName: DexName, dexConfig: DexNetworkC
 
           continue
         }
+        // TODO: CHANGE, CODE IS REPEATED
 
         const poolReserve = selectPoolOutput(transactionUtxos.outputs, dexConfig.address)
         if (!poolReserve) {
@@ -272,6 +270,7 @@ function calculateDexPricesEntries(
     .filter(p => p.dex === dexName)
     .map(p => Number(p.djedUsd))
 
+  // TODO: WE SHOULNDT BE CALCULATING THE MEDIAN WE NEED TO use TIME-Weight average
   const djedAdaMedian = calculateMedian(
     djedAdaValues
   )
