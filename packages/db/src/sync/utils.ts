@@ -841,3 +841,19 @@ export async function readOrderedTxOsFromFile(
 
   return parsed.map(normalizeOrderedTxO)
 }
+
+export function filterOracleTxOsByTimestamp(
+  orderedTxOs: OrderedPoolOracleTxOs[],
+  timestamp: Date
+): OrderedPoolOracleTxOs[] {
+  const targetTime = timestamp.getTime()
+
+  return orderedTxOs.filter((txO) => {
+    const txOTime = new Date(txO.value.timestamp).getTime()
+    if (isNaN(txOTime)) {
+      throw new Error("Invalid txO timestamp")
+    }
+
+    return txOTime >= targetTime
+  })
+}

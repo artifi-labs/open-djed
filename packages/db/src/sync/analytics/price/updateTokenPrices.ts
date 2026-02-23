@@ -269,10 +269,6 @@ export async function processTokenPrices(orderedTxOs: OrderedPoolOracleTxOs[], l
     dataToInsert.push(...processed)
   }
 
-  /*dexsPricesPerDay.forEach((dayEntry) => {
-    logger.info(dayEntry)
-  })*/
-
   const result = await prisma.tokenPrice.createMany({
     data: dataToInsert,
     skipDuplicates: true,
@@ -292,10 +288,6 @@ export async function updateTokenPrices() {
   logger.info(`=== Updating Token Prices ===`)
   const latestPrice = await getLatestPriceTimestamp()
   if (!latestPrice._max.timestamp) return
-  /*const testDateMs = Date.now() - 2 * 24 * 60 * 60 * 1000
-  const testDate = new Date(testDateMs)
-  console.log(testDate)
-  console.log("Latest price timestamp:", latestPrice._max.timestamp)*/
   await handleAnalyticsUpdates(latestPrice._max.timestamp, processTokenPrices)
   const end = Date.now() - start
   logger.info(

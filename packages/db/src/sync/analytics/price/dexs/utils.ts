@@ -73,7 +73,7 @@ export const normalizeDexKey = (dex: string): DexName | null => {
     : null) as DexName | null
 }
 
-export function aggegatedDexPricesPerDay(dexsPricesPerDay: DexDailyPrices[][]): DexDailyPrices[] {
+export function aggregateDexPricesPerDay(dexsPricesPerDay: DexDailyPrices[][]): DexDailyPrices[] {
   const aggregated: Record<string, DexPriceEntry[]> = {}
   
   dexsPricesPerDay.forEach(dexPrices => {

@@ -1,15 +1,13 @@
 import * as Lucid from "@lucid-evolution/lucid"
 import { type EvalRedeemer, type Transaction } from "@lucid-evolution/lucid"
 import packageJson from "../../cli/package.json" with { type: "json" }
-import { z } from "zod"
-import { logger } from "../../db/src/utils/logger"
 import { fetchJSON } from "./utils"
 import type { HeadersInit } from "@types/node"
-import type { RequestOptions } from "./types/types"
 import type { GetTransactionUTxOsParams, TransactionUtxoResponse } from "./types/transaction/transactionUtxo"
 import type { AddressTransactionsResponse, GetAddressTransactionsParams } from "./types/address/addressTransaction"
 import type { LatestBlockResponse } from "./types/block/block"
 import type { AssetTransactionsResponse, GetAssetTransactionsParams } from "./types/assets/asset"
+import type { RequestRetryOptions } from "./types/types"
 
 const lucid = packageJson.version
 
@@ -29,8 +27,6 @@ type BlockfrostRedeemer = {
     | { CannotCreateEvaluationContext: unknown }
 }
 
-type RetryOptions = Pick<RequestOptions, "retry" | "retryDelayMs">
-
 type PaginationOptions = {
   count?: number
   maxPages?: number
@@ -46,8 +42,8 @@ class BlockfrostRequest<T> implements PromiseLike<T> {
   private filters: FilterCondition<T extends Array<infer U> ? U : never>[] = []
 
   constructor(
-    private readonly executeSingle: (opts: RetryOptions) => Promise<T>,
-    private readonly executePages?: (opts: RetryOptions, pagination: PaginationOptions, itemFilter?: (item: T extends Array<infer U> ? U : never) => boolean) => Promise<T>,
+    private readonly executeSingle: (opts: RequestRetryOptions) => Promise<T>,
+    private readonly executePages?: (opts: RequestRetryOptions, pagination: PaginationOptions, itemFilter?: (item: T extends Array<infer U> ? U : never) => boolean) => Promise<T>,
   ) {}
 
   retry(times = 5, delayMs = 10_000): this {
@@ -80,7 +76,7 @@ class BlockfrostRequest<T> implements PromiseLike<T> {
     onfulfilled?: ((value: T) => R1 | PromiseLike<R1>) | null,
     onrejected?: ((reason: unknown) => R2 | PromiseLike<R2>) | null,
   ): Promise<R1 | R2> {
-    const opts: RetryOptions = { retry: this.retryTimes, retryDelayMs: this.retryDelay }
+    const opts: RequestRetryOptions = { retry: this.retryTimes, retryDelayMs: this.retryDelay }
     const itemFilter = this.buildItemFilter()
 
     const promise = this.fetchPages && this.executePages
@@ -120,14 +116,14 @@ export class Blockfrost extends Lucid.Blockfrost {
   private async request<T>(
     url: string,
     options: RequestInit = {},
-    retryOptions?: RetryOptions
+    retryOptions?: RequestRetryOptions
   ): Promise<T> {
     return fetchJSON<T>(url, this.withAuthHeaders(options), retryOptions)
   }
 
   private async fetchAllPages<T>(
     endpoint: string,
-    retryOptions?: RetryOptions,
+    retryOptions?: RequestRetryOptions,
     pagination: PaginationOptions = {},
     itemFilter?: (item: T) => boolean,
   ): Promise<T[]> {

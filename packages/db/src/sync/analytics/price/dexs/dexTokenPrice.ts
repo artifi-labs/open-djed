@@ -8,7 +8,7 @@ import { calculateMedian } from "@open-djed/math/src/number";
 import { env } from "../../../../../lib/env";
 import type { Network } from "../../../../types/network";
 import type { DexDailyPrices, DexName, DexPriceEntry, PoolLiquidity } from "../../../../types/dex";
-import { aggegatedDexPricesPerDay, normalizeDexKey, readAddressTxFromFile, readDexPricesFromFile, writeAddressTxToFile, writeDexPricesToFile } from "./utils";
+import { aggregateDexPricesPerDay, normalizeDexKey, readAddressTxFromFile, readDexPricesFromFile, writeAddressTxToFile, writeDexPricesToFile } from "./utils";
 import { DJED_POLICY_ID_AND_NAME } from "./constants";
 import type { DailyUTxOs } from "../../../types";
 import { findOracleByTimestamp } from "../../../../oracle";
@@ -49,7 +49,7 @@ export async function getDexsTokenPrices(oracleUtxos: DailyUTxOs[], latestPriceT
     return []
   }
 
-  const aggregated = aggegatedDexPricesPerDay(allDexPrices)
+  const aggregated = aggregateDexPricesPerDay(allDexPrices)
 
   return aggregated
 }
