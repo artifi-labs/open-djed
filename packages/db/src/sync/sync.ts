@@ -1,6 +1,6 @@
 import { logger } from "../utils/logger"
-import { updateAnalytics } from "./analytics/updateAnalytics"
 import { updateOrders } from "./orders/updateOrders"
+import { runAllHistoryScripts } from "./runner"
 import { isLocked, lock, unlock } from "./utils"
 
 export async function sync() {
@@ -12,7 +12,10 @@ export async function sync() {
   lock()
   logger.info("Starting scheduled order update...")
   try {
-    await Promise.all([updateAnalytics(), updateOrders()])
+    await Promise.all([
+      updateOrders(),
+      runAllHistoryScripts()
+    ])
   } catch (error) {
     logger.error(error, "Sync job failed:")
     unlock()

@@ -51,7 +51,8 @@ export async function updateMarketCap() {
   logger.info(`=== Updating Market Cap ===`)
   const latestMarketCap = await getLatestMarketCap()
   if (!latestMarketCap) return
-  await handleAnalyticsUpdates(latestMarketCap.timestamp, processMarketCap)
+  // TODO: I dont think this is right, its doing N fetches, we could do just one for all the analytics
+  await handleAnalyticsUpdates(latestMarketCap.timestamp, processMarketCap) 
   const end = Date.now() - start
   logger.info(
     `=== Updating Market Cap took sec: ${(end / 1000).toFixed(2)} ===`,

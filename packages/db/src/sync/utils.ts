@@ -46,6 +46,14 @@ export const registry = registryByNetwork[network]
 
 export const SAFETY_MARGIN = 50 // updates database 50 slots behind the tip of the blockchain
 
+export function normalizeToDay(date: Date): Date {
+  if (Number.isNaN(date.getTime())) {
+    throw new Error("Invalid timestamp format")
+  }
+
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate())
+}
+
 export const sleep = (ms: number) =>
   new Promise((resolve) => setTimeout(resolve, ms))
 
@@ -832,4 +840,20 @@ export async function readOrderedTxOsFromFile(
   const parsed = JSONbig.parse(raw) as OrderedPoolOracleTxOs[]
 
   return parsed.map(normalizeOrderedTxO)
+}
+
+export function filterOracleTxOsByTimestamp(
+  orderedTxOs: OrderedPoolOracleTxOs[],
+  timestamp: Date
+): OrderedPoolOracleTxOs[] {
+  const targetTime = timestamp.getTime()
+
+  return orderedTxOs.filter((txO) => {
+    const txOTime = new Date(txO.value.timestamp).getTime()
+    if (isNaN(txOTime)) {
+      throw new Error("Invalid txO timestamp")
+    }
+
+    return txOTime >= targetTime
+  })
 }
