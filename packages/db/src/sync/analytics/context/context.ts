@@ -1,22 +1,11 @@
 import { Blockfrost } from "@open-djed/blockfrost"
-import { env } from "../../lib/env"
-import { getAssetTxsUpUntilSpecifiedTime, processPoolOracleTxs, readOrderedTxOsFromFile, registry } from "./utils"
-import { logger } from "../utils/logger"
-import type { DailyTokenPriceUTxOsWithWeights, DailyUTxOs, OrderedPoolOracleTxOs, TokenPrice } from "./types"
-import type { AllTokens } from "../../generated/prisma/enums"
+import { env } from "../../../../lib/env"
+import { getAssetTxsUpUntilSpecifiedTime, processPoolOracleTxs, registry } from "../../utils"
+import { logger } from "../../../utils/logger"
+import type { OrderedPoolOracleTxOs } from "../../types"
 
 export interface BaseContext {
   blockfrost: Blockfrost
-}
-
-export interface TokenHistoryContext {
-  dailyUtxos: DailyUTxOs[]
-  weightedDailyUtxos: DailyTokenPriceUTxOsWithWeights[]
-  dailyTokenPrices: Record<AllTokens, TokenPrice[]>
-}
-
-export interface ExtraContexts {
-  tokenHistoryContext?: TokenHistoryContext
 }
 
 export interface PopulateContext extends BaseContext {
@@ -24,7 +13,6 @@ export interface PopulateContext extends BaseContext {
     orderedTxOs: OrderedPoolOracleTxOs[]
   }
 }
-
 export interface UpdateContext extends BaseContext {
   preloaded: {
     orderedTxOs: OrderedPoolOracleTxOs[]

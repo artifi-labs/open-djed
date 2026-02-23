@@ -1,6 +1,6 @@
 import { logger } from "../utils/logger"
+import { buildPopulateContext, buildUpdateContext } from "./analytics/context/context"
 import { historyScriptRegistry } from "./registry"
-import { buildPopulateContext, buildUpdateContext } from "./sharedContext"
 
 export async function runAllHistoryScripts() {
 
@@ -19,22 +19,48 @@ export async function runAllHistoryScripts() {
   }
 
   logger.info("=== Checking which scripts need update ===")
-  const scriptNeedsUpdate = await Promise.all(
-    historyScriptRegistry.map(async (script) => script.needUpdate?.())
+  const scriptsStatus = await Promise.all(
+    historyScriptRegistry.map(async (script) => ({
+      script,
+      ...await script.needAction()
+    }))
   )
-  if (!scriptNeedsUpdate.some(Boolean)) {
-    logger.info("No scripts need update, all will be populated.")
-  } else {
-    logger.info(`Scripts that need update: ${historyScriptRegistry.filter((_, index) => scriptNeedsUpdate[index]).map(s => s.constructor.name).join(", ")}`)
+
+  const hasPopulate = scriptsStatus.some((s) => s.needPopulate)
+  const hasUpdate = scriptsStatus.some((s) => s.needUpdate)
+
+  if (hasPopulate) {
+    const scriptsToPopulate = scriptsStatus
+      .filter(s => s.needPopulate)
+      .map(s => s.script.constructor.name)
+      .join(", ")
+    logger.info(`Scripts that need populate: ${scriptsToPopulate}`)
   }
 
-  if (scriptNeedsUpdate.some(Boolean)) {
+  if (hasUpdate) {
+    const scriptsToUpdate = scriptsStatus
+      .filter(s => s.needUpdate)
+      .map(s => s.script.constructor.name)
+      .join(", ")
+    logger.info(`Scripts that need update: ${scriptsToUpdate}`)
+  }
+
+  if (!hasUpdate && !hasPopulate) {
+    logger.info("No scripts need update or populate. All scripts are up to date.")
+    return
+  }
+
+  if (hasUpdate) {
+    const scriptsNeedingUpdate = scriptsStatus.filter((s) => s.needUpdate)
     const latestTimestamps = await Promise.all(
-      historyScriptRegistry.map(async (script) => await script.latestTimestamp?.())
+      scriptsNeedingUpdate.map(async ({ script }) => await script.latestTimestamp?.())
     )
 
     if (latestTimestamps.length > 0) {
       const validTimestamps = latestTimestamps.filter((timestamp) => timestamp !== undefined)
+      if (validTimestamps.length === 0) {
+        throw new Error("No valid timestamps found for scripts that need update. Cannot build update context.")
+      }
       const oldestTimestamp = new Date(
         Math.min(...validTimestamps.map((timestamp) => timestamp.getTime()))
       )
@@ -46,16 +72,18 @@ export async function runAllHistoryScripts() {
       throw new Error("No valid timestamps found for scripts that need update. Cannot build update context.")
     }
 
-  } else {
+  }
+
+  if (hasPopulate) {
     logger.info("=== Building populate context ===")
     populateContext = await buildPopulateContext()
   }
 
-  for (const script of historyScriptRegistry) {
+  for (const { script, needPopulate, needUpdate } of scriptsStatus) {
     logger.info(`=== Running script ${script.constructor.name} ===`)
 
     try {
-      await script.runner(populateContext, updateContext)
+      await script.runner(populateContext, updateContext, { needPopulate, needUpdate })
     } catch (error) {
       logger.error(`Error running script ${script.constructor.name}: ${error instanceof Error ? error.message : String(error)}`)
     }

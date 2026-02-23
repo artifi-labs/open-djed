@@ -1,47 +1,21 @@
 import { prisma } from "../../../../lib/prisma";
-import type { InterfaceHistoryScript } from "../../../types/history";
 import { logger } from "../../../utils/logger";
-import { type PopulateContext, type UpdateContext } from "../../sharedContext";
+import { type PopulateContext, type UpdateContext } from "../context/context";
 import { filterOracleTxOsByTimestamp } from "../../utils";
+import { HistoryScript } from "../HistoryScript";
 import { rollbackTokenPrices } from "./rollbackTokenPrice";
 
 import { processTokenPrices } from "./updateTokenPrices";
 
+export class TokenPriceHistory extends HistoryScript {
 
-export class TokenPriceHistory implements InterfaceHistoryScript {
+  protected prismaModel = prisma.tokenPrice
 
   async rollback(): Promise<void> {
     return await rollbackTokenPrices()
   }
 
-  async needUpdate(): Promise<boolean> {
-    return await prisma.tokenPrice.count() > 0
-  }
-
-  async latestTimestamp(): Promise<Date | undefined> {
-    const latestTokenPrice = await prisma.tokenPrice.findFirst({
-      orderBy: {
-        timestamp: "desc",
-      },
-    })
-    return latestTokenPrice?.timestamp
-  }
-
-  async runner(populateContext: PopulateContext, updateContext?: UpdateContext): Promise<void> {
-    
-    const needsUpdate = await this.needUpdate()
-    if (!needsUpdate) {
-      if (!populateContext)
-        throw new Error("TokenPriceHistory requires a populate context, but none was provided.")
-      return await this.populate(populateContext)
-    }
-
-    if (!updateContext)
-      throw new Error("TokenPriceHistory requires an update context, but none was provided.")
-    return await this.update(updateContext)
-  }
-
-  async populate(ctx: PopulateContext): Promise<void> {
+  protected async populate(ctx: PopulateContext): Promise<void> {
     const orderedTxOs = ctx.preloaded.orderedTxOs
     if (!orderedTxOs) {
       logger.warn("No orderedTxOs found in token history context, skipping TokenPriceHistory population")
@@ -51,7 +25,7 @@ export class TokenPriceHistory implements InterfaceHistoryScript {
     return await processTokenPrices(orderedTxOs) 
   }
 
-  async update(ctx: UpdateContext): Promise<void> {
+  protected async update(ctx: UpdateContext): Promise<void> {
     logger.info(`=== Updating Token Prices ===`)
     const orderedTxOs = ctx.preloaded.orderedTxOs
     if (!orderedTxOs)

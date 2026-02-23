@@ -64,20 +64,17 @@ export async function getDexTokenPrices(dexName: DexName, dexConfig: DexNetworkC
   }
 
   // Get all Transaction for the dex Address, sort by block_time
-  /*try {
+  try {
     let request = blockfrost.getAddressTransactions({ address: dexConfig.address, order: "desc"})
 
-    // TODO: DELETE AFTER TEST
-    const startOfDay = Math.floor(new Date("2026-02-01T00:00:00Z").getTime() / 1000)
-    const endOfDay = Math.floor(new Date("2026-02-18T23:59:59Z").getTime() / 1000)
-
-    //if (latestPriceTimestamp) {
-    request = request.filter(tx => {
-      const blockTime = tx.block_time
-      //return blockTime >= latestPriceTimestamp.getTime()
-      return blockTime >= startOfDay && blockTime <= endOfDay
-    })
-   // }
+    // TODO: THIS NEED TO STOP AFTER A CERTAIN POINT I WILL FOR NOW THROW AN ERROR
+    throw new Error("This code needs to be fixed to stop after a certain point, otherwise it will fetch all transactions for the dex address.")
+    if (latestPriceTimestamp) {
+      request = request.filter(tx => {
+        const blockTime = tx.block_time
+        return blockTime >= latestPriceTimestamp.getTime() // TODO: THIS NEED TO STOP AFTER A CERTAIN POINT
+      })
+    }
     dexTransactions = await request.allPages({ maxPages: 100 }).retry()
   
     if (dexTransactions.length === 0) {
@@ -90,25 +87,26 @@ export async function getDexTokenPrices(dexName: DexName, dexConfig: DexNetworkC
   } catch (error) {
     logger.error(error, `Error fetching transactions for dex ${dexName}`)
     return []
-  }*/
+  }
 
   // TODO: REMOVE THIS
   //await writeAddressTxToFile(dexTransactions, `./dexTransactions${dexName}.json`)
 
-  dexTransactions = await readAddressTxFromFile(`./dexTransactions${dexName}.json`)
+  /*dexTransactions = await readAddressTxFromFile(`./dexTransactions${dexName}.json`)
   if (dexTransactions.length === 0) {
     logger.warn(`No transactions read from file for dex ${dexName}`)
     return []
   }
   logger.info(`Read ${dexTransactions.length} transactions from file for dex ${dexName}`)
-  
+  */
 
   // Get all UTXOS for the dex Address
   try {
     const concurrency = 5
     let index = 0
 
-    /*const workers = Array.from({ length: concurrency }, async () => {
+    // TODO: CHANGE THIS PROMISE LOOP
+    const workers = Array.from({ length: concurrency }, async () => {
       while (index < dexTransactions.length) {
         const tx = dexTransactions[index++]
         if (!tx) break
@@ -235,10 +233,10 @@ export async function getDexTokenPrices(dexName: DexName, dexConfig: DexNetworkC
       }
     })
 
-    await Promise.all(workers)*/
+    await Promise.all(workers)
 
     // TODO: REMOVE THIS
-    dayEntries = await readDexPricesFromFile(`./dexPrices${dexName}.json`)
+    //dayEntries = await readDexPricesFromFile(`./dexPrices${dexName}.json`)
 
     // Calculate the median price for each day
     dayEntries = dayEntries.map((dayEntry) => {

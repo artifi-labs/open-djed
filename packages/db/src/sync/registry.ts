@@ -1,6 +1,6 @@
-import type { InterfaceHistoryScript } from "../types/history";
+import type { HistoryScript } from "./analytics/HistoryScript";
 import { TokenPriceHistory } from "./analytics/price/DexPriceHistory";
 
-export const historyScriptRegistry: InterfaceHistoryScript[] = [
+export const historyScriptRegistry: HistoryScript[] = [
   new TokenPriceHistory(),
 ]
