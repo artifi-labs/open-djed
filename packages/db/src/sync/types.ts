@@ -314,3 +314,20 @@ export type DailyTokenPriceUTxOsWithWeights = Omit<DailyUTxOs, "entries"> & {
 
 export type Tokens = "DJED" | "SHEN" | "ADA"
 export type Period = "D" | "W" | "M" | "Y" | "All"
+
+export type ADAStakingRewards = {
+  epoch: number
+  startTimestamp: Date
+  endTimestamp: Date
+  rate: number
+}
+
+export type Rewards = {
+  epoch: number
+  amount: string //Rewards
+}
+
+export type History = {
+  active_epoch: number
+  amount: string //Active Stake
+}
