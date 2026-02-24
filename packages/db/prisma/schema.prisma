@@ -35,6 +35,11 @@ enum AllTokens {
   ADA
 }
 
+enum Dex {
+  Minswap
+  WingRiders
+}
+
 model Order {
   id        Int      @id @default(autoincrement())
   address   Json // user address, stores paymentKeyHash and stakeKeyHash
@@ -96,4 +101,16 @@ model TokenPrice {
   slot      BigInt // block slot
 
   @@unique([token, timestamp])
+}
+
+model LastDexPoolState {
+  id        Int      @id @default(autoincrement())
+  timestamp DateTime
+  dexName   Dex   @unique
+  tokenA    AllTokens
+  tokenB    AllTokens
+  reserveA  BigInt
+  reserveB  BigInt
+  txHash    String
+  updatedAt DateTime @updatedAt 
 }

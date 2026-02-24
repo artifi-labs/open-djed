@@ -1,26 +1,6 @@
-import type { DEX_CONFIG } from "../dex.config"
-
-export type Dex = "minswap" | "wingriders"
-
-export type PoolLiquidity = {
-  djedLiquidity: bigint
-  adaLiquidity: bigint
-}
-
-export type DexPriceEntry = {
-  dex: DexName
-  djedAda: number
-  djedUsd: number
-  poolLiquidity?: PoolLiquidity
-}
+import type { Pool } from "../sync/analytics/price/dexs/dexTokenPrice"
 
 export type DexDailyPrices = {
   day: Date
-  prices: DexPriceEntry[]
-}
-
-export type DexName = keyof typeof DEX_CONFIG
-
-export type DexDjedAdaPriceFields = {
-  [K in DexName as `${K}DjedAdaPrice`]: number
+  poolEntries: Pool[]
 }

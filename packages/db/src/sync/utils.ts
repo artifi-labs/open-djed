@@ -615,7 +615,7 @@ export async function processPoolOracleTxs(
 
         return {
           poolDatum: Data.from(rawDatum, PoolDatum),
-          timestamp: new Date(utxo.blockTime * 1000).toISOString(),
+          timestamp: new Date(utxo.blockTime * 1000),
           block_hash: tx.block,
           block_slot: tx.slot,
         }
@@ -667,7 +667,7 @@ export async function processPoolOracleTxs(
 
         return {
           oracleDatum: Data.from(rawDatum, OracleDatum),
-          timestamp: new Date(utxo.blockTime * 1000).toISOString(),
+          timestamp: new Date(utxo.blockTime * 1000),
           block_hash: tx.block,
           block_slot: tx.slot,
         }
@@ -718,6 +718,14 @@ export async function processPoolOracleTxs(
   ].sort((a, b) => (a.value.timestamp < b.value.timestamp ? -1 : 1))
 
   return orderedTxOs
+}
+
+export function extractOraclesOnly(
+  orderedTxOs: OrderedPoolOracleTxOs[],
+): OracleUTxoWithDatumAndTimestamp[] {
+  return orderedTxOs
+    .filter(tx => tx.key === "oracle")
+    .map(tx => tx.value)
 }
 
 export const getStartIso = (period: Period) => {

@@ -1,8 +1,10 @@
 import { Blockfrost } from "@open-djed/blockfrost"
 import { env } from "../../../../lib/env"
-import { getAssetTxsUpUntilSpecifiedTime, processPoolOracleTxs, registry } from "../../utils"
+import { extractOraclesOnly, getAssetTxsUpUntilSpecifiedTime, processPoolOracleTxs, registry } from "../../utils"
 import { logger } from "../../../utils/logger"
-import type { OrderedPoolOracleTxOs } from "../../types"
+import type { OracleUTxoWithDatumAndTimestamp, OrderedPoolOracleTxOs } from "../../types"
+import { calculateWeightedDailyOracle, saveToJsonFile, type DailyWeightedOracle } from "../price/dexs/dexTokenPrice"
+import { assignTimeWeights, type WeightedEntry } from "../price/updateTokenPrices"
 
 export interface BaseContext {
   blockfrost: Blockfrost
@@ -11,11 +13,13 @@ export interface BaseContext {
 export interface PopulateContext extends BaseContext {
   preloaded: {
     orderedTxOs: OrderedPoolOracleTxOs[]
+    oracleWeightedDaily: DailyWeightedOracle[]
   }
 }
 export interface UpdateContext extends BaseContext {
   preloaded: {
     orderedTxOs: OrderedPoolOracleTxOs[]
+    oracleWeightedDaily: DailyWeightedOracle[]
   }
 }
 
@@ -32,23 +36,36 @@ export async function buildPopulateContext(): Promise<PopulateContext> {
   logger.info("Fetching all Pool Txs. This may take a while...")
   const everyPoolTx = await base.blockfrost.getAssetTransactions({
     asset: registry.poolAssetId,
-    order: "desc", // TODO: REMOVE THIS, MAX PAGES and count
-  }).allPages({ maxPages: 1, count: 1 }).retry()
+    order: "asc", // TODO: REMOVE THIS, MAX PAGES and count
+  }).allPages({ maxPages: 100, count: 100 }).retry()
   
 
   logger.info("Fetching all Oracle Txs. This may take a while...")
   const everyOracleTx = await base.blockfrost.getAssetTransactions({
     asset: registry.oracleAssetId,
-    order: "desc", // TODO: REMOVE THIS, MAX PAGES and count
-  }).allPages({ maxPages: 1, count: 1 }).retry()
+    order: "asc", // TODO: REMOVE THIS, MAX PAGES and count
+  }).allPages({ maxPages: 100, count: 100 }).retry()
 
   logger.info("Processing Pool and Oracle Txs. This may take a while...")
   const orderedTxOs = await processPoolOracleTxs(everyPoolTx, everyOracleTx)
 
+
+  const oracleUtxos = extractOraclesOnly(orderedTxOs || [])
+
+  const oracleWeighted = assignTimeWeights(oracleUtxos)
+
+  const oracleWeightedArray = Array.isArray(oracleWeighted) // TODO: CHECK THIS
+    ? oracleWeighted
+    : Object.values(oracleWeighted).flat()
+
+  const oracleWeightedDaily = calculateWeightedDailyOracle(oracleWeightedArray)
+
+
   return {
     ...base,
     preloaded: {
-      orderedTxOs: orderedTxOs || []
+      orderedTxOs: orderedTxOs || [],
+      oracleWeightedDaily: oracleWeightedDaily || []
     }
   }
 }
@@ -73,7 +90,8 @@ export async function buildUpdateContext(timestamp: Date): Promise<UpdateContext
     return {
       ...base,
       preloaded: {
-        orderedTxOs: []
+        orderedTxOs: [],
+        oracleWeightedDaily: []
       }
     }
   }
@@ -89,10 +107,27 @@ export async function buildUpdateContext(timestamp: Date): Promise<UpdateContext
 
   const orderedTxOs = await processPoolOracleTxs(newPoolTxs, newOracleTxs)
 
+  const oracleUtxos = extractOraclesOnly(orderedTxOs || [])
+
+  await saveToJsonFile("./oracle-utxos.json", oracleUtxos)
+
+  const oracleWeighted = assignTimeWeights(oracleUtxos)
+
+  await saveToJsonFile("./oracle-utxos-weighted.json", oracleWeighted)
+
+  const oracleWeightedArray = Array.isArray(oracleWeighted) // TODO: CHECK THIS
+    ? oracleWeighted
+    : Object.values(oracleWeighted).flat()
+
+  const oracleWeightedDaily = calculateWeightedDailyOracle(oracleWeightedArray)
+
+  await saveToJsonFile("./oracle-utxos-weighted-daily.json", oracleWeightedDaily)
+
   return {
     ...base,
     preloaded: {
-      orderedTxOs: orderedTxOs || []
+      orderedTxOs: orderedTxOs || [],
+      oracleWeightedDaily: oracleWeightedDaily || []
     }
   }
 }

@@ -4,16 +4,16 @@ import { runAllHistoryScripts } from "./runner"
 import { isLocked, lock, unlock } from "./utils"
 
 export async function sync() {
-  if (isLocked()) {
+  /*if (isLocked()) {
     logger.info("Sync job already running, skipping...")
     return
   }
 
-  lock()
+  lock()*/
   logger.info("Starting scheduled order update...")
   try {
     await Promise.all([
-      updateOrders(),
+      //updateOrders(),
       runAllHistoryScripts()
     ])
   } catch (error) {

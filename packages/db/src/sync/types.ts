@@ -205,14 +205,14 @@ export type TransactionRedeemer = {
 
 export type PoolUTxoWithDatumAndTimestamp = {
   poolDatum: PoolDatum
-  timestamp: string
+  timestamp: Date
   block_hash: string
   block_slot: number
 }
 
 export type OracleUTxoWithDatumAndTimestamp = {
   oracleDatum: OracleDatum
-  timestamp: string
+  timestamp: Date
   block_hash: string
   block_slot: number
 }

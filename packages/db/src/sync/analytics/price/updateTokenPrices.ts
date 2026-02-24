@@ -26,7 +26,49 @@ import { getDexsTokenPrices } from "./dexs/dexTokenPrice"
 import { prisma } from "../../../../lib/prisma"
 import { DEX_CONFIG } from "../../../dex.config"
 import { normalizeDexKey } from "./dexs/utils"
-import type { DexDjedAdaPriceFields } from "../../../types/dex"
+import type { DexDailyPrices, DexDjedAdaPriceFields } from "../../../types/dex"
+
+export type WeightedEntry<T extends { timestamp: Date }> = T & {
+  day: Date,
+  weightMs: number
+  period: { start: Date; end: Date }
+}
+
+export function assignTimeWeights<T extends { timestamp: Date }>(
+  entries: T[],
+): Record<string, WeightedEntry<T>[]> | WeightedEntry<T>[] {
+  if (entries.length === 0) return []
+
+  const ordered = [...entries].sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime())
+
+  const startMs = ordered[0]?.timestamp.getTime() || 0
+  const endMs = ordered[ordered.length - 1]?.timestamp.getTime() || 0
+
+  let previousMs = startMs
+
+  const weightedEntries: WeightedEntry<T>[] = ordered.map((entry, i) => {
+    const currentMs = entry.timestamp.getTime()
+    const isLast = i === ordered.length - 1
+
+    const intervalStart = previousMs
+    const intervalEnd = isLast ? endMs : ordered[i + 1]?.timestamp.getTime() ?? endMs
+    const weightMs = Math.max(0, intervalEnd - intervalStart)
+
+    previousMs = currentMs
+
+    const day = new Date(intervalStart).setHours(0, 0, 0, 0)
+
+    return {
+      ...entry,
+      weightMs,
+      day: new Date(day),
+      period: { start: new Date(intervalStart), end: new Date(intervalEnd) },
+    }
+  })
+
+  return weightedEntries
+}
+
 
 /**
  * Assigns a millisecond-based weight to every UTxO by tracking the interval
@@ -211,7 +253,7 @@ export const getTimeWeightedDailyTokenPrices = (
   return dailyTokenPrices
 }
 
-export async function processTokenPrices(orderedTxOs: OrderedPoolOracleTxOs[], latestPriceTimestamp?: Date) {
+export async function processTokenPrices(orderedTxOs: OrderedPoolOracleTxOs[], dexPoolTxOs: DexPoolTxOs[], latestPriceTimestamp?: Date) {
   const start = Date.now()
   logger.info(`=== Processing Token Prices ===`)
   const dailyTxOs = breakIntoDays(orderedTxOs)
@@ -220,54 +262,8 @@ export async function processTokenPrices(orderedTxOs: OrderedPoolOracleTxOs[], l
 
   const dataToInsert: TokenPrice[] = []
 
-  const dexsPricesPerDay = await getDexsTokenPrices(dailyTxOs, latestPriceTimestamp)
+  //const dexsPricesPerDay = await getDexsTokenPrices(dailyTxOs, latestPriceTimestamp)
 
-  for (const token of Object.keys(dailyTokenPrices) as AllTokens[]) {
-    const tokenPrices = dailyTokenPrices[token]
-
-    if (tokenPrices.length === 0) continue
-
-    const processed = processAnalyticsDataToInsert(tokenPrices).map((row) => {
-      const dayKey = new Date(row.timestamp).toISOString().slice(0, 10)
-
-      const dayEntry = dexsPricesPerDay.find(
-        (e) => new Date(e.day).toISOString().slice(0, 10) === dayKey
-      )
-
-      if (token !== "DJED") {
-        return row
-      }
-
-      const prices = dayEntry?.prices ?? []
-
-      const dexFields = Object.keys(DEX_CONFIG).reduce(
-        (acc, dexKey) => {
-          const djedAdaPrice = prices.find(
-            (p) => normalizeDexKey(p.dex) === normalizeDexKey(dexKey)
-          )?.djedAda
-
-          const djedUsdPrice = prices.find(
-            (p) => normalizeDexKey(p.dex) === normalizeDexKey(dexKey)
-          )?.djedUsd
-
-          acc[`${dexKey}DjedAdaPrice` as keyof DexDjedAdaPriceFields] =
-            Number(djedAdaPrice ?? 0)
-
-          acc[`${dexKey}DjedUsdPrice` as keyof DexDjedAdaPriceFields] =
-            Number(djedUsdPrice ?? 0)
-
-          return acc
-        },
-        {} as DexDjedAdaPriceFields
-      )
-
-      return {
-        ...row,
-        ...dexFields,
-      }
-    })
-    dataToInsert.push(...processed)
-  }
 
   const result = await prisma.tokenPrice.createMany({
     data: dataToInsert,

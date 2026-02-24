@@ -1,322 +1,418 @@
-import { DEX_CONFIG, type DexNetworkConfig } from "../../../../dex.config";
 import { logger } from "../../../../utils/logger";
-import { blockfrost, normalizeToDay } from "../../../utils";
 import type { AddressTransactionsResponse } from "@open-djed/blockfrost/src/types/address/addressTransaction";
-import type { TransactionUtxoAmount, TransactionUtxoOutput, TransactionUtxoResponse } from "@open-djed/blockfrost/src/types/transaction/transactionUtxo";
-import {  adaDJEDRate, djedToUsdPrice, Rational } from "@open-djed/math";
-import { calculateMedian } from "@open-djed/math/src/number";
+import type { TransactionUtxo } from "@open-djed/blockfrost/src/types/transaction/transactionUtxo";
 import { env } from "../../../../../lib/env";
 import type { Network } from "../../../../types/network";
-import type { DexDailyPrices, DexName, DexPriceEntry, PoolLiquidity } from "../../../../types/dex";
-import { aggregateDexPricesPerDay, normalizeDexKey, readAddressTxFromFile, readDexPricesFromFile, writeAddressTxToFile, writeDexPricesToFile } from "./utils";
-import { DJED_POLICY_ID_AND_NAME } from "./constants";
-import type { DailyUTxOs } from "../../../types";
+import { aggregateDexPricesPerDay } from "./utils";
+import { TOKENS, type TokenClass } from "../../../../tokens";
+import { type DexProvider, MinswapProvider, WingridersProvider } from "./dexProvider";
+import JSONbig from "json-bigint"
+import { writeFile, readFile } from "fs/promises"
+import { assignTimeWeights, type WeightedEntry } from "../updateTokenPrices";
+import type { OracleUTxoWithDatumAndTimestamp } from "../../../types";
+import { Rational } from "@open-djed/math";
+import { bigint } from "zod";
 import { findOracleByTimestamp } from "../../../../oracle";
+import { prisma } from "../../../../../lib/prisma";
+import type { Dex } from "../../../../../generated/prisma/enums";
+import type { TokenPriceHistory } from "../TokenPriceHistory";
 
-export async function getDexsTokenPrices(oracleUtxos: DailyUTxOs[], latestPriceTimestamp?: Date): Promise<DexDailyPrices[]> {
-  const network = env.NETWORK.toLowerCase() as Network
 
-  const dexPromises = Object.values(DEX_CONFIG).map(async (dex) => {
-    const networkConfig = dex[network]
-    const dexName = normalizeDexKey(dex.displayName)
-  
-    if (!networkConfig || !dexName) {
-      logger.warn(`Skipping dex ${dex.displayName} because it has no valid network config or name`)
-      return null
+export type DexPoolEntry = {
+  dexName: Dex
+  timestamp: Date
+  txHash: string
+} & Pool
+
+export type Pool = {
+  tokenA: TokenClass
+  tokenB: TokenClass
+  reserveA: bigint
+  reserveB: bigint
+}
+
+export interface DailyWeightedPool {
+  day: Date
+  dexName: string
+  tokenA: TokenClass
+  tokenB: TokenClass
+  avgReserveA: number
+  avgReserveB: number
+  totalWeightMs: number
+}
+
+
+export interface DailyDexEntry {
+  timestamp: Date
+  startTimestamp: Date
+  endTimestamp: Date
+  dexs: Record<string, Pool[]> // CHANGE THIS to not be string
+}
+
+export type DailyWeightedOracle = {
+  day: Date
+  avgAdaUSDExchangeRate: number
+  totalWeightMs: number
+}
+
+export function calculateWeightedDailyOracle(
+  weightedEntries: WeightedEntry<OracleUTxoWithDatumAndTimestamp>[],
+): DailyWeightedOracle[] {
+  const map = new Map<string, { sumPrice: number; totalWeight: number }>()
+
+  for (const entry of weightedEntries) {
+    const dayKey = entry.day.toISOString().slice(0, 10)
+
+    if (!map.has(dayKey)) {
+      map.set(dayKey, { sumPrice: 0, totalWeight: 0 })
     }
 
-    const hasAddress = !!networkConfig.address
-    if (!hasAddress) {
-      logger.warn(`Skipping dex ${dex.displayName} because it has no valid address`)
-      return null
+    const record = map.get(dayKey)
+    if (!record) continue
+
+    const price = Number(entry.oracleDatum.oracleFields.adaUSDExchangeRate.numerator) / Number(entry.oracleDatum.oracleFields.adaUSDExchangeRate.denominator)
+
+    const weightMs = Math.floor(entry.weightMs)
+    record.sumPrice += price * weightMs
+    record.totalWeight += weightMs
+  }
+
+  const result: DailyWeightedOracle[] = []
+  for (const [dayKey, record] of map.entries()) {
+    const avgPrice = record.totalWeight > 0 ? record.sumPrice / record.totalWeight : 0
+    result.push({
+      day: new Date(dayKey),
+      avgAdaUSDExchangeRate: avgPrice,
+      totalWeightMs: record.totalWeight,
+    })
+  }
+
+  return result.sort((a, b) => a.day.getTime() - b.day.getTime())
+}
+
+export function calculateWeightedDailyAverages(
+  weightedEntries: WeightedEntry<DexPoolEntry>[],
+): DailyWeightedPool[] {
+  const map = new Map<string, { dexName: string; sumA: bigint; sumB: bigint; totalWeight: number, tokenA: TokenClass, tokenB: TokenClass }>()
+
+  for (const entry of weightedEntries) {
+    const dayKey = entry.day.toISOString().slice(0, 10)
+
+    if (!map.has(dayKey)) {
+      map.set(dayKey, { 
+        dexName: entry.dexName, 
+        tokenA: entry.tokenA,
+        tokenB: entry.tokenB,
+        sumA: BigInt(0), 
+        sumB: BigInt(0), 
+        totalWeight: 0 
+      })
     }
 
-    logger.info(`Processing dex ${dexName}`)
+    const record = map.get(dayKey)
+    if (!record) continue
 
-    const dexPrices = await getDexTokenPrices(dexName, networkConfig, oracleUtxos, latestPriceTimestamp)
-    if (!dexPrices || dexPrices.length === 0) {
-      logger.warn(`No prices found for dex ${dexName}`)
-      return null
+    const weightMs = Math.floor(entry.weightMs)
+    const reserveA = typeof entry.reserveA === "bigint" ? entry.reserveA : BigInt(entry.reserveA)
+    const reserveB = typeof entry.reserveB === "bigint" ? entry.reserveB : BigInt(entry.reserveB)
+
+    record.sumA += reserveA * BigInt(weightMs)
+    record.sumB += reserveB * BigInt(weightMs)
+    record.totalWeight += weightMs
+  }
+
+  const result: DailyWeightedPool[] = []
+  for (const [dayKey, record] of map.entries()) {
+    const avgA = Number(record.sumA / BigInt(record.totalWeight))
+    const avgB = Number(record.sumB / BigInt(record.totalWeight))
+    result.push({
+      day: new Date(dayKey),
+      dexName: record.dexName,
+      tokenA: record.tokenA,
+      tokenB: record.tokenB,
+      avgReserveA: avgA,
+      avgReserveB: avgB,
+      totalWeightMs: record.totalWeight,
+    })
+  }
+
+  return result.sort((a, b) => a.day.getTime() - b.day.getTime())
+}
+
+export function calculatePoolWeightedPrices(
+  pools: DailyWeightedPool[],
+  oracles: DailyWeightedOracle[],
+) {
+  const oracleMap = new Map<number, DailyWeightedOracle>()
+
+  for (const oracle of oracles) {
+    oracleMap.set(oracle.day.getTime(), oracle)
+  }
+
+  return pools.map(pool => {
+    const oracle = oracleMap.get(pool.day.getTime())
+
+    if (!oracle) {
+      throw new Error(
+        `No matching oracle found for day ${pool.day.toISOString().slice(0, 10)} while calculating weighted price for dex ${pool.dexName}`
+      )
     }
 
-    return dexPrices
+    const price =
+      Number(pool.avgReserveA) /
+      Number(pool.avgReserveB) *
+      oracle.avgAdaUSDExchangeRate
+
+    return {
+      ...pool,
+      priceUSD: price,
+    }
   })
+}
 
-  const allDexPrices = (await Promise.all(dexPromises))
-    .filter((p): p is DexDailyPrices[] => p !== null)
+function getLastPoolStateByDex(dexName: Dex) {
+  return prisma.lastDexPoolState.findUnique({
+    where: { dexName },
+  })
+}
 
-  if (allDexPrices.length === 0) {
+export async function getDexsPoolHistoryAmounts(oracleWeightedDaily: DailyWeightedOracle[],latestPriceTimestamp?: Date) {
+
+  const providers = [new MinswapProvider(), new WingridersProvider()]
+  const lastPoolRecords = []
+
+  const [minswapPoolAmounts , wingridersPoolAmounts] = await Promise.all(
+    providers.map(provider => getDexPoolHistoryAmounts(provider, latestPriceTimestamp))
+  )
+  await Promise.all(
+    [
+      saveToJsonFile("./dex-minswap-entries.json", minswapPoolAmounts),
+      saveToJsonFile("./dex-wingriders-entries.json", wingridersPoolAmounts),
+    ]
+  )
+
+  if (minswapPoolAmounts) lastPoolRecords.push(minswapPoolAmounts[0])
+  if (wingridersPoolAmounts) lastPoolRecords.push(wingridersPoolAmounts[0])
+
+  const [firstMinswapPool, firstWingridersPool] = await Promise.all(
+    providers.map(provider => getLastPoolStateByDex(provider.getName()))
+  )
+  
+  if (firstMinswapPool && minswapPoolAmounts) {
+    minswapPoolAmounts.unshift({
+      dexName: firstMinswapPool.dexName,
+      timestamp: firstMinswapPool.timestamp,
+      txHash: firstMinswapPool.txHash,
+      tokenA: TOKENS[env.NETWORK.toLowerCase() as Network].ADA,
+      tokenB: TOKENS[env.NETWORK.toLowerCase() as Network].DJED,
+      reserveA: firstMinswapPool.reserveA,
+      reserveB: firstMinswapPool.reserveB,
+    })
+  }
+
+  if (firstWingridersPool && wingridersPoolAmounts) {
+    wingridersPoolAmounts.unshift({
+      dexName: firstWingridersPool.dexName,
+      timestamp: firstWingridersPool.timestamp,
+      txHash: firstWingridersPool.txHash,
+      tokenA: TOKENS[env.NETWORK.toLowerCase() as Network].ADA,
+      tokenB: TOKENS[env.NETWORK.toLowerCase() as Network].DJED,
+      reserveA: firstWingridersPool.reserveA,
+      reserveB: firstWingridersPool.reserveB,
+    })
+  }
+
+  /*const [minswapPoolAmounts, wingridersPoolAmounts] = await Promise.all(
+    [
+      readFromJsonFile<DexPoolEntry[]>("./dex-minswap-entries.json"),
+      readFromJsonFile<DexPoolEntry[]>("./dex-wingriders-entries.json"),
+    ]
+  )*/
+
+  const [minswapWeighted, wingridersWeighted] = await Promise.all([
+    Promise.resolve(assignTimeWeights(minswapPoolAmounts ?? []) as WeightedEntry<DexPoolEntry>[]),
+    Promise.resolve(assignTimeWeights(wingridersPoolAmounts ?? []) as WeightedEntry<DexPoolEntry>[]),
+  ])
+  await Promise.all(
+    [
+      saveToJsonFile("./dex-minswap-weighted.json", minswapWeighted),
+      saveToJsonFile("./dex-wingriders-weighted.json", wingridersWeighted),
+    ]
+  )
+
+  /*const [minswapWeighted, wingridersWeighted] = await Promise.all([
+    readFromJsonFile<WeightedEntry<DexPoolEntry>[]>("./dex-minswap-weighted.json"),
+    readFromJsonFile<WeightedEntry<DexPoolEntry>[]>("./dex-wingriders-weighted.json"),
+  ])*/
+
+  const [minswapDaily, wingridersDaily] = await Promise.all([
+    Promise.resolve(calculateWeightedDailyAverages(minswapWeighted)),
+    Promise.resolve(calculateWeightedDailyAverages(wingridersWeighted)),
+  ])
+
+  const [minswapDailyPrice, wingridersDailyPrice] = await Promise.all([
+    Promise.resolve(calculatePoolWeightedPrices(minswapDaily, oracleWeightedDaily)),
+    Promise.resolve(calculatePoolWeightedPrices(wingridersDaily, oracleWeightedDaily)),
+  ])
+
+  await Promise.all(
+    [
+      saveToJsonFile("./dex-minswap-daily-prices.json", minswapDailyPrice),
+      saveToJsonFile("./dex-wingriders-daily-prices.json", wingridersDailyPrice),
+    ]
+  )
+
+  //const aggregated = aggregateDexPricesPerDay(minswapWeighted, wingridersWeighted)
+  
+  return {
+    lastPoolRecords,
+    minswap: minswapDailyPrice,
+    wingriders: wingridersDailyPrice,
+  }
+}
+
+export async function getDexPoolHistoryAmounts(provider: DexProvider, latestPriceTimestamp?: Date): Promise<DexPoolEntry[]> {
+
+  let dexTransactions: AddressTransactionsResponse = [] // todo change this to const
+  const dexPoolEntries: DexPoolEntry[] = [] // todo change this to const
+
+  const dexName = provider.getName()
+  const network = env.NETWORK.toLowerCase() as Network
+  const djedToken = TOKENS[network].DJED
+  const adaToken = TOKENS[network].ADA
+
+  if (!djedToken) {
+    logger.error(`DJED token not found for network ${network}. Cannot fetch dex token prices.`)
     return []
   }
 
-  const aggregated = aggregateDexPricesPerDay(allDexPrices)
-
-  return aggregated
-}
-
-export async function getDexTokenPrices(dexName: DexName, dexConfig: DexNetworkConfig, oracleUtxos: DailyUTxOs[], latestPriceTimestamp?: Date): Promise<DexDailyPrices[]> {
-
-  let dexTransactions: AddressTransactionsResponse = [] // todo change this to const
-  let dayEntries: DexDailyPrices[] = [] // todo change this to const
-
-  if (!dexConfig.address) {
-    throw new Error(`Missing address or poolId for dex ${dexName}`)
-  }
-
   try {
-    let request = blockfrost.getAddressTransactions({ address: dexConfig.address, order: "desc"})
-
-    if (latestPriceTimestamp) {
-      request = request.withFilter(() => ({
-        filter: (item) => item.block_time >= latestPriceTimestamp.getTime(),
-        stop: (item) => item.block_time < latestPriceTimestamp.getTime(),
-      }))
-    }
-    dexTransactions = await request.allPages().retry()
-  
-    if (dexTransactions.length === 0) {
-      logger.warn(`No transactions found for dex ${dexName} at address ${dexConfig.address}`)
-      return []
-    }
-
-    logger.info(`Fetched ${dexTransactions.length} transactions for dex ${dexName}`)
-    
+    dexTransactions = await provider.getAddressTransactions() // TODO: CHANGE THIS TO SUPPORT FILTERS
+    // TODO: continue... this should have the filters
   } catch (error) {
     logger.error(error, `Error fetching transactions for dex ${dexName}`)
     return []
   }
 
-  // TODO: REMOVE THIS
-  //await writeAddressTxToFile(dexTransactions, `./dexTransactions${dexName}.json`)
-
-  /*dexTransactions = await readAddressTxFromFile(`./dexTransactions${dexName}.json`)
-  if (dexTransactions.length === 0) {
-    logger.warn(`No transactions read from file for dex ${dexName}`)
-    return []
-  }
-  logger.info(`Read ${dexTransactions.length} transactions from file for dex ${dexName}`)
-  */
-
-  // Get all UTXOS for the dex Address
-  try {
-    const concurrency = 5
-    let index = 0
-
-    // TODO: CHANGE THIS PROMISE LOOP
-    const workers = Array.from({ length: concurrency }, async () => {
-      while (index < dexTransactions.length) {
-        const tx = dexTransactions[index++]
-        if (!tx) break
-
-        const blockTimeInMs = tx.block_time * 1000
-        
-        const transactionUtxos: TransactionUtxoResponse = await blockfrost.getTransactionUTxOs(
-          { hash: tx.tx_hash }
-        ).retry()
-
-        if (!transactionUtxos) {
-          // Use the previous liquidity and calculate the new price
-          if (dayEntries.length === 0) {
-            continue
-          }
-
-          const lastDayEntry = dayEntries[dayEntries.length - 1]
-          if (!lastDayEntry || lastDayEntry.prices.length === 0) {
-            logger.warn(`No previous day entry found for transaction ${tx.tx_hash} of dex ${dexName} at block time ${tx.block_time}`)
-            continue
-          }
-          
-          const lastDayEntryPrice = lastDayEntry.prices[lastDayEntry.prices.length - 1]
-          if (!lastDayEntryPrice) {
-            logger.warn(`No previous day entry price found for transaction ${tx.tx_hash} of dex ${dexName} at block time ${tx.block_time}`)
-            continue
-          }
-
-          const oracle = findOracleByTimestamp(new Date(blockTimeInMs), oracleUtxos)
-          if (!oracle) {
-            logger.warn(`No oracle found for transaction ${tx.tx_hash} of dex ${dexName} at block time ${tx.block_time}`)
-            continue
-          }
-
-          const oraclePrice = adaDJEDRate({oracleFields: oracle.oracleDatum.oracleFields})
-          if (!oraclePrice) {
-            logger.warn(`No oracle price found for transaction ${tx.tx_hash} of dex ${dexName} at block time ${tx.block_time}`)
-            continue
-          }
-
-          if (!lastDayEntryPrice.poolLiquidity) {
-            logger.error(`No pool liquidity found for transaction ${tx.tx_hash} of dex ${dexName}`)
-            continue
-          }
-
-          const djedPriceInAda = new Rational({
-            numerator: lastDayEntryPrice.poolLiquidity.adaLiquidity,
-            denominator: lastDayEntryPrice.poolLiquidity.djedLiquidity,
-          })
-
-          const djedPriceUsd = djedToUsdPrice(djedPriceInAda, {oracleFields: oracle.oracleDatum.oracleFields})
-
-          const day = normalizeToDay(new Date(blockTimeInMs))
-
-          let dayEntry = dayEntries.find(d => d.day.getTime() === day.getTime())
-
-          if (!dayEntry) {
-            dayEntry = {
-              day,
-              prices: [],
-            }
-            dayEntries.push(dayEntry)
-          }
-
-          dayEntry.prices.push({
-            dex: dexName,
-            djedAda: djedPriceInAda.toNumber(),
-            djedUsd: djedPriceUsd,
-            poolLiquidity: lastDayEntryPrice.poolLiquidity,
-          })
-
-          continue
-        }
-        // TODO: CHANGE, CODE IS REPEATED
-
-        const poolReserve = selectPoolOutput(transactionUtxos.outputs, dexConfig.address)
-        if (!poolReserve) {
-          continue
-        }
-      
-        if (poolReserve.djedLiquidity <= 0n) {
-          logger.warn(`Invalid DJED liquidity in transaction ${tx.tx_hash} of dex ${dexName}`)
-          return
-        }
-
-        const oracle = findOracleByTimestamp(new Date(blockTimeInMs), oracleUtxos)
-        if (!oracle) {
-          logger.warn(`No oracle found for transaction ${tx.tx_hash} of dex ${dexName} at block time ${tx.block_time}`)
-          continue
-        }
-
-        const oraclePrice = adaDJEDRate({oracleFields: oracle.oracleDatum.oracleFields})
-        if (!oraclePrice) {
-          logger.warn(`No oracle price found for transaction ${tx.tx_hash} of dex ${dexName} at block time ${tx.block_time}`)
-          continue
-        }
-
-        const djedPriceInAda = new Rational({
-          numerator: poolReserve.adaLiquidity,
-          denominator: poolReserve.djedLiquidity,
-        })
-
-        const djedPriceUsd = djedToUsdPrice(djedPriceInAda, {oracleFields: oracle.oracleDatum.oracleFields})
-        
-        const day = normalizeToDay(new Date(blockTimeInMs))
-
-        let dayEntry = dayEntries.find(d => d.day.getTime() === day.getTime())
-
-        if (!dayEntry) {
-          dayEntry = {
-            day,
-            prices: [],
-          }
-          dayEntries.push(dayEntry)
-        }
-
-        dayEntry.prices.push({
-          dex: dexName,
-          djedAda: djedPriceInAda.toNumber(),
-          djedUsd: djedPriceUsd,
-          poolLiquidity: poolReserve,
-        })
-
-        //await writeDexPricesToFile(dayEntries, `./dexPrices${dexName}.json`)
-      }
-    })
-
-    await Promise.all(workers)
-
-    // TODO: REMOVE THIS
-    //dayEntries = await readDexPricesFromFile(`./dexPrices${dexName}.json`)
-
-    // Calculate the median price for each day
-    dayEntries = dayEntries.map((dayEntry) => {
-      const medianPrices = calculateDexPricesEntries(dayEntry.prices, dexName)
-
-      return {
-        ...dayEntry,
-        prices: [{
-          dex: dexName,
-          djedAda: medianPrices.djedAda,
-          djedUsd: medianPrices.djedUsd
-        }]
-      }
-    }) 
-    
-  } catch (error) {
-    logger.error(error, `Error fetching UTXOs for transactions of dex ${dexName}`)
-    return []
-  }
-
-  return dayEntries
-}
-
-function calculateDexPricesEntries(
-  dexPrices: DexPriceEntry[],
-  dexName: string,
-) {
-  const djedAdaValues = dexPrices
-    .filter(p => p.dex === dexName)
-    .map(p => Number(p.djedAda))
+    /*if (latestPriceTimestamp) {
+      request = request.withFilter(() => ({
+        filter: (item) => item.block_time >= latestPriceTimestamp.getTime(),
+        stop: (item) => item.block_time < latestPriceTimestamp.getTime(),
+      }))
+    }
+    dexTransactions = await request.allPages().retry()*/
   
-  const djedUsdValues = dexPrices
-    .filter(p => p.dex === dexName)
-    .map(p => Number(p.djedUsd))
+  if (dexTransactions.length === 0) {
+    logger.warn(`No transactions found for dex ${dexName}`)
+    return []
+  }
 
-  // TODO: WE SHOULNDT BE CALCULATING THE MEDIAN WE NEED TO use TIME-Weight average
-  const djedAdaMedian = calculateMedian(
-    djedAdaValues
-  )
+  logger.info(`Fetched ${dexTransactions.length} transactions for dex ${dexName}`)
+  
+  for (const transaction of dexTransactions) {
+    let txUtxOs: TransactionUtxo | null = null
 
-  const djedUsdMedian = calculateMedian(
-    djedUsdValues
-  )
+    try {
+      txUtxOs = await provider.getTransactionUtxOs(transaction)
+    } catch (error) {
+      logger.error(error, `Error fetching UTXOs for transactions of dex ${dexName}`)
+      return []
+    }
+    const poolAmount = provider.getPoolAmountFromUtxo(txUtxOs, djedToken)
 
-  return { djedAda: djedAdaMedian, djedUsd: djedUsdMedian }
+    if (!poolAmount) {
+      logger.warn(`No pool amount found in transaction ${transaction.tx_hash} for dex ${dexName}`)
+      continue
+    }
+  
+    const dexPoolEntry: DexPoolEntry  = {
+      timestamp: new Date(transaction.block_time * 1000),
+      dexName: dexName,
+      tokenA: adaToken,
+      tokenB: poolAmount.token,
+      reserveA: BigInt(poolAmount.adaAmount),
+      reserveB: BigInt(poolAmount.tokenAmount),
+      txHash: transaction.tx_hash,
+    }
+
+    dexPoolEntries.push(dexPoolEntry)
+  }
+
+  return dexPoolEntries
 }
 
-function selectPoolOutput(
-  utxoOutputs: TransactionUtxoOutput[],
-  dexAddress: string
-): PoolLiquidity | null {
-  const outputs = utxoOutputs.filter(
-    output =>
-      output.address === dexAddress &&
-      output.amount.some(amt => amt.unit === DJED_POLICY_ID_AND_NAME)
-  )
-  if (outputs.length === 0) return null
+function aggregateByDay(entries: DexPoolEntry[]): DailyDexEntry[] {
+  const map = new Map<string, DailyDexEntry>()
 
-  const djedPoolOutput = outputs.find(output =>
-    output.inline_datum !== null
-  )
-  if (!djedPoolOutput) return null
+  for (const entry of entries) {
+    const timestamp = entry.timestamp instanceof Date
+      ? entry.timestamp
+      : new Date(entry.timestamp)
 
-  const djedAmount = djedPoolOutput.amount.find(
-    (amt: TransactionUtxoAmount) =>
-      amt.unit === DJED_POLICY_ID_AND_NAME
-  )
-  if (!djedAmount) return null
+    if (Number.isNaN(timestamp.getTime())) {
+      logger.warn(`Invalid timestamp found while aggregating dex entry for ${entry.dexName}. Skipping entry.`)
+      continue
+    }
 
-  const best = outputs.reduce((prev, curr) => {
-    const prevLovelace = BigInt(prev.amount.find(amt => amt.unit === "lovelace")?.quantity ?? 0)
-    const currLovelace = BigInt(curr.amount.find(amt => amt.unit === "lovelace")?.quantity ?? 0)
-    return currLovelace > prevLovelace ? curr : prev
-  })
+    const dateKey = timestamp.toISOString().slice(0, 10)
 
-  const lovelaceAmount = best.amount.find(amt => amt.unit === "lovelace")?.quantity
-  const djedPoolLiquidity = djedAmount.quantity
+    if (!map.has(dateKey)) {
+      map.set(dateKey, {
+        timestamp: new Date(dateKey),
+        startTimestamp: timestamp,
+        endTimestamp: timestamp,
+        dexs: {}
+      })
+    }
 
-  if (!lovelaceAmount || !djedPoolLiquidity) return null
+    const dayEntry = map.get(dateKey)
+    if (!dayEntry) continue
 
-  return {
-    djedLiquidity: BigInt(djedPoolLiquidity),
-    adaLiquidity: BigInt(lovelaceAmount),
+    if (timestamp < dayEntry.startTimestamp) dayEntry.startTimestamp = timestamp
+    if (timestamp > dayEntry.endTimestamp) dayEntry.endTimestamp = timestamp
+
+    if (!dayEntry.dexs[entry.dexName]) {
+      dayEntry.dexs[entry.dexName] = []
+    }
+
+    const dexPools = dayEntry.dexs[entry.dexName]
+    if (dexPools) {
+      dexPools.push({
+        tokenA: entry.tokenA,
+        tokenB: entry.tokenB,
+        reserveA: entry.reserveA,
+        reserveB: entry.reserveB,
+      })
+    }
   }
+
+  return Array.from(map.values()).sort(
+    (a, b) => a.timestamp.getTime() - b.timestamp.getTime()
+  )
+}
+
+export async function readFromJsonFile<T = unknown>(path: string): Promise<T> {
+  const content = await readFile(path, "utf-8")
+  const parsed = JSONbig.parse(content)
+
+  const reviveDates = (obj: any): any => {
+    if (Array.isArray(obj)) return obj.map(reviveDates)
+    if (obj && typeof obj === "object") {
+      for (const key in obj) {
+        if (typeof obj[key] === "string" && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d+Z$/.test(obj[key])) {
+          obj[key] = new Date(obj[key])
+        } else if (typeof obj[key] === "object") {
+          obj[key] = reviveDates(obj[key])
+        }
+      }
+    }
+    return obj
+  }
+
+  return reviveDates(parsed) as T
+}
+
+export async function saveToJsonFile(path: string, data: unknown) {
+  const serialized = JSONbig.stringify(data, null, 2)
+  await writeFile(path, serialized, "utf-8")
 }

@@ -1,8 +1,12 @@
+import { prisma } from "../../lib/prisma"
 import { logger } from "../utils/logger"
 import { buildPopulateContext, buildUpdateContext } from "./analytics/context/context"
 import { historyScriptRegistry } from "./registry"
 
 export async function runAllHistoryScripts() {
+
+  //const result = await prisma.tokenPrice.deleteMany({}) // TODO: DELETE THIS
+  //logger.info(`Deleted ${result.count} token price records during update.`)
 
   logger.info("=== Running scripts to update History Tables ===")
   let populateContext = undefined
