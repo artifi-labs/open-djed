@@ -48,8 +48,9 @@ export async function calculateStakingRewards() {
   await processBatch(
     newRewards,
     async (rewards) => {
-      // Cardano rewards distributed at epoch N are earned from stake active in epoch N-2
-      const activeStake = stakeByEpoch.get(rewards.epoch - 2)
+      // Blockfrost rewards.epoch refers to the epoch when the rewards were earned.
+      // The stake active in that same epoch earned those rewards.
+      const activeStake = stakeByEpoch.get(rewards.epoch)
       if (!activeStake || activeStake === 0n) return
 
       const rate = (Number(rewards.amount) / Number(activeStake)) * 100
