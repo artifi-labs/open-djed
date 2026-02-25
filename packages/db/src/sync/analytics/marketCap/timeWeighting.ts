@@ -27,12 +27,12 @@ export const assignTimeWeightsToDailyMarketCapUTxOs = (
   let activeOracleEntry: OrderedPoolOracleTxOs | null = null
 
   return dailyChunks.map((dailyDayChunk, chunkIndex) => {
-    const timedEntries: WeightedMarketCapEntry[] = dailyDayChunk.entries.map(
-      (entry) => ({
+    const timedEntries: WeightedMarketCapEntry[] = dailyDayChunk.entries
+      .filter((entry) => entry.key === "pool" || entry.key === "oracle")
+      .map((entry) => ({
         ...entry,
         weight: 0,
-      }),
-    )
+      }))
 
     const dayStartMs = Date.parse(dailyDayChunk.startIso)
     const dayEndMs = Date.parse(dailyDayChunk.endIso)
