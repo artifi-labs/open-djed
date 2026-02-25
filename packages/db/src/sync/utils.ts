@@ -403,7 +403,7 @@ export async function getEveryResultFromPaginatedEndpoint<T>(
   logger.info("Fetching all results...")
   const everyOrderTx: T[] = []
   let txPage = 1
-  while (true) {
+  while (txPage < 101) {
     try {
       logger.debug(`Fetching page ${txPage}...`)
       const pageResult = (await blockfrostFetch(
@@ -467,9 +467,9 @@ export async function getAssetTxsUpUntilSpecifiedTime(
   return everyOrderTx
 }
 
-const getUtcDayKey = (timestamp: string) => timestamp.slice(0, 10)
-const formatDayIso = (day: string) => `${day}T00:00:00.000Z`
-const formatDayEndIso = (day: string) => `${day}T23:59:59.999Z`
+export const getUtcDayKey = (timestamp: string) => timestamp.slice(0, 10)
+export const formatDayIso = (day: string) => `${day}T00:00:00.000Z`
+export const formatDayEndIso = (day: string) => `${day}T23:59:59.999Z`
 export const MS_PER_DAY = 24 * 60 * 60 * 1000
 
 /**
@@ -505,10 +505,11 @@ export const breakIntoDays = (
     }))
 }
 
-const withBlockTime = (
+export const withBlockTime = (
   txs: { tx_hash: string; block_time: number }[],
   utxos: UTxO[],
-  assetId: string,
+  assetId?: string,
+  address?: string,
 ) => {
   const txTimeByHash = new Map(
     txs.map((tx) => [tx.tx_hash, tx.block_time] as const),
@@ -519,8 +520,12 @@ const withBlockTime = (
     if (blockTime === undefined) return []
 
     return utxo.outputs
-      .filter((output) => output.data_hash !== null)
-      .filter((output) => output.amount.some((amt) => amt.unit === assetId))
+      .filter(
+        (output) =>
+          output.data_hash !== null &&
+          (!assetId || output.amount.some((amt) => amt.unit === assetId)) &&
+          (!address || output.address === address),
+      )
       .map((output) => ({
         ...output,
         tx_hash: utxo.hash,

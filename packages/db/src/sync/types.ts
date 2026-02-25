@@ -255,7 +255,7 @@ export type DailyUTxOs = {
   day: string
   startIso: string
   endIso: string
-  entries: OrderedPoolOracleTxOs[]
+  entries: OrderedPoolOracleTxOs[] | OrderedDexOracleTxOs[]
 }
 
 //TODO: to be deleted after confirm datum logic
@@ -310,6 +310,47 @@ export type WeightedTokenPriceEntry = OrderedPoolOracleTxOs & {
 
 export type DailyTokenPriceUTxOsWithWeights = Omit<DailyUTxOs, "entries"> & {
   entries: WeightedTokenPriceEntry[]
+}
+
+export type DexTokenPrice = {
+  timestamp: Date
+  usdValue: number
+  adaValue: number
+  block: string
+  slot: number
+}
+
+export type DexValuesWithDatumAndTimestamp = {
+  djedPrice: number
+  timestamp: string
+  block_hash: string
+  block_slot: number
+}
+
+export type OrderedDexOracleTxOs =
+  | {
+      key: "dex"
+      value: DexValuesWithDatumAndTimestamp
+    }
+  | {
+      key: "oracle"
+      value: OracleUTxoWithDatumAndTimestamp
+    }
+
+export type WeightedDexPriceEntry = OrderedDexOracleTxOs & {
+  weight: number
+  usdValue?: number
+  adaValue?: number
+  period?: {
+    start: string
+    end: string
+  }
+  usedDexValue?: DexValuesWithDatumAndTimestamp["djedPrice"]
+  usedOracleDatum?: OracleUTxoWithDatumAndTimestamp["oracleDatum"]
+}
+
+export type DailyDexPriceUTxOsWithWeights = Omit<DailyUTxOs, "entries"> & {
+  entries: WeightedDexPriceEntry[]
 }
 
 export type Tokens = "DJED" | "SHEN" | "ADA"
