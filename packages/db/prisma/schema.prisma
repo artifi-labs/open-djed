@@ -87,7 +87,7 @@ model TokenPrice {
   usdValue  Decimal
   adaValue  Decimal
   block     String // block hash
-  slot      BigInt // block slot
+  slot      BigInt // block slot  
 
   @@unique([token, timestamp])
 }
@@ -101,10 +101,8 @@ model ADAStakingRewards {
 }
 
 model ADAFeesEarnings {
-  id             Int      @id @default(autoincrement())
-  epoch          Int      @unique
-  startTimestamp DateTime
-  endTimestamp   DateTime
-  value          Decimal
+  id        Int      @id @default(autoincrement())
+  timestamp DateTime @db.Date
+  fee       Decimal
 }
 

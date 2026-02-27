@@ -1,27 +1,34 @@
 import { prisma } from "../../lib/prisma"
+import type { Period } from "../sync/types"
+import { getStartIso } from "../sync/utils"
 
-export const getPeriodFeesEarnings = (startDate: Date, endDate: Date) => {
-  return prisma.ADAFeesEarnings.findMany({
+export const getPeriodFeesEarnings = (period: Period) => {
+  const startIso = getStartIso(period)
+
+  return prisma.aDAFeesEarnings.findMany({
     where: {
-      startTimestamp: { lt: endDate },
-      endTimestamp: { gt: startDate },
+      ...(startIso && { timestamp: { gte: startIso } }),
     },
     select: {
       id: true,
-      epoch: true,
-      startTimestamp: true,
-      endTimestamp: true,
-      value: true,
+      timestamp: true,
+      fee: true,
     },
-    orderBy: [{ epoch: "asc" }],
+    orderBy: {
+      timestamp: "asc",
+    },
   })
 }
 
-export const getLatestFeesEarnings = () =>
-  prisma.ADAFeesEarnings.findFirst({
+export const getLatestFeesEarnings = async () => {
+  return await prisma.aDAFeesEarnings.findFirst({
     orderBy: {
-      epoch: "desc",
+      timestamp: "desc",
     },
   })
+}
 
-export const deleteAllFeesEarnings = () => prisma.ADAFeesEarnings.deleteMany()
+export const deleteAllFeesEarnings = async () => {
+  const result = await prisma.aDAFeesEarnings.deleteMany()
+  return result
+}
