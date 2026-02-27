@@ -331,3 +331,10 @@ export type History = {
   active_epoch: number
   amount: string //Active Stake
 }
+
+export type ADAFeesEarnings = {
+  epoch: number
+  startTimestamp: Date
+  endTimestamp: Date
+  value: number
+}

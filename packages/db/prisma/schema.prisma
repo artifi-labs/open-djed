@@ -99,3 +99,12 @@ model ADAStakingRewards {
   endTimestamp   DateTime
   rate           Decimal // Staking rewards rate by epoch
 }
+
+model ADAFeesEarnings {
+  id             Int      @id @default(autoincrement())
+  epoch          Int      @unique
+  startTimestamp DateTime
+  endTimestamp   DateTime
+  value          Decimal
+}
+
