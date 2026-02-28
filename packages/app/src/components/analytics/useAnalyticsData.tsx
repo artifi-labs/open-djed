@@ -41,6 +41,18 @@ export type TokenPriceByToken = Record<
   TokenPriceChartEntry[]
 >
 
+export type DjedDexPrices = {
+  id: number
+  timestamp: string
+  adaValue: number
+  usdValue: number
+  minswapUsdValue?: number
+  minswapAdaValue?: number
+  wingridersUsdValue?: number
+  wingridersAdaValue?: number
+  token: "DJED"
+}
+
 export type CurrencyValue = "ADA" | "USD"
 export const CURRENCY_OPTIONS: Array<{ label: string; value: CurrencyValue }> =
   [
@@ -115,6 +127,16 @@ export function useAnalyticsData() {
     CHART_PERIOD_OPTIONS[1],
   )
   const [shenAdaCurrency, setShenAdaCurrency] = useState<Currency>(
+    CURRENCY_OPTIONS[0],
+  )
+
+  const [djedDexHistoricalData, setDjedDexHistoricalData] = useState<
+    DjedDexPrices[]
+  >([])
+  const [djedDexPeriod, setDjedDexPeriod] = useState<ChartPeriod>(
+    CHART_PERIOD_OPTIONS[1],
+  )
+  const [djedDexCurrency, setDjedDexCurrency] = useState<Currency>(
     CURRENCY_OPTIONS[0],
   )
 
@@ -306,6 +328,39 @@ export function useAnalyticsData() {
     [data],
   )
 
+  const fetchDjedDexHistoricalData = useCallback(
+    async (period: ChartPeriod) => {
+      try {
+        const res = await client.api["historical-djed-dex-price"].$get({
+          query: { period: period.value },
+        })
+
+        if (res.ok) {
+          const historicalData = (await res.json()) as DjedDexPrices[]
+
+          if (period.value === "All") historicalData.shift()
+          console.log("data: ", historicalData)
+          setDjedDexHistoricalData(historicalData)
+        }
+      } catch (err) {
+        console.error("Action failed:", err)
+        if (err instanceof AppError) {
+          showToast({
+            message: `${err.message}`,
+            type: "error",
+          })
+          return
+        }
+
+        showToast({
+          message: `Failed to get historical Djed - Dex prices.`,
+          type: "error",
+        })
+      }
+    },
+    [data],
+  )
+
   useEffect(() => {
     fetchReserveRatioHistoricalData(reserveRatioPeriod).catch((err) => {
       console.error("fetchReserveRatio error:", err)
@@ -330,6 +385,12 @@ export function useAnalyticsData() {
     })
   }, [shenAdaPricePeriod, shenAdaCurrency, data])
 
+  useEffect(() => {
+    fetchDjedDexHistoricalData(djedDexPeriod).catch((err) => {
+      console.error("fetchDjedDexHistoricalData error:", err)
+    })
+  }, [djedDexPeriod])
+
   return {
     reserveRatioData,
     reserveRatioPeriod,
@@ -349,6 +410,11 @@ export function useAnalyticsData() {
     setShenAdaPricePeriod,
     shenAdaCurrency,
     setShenAdaCurrency,
+    djedDexCurrency,
+    djedDexHistoricalData,
+    djedDexPeriod,
+    setDjedDexCurrency,
+    setDjedDexPeriod,
     isLoadingReserve,
   }
 }
