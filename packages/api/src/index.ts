@@ -47,6 +47,7 @@ import {
   getOrdersByAddressKeys,
   getPeriodAdaShenPrices,
   getPeriodMarketCap,
+  getPeriodPricesForAllTokens,
   getPeriodReserveRatio,
 } from "@open-djed/db"
 import { type TokenMarketCap } from "@open-djed/db/generated/prisma/enums"
@@ -815,6 +816,19 @@ const app = new Hono()
     ),
     historicalDataHandler((period) =>
       getPeriodAdaShenPrices({ period, grouped: true }),
+    ),
+  )
+  .get(
+    "/historical-djed-dex-price",
+    cacheMiddleware,
+    zValidator(
+      "query",
+      z.object({
+        period: periodSchema,
+      }),
+    ),
+    historicalDataHandler((period) =>
+      getPeriodPricesForAllTokens(period, "DJED"),
     ),
   )
 
