@@ -7,12 +7,12 @@ import {
   getUtcDayKey,
   MS_PER_DAY,
   processBatch,
-  readOrderedTxOsFromFile,
   registry,
   withBlockTime,
 } from "../../../utils"
 import type {
   Amount,
+  Block,
   DailyDexPriceUTxOsWithWeights,
   DailyUTxOs,
   DexTokenPrice,
@@ -195,27 +195,131 @@ export const getTimeWeightedDailyDexPrices = (
   return dailyDexPrices
 }
 
-export async function minswapDjedPrices() {
-  const orderedTxOs = await readOrderedTxOsFromFile("./orderedTxOs.json")
-  if (!orderedTxOs) {
-    logger.warn("No orderedTxOs read from file — skipping DB population")
-    return
-  }
-  const oracleValues = orderedTxOs
-    .filter(
-      (
-        utxo,
-      ): utxo is { key: "oracle"; value: OracleUTxoWithDatumAndTimestamp } => {
-        return utxo.key === "oracle"
+const calculateDexDailyPrices = (
+  oracleValues: OracleUTxoWithDatumAndTimestamp[],
+  dexValues: DexValuesWithDatumAndTimestamp[],
+) => {
+  const orderedMinswapOracleTxOs: OrderedDexOracleTxOs[] = [
+    ...oracleValues.map((datum) => ({
+      key: "oracle" as const,
+      value: {
+        oracleDatum: datum.oracleDatum,
+        timestamp: datum.timestamp,
+        block_hash: datum.block_hash,
+        block_slot: datum.block_slot,
       },
-    )
-    .map((utxo) => utxo.value)
+    })),
+    ...dexValues.map((out) => ({
+      key: "dex" as const,
+      value: {
+        djedPrice: out.djedPrice,
+        timestamp: out.timestamp,
+        block_hash: out.block_hash,
+        block_slot: out.block_slot,
+      },
+    })),
+  ].sort((a, b) => (a.value.timestamp < b.value.timestamp ? -1 : 1))
+  const dailyTxOs = breakIntoDaysDexs(orderedMinswapOracleTxOs)
+  const weightedDailyTxOs = assignTimeWeightsToDexPriceDailyUTxOs(dailyTxOs)
+  const dailyDexPrices = getTimeWeightedDailyDexPrices(weightedDailyTxOs)
+  return dailyDexPrices
+}
+
+export async function minswapDjedPrices(
+  oracleValues: OracleUTxoWithDatumAndTimestamp[],
+) {
+  // get the oldest oracle date, in order to avoid getting more txs than those needed
+  // this way we can also ensure the regular updates
+  // seeing that there will only be oracles since the latest updated block
+  const oldestOracle = oracleValues.reduce((prev, current) => {
+    return new Date(current.timestamp) < new Date(prev.timestamp)
+      ? current
+      : prev
+  })
+
+  const block = (await blockfrostFetch(
+    `/blocks/${oldestOracle.block_hash}`,
+  )) as Block
 
   const minswapTxs = await getEveryResultFromPaginatedEndpoint<Transaction>(
     `/addresses/${registry.minswapAddress}/transactions`,
+    block.height,
   )
+
   const minswapUTxO: UTxO[] = await processBatch(
     minswapTxs,
+    async (order) => {
+      try {
+        return (await blockfrostFetch(`/txs/${order.tx_hash}/utxos`)) as UTxO
+      } catch (error) {
+        logger.error(error, `Error fetching UTxO for tx ${order.tx_hash}:`)
+        throw error
+      }
+    },
+    100,
+    800,
+  )
+  const minswapPoolUTxOs = withBlockTime(
+    minswapTxs,
+    minswapUTxO,
+    registry.djedAssetId,
+    registry.minswapAddress,
+  )
+
+  const minswapPoolOutputs: DexValuesWithDatumAndTimestamp[] =
+    await processBatch(
+      minswapPoolUTxOs,
+      async (utxo) => {
+        const tx = (await blockfrostFetch(
+          `/txs/${utxo.tx_hash}`,
+        )) as TransactionData
+        return {
+          djedPrice: getDexDjedPrice(utxo.amount),
+          timestamp: new Date(utxo.blockTime * 1000).toISOString(),
+          block_hash: tx.block,
+          block_slot: tx.slot,
+        }
+      },
+      100,
+      800,
+    )
+
+  // const minswapPoolOutputs: DexValuesWithDatumAndTimestamp[] = []
+  // const rl = readline.createInterface({
+  //   input: fs.createReadStream("./minswap.json"),
+  //   terminal: false,
+  // })
+  // for await (const line of rl) {
+  //   const utxo = JSONbig.parse(line)
+  //   minswapPoolOutputs.push(utxo)
+  // }
+
+  return calculateDexDailyPrices(oracleValues, minswapPoolOutputs)
+}
+
+export async function wingRidersDjedPrices(
+  oracleValues: OracleUTxoWithDatumAndTimestamp[],
+) {
+  // get the oldest oracle date, in order to avoid getting more txs than those needed
+  // this way we can also ensure the regular updates
+  // seeing that there will only be oracles since the latest updated block
+  const oldestOracle = oracleValues.reduce((prev, current) => {
+    return new Date(current.timestamp) < new Date(prev.timestamp)
+      ? current
+      : prev
+  })
+
+  const block = (await blockfrostFetch(
+    `/blocks/${oldestOracle.block_hash}`,
+  )) as Block
+
+  const wingridersTxs = await getEveryResultFromPaginatedEndpoint<Transaction>(
+    `/addresses/${registry.wingridersAddress}/transactions`,
+    block.height,
+  )
+
+  const wingridersUTxO: UTxO[] = await processBatch(
+    wingridersTxs,
     async (order) => {
       try {
         return (await blockfrostFetch(`/txs/${order.tx_hash}/utxos`)) as UTxO
@@ -228,23 +332,19 @@ export async function minswapDjedPrices() {
     500,
   )
 
-  logger.info(`Fetched UTxOs for ${minswapUTxO.length} transactions`)
-
-  const minswapPoolUTxOs = withBlockTime(
-    minswapTxs,
-    minswapUTxO,
+  const wingridersPoolUTxOs = withBlockTime(
+    wingridersTxs,
+    wingridersUTxO,
     registry.djedAssetId,
-    registry.minswapAddress,
+    registry.wingridersAddress,
   )
-  logger.info(`With DJED ${minswapPoolUTxOs.length}`)
 
-  const minswapPoolOutputs = await processBatch(
-    minswapPoolUTxOs,
+  const wingridersPoolOutputs = await processBatch(
+    wingridersPoolUTxOs,
     async (utxo) => {
       const tx = (await blockfrostFetch(
         `/txs/${utxo.tx_hash}`,
       )) as TransactionData
-
       return {
         djedPrice: getDexDjedPrice(utxo.amount),
         timestamp: new Date(utxo.blockTime * 1000).toISOString(),
@@ -255,32 +355,12 @@ export async function minswapDjedPrices() {
     10,
     500,
   )
-  logger.info({ ordered: minswapPoolOutputs[0] })
 
-  const orderedMinswapOracleTxOs: OrderedDexOracleTxOs[] = [
-    ...oracleValues.map((datum) => ({
-      key: "oracle" as const,
-      value: {
-        oracleDatum: datum.oracleDatum,
-        timestamp: datum.timestamp,
-        block_hash: datum.block_hash,
-        block_slot: datum.block_slot,
-      },
-    })),
-    ...minswapPoolOutputs.map((out) => ({
-      key: "dex" as const,
-      value: {
-        djedPrice: out.djedPrice,
-        timestamp: out.timestamp,
-        block_hash: out.block_hash,
-        block_slot: out.block_slot,
-      },
-    })),
-  ].sort((a, b) => (a.value.timestamp < b.value.timestamp ? -1 : 1))
+  // const absolutePath = path.resolve("./wingriders.json")
+  // const raw = await fsPromises.readFile(absolutePath, "utf-8")
+  // const wingridersPoolOutputs = JSONbig.parse(
+  //   raw,
+  // ) as DexValuesWithDatumAndTimestamp[]
 
-  const dailyTxOs = breakIntoDaysDexs(orderedMinswapOracleTxOs)
-  const weightedDailyTxOs = assignTimeWeightsToDexPriceDailyUTxOs(dailyTxOs)
-  const dailyDexPrices = getTimeWeightedDailyDexPrices(weightedDailyTxOs)
-
-  logger.info({ dailyDexPrices })
+  return calculateDexDailyPrices(oracleValues, wingridersPoolOutputs)
 }
