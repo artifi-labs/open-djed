@@ -33,6 +33,7 @@ export type Registry = {
   // DEXs addresses
   minswapAddress: string
   wingridersAddress: string
+  minswapDjedAdaAssetId: string
 }
 
 export const registryByNetwork = {
@@ -142,6 +143,7 @@ export const registryByNetwork = {
     },
     minswapAddress: "",
     wingridersAddress: "",
+    minswapDjedAdaAssetId: "",
   },
   Mainnet: {
     operatorPKH: "409d3ec8c2d774ff1db489c4f1428941821df81fbe28a2d5e31354e8",
@@ -242,6 +244,8 @@ export const registryByNetwork = {
       "addr1z84q0denmyep98ph3tmzwsmw0j7zau9ljmsqx6a4rvaau66j2c79gy9l76sdg0xwhd7r0c0kna0tycz4y5s6mlenh8pq777e2a",
     wingridersAddress:
       "addr1zxhew7fmsup08qvhdnkg8ccra88pw7q5trrncja3dlszhq6d77rk0jjxny493quf2pv32xup2ucx6hp6enfjg8gnjq0qqzlqam",
+    minswapDjedAdaAssetId:
+      "f5808c2c990d86da54bfc97d89cee6efa20cd8461616359478d96b4ca939812d08cfb6066e17d2914a7272c6b8c0197acdf68157d02c73649cc3efc0",
   },
 } satisfies Record<string, Registry>
 

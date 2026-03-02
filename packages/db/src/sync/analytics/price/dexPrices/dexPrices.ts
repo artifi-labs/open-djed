@@ -3,6 +3,7 @@ import {
   blockfrostFetch,
   formatDayEndIso,
   formatDayIso,
+  getAssetTxsUpUntilSpecifiedTime,
   getEveryResultFromPaginatedEndpoint,
   getUtcDayKey,
   MS_PER_DAY,
@@ -237,13 +238,9 @@ export async function minswapDjedPrices(
       : prev
   })
 
-  const block = (await blockfrostFetch(
-    `/blocks/${oldestOracle.block_hash}`,
-  )) as Block
-
-  const minswapTxs = await getEveryResultFromPaginatedEndpoint<Transaction>(
-    `/addresses/${registry.minswapAddress}/transactions`,
-    block.height,
+  const minswapTxs = await getAssetTxsUpUntilSpecifiedTime(
+    registry.minswapDjedAdaAssetId,
+    oldestOracle.timestamp,
   )
 
   const minswapUTxO: UTxO[] = await processBatch(
@@ -259,10 +256,11 @@ export async function minswapDjedPrices(
     100,
     800,
   )
+
   const minswapPoolUTxOs = withBlockTime(
     minswapTxs,
     minswapUTxO,
-    registry.djedAssetId,
+    registry.minswapDjedAdaAssetId,
     registry.minswapAddress,
   )
 
