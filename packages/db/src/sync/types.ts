@@ -335,14 +335,6 @@ export type History = {
 export type ADAFeesEarnings = {
   timestamp: Date
   fee: number
-}
-
-export type PoolEntryFee = {
-  timestamp: Date
-  adaInReserve: number
-  expectedAdaInReserve: number
-  djedInCirculation: number
-  fee: number
-  blockHash: string
-  blockSlot: number
+  block: string
+  slot: number
 }

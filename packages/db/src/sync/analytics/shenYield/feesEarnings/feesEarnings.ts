@@ -1,43 +1,18 @@
 import { logger } from "../../../../utils/logger"
 import {
   getEveryResultFromPaginatedEndpoint,
-  processAnalyticsDataToInsert,
   processPoolOracleTxs,
   registry,
   toDayString,
 } from "../../../utils"
 import {
   type ADAFeesEarnings,
-  type PoolEntryFee,
+  type PoolUTxoWithDatumAndTimestamp,
   type Transaction,
 } from "../../../types"
 import { prisma } from "../../../../../lib/prisma"
-
-function normalizePoolEntriesToADAFees(
-  entries: PoolEntryFee[],
-): ADAFeesEarnings[] {
-  const dailyFees = new Map<string, ADAFeesEarnings>()
-
-  for (const entry of entries) {
-    const dayKey = toDayString(entry.timestamp)
-    const normalizedTimestamp = new Date(`${dayKey}T00:00:00.000Z`)
-    const feeValue =
-      typeof entry.fee === "bigint" ? Number(entry.fee) : entry.fee
-
-    const existing = dailyFees.get(dayKey)
-    if (existing) {
-      existing.fee += feeValue
-      continue
-    }
-
-    dailyFees.set(dayKey, {
-      timestamp: normalizedTimestamp,
-      fee: feeValue,
-    })
-  }
-
-  return Array.from(dailyFees.values())
-}
+import { getLatestFeesEarnings } from "../../../../client/feesEarnings"
+import { handleAnalyticsUpdates } from "../../updateAnalytics"
 
 export async function calculateFeesEarnings() {
   const start = Date.now()
@@ -49,22 +24,28 @@ export async function calculateFeesEarnings() {
 
   const orderedPoolTxOs = await processPoolOracleTxs(everyPoolTx, [])
   if (!orderedPoolTxOs) {
-    logger.warn(
-      "No pool or oracle transactions processed — skipping fee computation",
-    )
-    return []
+    logger.warn("No pool or oracle transactions processed")
+    return
   }
 
-  if (orderedPoolTxOs.length < 2) {
+  const poolEntries = orderedPoolTxOs.filter(
+    (entry): entry is { key: "pool"; value: PoolUTxoWithDatumAndTimestamp } =>
+      entry.key === "pool",
+  )
+
+  if (poolEntries.length < 2) {
     logger.info("Not enough pool checkpoints to compute fees")
-    return []
+    return
   }
 
-  const entries: PoolEntryFee[] = []
+  const dailyFees: ADAFeesEarnings[] = []
 
-  for (let i = 1; i < orderedPoolTxOs.length; i++) {
-    const previous = orderedPoolTxOs[i - 1].value.poolDatum
-    const current = orderedPoolTxOs[i].value.poolDatum
+  for (let i = 1; i < poolEntries.length; i++) {
+    const previousEntry = poolEntries[i - 1]
+    const currentEntry = poolEntries[i]
+
+    const previous = previousEntry.value.poolDatum
+    const current = currentEntry.value.poolDatum
 
     if (previous.djedInCirculation === 0n) continue
 
@@ -73,41 +54,67 @@ export async function calculateFeesEarnings() {
       previous.djedInCirculation
 
     const feesLovelace = current.adaInReserve - expectedAdaInReserve
-
     if (feesLovelace <= 0n) continue
 
-    entries.push({
-      timestamp: new Date(orderedPoolTxOs[i].value.timestamp),
-      adaInReserve: current.adaInReserve,
-      expectedAdaInReserve: expectedAdaInReserve,
-      djedInCirculation: current.djedInCirculation,
-      fee: feesLovelace,
-      blockHash: orderedPoolTxOs[i].value.block_hash,
-      blockSlot: orderedPoolTxOs[i].value.block_slot,
-    })
+    const feeAda = Number(feesLovelace) / 1_000_000
+
+    const block = currentEntry.value.block_hash
+    const slot = currentEntry.value.block_slot
+    const timestamp = new Date(currentEntry.value.timestamp)
+    const dayKey = toDayString(timestamp)
+    const normalizedTimestamp = new Date(`${dayKey}T00:00:00.000Z`)
+
+    const existing = dailyFees.find(
+      (entry) => toDayString(entry.timestamp) === dayKey,
+    )
+
+    if (existing) {
+      existing.fee += feeAda
+      existing.block = block
+      existing.slot = slot
+    } else {
+      dailyFees.push({
+        timestamp: normalizedTimestamp,
+        fee: feeAda,
+        block,
+        slot,
+      })
+    }
   }
 
-  if (entries.length === 0) {
+  if (dailyFees.length === 0) {
     logger.warn("No daily fees earnings computed")
+    return
   }
-
-  const aggregatedFees = normalizePoolEntriesToADAFees(entries)
 
   logger.info("Processing fees earnings data...")
-
-  const dataToInsert = processAnalyticsDataToInsert(aggregatedFees)
-
-  logger.info(`Inserting ${dataToInsert.length} fees earnings into database...`)
+  logger.info(`Inserting ${dailyFees.length} fees earnings into database...`)
   await prisma.aDAFeesEarnings.createMany({
-    data: dataToInsert,
+    data: dailyFees,
     skipDuplicates: true,
   })
   logger.info(
-    `Historic fees earnings sync complete. Inserted ${dataToInsert.length} fees earnings`,
+    `Historic fees earnings sync complete. Inserted ${dailyFees.length} fees earnings`,
   )
 
   const end = Date.now() - start
   logger.info(
     `=== Processing fees earnings took sec: ${(end / 1000).toFixed(2)} ===`,
+  )
+}
+
+export async function updateFeesEarnings() {
+  const start = Date.now()
+  logger.info(`=== Updating Fees Earnings ===`)
+  const latestFeesEarnings = await getLatestFeesEarnings()
+  if (!latestFeesEarnings) return
+
+  await handleAnalyticsUpdates(
+    latestFeesEarnings.timestamp,
+    calculateFeesEarnings,
+  )
+  const end = Date.now() - start
+  logger.info(
+    `=== Updating Fees Earnings took sec: ${(end / 1000).toFixed(2)} ===`,
   )
 }

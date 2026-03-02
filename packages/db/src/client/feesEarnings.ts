@@ -32,3 +32,11 @@ export const deleteAllFeesEarnings = async () => {
   const result = await prisma.aDAFeesEarnings.deleteMany()
   return result
 }
+
+export const deletePeriodFeesEarnings = async (period: Period) => {
+  const startIso = getStartIso(period)
+
+  await prisma.aDAFeesEarnings.deleteMany({
+    where: startIso ? { timestamp: { gte: startIso } } : undefined,
+  })
+}
