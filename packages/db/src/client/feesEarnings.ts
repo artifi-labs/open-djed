@@ -33,6 +33,11 @@ export const deleteAllFeesEarnings = async () => {
   return result
 }
 
+export const getAllFeesEarnings = async () => {
+  const result = await prisma.aDAFeesEarnings.findMany()
+  return result
+}
+
 export const deletePeriodFeesEarnings = async (period: Period) => {
   const startIso = getStartIso(period)
 
