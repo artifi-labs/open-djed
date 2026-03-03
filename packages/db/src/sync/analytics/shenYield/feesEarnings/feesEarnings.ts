@@ -1,34 +1,26 @@
 import { logger } from "../../../../utils/logger"
-import {
-  getEveryResultFromPaginatedEndpoint,
-  processPoolOracleTxs,
-  registry,
-  toDayString,
-} from "../../../utils"
+import { toDayString } from "../../../utils"
 import {
   type ADAFeesEarnings,
+  type OrderedPoolOracleTxOs,
   type PoolUTxoWithDatumAndTimestamp,
-  type Transaction,
 } from "../../../types"
 import { prisma } from "../../../../../lib/prisma"
 import { getLatestFeesEarnings } from "../../../../client/feesEarnings"
 import { handleAnalyticsUpdates } from "../../updateAnalytics"
 
-export async function calculateFeesEarnings() {
-  const start = Date.now()
-  logger.info("=== Processing ADA fees earned ===")
-
-  const everyPoolTx = await getEveryResultFromPaginatedEndpoint<Transaction>(
-    `/addresses/${registry.poolAddress}/transactions`,
-  )
-
-  const orderedPoolTxOs = await processPoolOracleTxs(everyPoolTx, [])
-  if (!orderedPoolTxOs) {
-    logger.warn("No pool or oracle transactions processed")
+export async function calculateFeesEarnings(
+  orderedTxOs: OrderedPoolOracleTxOs[],
+) {
+  if (!orderedTxOs || orderedTxOs.length === 0) {
+    logger.warn("No ordered TxOs provided for fees earnings calculation")
     return
   }
 
-  const poolEntries = orderedPoolTxOs.filter(
+  const start = Date.now()
+  logger.info("=== Processing ADA fees earned ===")
+
+  const poolEntries = orderedTxOs.filter(
     (entry): entry is { key: "pool"; value: PoolUTxoWithDatumAndTimestamp } =>
       entry.key === "pool",
   )

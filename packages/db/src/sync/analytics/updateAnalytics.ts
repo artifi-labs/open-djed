@@ -159,6 +159,11 @@ export async function updateAnalytics() {
       populateDbProcessor: processTokenPrices,
       updateDbProcessor: updateTokenPrices,
     },
+    {
+      isEmpty: isFeesEarningsEmpty,
+      populateDbProcessor: calculateFeesEarnings,
+      updateDbProcessor: updateFeesEarnings,
+    },
   ]
 
   // even though it may be rare, this might introduce race conditions.
@@ -169,6 +174,5 @@ export async function updateAnalytics() {
     handlePopulateDb(toUpdate),
     handleUpdateDb(toUpdate),
     isStakingRewardsEmpty ? calculateStakingRewards() : updateStakingRewards(),
-    isFeesEarningsEmpty ? calculateFeesEarnings() : updateFeesEarnings(),
   ])
 }
