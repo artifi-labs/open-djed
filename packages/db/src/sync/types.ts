@@ -355,6 +355,8 @@ export type Volume = {
   totalVolumeADA: number
   block?: string
   slot?: bigint
+}
+
 export type ADAStakingRewards = {
   epoch: number
   startTimestamp: Date
