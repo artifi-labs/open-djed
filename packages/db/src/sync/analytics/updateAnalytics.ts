@@ -1,6 +1,6 @@
 import { prisma } from "../../../lib/prisma"
 import { logger } from "../../utils/logger"
-import type { OrderedPoolOracleTxOs } from "../types"
+import type { OrderedPoolOracleTxOs, Transaction } from "../types"
 import {
   getAssetTxsUpUntilSpecifiedTime,
   getEveryResultFromPaginatedEndpoint,
@@ -21,6 +21,11 @@ import {
 import { rollbackReserveRatios } from "./reserveRatio/rollbackReserveRatios"
 import { rollbackVolumes } from "./volume/rollbackVolumes"
 import { handleInitialVolumeDbPopulation, updateVolumes } from "./volume/volume"
+import {
+  calculateStakingRewards,
+  updateStakingRewards,
+} from "./shenYield/stakingRewards/stakingRewards"
+import { rollbackStakingRewards } from "./shenYield/stakingRewards/rollbackStakingRewards"
 
 type DbProcessor = {
   isEmpty: boolean
@@ -34,6 +39,7 @@ async function handleRollbacks() {
     rollbackMarketCap(),
     rollbackTokenPrices(),
     rollbackVolumes(),
+    rollbackStakingRewards(),
   ])
 }
 
@@ -43,10 +49,10 @@ async function handlePopulateDb(toUpdate: DbProcessor[]) {
   if (toUpdate.every((item) => !item.isEmpty)) return
   const start = Date.now()
   logger.info("=== Populating Database ===")
-  const everyPoolTx = await getEveryResultFromPaginatedEndpoint(
+  const everyPoolTx = await getEveryResultFromPaginatedEndpoint<Transaction>(
     `/assets/${registry.poolAssetId}/transactions`,
   ) //txs from pool
-  const everyOracleTx = await getEveryResultFromPaginatedEndpoint(
+  const everyOracleTx = await getEveryResultFromPaginatedEndpoint<Transaction>(
     `/assets/${registry.oracleAssetId}/transactions`,
   ) //txs from oracle
 
@@ -132,6 +138,7 @@ export async function updateAnalytics() {
   const isMarketCapEmpty = (await prisma.marketCap.count()) === 0
   const isPriceEmpty = (await prisma.tokenPrice.count()) === 0
   const isVolumesEmpty = (await prisma.volume.count()) === 0
+  const isStakingRewardsEmpty = (await prisma.aDAStakingRewards.count()) === 0
 
   const toUpdate: DbProcessor[] = [
     {
@@ -160,5 +167,9 @@ export async function updateAnalytics() {
   // We want to run these in parallel because handlePopulateDb takes several hours
   // to run due to the sheer volume of data fetched, therefore we do not want the update
   // to get stuck behind it.
-  await Promise.all([handlePopulateDb(toUpdate), handleUpdateDb(toUpdate)])
+  await Promise.all([
+    handlePopulateDb(toUpdate),
+    handleUpdateDb(toUpdate),
+    isStakingRewardsEmpty ? calculateStakingRewards() : updateStakingRewards(),
+  ])
 }

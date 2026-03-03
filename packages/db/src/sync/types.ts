@@ -355,4 +355,19 @@ export type Volume = {
   totalVolumeADA: number
   block?: string
   slot?: bigint
+export type ADAStakingRewards = {
+  epoch: number
+  startTimestamp: Date
+  endTimestamp: Date
+  rate: number
+}
+
+export type Rewards = {
+  epoch: number
+  amount: string //Rewards
+}
+
+export type History = {
+  active_epoch: number
+  amount: string //Active Stake
 }

@@ -397,16 +397,18 @@ export async function getBurnReceivedValue(
  * @param endpoint the paginated Blockfrost endpoint to call (e.g. `/assets/.../transactions`)
  * @returns every transaction returned across the fetched pages
  */
-export async function getEveryResultFromPaginatedEndpoint(endpoint: string) {
-  logger.info("Fetching all transactions...")
-  const everyOrderTx: Transaction[] = []
+export async function getEveryResultFromPaginatedEndpoint<T>(
+  endpoint: string,
+): Promise<T[]> {
+  logger.info("Fetching all results...")
+  const everyOrderTx: T[] = []
   let txPage = 1
   while (true) {
     try {
-      logger.debug(`Fetching transaction page ${txPage}...`)
+      logger.debug(`Fetching page ${txPage}...`)
       const pageResult = (await blockfrostFetch(
         `${endpoint}?page=${txPage}&count=100&order=desc`,
-      )) as Transaction[]
+      )) as T[]
 
       if (!Array.isArray(pageResult) || pageResult.length === 0) break
 

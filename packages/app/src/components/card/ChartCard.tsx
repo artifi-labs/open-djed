@@ -33,14 +33,15 @@ export const WarningBanner: React.FC<WarningBannerProps> = ({
   message,
   type,
 }) => (
-  <div className={`flex flex-row items-center gap-8`}>
+  <div className={`flex flex-row items-start gap-8`}>
     <Icon
       name={"Information"}
       size={16}
       iconColor={type === "error" ? "text-error-text" : "text-warning-text"}
+      className="mt-0.5 shrink-0"
     />
     <p
-      className={`text-xs ${type === "error" ? "text-error-text" : "text-warning-text"}`}
+      className={`text-xs ${type === "error" ? "text-error-text" : "text-warning-text"} wrap-break-word`}
     >
       {message}
     </p>

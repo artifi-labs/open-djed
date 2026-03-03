@@ -139,7 +139,7 @@ const Footer = () => {
 
         <div className="flex flex-row justify-start gap-4">
           <Icon name="Legal" size={16} />
-          <p className="text-xs">2025 Artifi. All rights are reserved</p>
+          <p className="text-xs">2026 Artifi. All rights are reserved</p>
         </div>
       </footer>
     )
@@ -171,7 +171,7 @@ const Footer = () => {
           <div className="flex flex-row justify-center gap-4">
             <Icon name="Legal" size={16} />
             <p className="text-xs font-medium">
-              2025 Artifi. All rights are reserved
+              2026 Artifi. All rights are reserved
             </p>
           </div>
         </div>
