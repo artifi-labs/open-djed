@@ -10,6 +10,7 @@ import type { TokenMarketCap } from "../../../../db/generated/prisma/enums"
 import { capitalize } from "@/lib/utils"
 import type { Token } from "@/lib/tokens"
 import { Rational, shenADARate, shenUSDRate } from "@open-djed/math"
+import { env } from "@/lib/envLoader"
 
 export type ReserveRatioChartEntry = {
   id: number
@@ -90,6 +91,7 @@ export function useAnalyticsData() {
   const { reserveRatio } = useReserveDetails()
   const { showToast } = useToast()
   const { data, isLoading } = useProtocolData()
+  const { NETWORK } = env
 
   const [reserveRatioData, setReserveRatioData] = useState<
     ReserveRatioChartEntry[]
@@ -137,7 +139,7 @@ export function useAnalyticsData() {
     CHART_PERIOD_OPTIONS[1],
   )
   const [djedDexCurrency, setDjedDexCurrency] = useState<Currency>(
-    CURRENCY_OPTIONS[0],
+    CURRENCY_OPTIONS[NETWORK === "Mainnet" ? 0 : 1],
   )
 
   const [isLoadingReserve, setIsLoadingReserve] = useState(false)

@@ -17,6 +17,7 @@ import type {
 import {
   breakIntoDays,
   MS_PER_DAY,
+  network,
   processAnalyticsDataToInsert,
 } from "../../utils"
 import type { AllTokens } from "../../../../generated/prisma/enums"
@@ -211,16 +212,6 @@ export const getTimeWeightedDailyTokenPrices = (
 export async function processTokenPrices(orderedTxOs: OrderedPoolOracleTxOs[]) {
   const start = Date.now()
   logger.info(`=== Processing Token Prices ===`)
-  // extract oracle values
-  const oracleValues = orderedTxOs
-    .filter(
-      (
-        utxo,
-      ): utxo is { key: "oracle"; value: OracleUTxoWithDatumAndTimestamp } => {
-        return utxo.key === "oracle"
-      },
-    )
-    .map((utxo) => utxo.value)
 
   // determine the daily token values based on:
   // 1 - DJED protocol data
@@ -230,33 +221,51 @@ export async function processTokenPrices(orderedTxOs: OrderedPoolOracleTxOs[]) {
   const weightedDailyTxOs = assignTimeWeightsToTokenPriceDailyUTxOs(dailyTxOs)
   const dailyTokenPrices = getTimeWeightedDailyTokenPrices(weightedDailyTxOs)
 
-  const [minswapPrices, wingridersPrices] = await Promise.all([
-    minswapDjedPrices(oracleValues),
-    wingRidersDjedPrices(oracleValues),
-  ])
+  // only get DEX prices in Mainnet
+  // as DEX pools in Preprod often do not have DJED
+  if (network === "Mainnet") {
+    // extract oracle values
+    // to resuse for dex prices
+    const oracleValues = orderedTxOs
+      .filter(
+        (
+          utxo,
+        ): utxo is {
+          key: "oracle"
+          value: OracleUTxoWithDatumAndTimestamp
+        } => {
+          return utxo.key === "oracle"
+        },
+      )
+      .map((utxo) => utxo.value)
+    const [minswapPrices, wingridersPrices] = await Promise.all([
+      minswapDjedPrices(oracleValues),
+      wingRidersDjedPrices(oracleValues),
+    ])
 
-  // after having all the required token values
-  // merge the data, in order to accuratly depict
-  // the value of the token in the DJED protocol VS secondary markets
-  const toDateKey = (date: Date) => date.toISOString().split("T")[0]
-  const minswapLookup = new Map(
-    minswapPrices.map((p) => [toDateKey(p.timestamp), p]),
-  )
-  const wingridersLookup = new Map(
-    wingridersPrices.map((p) => [toDateKey(p.timestamp), p]),
-  )
-  dailyTokenPrices.DJED = dailyTokenPrices.DJED.map((basePrice) => {
-    const dayKey = toDateKey(basePrice.timestamp)
-    const msMatch = minswapLookup.get(dayKey)
-    const wrMatch = wingridersLookup.get(dayKey)
-    return {
-      ...basePrice,
-      minswapUsdValue: msMatch?.usdValue,
-      minswapAdaValue: msMatch?.adaValue,
-      wingridersUsdValue: wrMatch?.usdValue,
-      wingridersAdaValue: wrMatch?.adaValue,
-    }
-  })
+    // after having all the required token values
+    // merge the data, in order to accuratly depict
+    // the value of the token in the DJED protocol VS secondary markets
+    const toDateKey = (date: Date) => date.toISOString().split("T")[0]
+    const minswapLookup = new Map(
+      minswapPrices.map((p) => [toDateKey(p.timestamp), p]),
+    )
+    const wingridersLookup = new Map(
+      wingridersPrices.map((p) => [toDateKey(p.timestamp), p]),
+    )
+    dailyTokenPrices.DJED = dailyTokenPrices.DJED.map((basePrice) => {
+      const dayKey = toDateKey(basePrice.timestamp)
+      const msMatch = minswapLookup.get(dayKey)
+      const wrMatch = wingridersLookup.get(dayKey)
+      return {
+        ...basePrice,
+        minswapUsdValue: msMatch?.usdValue,
+        minswapAdaValue: msMatch?.adaValue,
+        wingridersUsdValue: wrMatch?.usdValue,
+        wingridersAdaValue: wrMatch?.adaValue,
+      }
+    })
+  }
 
   const dataToInsert: TokenPrice[] = []
 

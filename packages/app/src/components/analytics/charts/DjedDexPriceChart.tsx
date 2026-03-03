@@ -5,6 +5,7 @@ import { useMemo } from "react"
 import { type DjedDexPrices, type Currency } from "../useAnalyticsData"
 import { Legend } from "recharts"
 import { ChartLegend } from "@/components/charts/legend/ChartLegend"
+import { env } from "@/lib/envLoader"
 
 type DjedDexPriceChartProps = {
   data: DjedDexPrices[]
@@ -22,6 +23,7 @@ export const DjedDexPriceChart: React.FC<DjedDexPriceChartProps> = ({
   data,
   currency,
 }) => {
+  const { NETWORK } = env
   const isUsd = currency.value === "USD"
 
   const { rows } = useMemo(() => {
@@ -62,16 +64,20 @@ export const DjedDexPriceChart: React.FC<DjedDexPriceChartProps> = ({
       name: `Djed`,
       stroke: "var(--color-supportive-1-500)",
     },
-    {
-      dataKey: "minswapPrice",
-      name: `Minswap`,
-      stroke: "var(--color-supportive-2-500)",
-    },
-    {
-      dataKey: "wingridersPrice",
-      name: `WingRiders`,
-      stroke: "var(--color-supportive-4-400)",
-    },
+    ...(NETWORK === "Mainnet"
+      ? [
+          {
+            dataKey: "minswapPrice",
+            name: `Minswap`,
+            stroke: "var(--color-supportive-2-500)",
+          },
+          {
+            dataKey: "wingridersPrice",
+            name: `WingRiders`,
+            stroke: "var(--color-supportive-4-400)",
+          },
+        ]
+      : []),
   ]
 
   return (
