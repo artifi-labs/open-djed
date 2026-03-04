@@ -107,3 +107,13 @@ model ADAFeesEarnings {
   block     String // block hash
   slot      BigInt // block slot
 }
+
+model ShenYield {
+  id        Int      @id @default(autoincrement())
+  timestamp DateTime @db.Date
+  yield     Decimal //realized
+  block     String // block hash
+  slot      BigInt // block slot
+
+  @@unique([timestamp])
+}

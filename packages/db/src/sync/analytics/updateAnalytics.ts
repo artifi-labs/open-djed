@@ -29,6 +29,8 @@ import {
   calculateFeesEarnings,
   updateFeesEarnings,
 } from "./shenYield/feesEarnings/feesEarnings"
+import { rollbackShenYield } from "./shenYield/rollbackShenYield"
+import { processShenYield, updateShenYield } from "./shenYield/shenYield"
 
 type DbProcessor = {
   isEmpty: boolean
@@ -43,6 +45,7 @@ async function handleRollbacks() {
     rollbackTokenPrices(),
     rollbackStakingRewards(),
     rollbackFeesEarnings(),
+    rollbackShenYield(),
   ])
 }
 
@@ -142,6 +145,7 @@ export async function updateAnalytics() {
   const isPriceEmpty = (await prisma.tokenPrice.count()) === 0
   const isStakingRewardsEmpty = (await prisma.aDAStakingRewards.count()) === 0
   const isFeesEarningsEmpty = (await prisma.aDAFeesEarnings.count()) === 0
+  const isShenYieldEmpty = (await prisma.shenYield.count()) === 0
 
   const toUpdate: DbProcessor[] = [
     {
@@ -163,6 +167,11 @@ export async function updateAnalytics() {
       isEmpty: isFeesEarningsEmpty,
       populateDbProcessor: calculateFeesEarnings,
       updateDbProcessor: updateFeesEarnings,
+    },
+    {
+      isEmpty: isShenYieldEmpty,
+      populateDbProcessor: processShenYield,
+      updateDbProcessor: updateShenYield,
     },
   ]
 
