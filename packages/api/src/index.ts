@@ -48,6 +48,7 @@ import {
   getPeriodAdaShenPrices,
   getPeriodMarketCap,
   getPeriodReserveRatio,
+  getPeriodShenYield,
 } from "@open-djed/db"
 import { type TokenMarketCap } from "@open-djed/db/generated/prisma/enums"
 import { type Order, type Period } from "@open-djed/db"
@@ -816,6 +817,47 @@ const app = new Hono()
     historicalDataHandler((period) =>
       getPeriodAdaShenPrices({ period, grouped: true }),
     ),
+  )
+  .get(
+    "/historical-shen-yield",
+    cacheMiddleware,
+    describeRoute({
+      description: "Get the historical SHEN yield data",
+      tags: ["Action"],
+      responses: {
+        200: {
+          description: "Successfully got the historical SHEN yield",
+          content: {
+            "text/plain": {
+              example: "SHEN yield data",
+            },
+          },
+        },
+        400: {
+          description: "Bad Request",
+          content: {
+            "text/plain": {
+              example: "Bad Request",
+            },
+          },
+        },
+        500: {
+          description: "Internal Server Error",
+          content: {
+            "text/plain": {
+              example: "Internal Server Error",
+            },
+          },
+        },
+      },
+    }),
+    zValidator(
+      "query",
+      z.object({
+        period: periodSchema,
+      }),
+    ),
+    historicalDataHandler((period) => getPeriodShenYield(period)),
   )
 
 serve(

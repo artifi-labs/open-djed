@@ -41,6 +41,13 @@ export type TokenPriceByToken = Record<
   TokenPriceChartEntry[]
 >
 
+export type ShenYieldChartEntry = {
+  id: number
+  timestamp: string
+  realized: number
+  projected: number
+}
+
 export type CurrencyValue = "ADA" | "USD"
 export const CURRENCY_OPTIONS: Array<{ label: string; value: CurrencyValue }> =
   [
@@ -119,6 +126,11 @@ export function useAnalyticsData() {
   )
 
   const [isLoadingReserve, setIsLoadingReserve] = useState(false)
+
+  const [shenYieldData, setShenYieldData] = useState<ShenYieldChartEntry[]>([])
+  const [shenYieldPeriod, setShenYieldPeriod] = useState<ChartPeriod>(
+    CHART_PERIOD_OPTIONS[0],
+  )
 
   const fetchReserveRatioHistoricalData = useCallback(
     async (period: ChartPeriod) => {
@@ -306,6 +318,45 @@ export function useAnalyticsData() {
     [data],
   )
 
+  const fetchShenYieldHistoricalData = useCallback(
+    async (period: ChartPeriod) => {
+      try {
+        const res = await client.api["historical-shen-yield"].$get({
+          query: { period: period.value },
+        })
+
+        if (!res.ok) return
+
+        const historicalData = (await res.json()) as ShenYieldChartEntry[]
+        if (period.value === "All") historicalData.shift()
+
+        setShenYieldData(
+          historicalData.map((entry) => ({
+            ...entry,
+            realized: Number(entry.realized),
+            projected: Number(entry.projected),
+          })),
+        )
+      } catch (err) {
+        console.error("Action failed:", err)
+
+        if (err instanceof AppError) {
+          showToast({
+            message: err.message,
+            type: "error",
+          })
+          return
+        }
+
+        showToast({
+          message: `Failed to get historical shen yield data.`,
+          type: "error",
+        })
+      }
+    },
+    [client],
+  )
+
   useEffect(() => {
     fetchReserveRatioHistoricalData(reserveRatioPeriod).catch((err) => {
       console.error("fetchReserveRatio error:", err)
@@ -330,6 +381,12 @@ export function useAnalyticsData() {
     })
   }, [shenAdaPricePeriod, shenAdaCurrency, data])
 
+  useEffect(() => {
+    fetchShenYieldHistoricalData(shenYieldPeriod).catch((err) => {
+      console.error("fetchShenYield error:", err)
+    })
+  }, [shenYieldPeriod, data])
+
   return {
     reserveRatioData,
     reserveRatioPeriod,
@@ -350,5 +407,8 @@ export function useAnalyticsData() {
     shenAdaCurrency,
     setShenAdaCurrency,
     isLoadingReserve,
+    shenYieldData,
+    shenYieldPeriod,
+    setShenYieldPeriod,
   }
 }
