@@ -37,9 +37,11 @@ import {
   AppError,
   BadRequestError,
   BalanceTooLowError,
+  DatumDecodeError,
   InternalServerError,
   ScriptExecutionError,
   UTxOContentionError,
+  UTxOMissingError,
   ValidationError,
 } from "./errors"
 import JSONbig from "json-bigint"
@@ -108,13 +110,13 @@ export const getPoolUTxO = async () => {
       registry.poolAssetId,
     )
   )[0]
-  if (!rawPoolUTxO) throw new Error(`Couldn't get pool utxo.`)
+  if (!rawPoolUTxO) throw new UTxOMissingError("Failed to get a pool UTxO.")
   const rawDatum =
     rawPoolUTxO.datum ??
     (rawPoolUTxO.datumHash
       ? await blockfrost.getDatum(rawPoolUTxO.datumHash)
       : undefined)
-  if (!rawDatum) throw new Error(`Couldn't get pool datum.`)
+  if (!rawDatum) throw new DatumDecodeError("Failed to decode a pool datum.")
   const poolUTxO = {
     ...rawPoolUTxO,
     poolDatum: Data.from(rawDatum, PoolDatum),
@@ -132,13 +134,13 @@ export const getOracleUTxO = async () => {
       registry.oracleAssetId,
     )
   )[0]
-  if (!rawOracleUTxO) throw new Error(`Couldn't get oracle utxo.`)
+  if (!rawOracleUTxO) throw new UTxOMissingError("Failed to get a oracle UTxO.")
   const rawDatum =
     rawOracleUTxO.datum ??
     (rawOracleUTxO.datumHash
       ? await blockfrost.getDatum(rawOracleUTxO.datumHash)
       : undefined)
-  if (!rawDatum) throw new Error(`Couldn't get oracle datum.`)
+  if (!rawDatum) throw new DatumDecodeError("Failed to decode a oracle datum.")
   const oracleUTxO = {
     ...rawOracleUTxO,
     oracleDatum: Data.from(rawDatum, OracleDatum),
@@ -161,7 +163,8 @@ const getOrderUTxOs = async () => {
         (rawOrderUTxO.datumHash
           ? await blockfrost.getDatum(rawOrderUTxO.datumHash)
           : undefined)
-      if (!rawDatum) throw new Error(`Couldn't get order datum.`)
+      if (!rawDatum)
+        throw new DatumDecodeError("Failed to decode a order datum.")
       return {
         ...rawOrderUTxO,
         orderDatum: Data.from(rawDatum, OrderDatum),
@@ -342,27 +345,39 @@ const app = new Hono()
     "/protocol-data",
     describeRoute({ description: "Get on-chain protocol data" }),
     async (c) => {
-      const [oracleFields, poolDatum] = await Promise.all([
-        getOracleUTxO().then((o) => o.oracleDatum.oracleFields),
-        getPoolUTxO().then((p) => p.poolDatum),
-      ])
-      return c.json({
-        oracleDatum: {
-          oracleFields: {
-            adaUSDExchangeRate: {
-              numerator: oracleFields.adaUSDExchangeRate.numerator.toString(),
-              denominator:
-                oracleFields.adaUSDExchangeRate.denominator.toString(),
+      try {
+        const [oracleFields, poolDatum] = await Promise.all([
+          getOracleUTxO().then((o) => o.oracleDatum.oracleFields),
+          getPoolUTxO().then((p) => p.poolDatum),
+        ])
+        return c.json({
+          oracleDatum: {
+            oracleFields: {
+              adaUSDExchangeRate: {
+                numerator: oracleFields.adaUSDExchangeRate.numerator.toString(),
+                denominator:
+                  oracleFields.adaUSDExchangeRate.denominator.toString(),
+              },
             },
           },
-        },
-        poolDatum: {
-          djedInCirculation: poolDatum.djedInCirculation.toString(),
-          shenInCirculation: poolDatum.shenInCirculation.toString(),
-          adaInReserve: poolDatum.adaInReserve.toString(),
-          minADA: poolDatum.minADA.toString(),
-        },
-      })
+          poolDatum: {
+            djedInCirculation: poolDatum.djedInCirculation.toString(),
+            shenInCirculation: poolDatum.shenInCirculation.toString(),
+            adaInReserve: poolDatum.adaInReserve.toString(),
+            minADA: poolDatum.minADA.toString(),
+          },
+        })
+      } catch (err) {
+        if (err instanceof AppError) {
+          console.error(`protocol-data: ${err.name}: ${err.message}`)
+          return c.json({ error: err.name, message: err.message }, err.status)
+        }
+        console.error("Unhandled error:", err)
+        return c.json(
+          { error: "InternalServerError", message: "Something went wrong." },
+          500,
+        )
+      }
     },
   )
   .post(
