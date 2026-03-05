@@ -28,12 +28,12 @@ export const assignTimeWeightsToReserveRatioDailyUTxOs = (
   let activeOracleEntry: OrderedPoolOracleTxOs | null = null
 
   return dailyChunks.map((dailyDayChunk, chunkIndex) => {
-    const timedEntries: WeightedReserveEntry[] = dailyDayChunk.entries.map(
-      (entry) => ({
+    const timedEntries: WeightedReserveEntry[] = dailyDayChunk.entries
+      .filter((entry) => entry.key === "pool" || entry.key === "oracle")
+      .map((entry) => ({
         ...entry,
         weight: 0,
-      }),
-    )
+      }))
 
     const dayStartMs = Date.parse(dailyDayChunk.startIso)
     const dayEndMs = Date.parse(dailyDayChunk.endIso)
