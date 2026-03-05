@@ -101,6 +101,14 @@ const registry = registryByNetwork[network]
 
 const chainDataCache = new TTLCache({ ttl: 10_000, checkAgeOnGet: true })
 
+const getDatum = async (datumHash: string, errorMessage: string) => {
+  try {
+    return await blockfrost.getDatum(datumHash)
+  } catch {
+    throw new DatumDecodeError(errorMessage)
+  }
+}
+
 export const getPoolUTxO = async () => {
   const cached = chainDataCache.get<PoolUTxO>("poolUTxO")
   if (cached) return cached
@@ -114,7 +122,7 @@ export const getPoolUTxO = async () => {
   const rawDatum =
     rawPoolUTxO.datum ??
     (rawPoolUTxO.datumHash
-      ? await blockfrost.getDatum(rawPoolUTxO.datumHash)
+      ? await getDatum(rawPoolUTxO.datumHash, "Failed to get a pool datum.")
       : undefined)
   if (!rawDatum) throw new DatumDecodeError("Failed to decode a pool datum.")
   const poolUTxO = {
@@ -138,7 +146,10 @@ export const getOracleUTxO = async () => {
   const rawDatum =
     rawOracleUTxO.datum ??
     (rawOracleUTxO.datumHash
-      ? await blockfrost.getDatum(rawOracleUTxO.datumHash)
+      ? await getDatum(
+          rawOracleUTxO.datumHash,
+          "Failed to get an oracle datum.",
+        )
       : undefined)
   if (!rawDatum) throw new DatumDecodeError("Failed to decode a oracle datum.")
   const oracleUTxO = {
@@ -161,7 +172,10 @@ const getOrderUTxOs = async () => {
       const rawDatum =
         rawOrderUTxO.datum ??
         (rawOrderUTxO.datumHash
-          ? await blockfrost.getDatum(rawOrderUTxO.datumHash)
+          ? await getDatum(
+              rawOrderUTxO.datumHash,
+              "Failed to get an order datum.",
+            )
           : undefined)
       if (!rawDatum)
         throw new DatumDecodeError("Failed to decode a order datum.")

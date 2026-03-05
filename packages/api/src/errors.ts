@@ -61,7 +61,7 @@ export class DatumDecodeError extends AppError {
 }
 
 export class UTxOMissingError extends AppError {
-  constructor(message = "AFailed to get a UTxO") {
+  constructor(message = "Failed to get a UTxO") {
     super(message, 422)
   }
 }
