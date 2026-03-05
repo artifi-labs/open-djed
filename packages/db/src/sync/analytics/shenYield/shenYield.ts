@@ -10,7 +10,7 @@ import type {
 } from "../../types"
 import {
   toDayString,
-  writeJsonToFile,
+  // writeJsonToFile,
   buildDailyStakingRates,
 } from "../../utils"
 import { handleAnalyticsUpdates } from "../updateAnalytics"
