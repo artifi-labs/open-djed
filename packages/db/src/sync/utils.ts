@@ -580,165 +580,183 @@ export const withBlockTime = (
 }
 
 export async function processPoolOracleTxs(
-  everyPoolTx: Transaction[],
-  everyOracleTx: Transaction[],
+  everyPoolTx: Transaction[] = [],
+  everyOracleTx: Transaction[] = [],
 ) {
-  if (everyPoolTx.length === 0) {
-    logger.info("No transactions found")
+  if (everyPoolTx.length === 0 && everyOracleTx.length === 0) {
+    logger.info("No pool or oracle transactions provided")
     return
   }
-  logger.info(`Found ${everyPoolTx.length} transactions`)
 
-  logger.info("Fetching UTxOs...")
-  const everyPoolUTxO: UTxO[] = await processBatch(
-    everyPoolTx,
-    async (order) => {
-      try {
-        return (await blockfrostFetch(`/txs/${order.tx_hash}/utxos`)) as UTxO
-      } catch (error) {
-        logger.error(error, `Error fetching UTxO for tx ${order.tx_hash}:`)
-        throw error
-      }
-    },
-    10,
-    500,
-  )
+  let poolUTxOsWithDatumAndTimestamp: PoolUTxoWithDatumAndTimestamp[] = []
+  if (everyPoolTx.length > 0) {
+    logger.info(`Found ${everyPoolTx.length} transactions`)
 
-  if (everyOracleTx.length === 0) {
-    logger.info("No transactions found")
-    return
+    logger.info("Fetching UTxOs...")
+    const everyPoolUTxO: UTxO[] = await processBatch(
+      everyPoolTx,
+      async (order) => {
+        try {
+          return (await blockfrostFetch(`/txs/${order.tx_hash}/utxos`)) as UTxO
+        } catch (error) {
+          logger.error(error, `Error fetching UTxO for tx ${order.tx_hash}:`)
+          throw error
+        }
+      },
+      10,
+      500,
+    )
+
+    const poolUTxOsWithTimestamp = withBlockTime(
+      everyPoolTx,
+      everyPoolUTxO,
+      registry.poolAssetId,
+    )
+
+    logger.info("Fetching pool UTxO datums and transaction data...")
+    poolUTxOsWithDatumAndTimestamp = await processBatch(
+      poolUTxOsWithTimestamp,
+      async (utxo, idx) => {
+        let rawDatum: string | undefined
+        try {
+          const [datum, tx] = await Promise.all([
+            utxo.data_hash
+              ? blockfrost.getDatum(utxo.data_hash).catch((err) => {
+                  logger.error(
+                    err,
+                    `Error fetching datum for ${utxo.data_hash}:`,
+                  )
+                  throw err
+                })
+              : Promise.resolve(undefined),
+            blockfrostFetch(`/txs/${utxo.tx_hash}`) as Promise<TransactionData>,
+          ])
+          rawDatum = datum
+
+          if (!rawDatum) {
+            throw new Error(`Couldn't get pool datum for ${utxo.tx_hash}`)
+          }
+
+          return {
+            poolDatum: Data.from(rawDatum, PoolDatum),
+            timestamp: new Date(utxo.blockTime * 1000).toISOString(),
+            block_hash: tx.block,
+            block_slot: tx.slot,
+          }
+        } catch (error) {
+          const message =
+            error instanceof Error ? error.message : JSON.stringify(error)
+          logger.info(
+            `Skipping pool UTxO ${utxo.tx_hash} (${idx + 1}/${
+              poolUTxOsWithTimestamp.length
+            }) because its datum could not be decoded: ${message}`,
+          )
+          return null
+        }
+      },
+      5,
+      300,
+    ).then((results) =>
+      results.filter(
+        (utxo): utxo is PoolUTxoWithDatumAndTimestamp => utxo !== null,
+      ),
+    )
+
+    if (poolUTxOsWithDatumAndTimestamp.length === 0) {
+      logger.info("No valid pool UTxOs with datum found")
+    } else {
+      logger.info(
+        `Enriched ${poolUTxOsWithDatumAndTimestamp.length} pool UTxOs with datum, timestamp and block data`,
+      )
+    }
+  } else {
+    logger.info(
+      "Skipping pool processing because no pool transactions provided",
+    )
   }
-  logger.info(`Found ${everyOracleTx.length} transactions`)
 
-  logger.info("Fetching UTxOs...")
-  const everyOracleUTxO: UTxO[] = await processBatch(
-    everyOracleTx,
-    async (order) => {
-      try {
-        return (await blockfrostFetch(`/txs/${order.tx_hash}/utxos`)) as UTxO
-      } catch (error) {
-        logger.error(error, `Error fetching UTxO for tx ${order.tx_hash}:`)
-        throw error
-      }
-    },
-    10,
-    500,
-  )
+  let oracleUTxOsWithDatumAndTimestamp: OracleUTxoWithDatumAndTimestamp[] = []
+  if (everyOracleTx.length > 0) {
+    logger.info(`Found ${everyOracleTx.length} transactions`)
 
-  const poolUTxOsWithTimestamp = withBlockTime(
-    everyPoolTx,
-    everyPoolUTxO,
-    registry.poolAssetId,
-  )
-  const oracleUTXOsWithTimestamp = withBlockTime(
-    everyOracleTx,
-    everyOracleUTxO,
-    registry.oracleAssetId,
-  )
-
-  logger.info("Fetching pool UTxO datums and transaction data...")
-  const poolUTxOsWithDatumAndTimestamp = await processBatch(
-    poolUTxOsWithTimestamp,
-    async (utxo, idx) => {
-      let rawDatum: string | undefined
-      try {
-        const [datum, tx] = await Promise.all([
-          utxo.data_hash
-            ? blockfrost.getDatum(utxo.data_hash).catch((err) => {
-                logger.error(err, `Error fetching datum for ${utxo.data_hash}:`)
-                throw err
-              })
-            : Promise.resolve(undefined),
-          blockfrostFetch(`/txs/${utxo.tx_hash}`) as Promise<TransactionData>,
-        ])
-        rawDatum = datum
-
-        if (!rawDatum) {
-          throw new Error(`Couldn't get pool datum for ${utxo.tx_hash}`)
+    logger.info("Fetching UTxOs...")
+    const everyOracleUTxO: UTxO[] = await processBatch(
+      everyOracleTx,
+      async (order) => {
+        try {
+          return (await blockfrostFetch(`/txs/${order.tx_hash}/utxos`)) as UTxO
+        } catch (error) {
+          logger.error(error, `Error fetching UTxO for tx ${order.tx_hash}:`)
+          throw error
         }
+      },
+      10,
+      500,
+    )
 
-        return {
-          poolDatum: Data.from(rawDatum, PoolDatum),
-          timestamp: new Date(utxo.blockTime * 1000).toISOString(),
-          block_hash: tx.block,
-          block_slot: tx.slot,
+    const oracleUTXOsWithTimestamp = withBlockTime(
+      everyOracleTx,
+      everyOracleUTxO,
+      registry.oracleAssetId,
+    )
+
+    logger.info("Fetching oracle UTxO datums and transaction data...")
+    oracleUTxOsWithDatumAndTimestamp = await processBatch(
+      oracleUTXOsWithTimestamp,
+      async (utxo, idx) => {
+        try {
+          const [rawDatum, tx] = await Promise.all([
+            utxo.data_hash
+              ? blockfrost.getDatum(utxo.data_hash).catch((err) => {
+                  logger.error(
+                    err,
+                    `Error fetching datum for ${utxo.data_hash}:`,
+                  )
+                  throw err
+                })
+              : Promise.resolve(undefined),
+            blockfrostFetch(`/txs/${utxo.tx_hash}`) as Promise<TransactionData>,
+          ])
+
+          if (!rawDatum) {
+            throw new Error(`Couldn't get oracle datum for ${utxo.tx_hash}`)
+          }
+
+          return {
+            oracleDatum: Data.from(rawDatum, OracleDatum),
+            timestamp: new Date(utxo.blockTime * 1000).toISOString(),
+            block_hash: tx.block,
+            block_slot: tx.slot,
+          }
+        } catch (error) {
+          logger.error(
+            error,
+            `Error processing oracle UTxO ${idx + 1}/${oracleUTXOsWithTimestamp.length}:`,
+          )
+          logger.debug("Skipping this UTxO and continuing...")
+          return null
         }
-      } catch (error) {
-        const message =
-          error instanceof Error ? error.message : JSON.stringify(error)
-        logger.info(
-          `Skipping pool UTxO ${utxo.tx_hash} (${idx + 1}/${
-            poolUTxOsWithTimestamp.length
-          }) because its datum could not be decoded: ${message}`,
-        )
-        return null
-      }
-    },
-    5,
-    300,
-  ).then((results) =>
-    results.filter(
-      (utxo): utxo is PoolUTxoWithDatumAndTimestamp => utxo !== null,
-    ),
-  )
+      },
+      5,
+      300,
+    ).then((results) =>
+      results.filter(
+        (utxo): utxo is OracleUTxoWithDatumAndTimestamp => utxo !== null,
+      ),
+    )
 
-  if (poolUTxOsWithDatumAndTimestamp.length === 0) {
-    logger.info("No valid pool UTxOs with datum found")
-    return
+    if (oracleUTxOsWithDatumAndTimestamp.length === 0) {
+      logger.info("No valid oracle UTxOs with datum found")
+    } else {
+      logger.info(
+        `Enriched ${oracleUTxOsWithDatumAndTimestamp.length} oracle UTxOs with datum, timestamp, and block data`,
+      )
+    }
+  } else {
+    logger.info(
+      "Skipping oracle processing because no oracle transactions provided",
+    )
   }
-  logger.info(
-    `Enriched ${poolUTxOsWithDatumAndTimestamp.length} pool UTxOs with datum, timestamp and block data`,
-  )
-
-  logger.info("Fetching oracle UTxO datums and transaction data...")
-  const oracleUTxOsWithDatumAndTimestamp = await processBatch(
-    oracleUTXOsWithTimestamp,
-    async (utxo, idx) => {
-      try {
-        const [rawDatum, tx] = await Promise.all([
-          utxo.data_hash
-            ? blockfrost.getDatum(utxo.data_hash).catch((err) => {
-                logger.error(err, `Error fetching datum for ${utxo.data_hash}:`)
-                throw err
-              })
-            : Promise.resolve(undefined),
-          blockfrostFetch(`/txs/${utxo.tx_hash}`) as Promise<TransactionData>,
-        ])
-
-        if (!rawDatum) {
-          throw new Error(`Couldn't get oracle datum for ${utxo.tx_hash}`)
-        }
-
-        return {
-          oracleDatum: Data.from(rawDatum, OracleDatum),
-          timestamp: new Date(utxo.blockTime * 1000).toISOString(),
-          block_hash: tx.block,
-          block_slot: tx.slot,
-        }
-      } catch (error) {
-        logger.error(
-          error,
-          `Error processing oracle UTxO ${idx + 1}/${oracleUTXOsWithTimestamp.length}:`,
-        )
-        logger.debug("Skipping this UTxO and continuing...")
-        return null
-      }
-    },
-    5,
-    300,
-  ).then((results) =>
-    results.filter(
-      (utxo): utxo is OracleUTxoWithDatumAndTimestamp => utxo !== null,
-    ),
-  )
-
-  if (oracleUTxOsWithDatumAndTimestamp.length === 0) {
-    logger.info("No valid oracle UTxOs with datum found")
-    return
-  }
-  logger.info(
-    `Enriched ${oracleUTxOsWithDatumAndTimestamp.length} oracle UTxOs with datum, timestamp, and block data`,
-  )
 
   const orderedTxOs: OrderedPoolOracleTxOs[] = [
     ...poolUTxOsWithDatumAndTimestamp.map((datum) => ({
@@ -760,6 +778,11 @@ export async function processPoolOracleTxs(
       },
     })),
   ].sort((a, b) => (a.value.timestamp < b.value.timestamp ? -1 : 1))
+
+  if (orderedTxOs.length === 0) {
+    logger.info("No valid pool or oracle UTxOs with datum found")
+    return
+  }
 
   return orderedTxOs
 }
@@ -812,13 +835,18 @@ export function processAnalyticsDataToInsert<
   return sorted
 }
 
-export async function writeOrderedTxOsToFile(
-  data: OrderedPoolOracleTxOs[],
+export async function writeJsonToFile<T>(
+  data: T,
   filePath: string,
+  options?: {
+    replacer?: (key: string, value: unknown) => unknown
+    space?: string | number
+  },
 ): Promise<void> {
   const absolutePath = path.resolve(filePath)
 
-  const json = JSONbig.stringify(data)
+  const spacing = options?.space ?? 2
+  const json = JSONbig.stringify(data, options?.replacer, spacing)
 
   await fsPromises.writeFile(absolutePath, json, {
     encoding: "utf-8",

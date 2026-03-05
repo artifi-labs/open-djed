@@ -418,3 +418,10 @@ export type History = {
   active_epoch: number
   amount: string //Active Stake
 }
+
+export type ADAFeesEarnings = {
+  timestamp: Date
+  fee: number
+  block: string
+  slot: number
+}
