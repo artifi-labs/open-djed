@@ -44,7 +44,7 @@ export type TokenPriceByToken = Record<
 export type ShenYieldChartEntry = {
   id: number
   timestamp: string
-  realized: number
+  yield: number //realized
   projected: number
 }
 
@@ -333,7 +333,7 @@ export function useAnalyticsData() {
         setShenYieldData(
           historicalData.map((entry) => ({
             ...entry,
-            realized: Number(entry.realized),
+            yield: Number(entry.yield),
             projected: Number(entry.projected),
           })),
         )

@@ -36,7 +36,7 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({ data }) => {
 
     const mapped: ChartRow[] = data.map((entry) => ({
       date: entry.timestamp,
-      realized: entry.realized,
+      realized: entry.yield,
       projected: entry.projected,
     }))
 
@@ -45,14 +45,14 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({ data }) => {
 
   const lines = [
     {
-      dataKey: "projected",
-      name: "Projected",
+      dataKey: "realized",
+      name: "Realized",
       stroke: "var(--color-supportive-1-500)",
     },
     {
-      dataKey: "realized",
-      name: "Realized",
-      stroke: "var(--color-yellow-400)",
+      dataKey: "projected",
+      name: "Projected",
+      stroke: "var(--color-yellow-400) ",
     },
   ]
 
