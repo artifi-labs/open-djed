@@ -27,7 +27,7 @@ export async function rollbackVolumes() {
 
   logger.warn(`Checking rollback from: ${latestVolumes.block}`)
 
-  const storedBlocks = await prisma.reserveRatio.findMany({
+  const storedBlocks = await prisma.volume.findMany({
     where: { slot: { lte: latestVolumes.slot } },
     select: { block: true, slot: true },
     orderBy: { slot: "desc" },
@@ -44,8 +44,8 @@ export async function rollbackVolumes() {
     if (exists) {
       logger.warn(`Rollback anchor found at block ${b.block} slot ${b.slot}`)
 
-      await prisma.reserveRatio.deleteMany({
-        where: { slot: { gt: b.slot } },
+      await prisma.volume.deleteMany({
+        where: { slot: { gt: Number(b.slot) } },
       })
 
       logger.info("Rollback completed")
