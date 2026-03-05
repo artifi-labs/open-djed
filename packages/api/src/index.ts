@@ -49,6 +49,7 @@ import {
   getOrdersByAddressKeys,
   getPeriodAdaShenPrices,
   getPeriodMarketCap,
+  getPeriodPricesForAllTokens,
   getPeriodReserveRatio,
   getPeriodVolume,
 } from "@open-djed/db"
@@ -845,6 +846,19 @@ const app = new Hono()
     ),
     historicalDataHandler((period) =>
       getPeriodAdaShenPrices({ period, grouped: true }),
+    ),
+  )
+  .get(
+    "/historical-djed-dex-price",
+    cacheMiddleware,
+    zValidator(
+      "query",
+      z.object({
+        period: periodSchema,
+      }),
+    ),
+    historicalDataHandler((period) =>
+      getPeriodPricesForAllTokens(period, "DJED"),
     ),
   )
   .get(

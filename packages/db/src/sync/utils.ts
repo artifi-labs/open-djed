@@ -142,6 +142,43 @@ export async function processBatch<T, R>(
 }
 
 /**
+ * from an array, create a batch to proccess concurrently
+ * bigger batch = faster, but riskier bc of rate limit
+ * define wait period between batch processing
+ * @param items array of items to process
+ * @param processor function that processes the items
+ * @param batchSize size of the batches to be processed at a time
+ * @param delayMs milliseconds to delay before next
+ * @param onBatchComplete callback to handle every batch individually
+ * @returns
+ */
+export async function eachBatch<T, R>(
+  items: T[],
+  processor: (item: T, index: number) => Promise<R>,
+  batchSize: number = 50,
+  delayMs: number = 5000,
+  onBatchComplete: (batchResults: R[], progress: number) => Promise<void>,
+): Promise<void> {
+  const total = items.length
+
+  for (let i = 0; i < total; i += batchSize) {
+    const batch = items.slice(i, i + batchSize)
+
+    const batchResults = await Promise.all(
+      batch.map((item, idx) => processor(item, i + idx)),
+    )
+
+    const currentProgress = Math.min(i + batchSize, total)
+
+    await onBatchComplete(batchResults, currentProgress)
+
+    if (delayMs > 0 && i + batchSize < total) {
+      await new Promise((resolve) => setTimeout(resolve, delayMs))
+    }
+  }
+}
+
+/**
  * parses an Order datum and returns normalized values
  * Mint action has all the values we need in the datum
  * Burn action requires us to look into the consuming transaction UTxOs,
@@ -395,20 +432,28 @@ export async function getBurnReceivedValue(
  * Runs a `while (true)` pagination loop against Blockfrost, concatenating every
  * transaction returned by each page. The loop stops when an empty page is encountered
  * @param endpoint the paginated Blockfrost endpoint to call (e.g. `/assets/.../transactions`)
+ * @param fromBlock the block from which we want to start querying Blockfrost
  * @returns every transaction returned across the fetched pages
  */
 export async function getEveryResultFromPaginatedEndpoint<T>(
   endpoint: string,
+  fromBlock?: number,
 ): Promise<T[]> {
-  logger.info("Fetching all results...")
   const everyOrderTx: T[] = []
   let txPage = 1
+  const query = new URLSearchParams({
+    count: "100",
+    order: "asc",
+  })
+
+  if (fromBlock !== undefined) {
+    query.append("from", fromBlock.toString())
+  }
+
   while (true) {
     try {
-      logger.debug(`Fetching page ${txPage}...`)
-      const pageResult = (await blockfrostFetch(
-        `${endpoint}?page=${txPage}&count=100&order=desc`,
-      )) as T[]
+      const url = `${endpoint}?${query.toString()}&page=${txPage}`
+      const pageResult = (await blockfrostFetch(url)) as T[]
 
       if (!Array.isArray(pageResult) || pageResult.length === 0) break
 
@@ -467,9 +512,9 @@ export async function getAssetTxsUpUntilSpecifiedTime(
   return everyOrderTx
 }
 
-const getUtcDayKey = (timestamp: string) => timestamp.slice(0, 10)
-const formatDayIso = (day: string) => `${day}T00:00:00.000Z`
-const formatDayEndIso = (day: string) => `${day}T23:59:59.999Z`
+export const getUtcDayKey = (timestamp: string) => timestamp.slice(0, 10)
+export const formatDayIso = (day: string) => `${day}T00:00:00.000Z`
+export const formatDayEndIso = (day: string) => `${day}T23:59:59.999Z`
 export const MS_PER_DAY = 24 * 60 * 60 * 1000
 
 /**
@@ -505,10 +550,11 @@ export const breakIntoDays = (
     }))
 }
 
-const withBlockTime = (
+export const withBlockTime = (
   txs: { tx_hash: string; block_time: number }[],
   utxos: UTxO[],
-  assetId: string,
+  assetId?: string,
+  address?: string,
 ) => {
   const txTimeByHash = new Map(
     txs.map((tx) => [tx.tx_hash, tx.block_time] as const),
@@ -519,8 +565,12 @@ const withBlockTime = (
     if (blockTime === undefined) return []
 
     return utxo.outputs
-      .filter((output) => output.data_hash !== null)
-      .filter((output) => output.amount.some((amt) => amt.unit === assetId))
+      .filter(
+        (output) =>
+          output.data_hash !== null &&
+          (!assetId || output.amount.some((amt) => amt.unit === assetId)) &&
+          (!address || output.address === address),
+      )
       .map((output) => ({
         ...output,
         tx_hash: utxo.hash,
