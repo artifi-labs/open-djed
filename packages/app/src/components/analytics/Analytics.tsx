@@ -11,6 +11,7 @@ import {
   CURRENCY_OPTIONS,
 } from "./useAnalyticsData"
 import { ShenMarketCapChart } from "./charts/ShenMarketCapChart"
+import VolumeChart from "./charts/VolumesChart"
 import { DjedDexPriceChart } from "./charts/DjedDexPriceChart"
 
 const Analytics = () => {
@@ -33,6 +34,11 @@ const Analytics = () => {
     setShenMCCurrency,
     setShenMCPeriod,
     shenMCHistoricalData,
+    volumesCurrency,
+    volumesHistoricalData,
+    volumesPeriod,
+    setVolumesCurrency,
+    setVolumesPeriod,
     djedDexCurrency,
     djedDexHistoricalData,
     djedDexPeriod,
@@ -110,12 +116,24 @@ const Analytics = () => {
         </ChartCard>
       </div>
 
-      {/* <div className="desktop:gap-24 grid grid-cols-1 gap-16">
-        <ChartCard title="Volume Analytics"></ChartCard>
-      </div> */}
-
-      {/*<div className="desktop:grid-cols-2 desktop:gap-24 grid grid-cols-1 gap-16 py-24">*/}
       <div className="desktop:gap-24 grid grid-cols-1 gap-16">
+        <ChartCard
+          title="Volume Analytics"
+          period={volumesPeriod}
+          periodItems={[...CHART_PERIOD_OPTIONS]}
+          onPeriodChange={setVolumesPeriod}
+          currency={volumesCurrency}
+          currencyItems={[...CURRENCY_OPTIONS]}
+          onCurrencyChange={setVolumesCurrency}
+        >
+          <VolumeChart
+            data={volumesHistoricalData}
+            currency={volumesCurrency}
+          />
+        </ChartCard>
+      </div>
+
+      <div className="desktop:grid-cols-2 desktop:gap-24 grid grid-cols-1 gap-16 py-24">
         <ChartCard
           period={shenAdaPricePeriod}
           periodItems={[...CHART_PERIOD_OPTIONS]}

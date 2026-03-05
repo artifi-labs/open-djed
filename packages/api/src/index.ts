@@ -37,9 +37,11 @@ import {
   AppError,
   BadRequestError,
   BalanceTooLowError,
+  DatumDecodeError,
   InternalServerError,
   ScriptExecutionError,
   UTxOContentionError,
+  UTxOMissingError,
   ValidationError,
 } from "./errors"
 import JSONbig from "json-bigint"
@@ -49,6 +51,7 @@ import {
   getPeriodMarketCap,
   getPeriodPricesForAllTokens,
   getPeriodReserveRatio,
+  getPeriodVolume,
 } from "@open-djed/db"
 import { type TokenMarketCap } from "@open-djed/db/generated/prisma/enums"
 import { type Order, type Period } from "@open-djed/db"
@@ -100,6 +103,14 @@ const registry = registryByNetwork[network]
 
 const chainDataCache = new TTLCache({ ttl: 10_000, checkAgeOnGet: true })
 
+const getDatum = async (datumHash: string, errorMessage: string) => {
+  try {
+    return await blockfrost.getDatum(datumHash)
+  } catch {
+    throw new DatumDecodeError(errorMessage)
+  }
+}
+
 export const getPoolUTxO = async () => {
   const cached = chainDataCache.get<PoolUTxO>("poolUTxO")
   if (cached) return cached
@@ -109,13 +120,13 @@ export const getPoolUTxO = async () => {
       registry.poolAssetId,
     )
   )[0]
-  if (!rawPoolUTxO) throw new Error(`Couldn't get pool utxo.`)
+  if (!rawPoolUTxO) throw new UTxOMissingError("Failed to get a pool UTxO.")
   const rawDatum =
     rawPoolUTxO.datum ??
     (rawPoolUTxO.datumHash
-      ? await blockfrost.getDatum(rawPoolUTxO.datumHash)
+      ? await getDatum(rawPoolUTxO.datumHash, "Failed to get a pool datum.")
       : undefined)
-  if (!rawDatum) throw new Error(`Couldn't get pool datum.`)
+  if (!rawDatum) throw new DatumDecodeError("Failed to decode a pool datum.")
   const poolUTxO = {
     ...rawPoolUTxO,
     poolDatum: Data.from(rawDatum, PoolDatum),
@@ -133,13 +144,16 @@ export const getOracleUTxO = async () => {
       registry.oracleAssetId,
     )
   )[0]
-  if (!rawOracleUTxO) throw new Error(`Couldn't get oracle utxo.`)
+  if (!rawOracleUTxO) throw new UTxOMissingError("Failed to get a oracle UTxO.")
   const rawDatum =
     rawOracleUTxO.datum ??
     (rawOracleUTxO.datumHash
-      ? await blockfrost.getDatum(rawOracleUTxO.datumHash)
+      ? await getDatum(
+          rawOracleUTxO.datumHash,
+          "Failed to get an oracle datum.",
+        )
       : undefined)
-  if (!rawDatum) throw new Error(`Couldn't get oracle datum.`)
+  if (!rawDatum) throw new DatumDecodeError("Failed to decode a oracle datum.")
   const oracleUTxO = {
     ...rawOracleUTxO,
     oracleDatum: Data.from(rawDatum, OracleDatum),
@@ -160,9 +174,13 @@ const getOrderUTxOs = async () => {
       const rawDatum =
         rawOrderUTxO.datum ??
         (rawOrderUTxO.datumHash
-          ? await blockfrost.getDatum(rawOrderUTxO.datumHash)
+          ? await getDatum(
+              rawOrderUTxO.datumHash,
+              "Failed to get an order datum.",
+            )
           : undefined)
-      if (!rawDatum) throw new Error(`Couldn't get order datum.`)
+      if (!rawDatum)
+        throw new DatumDecodeError("Failed to decode a order datum.")
       return {
         ...rawOrderUTxO,
         orderDatum: Data.from(rawDatum, OrderDatum),
@@ -343,27 +361,39 @@ const app = new Hono()
     "/protocol-data",
     describeRoute({ description: "Get on-chain protocol data" }),
     async (c) => {
-      const [oracleFields, poolDatum] = await Promise.all([
-        getOracleUTxO().then((o) => o.oracleDatum.oracleFields),
-        getPoolUTxO().then((p) => p.poolDatum),
-      ])
-      return c.json({
-        oracleDatum: {
-          oracleFields: {
-            adaUSDExchangeRate: {
-              numerator: oracleFields.adaUSDExchangeRate.numerator.toString(),
-              denominator:
-                oracleFields.adaUSDExchangeRate.denominator.toString(),
+      try {
+        const [oracleFields, poolDatum] = await Promise.all([
+          getOracleUTxO().then((o) => o.oracleDatum.oracleFields),
+          getPoolUTxO().then((p) => p.poolDatum),
+        ])
+        return c.json({
+          oracleDatum: {
+            oracleFields: {
+              adaUSDExchangeRate: {
+                numerator: oracleFields.adaUSDExchangeRate.numerator.toString(),
+                denominator:
+                  oracleFields.adaUSDExchangeRate.denominator.toString(),
+              },
             },
           },
-        },
-        poolDatum: {
-          djedInCirculation: poolDatum.djedInCirculation.toString(),
-          shenInCirculation: poolDatum.shenInCirculation.toString(),
-          adaInReserve: poolDatum.adaInReserve.toString(),
-          minADA: poolDatum.minADA.toString(),
-        },
-      })
+          poolDatum: {
+            djedInCirculation: poolDatum.djedInCirculation.toString(),
+            shenInCirculation: poolDatum.shenInCirculation.toString(),
+            adaInReserve: poolDatum.adaInReserve.toString(),
+            minADA: poolDatum.minADA.toString(),
+          },
+        })
+      } catch (err) {
+        if (err instanceof AppError) {
+          console.error(`protocol-data: ${err.name}: ${err.message}`)
+          return c.json({ error: err.name, message: err.message }, err.status)
+        }
+        console.error("Unhandled error:", err)
+        return c.json(
+          { error: "InternalServerError", message: "Something went wrong." },
+          500,
+        )
+      }
     },
   )
   .post(
@@ -830,6 +860,17 @@ const app = new Hono()
     historicalDataHandler((period) =>
       getPeriodPricesForAllTokens(period, "DJED"),
     ),
+  )
+  .get(
+    "/historical-volumes",
+    cacheMiddleware,
+    zValidator(
+      "query",
+      z.object({
+        period: periodSchema,
+      }),
+    ),
+    historicalDataHandler(getPeriodVolume),
   )
 
 serve(

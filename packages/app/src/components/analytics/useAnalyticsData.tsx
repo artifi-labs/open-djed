@@ -42,6 +42,25 @@ export type TokenPriceByToken = Record<
   TokenPriceChartEntry[]
 >
 
+export type VolumeChartEntry = {
+  id: number
+  timestamp: string
+  djedMintedUSD: number
+  djedBurnedUSD: number
+  shenMintedUSD: number
+  shenBurnedUSD: number
+  djedMintedADA: number
+  djedBurnedADA: number
+  shenMintedADA: number
+  shenBurnedADA: number
+  totalDjedVolumeUSD: number
+  totalShenVolumeUSD: number
+  totalDjedVolumeADA: number
+  totalShenVolumeADA: number
+  totalVolumeUSD: number
+  totalVolumeADA: number
+}
+
 export type DjedDexPrices = {
   id: number
   timestamp: string
@@ -129,6 +148,16 @@ export function useAnalyticsData() {
     CHART_PERIOD_OPTIONS[1],
   )
   const [shenAdaCurrency, setShenAdaCurrency] = useState<Currency>(
+    CURRENCY_OPTIONS[0],
+  )
+
+  const [volumesHistoricalData, setVolumesHistoricalData] = useState<
+    VolumeChartEntry[]
+  >([])
+  const [volumesPeriod, setVolumesPeriod] = useState<ChartPeriod>(
+    CHART_PERIOD_OPTIONS[0],
+  )
+  const [volumesCurrency, setVolumesCurrency] = useState<Currency>(
     CURRENCY_OPTIONS[0],
   )
 
@@ -330,6 +359,58 @@ export function useAnalyticsData() {
     [data],
   )
 
+  const fetchVolumesHistoricalData = useCallback(
+    async (period: ChartPeriod) => {
+      try {
+        const res = await client.api["historical-volumes"].$get({
+          query: { period: period.value },
+        })
+
+        if (res.ok) {
+          const historicalData = (await res.json()) as VolumeChartEntry[]
+          if (period.value === "All") historicalData.shift()
+
+          const updatedHistoricalData = historicalData.map((entry) => ({
+            ...entry,
+            djedMintedUSD: Number(entry.djedMintedUSD),
+            djedBurnedUSD: Number(entry.djedBurnedUSD),
+            shenMintedUSD: Number(entry.shenMintedUSD),
+            shenBurnedUSD: Number(entry.shenBurnedUSD),
+            djedMintedADA: Number(entry.djedMintedADA),
+            djedBurnedADA: Number(entry.djedBurnedADA),
+            shenMintedADA: Number(entry.shenMintedADA),
+            shenBurnedADA: Number(entry.shenBurnedADA),
+            totalDjedVolumeUSD: Number(entry.totalDjedVolumeUSD),
+            totalShenVolumeUSD: Number(entry.totalShenVolumeUSD),
+            totalDjedVolumeADA: Number(entry.totalDjedVolumeADA),
+            totalShenVolumeADA: Number(entry.totalShenVolumeADA),
+            totalVolumeUSD: Number(entry.totalVolumeUSD),
+            totalVolumeADA: Number(entry.totalVolumeADA),
+          }))
+
+          setVolumesHistoricalData(updatedHistoricalData)
+        }
+      } catch (err) {
+        console.error("Action failed:", err)
+        if (err instanceof AppError) {
+          showToast({
+            message: `${err.message}`,
+            type: "error",
+          })
+          return
+        }
+
+        showToast({
+          message: `Failed to get historical reserve ratio data.`,
+          type: "error",
+        })
+      } finally {
+        setIsLoadingReserve(false)
+      }
+    },
+    [volumesHistoricalData],
+  )
+
   const fetchDjedDexHistoricalData = useCallback(
     async (period: ChartPeriod) => {
       try {
@@ -388,6 +469,12 @@ export function useAnalyticsData() {
   }, [shenAdaPricePeriod, shenAdaCurrency, data])
 
   useEffect(() => {
+    fetchVolumesHistoricalData(volumesPeriod).catch((err) => {
+      console.error("fetchVolumesHistoricalData error:", err)
+    })
+  }, [volumesPeriod, data])
+
+  useEffect(() => {
     fetchDjedDexHistoricalData(djedDexPeriod).catch((err) => {
       console.error("fetchDjedDexHistoricalData error:", err)
     })
@@ -412,6 +499,11 @@ export function useAnalyticsData() {
     setShenAdaPricePeriod,
     shenAdaCurrency,
     setShenAdaCurrency,
+    volumesHistoricalData,
+    volumesPeriod,
+    setVolumesPeriod,
+    volumesCurrency,
+    setVolumesCurrency,
     djedDexCurrency,
     djedDexHistoricalData,
     djedDexPeriod,
