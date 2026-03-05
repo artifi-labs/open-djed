@@ -53,3 +53,15 @@ export class ScriptExecutionError extends AppError {
     super(message, 400)
   }
 }
+
+export class DatumDecodeError extends AppError {
+  constructor(message = "Failed to decode a datum") {
+    super(message, 422)
+  }
+}
+
+export class UTxOMissingError extends AppError {
+  constructor(message = "Failed to get a UTxO") {
+    super(message, 422)
+  }
+}

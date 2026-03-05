@@ -1,4 +1,5 @@
 import { useApiClient } from "@/context/ApiClientContext"
+import { useToast } from "@/context/ToastContext"
 import { env } from "@/lib/envLoader"
 import {
   type ADAValue,
@@ -32,6 +33,7 @@ import { useQuery } from "@tanstack/react-query"
 export function useProtocolData() {
   const client = useApiClient()
   const { NETWORK } = env
+  const { showToast } = useToast()
 
   return useQuery({
     queryKey: ["protocol-data"],
@@ -104,10 +106,28 @@ export function useProtocolData() {
             price: ADAValue
           }
         }> => {
+          const response = await r.json()
+          if ("error" in response) {
+            console.error("protocol-data failed:", response)
+            if (r.status === 422) {
+              showToast({
+                message: `${response.message} Please refresh the page`,
+                type: "error",
+              })
+              throw new Error(`${response.message} Please refresh the page`)
+            }
+            showToast({
+              message: `Failed to get protocol data. Please refresh the page.`,
+              type: "error",
+            })
+            throw new Error(
+              `Failed to get protocol data. Please refresh the page.`,
+            )
+          }
           const {
             oracleDatum: serializedOracleDatum,
             poolDatum: serializedPoolDatum,
-          } = await r.json()
+          } = response
           const oracleDatum = {
             oracleFields: {
               adaUSDExchangeRate: {
