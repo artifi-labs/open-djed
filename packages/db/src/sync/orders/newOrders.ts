@@ -15,40 +15,11 @@ import {
   registry,
   blockfrost,
   processBatch,
-  sleep,
   blockfrostFetch,
   processOrdersToInsert,
+  fetchTransactionsFromAddress,
 } from "../utils"
 import { populateDbWithHistoricOrders } from "./initialSync"
-
-/**
- * Fetches transactions from the order address using the `/addresses/{address}/transactions` endpoint.
- * It will also handle pagination.
- * @param fromBlock The block number to start fetching transactions from.
- * @returns An array of transaction hashes.
- */
-async function fetchTransactionsFromAddress(
-  fromBlock: number,
-): Promise<string[]> {
-  const transactions: string[] = []
-  let page = 1
-  while (true) {
-    const pageResult = (await blockfrostFetch(
-      `/addresses/${registry.orderAddress}/transactions?page=${page}&count=100&from=${fromBlock}`,
-    )) as Transaction[]
-
-    if (!Array.isArray(pageResult) || pageResult.length === 0) break
-
-    transactions.push(...pageResult.map((tx) => tx.tx_hash))
-    page++
-
-    await sleep(50)
-  }
-  logger.info(
-    `Found ${transactions.length} new transactions at the order address`,
-  )
-  return transactions
-}
 
 /**
  * get the UTxOs of a set of transactions
@@ -57,11 +28,11 @@ async function fetchTransactionsFromAddress(
  * @param txHashes array with transaction hashes
  * @returns array with the Order UTxOs
  */
-async function fetchOrderUTxOs(txHashes: string[]) {
+async function fetchOrderUTxOs(txHashes: Transaction[]) {
   const allUTxOs = await processBatch(
     txHashes,
     async (tx) => {
-      const utxo = (await blockfrostFetch(`/txs/${tx}/utxos`)) as UTxO
+      const utxo = (await blockfrostFetch(`/txs/${tx.tx_hash}/utxos`)) as UTxO
       return utxo
     },
     config.BATCH_SIZE_MEDIUM,

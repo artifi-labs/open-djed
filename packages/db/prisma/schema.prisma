@@ -92,6 +92,28 @@ model TokenPrice {
   @@unique([token, timestamp])
 }
 
+
+model Volume {
+  id        Int            @id @default(autoincrement())
+  timestamp DateTime       @db.Date @unique
+  block     String? // block hash
+  slot      BigInt? // block slot
+  djedMintedUSD      Decimal
+  djedBurnedUSD      Decimal
+  shenMintedUSD      Decimal
+  shenBurnedUSD      Decimal
+  djedMintedADA      Decimal
+  djedBurnedADA      Decimal
+  shenMintedADA      Decimal
+  shenBurnedADA      Decimal
+  totalDjedVolumeUSD Decimal
+  totalShenVolumeUSD Decimal
+  totalDjedVolumeADA Decimal
+  totalShenVolumeADA Decimal
+  totalVolumeUSD     Decimal
+  totalVolumeADA     Decimal
+}
+
 model ADAStakingRewards {
   id             Int      @id @default(autoincrement())
   epoch          Int      @unique
@@ -99,3 +121,4 @@ model ADAStakingRewards {
   endTimestamp   DateTime
   rate           Decimal // Staking rewards rate by epoch
 }
+

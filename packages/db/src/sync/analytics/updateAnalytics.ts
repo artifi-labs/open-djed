@@ -19,6 +19,8 @@ import {
   updateReserveRatios,
 } from "./reserveRatio/reserveRatio"
 import { rollbackReserveRatios } from "./reserveRatio/rollbackReserveRatios"
+import { rollbackVolumes } from "./volume/rollbackVolumes"
+import { handleInitialVolumeDbPopulation, updateVolumes } from "./volume/volume"
 import {
   calculateStakingRewards,
   updateStakingRewards,
@@ -36,6 +38,7 @@ async function handleRollbacks() {
     rollbackReserveRatios(),
     rollbackMarketCap(),
     rollbackTokenPrices(),
+    rollbackVolumes(),
     rollbackStakingRewards(),
   ])
 }
@@ -134,6 +137,7 @@ export async function updateAnalytics() {
   const isReserveRatioEmpty = (await prisma.reserveRatio.count()) === 0
   const isMarketCapEmpty = (await prisma.marketCap.count()) === 0
   const isPriceEmpty = (await prisma.tokenPrice.count()) === 0
+  const isVolumesEmpty = (await prisma.volume.count()) === 0
   const isStakingRewardsEmpty = (await prisma.aDAStakingRewards.count()) === 0
 
   const toUpdate: DbProcessor[] = [
@@ -151,6 +155,11 @@ export async function updateAnalytics() {
       isEmpty: isPriceEmpty,
       populateDbProcessor: processTokenPrices,
       updateDbProcessor: updateTokenPrices,
+    },
+    {
+      isEmpty: isVolumesEmpty,
+      populateDbProcessor: handleInitialVolumeDbPopulation,
+      updateDbProcessor: updateVolumes,
     },
   ]
 

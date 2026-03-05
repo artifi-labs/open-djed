@@ -6,6 +6,7 @@ import { useMemo } from "react"
 import { type Currency } from "../useAnalyticsData"
 import { Legend } from "recharts"
 import { ChartLegend } from "@/components/charts/legend/ChartLegend"
+import { formatAxisValue } from "@/lib/utils"
 
 type ShenMarketCapChartProps = {
   title?: string
@@ -44,17 +45,10 @@ export const ShenMarketCapChart: React.FC<ShenMarketCapChartProps> = ({
     return { rows: mapped }
   }, [data, isMobile])
 
-  const formatAxisValue = (val: number) => {
-    const abs = Math.abs(val)
-    if (abs < 1) return val.toFixed(3)
-    if (abs < 1_000) return Math.round(val).toString()
-    if (abs < 1_000_000) return `${(val / 1_000).toFixed(1)}k`
-    if (abs < 1_000_000_000) return `${(val / 1_000_000).toFixed(1)}M`
-    return `${(val / 1_000_000_000).toFixed(1)}B`
-  }
-
   const yTickFormatter = (value: number | string) =>
-    formatAxisValue(Number(value))
+    currency.value === "USD"
+      ? `$${formatAxisValue(Number(value))}`
+      : `₳${formatAxisValue(Number(value))}`
 
   const lines = [
     {
