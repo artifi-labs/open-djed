@@ -20,6 +20,10 @@ export const getPeriodPricesForAllTokens = async (
       token: true,
       usdValue: true,
       adaValue: true,
+      minswapAdaValue: true,
+      minswapUsdValue: true,
+      wingridersAdaValue: true,
+      wingridersUsdValue: true,
     },
     orderBy: [{ token: "asc" }, { timestamp: "asc" }],
   })
@@ -103,6 +107,21 @@ export const getPriceByTimestamp = (token: AllTokens, timestamp: Date) => {
     },
     orderBy: {
       timestamp: "asc",
+    },
+  })
+}
+
+export const deletePeriodPrices = async (period?: Period, token?: Tokens) => {
+  const startIso = period ? getStartIso(period) : undefined
+
+  return await prisma.tokenPrice.deleteMany({
+    where: {
+      ...(token && { token }),
+      ...(startIso && {
+        timestamp: {
+          gte: startIso,
+        },
+      }),
     },
   })
 }

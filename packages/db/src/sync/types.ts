@@ -5,6 +5,7 @@ import type {
   Token,
   TokenMarketCap,
 } from "../../generated/prisma/enums"
+import type { Rational } from "@open-djed/math"
 
 export type Transaction = {
   tx_hash: string
@@ -246,6 +247,10 @@ export type TokenPrice = {
   timestamp: Date
   usdValue: number
   adaValue: number
+  minswapUsdValue?: number
+  minswapAdaValue?: number
+  wingridersUsdValue?: number
+  wingridersAdaValue?: number
   block: string
   slot: number
   token: AllTokens
@@ -255,7 +260,7 @@ export type DailyUTxOs = {
   day: string
   startIso: string
   endIso: string
-  entries: OrderedPoolOracleTxOs[]
+  entries: OrderedPoolOracleTxOs[] | OrderedDexOracleTxOs[]
 }
 
 //TODO: to be deleted after confirm datum logic
@@ -312,8 +317,90 @@ export type DailyTokenPriceUTxOsWithWeights = Omit<DailyUTxOs, "entries"> & {
   entries: WeightedTokenPriceEntry[]
 }
 
+export type DexTokenPrice = {
+  timestamp: Date
+  usdValue: number
+  adaValue: number
+  block: string
+  slot: number
+}
+
+export type DexValuesWithDatumAndTimestamp = {
+  djedPrice: number
+  timestamp: string
+  block_hash: string
+  block_slot: number
+}
+
+export type OrderedDexOracleTxOs =
+  | {
+      key: "dex"
+      value: DexValuesWithDatumAndTimestamp
+    }
+  | {
+      key: "oracle"
+      value: OracleUTxoWithDatumAndTimestamp
+    }
+
+export type WeightedDexPriceEntry = OrderedDexOracleTxOs & {
+  weight: number
+  usdValue?: number
+  adaValue?: number
+  period?: {
+    start: string
+    end: string
+  }
+  usedDexValue?: DexValuesWithDatumAndTimestamp["djedPrice"]
+  usedOracleDatum?: OracleUTxoWithDatumAndTimestamp["oracleDatum"]
+}
+
+export type DailyDexPriceUTxOsWithWeights = Omit<DailyUTxOs, "entries"> & {
+  entries: WeightedDexPriceEntry[]
+}
+
 export type Tokens = "DJED" | "SHEN" | "ADA"
 export type Period = "D" | "W" | "M" | "Y" | "All"
+
+export type UnprocessedVolumeData = {
+  orderDatum: null | OrderDatum
+  poolDatum: null | PoolDatum
+  orderOutput: Output[] | null
+  timestamp: string
+  block: string
+  slot: number
+}
+
+export type OrderVolume = {
+  timestamp: string
+  poolDatum: PoolDatum | null
+  block: string
+  slot: number
+  orderOutput: Output[] | null
+  action: Actions
+  token: "DJED" | "SHEN"
+  amount: bigint
+  adaUsdRate: Rational
+}
+
+export type Volume = {
+  timestamp: string
+  djedMintedUSD: number
+  djedBurnedUSD: number
+  shenMintedUSD: number
+  shenBurnedUSD: number
+  djedMintedADA: number
+  djedBurnedADA: number
+  shenMintedADA: number
+  shenBurnedADA: number
+  totalDjedVolumeUSD: number
+  totalShenVolumeUSD: number
+  totalDjedVolumeADA: number
+  totalShenVolumeADA: number
+  totalVolumeUSD: number
+  totalVolumeADA: number
+  block?: string
+  slot?: bigint
+}
 
 export type ADAStakingRewards = {
   epoch: number

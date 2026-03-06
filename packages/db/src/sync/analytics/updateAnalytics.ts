@@ -2,6 +2,7 @@ import { prisma } from "../../../lib/prisma"
 import { logger } from "../../utils/logger"
 import type { OrderedPoolOracleTxOs, Transaction } from "../types"
 import {
+  blockfrostFetch,
   getAssetTxsUpUntilSpecifiedTime,
   getEveryResultFromPaginatedEndpoint,
   processPoolOracleTxs,
@@ -19,6 +20,8 @@ import {
   updateReserveRatios,
 } from "./reserveRatio/reserveRatio"
 import { rollbackReserveRatios } from "./reserveRatio/rollbackReserveRatios"
+import { rollbackVolumes } from "./volume/rollbackVolumes"
+import { handleInitialVolumeDbPopulation, updateVolumes } from "./volume/volume"
 import {
   calculateStakingRewards,
   updateStakingRewards,
@@ -43,6 +46,7 @@ async function handleRollbacks() {
     rollbackReserveRatios(),
     rollbackMarketCap(),
     rollbackTokenPrices(),
+    rollbackVolumes(),
     rollbackStakingRewards(),
     rollbackFeesEarnings(),
     rollbackShenYield(),
@@ -70,11 +74,13 @@ async function handlePopulateDb(toUpdate: DbProcessor[]) {
 
   // await writeOrderedTxOsToFile(orderedTxOs, "./orderedTxOs.json")
 
-  // const orderedTxOs = await readOrderedTxOsFromFile("./orderedTxOs.json")
-  // if (!orderedTxOs) {
-  //   logger.warn("No orderedTxOs read from file — skipping DB population")
-  //   return
-  // }
+  // const orderedTxOs = await readOrderedTxOsFromFile(
+  //   "./orderedTxOs-preprod.json",
+  // )
+  if (!orderedTxOs) {
+    logger.warn("No orderedTxOs read from file — skipping DB population")
+    return
+  }
   const end = Date.now() - start
   logger.info(
     `=== Fetching data to populate database took sec: ${(end / 1000).toFixed(2)} ===`,
@@ -124,6 +130,14 @@ export async function handleAnalyticsUpdates(
     registry.poolAssetId,
     timestampStr,
   )
+  if (newPoolTxs.length < 1) {
+    const latestPoolTx = (await blockfrostFetch(
+      `/assets/${registry.poolAssetId}/transactions?page=1&count=1&order=desc`,
+    )) as Transaction[]
+
+    newPoolTxs.push(...latestPoolTx)
+  }
+
   const newOracleTxs = await getAssetTxsUpUntilSpecifiedTime(
     registry.oracleAssetId,
     timestampStr,
@@ -143,6 +157,7 @@ export async function updateAnalytics() {
   const isReserveRatioEmpty = (await prisma.reserveRatio.count()) === 0
   const isMarketCapEmpty = (await prisma.marketCap.count()) === 0
   const isPriceEmpty = (await prisma.tokenPrice.count()) === 0
+  const isVolumesEmpty = (await prisma.volume.count()) === 0
   const isStakingRewardsEmpty = (await prisma.aDAStakingRewards.count()) === 0
   const isFeesEarningsEmpty = (await prisma.aDAFeesEarnings.count()) === 0
   const isShenYieldEmpty = (await prisma.shenYield.count()) === 0
@@ -162,6 +177,11 @@ export async function updateAnalytics() {
       isEmpty: isPriceEmpty,
       populateDbProcessor: processTokenPrices,
       updateDbProcessor: updateTokenPrices,
+    },
+    {
+      isEmpty: isVolumesEmpty,
+      populateDbProcessor: handleInitialVolumeDbPopulation,
+      updateDbProcessor: updateVolumes,
     },
     {
       isEmpty: isFeesEarningsEmpty,
