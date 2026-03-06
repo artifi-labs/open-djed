@@ -25,3 +25,24 @@ export const getLatestShenYield = () =>
   })
 
 export const deleteAllShenYield = () => prisma.shenYield.deleteMany()
+
+export const getLast60DaysShenYield = async () => {
+  const sixtyDaysAgo = new Date()
+  sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60)
+
+  return await prisma.shenYield.findMany({
+    where: {
+      timestamp: {
+        gte: sixtyDaysAgo,
+      },
+    },
+    select: {
+      id: true,
+      timestamp: true,
+      yield: true,
+    },
+    orderBy: {
+      timestamp: "asc",
+    },
+  })
+}
