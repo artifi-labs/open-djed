@@ -11,6 +11,8 @@ import {
   CURRENCY_OPTIONS,
 } from "./useAnalyticsData"
 import { ShenMarketCapChart } from "./charts/ShenMarketCapChart"
+import VolumeChart from "./charts/VolumesChart"
+import { DjedDexPriceChart } from "./charts/DjedDexPriceChart"
 import { ShenYieldChart } from "./charts/ShenYield"
 
 const Analytics = () => {
@@ -33,6 +35,16 @@ const Analytics = () => {
     setShenMCCurrency,
     setShenMCPeriod,
     shenMCHistoricalData,
+    volumesCurrency,
+    volumesHistoricalData,
+    volumesPeriod,
+    setVolumesCurrency,
+    setVolumesPeriod,
+    djedDexCurrency,
+    djedDexHistoricalData,
+    djedDexPeriod,
+    setDjedDexCurrency,
+    setDjedDexPeriod,
     shenYieldData,
     shenYieldPeriod,
     setShenYieldPeriod,
@@ -108,9 +120,22 @@ const Analytics = () => {
         </ChartCard>
       </div>
 
-      {/* <div className="desktop:gap-24 grid grid-cols-1 gap-16">
-        <ChartCard title="Volume Analytics"></ChartCard>
-      </div> */}
+      <div className="desktop:gap-24 grid grid-cols-1 gap-16">
+        <ChartCard
+          title="Volume Analytics"
+          period={volumesPeriod}
+          periodItems={[...CHART_PERIOD_OPTIONS]}
+          onPeriodChange={setVolumesPeriod}
+          currency={volumesCurrency}
+          currencyItems={[...CURRENCY_OPTIONS]}
+          onCurrencyChange={setVolumesCurrency}
+        >
+          <VolumeChart
+            data={volumesHistoricalData}
+            currency={volumesCurrency}
+          />
+        </ChartCard>
+      </div>
 
       <div className="desktop:grid-cols-2 desktop:gap-24 grid grid-cols-1 gap-16 py-24">
         <ChartCard
@@ -138,10 +163,22 @@ const Analytics = () => {
         </ChartCard>
       </div>
 
-      {/* <div className="desktop:gap-24 grid grid-cols-1 gap-16">
-        <ChartCard title="DJED Price vs Secondary Markets">
+      <div className="desktop:gap-24 grid grid-cols-1 gap-16 py-24">
+        <ChartCard
+          title="DJED Price vs Secondary Markets"
+          period={djedDexPeriod}
+          periodItems={[...CHART_PERIOD_OPTIONS]}
+          onPeriodChange={setDjedDexPeriod}
+          currency={djedDexCurrency}
+          currencyItems={[...CURRENCY_OPTIONS]}
+          onCurrencyChange={setDjedDexCurrency}
+        >
+          <DjedDexPriceChart
+            data={djedDexHistoricalData}
+            currency={djedDexCurrency}
+          />
         </ChartCard>
-      </div> */}
+      </div>
     </div>
   )
 }

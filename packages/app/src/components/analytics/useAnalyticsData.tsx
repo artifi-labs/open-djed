@@ -10,6 +10,7 @@ import type { TokenMarketCap } from "../../../../db/generated/prisma/enums"
 import { capitalize } from "@/lib/utils"
 import type { Token } from "@/lib/tokens"
 import { Rational, shenADARate, shenUSDRate } from "@open-djed/math"
+import { env } from "@/lib/envLoader"
 
 export type ReserveRatioChartEntry = {
   id: number
@@ -40,6 +41,37 @@ export type TokenPriceByToken = Record<
   Exclude<Token, "DJED">,
   TokenPriceChartEntry[]
 >
+
+export type VolumeChartEntry = {
+  id: number
+  timestamp: string
+  djedMintedUSD: number
+  djedBurnedUSD: number
+  shenMintedUSD: number
+  shenBurnedUSD: number
+  djedMintedADA: number
+  djedBurnedADA: number
+  shenMintedADA: number
+  shenBurnedADA: number
+  totalDjedVolumeUSD: number
+  totalShenVolumeUSD: number
+  totalDjedVolumeADA: number
+  totalShenVolumeADA: number
+  totalVolumeUSD: number
+  totalVolumeADA: number
+}
+
+export type DjedDexPrices = {
+  id: number
+  timestamp: string
+  adaValue: number
+  usdValue: number
+  minswapUsdValue?: number
+  minswapAdaValue?: number
+  wingridersUsdValue?: number
+  wingridersAdaValue?: number
+  token: "DJED"
+}
 
 export type ShenYieldChartEntry = {
   id: number
@@ -85,6 +117,7 @@ export function useAnalyticsData() {
   const { reserveRatio } = useReserveDetails()
   const { showToast } = useToast()
   const { data, isLoading } = useProtocolData()
+  const { NETWORK } = env
 
   const [reserveRatioData, setReserveRatioData] = useState<
     ReserveRatioChartEntry[]
@@ -123,6 +156,26 @@ export function useAnalyticsData() {
   )
   const [shenAdaCurrency, setShenAdaCurrency] = useState<Currency>(
     CURRENCY_OPTIONS[0],
+  )
+
+  const [volumesHistoricalData, setVolumesHistoricalData] = useState<
+    VolumeChartEntry[]
+  >([])
+  const [volumesPeriod, setVolumesPeriod] = useState<ChartPeriod>(
+    CHART_PERIOD_OPTIONS[0],
+  )
+  const [volumesCurrency, setVolumesCurrency] = useState<Currency>(
+    CURRENCY_OPTIONS[0],
+  )
+
+  const [djedDexHistoricalData, setDjedDexHistoricalData] = useState<
+    DjedDexPrices[]
+  >([])
+  const [djedDexPeriod, setDjedDexPeriod] = useState<ChartPeriod>(
+    CHART_PERIOD_OPTIONS[1],
+  )
+  const [djedDexCurrency, setDjedDexCurrency] = useState<Currency>(
+    CURRENCY_OPTIONS[NETWORK === "Mainnet" ? 0 : 1],
   )
 
   const [isLoadingReserve, setIsLoadingReserve] = useState(false)
@@ -318,6 +371,91 @@ export function useAnalyticsData() {
     [data],
   )
 
+  const fetchVolumesHistoricalData = useCallback(
+    async (period: ChartPeriod) => {
+      try {
+        const res = await client.api["historical-volumes"].$get({
+          query: { period: period.value },
+        })
+
+        if (res.ok) {
+          const historicalData = (await res.json()) as VolumeChartEntry[]
+          if (period.value === "All") historicalData.shift()
+
+          const updatedHistoricalData = historicalData.map((entry) => ({
+            ...entry,
+            djedMintedUSD: Number(entry.djedMintedUSD),
+            djedBurnedUSD: Number(entry.djedBurnedUSD),
+            shenMintedUSD: Number(entry.shenMintedUSD),
+            shenBurnedUSD: Number(entry.shenBurnedUSD),
+            djedMintedADA: Number(entry.djedMintedADA),
+            djedBurnedADA: Number(entry.djedBurnedADA),
+            shenMintedADA: Number(entry.shenMintedADA),
+            shenBurnedADA: Number(entry.shenBurnedADA),
+            totalDjedVolumeUSD: Number(entry.totalDjedVolumeUSD),
+            totalShenVolumeUSD: Number(entry.totalShenVolumeUSD),
+            totalDjedVolumeADA: Number(entry.totalDjedVolumeADA),
+            totalShenVolumeADA: Number(entry.totalShenVolumeADA),
+            totalVolumeUSD: Number(entry.totalVolumeUSD),
+            totalVolumeADA: Number(entry.totalVolumeADA),
+          }))
+
+          setVolumesHistoricalData(updatedHistoricalData)
+        }
+      } catch (err) {
+        console.error("Action failed:", err)
+        if (err instanceof AppError) {
+          showToast({
+            message: `${err.message}`,
+            type: "error",
+          })
+          return
+        }
+
+        showToast({
+          message: `Failed to get historical reserve ratio data.`,
+          type: "error",
+        })
+      } finally {
+        setIsLoadingReserve(false)
+      }
+    },
+    [volumesHistoricalData],
+  )
+
+  const fetchDjedDexHistoricalData = useCallback(
+    async (period: ChartPeriod) => {
+      try {
+        const res = await client.api["historical-djed-dex-price"].$get({
+          query: { period: period.value },
+        })
+
+        if (res.ok) {
+          const historicalData = (await res.json()) as DjedDexPrices[]
+
+          if (period.value === "All") historicalData.shift()
+          console.log("data: ", historicalData)
+          setDjedDexHistoricalData(historicalData)
+        }
+      } catch (err) {
+        console.error("Action failed:", err)
+        if (err instanceof AppError) {
+          showToast({
+            message: `${err.message}`,
+            type: "error",
+          })
+          return
+        }
+
+        showToast({
+          message: `Failed to get historical Djed - Dex prices.`,
+          type: "error",
+        })
+      }
+    },
+    [data],
+  )
+
   const fetchShenYieldHistoricalData = useCallback(
     async (period: ChartPeriod) => {
       try {
@@ -382,6 +520,18 @@ export function useAnalyticsData() {
   }, [shenAdaPricePeriod, shenAdaCurrency, data])
 
   useEffect(() => {
+    fetchVolumesHistoricalData(volumesPeriod).catch((err) => {
+      console.error("fetchVolumesHistoricalData error:", err)
+    })
+  }, [volumesPeriod, data])
+
+  useEffect(() => {
+    fetchDjedDexHistoricalData(djedDexPeriod).catch((err) => {
+      console.error("fetchDjedDexHistoricalData error:", err)
+    })
+  }, [djedDexPeriod])
+
+  useEffect(() => {
     fetchShenYieldHistoricalData(shenYieldPeriod).catch((err) => {
       console.error("fetchShenYield error:", err)
     })
@@ -406,6 +556,16 @@ export function useAnalyticsData() {
     setShenAdaPricePeriod,
     shenAdaCurrency,
     setShenAdaCurrency,
+    volumesHistoricalData,
+    volumesPeriod,
+    setVolumesPeriod,
+    volumesCurrency,
+    setVolumesCurrency,
+    djedDexCurrency,
+    djedDexHistoricalData,
+    djedDexPeriod,
+    setDjedDexCurrency,
+    setDjedDexPeriod,
     isLoadingReserve,
     shenYieldData,
     shenYieldPeriod,
