@@ -44,6 +44,7 @@ import {
 } from "./errors"
 import JSONbig from "json-bigint"
 import {
+  getLast60DaysShenYield,
   getOrdersByAddressKeys,
   getPeriodAdaShenPrices,
   getPeriodMarketCap,
@@ -858,6 +859,60 @@ const app = new Hono()
       }),
     ),
     historicalDataHandler((period) => getPeriodShenYield(period)),
+  )
+  .get(
+    "/projected-shen-yield",
+    cacheMiddleware,
+    describeRoute({
+      description: "Get the projected SHEN yield data",
+      tags: ["Action"],
+      responses: {
+        200: {
+          description: "Successfully got the projected SHEN yield",
+          content: {
+            "text/plain": {
+              example: "SHEN yield data",
+            },
+          },
+        },
+        400: {
+          description: "Bad Request",
+          content: {
+            "text/plain": {
+              example: "Bad Request",
+            },
+          },
+        },
+        500: {
+          description: "Internal Server Error",
+          content: {
+            "text/plain": {
+              example: "Internal Server Error",
+            },
+          },
+        },
+      },
+    }),
+    async (c) => {
+      const cached = chainDataCache.get("projectedYield")
+      if (cached) return c.json(cached)
+
+      try {
+        const data = await getLast60DaysShenYield()
+        chainDataCache.set("projectedYield", data)
+        return c.json(data)
+      } catch (err) {
+        if (err instanceof AppError) {
+          console.error(`${err.name}: ${err.message}`)
+          return c.json({ error: err.name, message: err.message }, err.status)
+        }
+        console.error("Unhandled error:", err)
+        return c.json(
+          { error: "InternalServerError", message: "Something went wrong." },
+          500,
+        )
+      }
+    },
   )
 
 serve(
