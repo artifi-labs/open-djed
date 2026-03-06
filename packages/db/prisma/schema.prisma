@@ -91,7 +91,7 @@ model TokenPrice {
   wingridersUsdValue  Decimal?
   wingridersAdaValue  Decimal?
   block     String // block hash
-  slot      BigInt // block slot
+  slot      BigInt // block slot  
 
   @@unique([token, timestamp])
 }
@@ -126,3 +126,20 @@ model ADAStakingRewards {
   rate           Decimal // Staking rewards rate by epoch
 }
 
+model ADAFeesEarnings {
+  id        Int      @id @default(autoincrement())
+  timestamp DateTime @unique @db.Date
+  fee       Decimal
+  block     String // block hash
+  slot      BigInt // block slot
+}
+
+model ShenYield {
+  id        Int      @id @default(autoincrement())
+  timestamp DateTime @db.Date
+  yield     Decimal //realized
+  block     String // block hash
+  slot      BigInt // block slot
+
+  @@unique([timestamp])
+}

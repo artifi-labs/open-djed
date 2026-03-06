@@ -10,6 +10,7 @@ import type { TokenMarketCap } from "../../../../db/generated/prisma/enums"
 import { capitalize } from "@/lib/utils"
 import type { Token } from "@/lib/tokens"
 import { Rational, shenADARate, shenUSDRate } from "@open-djed/math"
+import { calculateProjectedYield } from "@/lib/projectedYield"
 import { env } from "@/lib/envLoader"
 
 export type ReserveRatioChartEntry = {
@@ -71,6 +72,13 @@ export type DjedDexPrices = {
   wingridersUsdValue?: number
   wingridersAdaValue?: number
   token: "DJED"
+}
+
+export type ShenYieldChartEntry = {
+  id: number
+  timestamp: string
+  yield: number
+  isProjected: boolean
 }
 
 export type CurrencyValue = "ADA" | "USD"
@@ -172,6 +180,14 @@ export function useAnalyticsData() {
   )
 
   const [isLoadingReserve, setIsLoadingReserve] = useState(false)
+
+  const [shenYieldData, setShenYieldData] = useState<ShenYieldChartEntry[]>([])
+  const [shenYieldPeriod, setShenYieldPeriod] = useState<ChartPeriod>(
+    CHART_PERIOD_OPTIONS[0],
+  )
+  const [projectedYield, setProjectedYield] = useState<ShenYieldChartEntry[]>(
+    [],
+  )
 
   const fetchReserveRatioHistoricalData = useCallback(
     async (period: ChartPeriod) => {
@@ -444,6 +460,66 @@ export function useAnalyticsData() {
     [data],
   )
 
+  const fetchShenYieldHistoricalData = useCallback(
+    async (period: ChartPeriod) => {
+      try {
+        const resHistorical = await client.api["historical-shen-yield"].$get({
+          query: { period: period.value },
+        })
+        if (!resHistorical.ok) return
+
+        const historicalData =
+          (await resHistorical.json()) as ShenYieldChartEntry[]
+        if (period.value === "All") historicalData.shift()
+
+        setShenYieldData(
+          historicalData.map((entry) => ({
+            ...entry,
+            yield: Number(entry.yield),
+            isProjected: false,
+          })),
+        )
+
+        const resProjected = await client.api["projected-shen-yield"].$get()
+        const rawData = await resProjected.json()
+
+        if (!resProjected.ok) {
+          const errorMessage =
+            rawData && typeof rawData === "object" && "message" in rawData
+              ? rawData.message
+              : "Failed to fetch yield data"
+
+          throw new AppError(errorMessage)
+        }
+
+        const dataForProjected = rawData as unknown as ShenYieldChartEntry[]
+        const projected = calculateProjectedYield(
+          dataForProjected.map((entry) => ({
+            ...entry,
+            yield: Number(entry.yield),
+          })),
+        )
+        setProjectedYield(projected)
+      } catch (err) {
+        console.error("Action failed:", err)
+
+        if (err instanceof AppError) {
+          showToast({
+            message: err.message,
+            type: "error",
+          })
+          return
+        }
+
+        showToast({
+          message: `Failed to get historical shen yield data.`,
+          type: "error",
+        })
+      }
+    },
+    [client],
+  )
+
   useEffect(() => {
     fetchReserveRatioHistoricalData(reserveRatioPeriod).catch((err) => {
       console.error("fetchReserveRatio error:", err)
@@ -480,6 +556,12 @@ export function useAnalyticsData() {
     })
   }, [djedDexPeriod])
 
+  useEffect(() => {
+    fetchShenYieldHistoricalData(shenYieldPeriod).catch((err) => {
+      console.error("fetchShenYield error:", err)
+    })
+  }, [shenYieldPeriod, data])
+
   return {
     reserveRatioData,
     reserveRatioPeriod,
@@ -510,5 +592,9 @@ export function useAnalyticsData() {
     setDjedDexCurrency,
     setDjedDexPeriod,
     isLoadingReserve,
+    shenYieldData,
+    projectedYield,
+    shenYieldPeriod,
+    setShenYieldPeriod,
   }
 }
