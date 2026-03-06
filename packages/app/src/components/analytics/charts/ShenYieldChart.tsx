@@ -1,9 +1,9 @@
 "use client"
 
 import { FinancialAreaChart } from "@/components/charts/FinancialAreaChart"
-import { useViewport } from "@/hooks/useViewport"
 import { useMemo } from "react"
 import { type ShenYieldChartEntry } from "../useAnalyticsData"
+import { ReferenceDot } from "recharts"
 
 type ShenYieldChartProps = {
   title?: string
@@ -28,20 +28,28 @@ const yTickFormatter = (value: number | string) =>
   formatPercentAxisValue(Number(value))
 
 export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({ data }) => {
-  const { isMobile } = useViewport()
-  const { rows } = useMemo(() => {
-    if (!data?.length) {
-      return { rows: [] }
+  const { rows, anchorPoint } = useMemo(() => {
+    if (!data?.length) return { rows: [], anchorPoint: null }
+
+    const lastRealizedIndex = data.findLastIndex((d) => !d.isProjected)
+    const anchor = data[lastRealizedIndex]
+
+    const mapped: ChartRow[] = data.map((entry, index) => {
+      const isProjected = entry.isProjected
+      const val = entry.yield
+
+      return {
+        date: entry.timestamp,
+        realized: !isProjected ? val : undefined,
+        projected: isProjected || index === lastRealizedIndex ? val : undefined,
+      }
+    })
+
+    return {
+      rows: mapped,
+      anchorPoint: anchor ? { x: anchor.timestamp, y: anchor.yield } : null,
     }
-
-    const mapped: ChartRow[] = data.map((entry) => ({
-      date: entry.timestamp,
-      realized: entry.yield,
-      projected: entry.projected,
-    }))
-
-    return { rows: mapped }
-  }, [data, isMobile])
+  }, [data])
 
   const lines = [
     {
@@ -52,7 +60,7 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({ data }) => {
     {
       dataKey: "projected",
       name: "Projected",
-      stroke: "var(--color-yellow-400) ",
+      stroke: "var(--color-on-warning-secondary)",
     },
   ]
 
@@ -62,6 +70,17 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({ data }) => {
       xKey="date"
       lines={lines}
       yTickFormatter={yTickFormatter}
-    />
+    >
+      {anchorPoint && (
+        <ReferenceDot
+          x={anchorPoint.x}
+          y={anchorPoint.y}
+          r={3}
+          fill="var(--color-supportive-1-500)"
+          stroke="var(--color-supportive-1-500)"
+          strokeWidth={1}
+        />
+      )}
+    </FinancialAreaChart>
   )
 }

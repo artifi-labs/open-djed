@@ -11,7 +11,7 @@ import {
   CURRENCY_OPTIONS,
 } from "./useAnalyticsData"
 import { ShenMarketCapChart } from "./charts/ShenMarketCapChart"
-import { ShenYieldChart } from "./charts/ShenYield"
+import { ShenYieldChart } from "./charts/ShenYieldChart"
 
 const Analytics = () => {
   const {
@@ -34,6 +34,7 @@ const Analytics = () => {
     setShenMCPeriod,
     shenMCHistoricalData,
     shenYieldData,
+    projectedYield,
     shenYieldPeriod,
     setShenYieldPeriod,
   } = useAnalyticsData()
@@ -134,7 +135,7 @@ const Analytics = () => {
           periodItems={[...CHART_PERIOD_OPTIONS]}
           onPeriodChange={setShenYieldPeriod}
         >
-          <ShenYieldChart data={shenYieldData} />
+          <ShenYieldChart data={[...shenYieldData, ...projectedYield]} />
         </ChartCard>
       </div>
 
