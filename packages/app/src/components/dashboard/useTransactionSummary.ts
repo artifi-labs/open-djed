@@ -1,6 +1,6 @@
 import { useMemo } from "react"
 import { transactionSummaryBuilder } from "./transactionSummaryBuilder"
-import { capitalize, formatNumber, formatValue, type Value } from "@/lib/utils"
+import { formatNumber, formatValue, type Value } from "@/lib/utils"
 import { type useMintBurnAction } from "./useMintBurnAction"
 import type { Token } from "@/lib/tokens"
 
@@ -149,7 +149,7 @@ const getActiveToken = (
 
 const createSectionConfigs = (): SectionConfig[] => [
   {
-    label: "Base Cost",
+    label: "dashboard.baseCost",
     read: (_, data) => data.baseCost,
     default: (action) => {
       const isMint = action.actionType === "Mint"
@@ -158,7 +158,7 @@ const createSectionConfigs = (): SectionConfig[] => [
     },
   },
   {
-    label: `Mint Fee`,
+    label: "dashboard.mintFee",
     read: (_, data) => data.actionFee,
     default: (action) => {
       const isMint = action.actionType === "Mint"
@@ -167,12 +167,12 @@ const createSectionConfigs = (): SectionConfig[] => [
     },
   },
   {
-    label: "Operator Fee",
+    label: "dashboard.operatorFee",
     read: (_, data) => data.operatorFee,
     default: () => ["0.00 ADA", "$0.00"],
   },
   {
-    label: "Total Cost",
+    label: "dashboard.totalCost",
     read: (_, data) => data.totalCost,
     default: (action) => {
       const isBurn = action.actionType === "Burn"
@@ -186,12 +186,12 @@ const createSectionConfigs = (): SectionConfig[] => [
     },
   },
   {
-    label: "Refundable Deposit",
+    label: "dashboard.refundableDeposit",
     read: (action) => action.protocolData?.protocolData.refundableDeposit,
     default: () => ["0.00 ADA", "$0.00"],
   },
   {
-    label: "Price",
+    label: "dashboard.price",
     read: (_, data) => data.price,
     default: (action) => {
       const isMint = action.actionType === "Mint"
@@ -224,7 +224,6 @@ const buildSummary = (
   const entries = isEmpty ? [] : Object.entries(actionData)
 
   const sections = createSectionConfigs()
-  sections[1].label = `${capitalize(action.actionType)} Fee`
 
   sections.forEach((section) => {
     const values = isEmpty

@@ -56,13 +56,11 @@ const Analytics = () => {
           <Trans
             i18nKey="dashboard.analyticsOverview"
             components={{
-              gradient: <span className="text-gradient-angular-1" />
+              gradient: <span className="text-gradient-angular-1" />,
             }}
           />
         </h1>
-        <p className="text-secondary text-xs">
-          {t("analytics.description")}
-        </p>
+        <p className="text-secondary text-xs">{t("analytics.description")}</p>
       </div>
 
       <div className="desktop:gap-24 grid grid-cols-1 gap-16">

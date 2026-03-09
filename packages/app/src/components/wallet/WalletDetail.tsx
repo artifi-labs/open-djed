@@ -78,7 +78,9 @@ const WalletDetail: React.FC<WalletDetailProps> = ({
             </span>
             <Tooltip
               tooltipDirection="bottom"
-              text={copied ? t("wallet.copiedAddress") : t("wallet.copyAddress")}
+              text={
+                copied ? t("wallet.copiedAddress") : t("wallet.copyAddress")
+              }
             >
               <Icon
                 name="Copy"

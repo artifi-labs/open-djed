@@ -1,6 +1,5 @@
 import { t } from "i18next"
 
-
 t("analytics.pageTitle")
 t("simulator.pageTitle")
 t("orders.pageTitle")
@@ -26,3 +25,10 @@ t("simulator.whatIsSimulator.rewards")
 t("simulator.whatIsSimulator.feesEarned")
 t("simulator.whatIsSimulator.profitOrLoss")
 t("simulator.whatIsSimulator.totalEstimatedPNL")
+
+t("dashboard.baseCost")
+t("dashboard.mintFee")
+t("dashboard.operatorFee")
+t("dashboard.totalCost")
+t("dashboard.refundableDeposit")
+t("dashboard.price")

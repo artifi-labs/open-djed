@@ -1,14 +1,10 @@
 import Order from "@/components/order/Order"
-import { getDictionary } from "@/i18n/server"
-
 import { buildTitle } from "@/lib/metadata"
 import type { Metadata } from "next"
 
-export async function generateMetadata(): Promise<Metadata> {
-  const dict = await getDictionary()
-
+export async function generateMetadata(): Metadata {
   return {
-    title: buildTitle(dict.orders.pageTitle),
+    title: buildTitle("orders.pageTitle"),
   }
 }
 

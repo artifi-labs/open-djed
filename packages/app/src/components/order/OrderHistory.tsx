@@ -21,6 +21,7 @@ import { useViewport } from "@/hooks/useViewport"
 import Asset from "../Asset"
 import { CARDANOSCAN_BASE_URL, ORDERS_PER_PAGE } from "@/lib/constants"
 import type { Order } from "@open-djed/api"
+import { useTranslation } from "react-i18next"
 
 interface RowItem {
   columns: { content: React.ReactNode }[]
@@ -413,6 +414,7 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({
   serverSidePagination = false,
   totalPages = 0,
 }) => {
+  const { t } = useTranslation()
   const { isMobile } = useViewport()
   const rowsDesktop: RowItem[] = useMemo(() => {
     if (!data.length || isMobile) return []
@@ -477,27 +479,31 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({
           <div className="flex flex-col gap-6">
             <p className="text-lg font-semibold">
               {filters
-                ? "No orders match your filters"
-                : "No orders to display yet"}
+                ? t("orders.noOrdersMatchFilters")
+                : t("orders.noOrdersToDisplay")}
             </p>
 
             <p className="text-sm">
               {filters
-                ? "Try adjusting or clearing your filters to see more results"
-                : "Orders will appear here after your first trade"}
+                ? t("orders.tryAdjustingFilters")
+                : t("orders.ordersWillAppear")}
             </p>
           </div>
 
           {filters ? (
             <Button
-              text="Clear all filters"
+              text={t("common.filters.clearAll")}
               variant="secondary"
               size="small"
               onClick={handleClearFilters}
             />
           ) : (
             <Link href={"/"}>
-              <Button text="Mint & Burn Now" variant="accent" size="small" />
+              <Button
+                text={t("common.mintAndBurnNow")}
+                variant="accent"
+                size="small"
+              />
             </Link>
           )}
         </div>

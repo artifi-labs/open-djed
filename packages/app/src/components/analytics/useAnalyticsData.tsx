@@ -11,7 +11,7 @@ import { capitalize } from "@/lib/utils"
 import type { Token } from "@/lib/tokens"
 import { Rational, shenADARate, shenUSDRate } from "@open-djed/math"
 import { env } from "@/lib/envLoader"
-import { ParseKeys } from "i18next"
+import { type ParseKeys } from "i18next"
 import { useTranslation } from "react-i18next"
 
 export type ReserveRatioChartEntry = {
@@ -85,7 +85,7 @@ export type Currency = (typeof CURRENCY_OPTIONS)[number]
 
 export type ChartPeriodValue = "W" | "M" | "Y" | "All"
 export const CHART_PERIOD_OPTIONS: Array<{
-  label: ParseKeys,
+  label: ParseKeys
   value: ChartPeriodValue
 }> = [
   {
@@ -282,7 +282,9 @@ export function useAnalyticsData() {
         }
 
         showToast({
-          message: t("analytics.failedToGetHistoricalMarketCapData", { token: capitalize(token) }),
+          message: t("analytics.failedToGetHistoricalMarketCapData", {
+            token: capitalize(token),
+          }),
           type: "error",
         })
       }

@@ -56,7 +56,6 @@ const InputAction: React.FC<InputActionProps> = ({ values, onUpdate }) => {
     return [{ end: lastDisabled }]
   }, [values.buyDate])
 
-
   const SCENARIO_CONFIG: Record<
     keyof ScenarioInputs,
     { label: string; tooltip: string }
@@ -86,7 +85,9 @@ const InputAction: React.FC<InputActionProps> = ({ values, onUpdate }) => {
   return (
     <BaseCard className="desktop:p-24 desktop:self-stretch p-16">
       <div className="desktop:gap-24 flex flex-col gap-16">
-        <div className="flex flex-col font-medium">{t("simulator.scenario")}</div>
+        <div className="flex flex-col font-medium">
+          {t("simulator.scenario")}
+        </div>
         {/* Content */}
         <div className="desktop:gap-24 flex flex-col gap-18">
           <div className="desktop:gap-32 flex flex-col gap-14">

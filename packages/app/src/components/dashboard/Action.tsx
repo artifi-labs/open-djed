@@ -8,6 +8,7 @@ import InputAction from "./InputAction"
 import type { Token } from "@/lib/tokens"
 import { useReserveDetails } from "@/hooks/useReserveDetails"
 import { type InputStatus } from "../input-fields/TransactionInput"
+import { useTranslation } from "react-i18next"
 
 export type ActionProps = {
   actionType: ActionType
@@ -67,6 +68,7 @@ const Action: React.FC<ActionProps> = ({
   minWarningMessage,
   minMessage,
 }) => {
+  const { t } = useTranslation()
   const { reserveBounds } = useReserveDetails()
 
   const actionText = capitalize(actionType)
@@ -100,7 +102,7 @@ const Action: React.FC<ActionProps> = ({
   const inputs = [
     {
       key: "pay",
-      label: "You Pay",
+      label: t("dashboard.youPay"),
       coins: config.pay,
       hasLeadingIcon: !bothSelected && config.payHasLeadingIcon,
       showDual: config.payShowDual && bothSelected,
@@ -120,7 +122,7 @@ const Action: React.FC<ActionProps> = ({
     },
     {
       key: "receive",
-      label: "You Receive",
+      label: t("dashboard.youReceive"),
       coins: config.receive,
       hasLeadingIcon: !bothSelected && config.receiveHasLeadingIcon,
       showDual: config.receiveShowDual && bothSelected,

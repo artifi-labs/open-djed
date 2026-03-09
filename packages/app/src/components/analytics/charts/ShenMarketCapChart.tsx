@@ -55,7 +55,10 @@ export const ShenMarketCapChart: React.FC<ShenMarketCapChartProps> = ({
   const lines = [
     {
       dataKey: valueKey,
-      name: currency.value === "USD" ? t("common.currencyValue", { currency: "USD" }) : t("common.currencyValue", { currency: "ADA" }),
+      name:
+        currency.value === "USD"
+          ? t("common.currencyValue", { currency: "USD" })
+          : t("common.currencyValue", { currency: "ADA" }),
       stroke:
         currency.value === "USD"
           ? "var(--color-supportive-1-500)"

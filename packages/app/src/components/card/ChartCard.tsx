@@ -59,8 +59,12 @@ export const InfoBanner: React.FC<InfoBannerProps> = ({
   return (
     <div className="flex flex-row items-center gap-8">
       <div className="flex flex-row items-center gap-6">
-        <p className="text-tertiary text-[10px]">{t("analytics.currentRatio")}:</p>
-        <p className="desktop:text-base test-sm font-semibold">{currentRatio}%</p>
+        <p className="text-tertiary text-[10px]">
+          {t("analytics.currentRatio")}:
+        </p>
+        <p className="desktop:text-base test-sm font-semibold">
+          {currentRatio}%
+        </p>
       </div>
 
       <div className="flex flex-row gap-2">
@@ -72,7 +76,8 @@ export const InfoBanner: React.FC<InfoBannerProps> = ({
         <p
           className={`text-xs ${type === "below" ? "text-error-text" : "text-success-text"}`}
         >
-          {percentage}% {type === "below" ? t("common.below") : t("common.above")}{" "}
+          {percentage}%{" "}
+          {type === "below" ? t("common.below") : t("common.above")}{" "}
           {type === "below" ? t("common.minimum") : t("common.maximum")}
         </p>
       </div>

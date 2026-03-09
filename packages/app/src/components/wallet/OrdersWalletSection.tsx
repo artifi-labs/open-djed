@@ -55,7 +55,7 @@ export default function OrdersWalletSection({ wallet }: { wallet: Wallet }) {
               </div>
               <Link href={"/"} className="w-full">
                 <Button
-                  text={t("orders.mintAndBurnNow")}
+                  text={t("common.mintAndBurnNow")}
                   className="w-full"
                   variant="outlined"
                   onClick={() => closeSidebar()}

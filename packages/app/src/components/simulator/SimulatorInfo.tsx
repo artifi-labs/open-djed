@@ -35,9 +35,7 @@ const SimulatorInfo = () => {
   return (
     <div className="text-secondary flex flex-col gap-16 text-sm">
       <div className="flex flex-col gap-16">
-        <p className="text-sm">
-          {t("simulator.whatIsSimulator.description")}
-        </p>
+        <p className="text-sm">{t("simulator.whatIsSimulator.description")}</p>
 
         <ul className="flex flex-col gap-16">
           {ITEMS.map(({ text, icon, name }) => (
@@ -53,9 +51,7 @@ const SimulatorInfo = () => {
           ))}
         </ul>
 
-        <p>
-          {t("simulator.whatIsSimulator.disclaimer")}
-        </p>
+        <p>{t("simulator.whatIsSimulator.disclaimer")}</p>
       </div>
     </div>
   )

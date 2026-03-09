@@ -17,7 +17,7 @@ export default function SettingsSidebar({
   onClose: () => void
   onBack?: () => void
 }) {
-const { t } = useTranslation()
+  const { t } = useTranslation()
   const { NETWORK, CONFIG } = env
   const { isMobile } = useViewport()
 
@@ -83,7 +83,9 @@ const { t } = useTranslation()
         </div> */}
 
         <div className="flex w-full flex-col items-start justify-start gap-10">
-          <span className="text-secondary text-xs">{t("settings.network.title")}</span>
+          <span className="text-secondary text-xs">
+            {t("settings.network.title")}
+          </span>
           <Dropdown
             text={currentNetworkItem?.text || t("settings.network.select")}
             size="medium"

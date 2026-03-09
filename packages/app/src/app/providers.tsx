@@ -14,10 +14,12 @@ export interface ProvidersProps {
 }
 
 export const Providers = ({ children }: ProvidersProps) => {
-  const [queryClient] = useState(() => new QueryClient({
-    defaultOptions: {
-    },
-  }))
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {},
+      }),
+  )
 
   return (
     <ClientProvider apiUrl={env.API_URL}>

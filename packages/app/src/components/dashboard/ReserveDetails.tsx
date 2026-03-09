@@ -21,7 +21,9 @@ const ReserveDetails = () => {
     <div className="desktop:grid-cols-2 desktop:gap-24 desktop:pt-32 grid grid-cols-1 gap-16 pt-16">
       <BaseCard overlay={isLoading || !hasData}>
         <div className="desktop:pb-0 flex w-full flex-col justify-between gap-24 pb-12">
-          <span className="mb-1 text-sm font-medium">{t("reserve.reserveRatio")}</span>
+          <span className="mb-1 text-sm font-medium">
+            {t("reserve.reserveRatio")}
+          </span>
           <ReserveGraph
             currentRatio={!hasData ? undefined : reserveRatio}
             minRatio={minRatio}

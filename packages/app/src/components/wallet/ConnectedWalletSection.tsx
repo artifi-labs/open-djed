@@ -43,7 +43,7 @@ const ConnectedWalletSection: React.FC<ConnectedWalletSectionProps> = ({
                 className="w-full"
                 variant="primary"
                 onClick={() => closeSidebar()}
-                text={t("wallet.mintAndBurnNow")}
+                text={t("common.mintAndBurnNow")}
               />
             </Link>
           </div>

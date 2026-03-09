@@ -1,13 +1,10 @@
 import Terms from "@/components/term/Term"
-import { getDictionary } from "@/i18n/server"
 import { buildTitle } from "@/lib/metadata"
 import type { Metadata } from "next"
 
-export async function generateMetadata(): Promise<Metadata> {
-  const dict = await getDictionary()
-
+export function generateMetadata(): Metadata {
   return {
-    title: buildTitle(dict.termsOfService.pageTitle),
+    title: buildTitle("termsOfService.pageTitle"),
   }
 }
 

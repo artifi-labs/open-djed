@@ -3,7 +3,8 @@ import Asset, { type AssetProps } from "../Asset"
 import { type IconName } from "../icons/Icon"
 import Tag from "../Tag"
 import Divider from "../Divider"
-import { formatNumber } from "@/lib/utils"
+import { capitalize, formatNumber } from "@/lib/utils"
+import { useTranslation } from "react-i18next"
 
 type ValueShowcaseProps = {
   asset: AssetProps
@@ -28,6 +29,7 @@ const ValueShowcase: React.FC<ValueShowcaseProps> = ({
   tagTrailingIcon,
   suffix,
 }) => {
+  const { t } = useTranslation()
   const showValue = value || defaultValue
 
   return (
@@ -38,7 +40,7 @@ const ValueShowcase: React.FC<ValueShowcaseProps> = ({
         </span>
         {hasAvailableAmount && availableAmount && (
           <span className="text-tertiary text-xxs">
-            Available: {availableAmount}
+            {capitalize(t("common.available"))}: {availableAmount}
           </span>
         )}
       </div>

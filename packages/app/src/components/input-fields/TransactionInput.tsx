@@ -8,7 +8,12 @@ import Tag from "../Tag"
 import ButtonIcon from "../ButtonIcon"
 import Asset, { type AssetProps } from "../Asset"
 import Button from "../Button"
-import { formatLiveStringToNumber, sanitizeNumberInput } from "@/lib/utils"
+import {
+  capitalize,
+  formatLiveStringToNumber,
+  sanitizeNumberInput,
+} from "@/lib/utils"
+import { useTranslation } from "react-i18next"
 
 export type InputStatus = "default" | "warning" | "error" | "success"
 
@@ -69,6 +74,7 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
   onMaxClick,
   ...props
 }) => {
+  const { t } = useTranslation()
   const [internalValue, setInternalValue] = React.useState(defaultValue)
   const displayedValue = value !== undefined ? value : internalValue
   const inputValue = formatLiveStringToNumber(displayedValue, maxDecimalPlaces) // Format input value for display
@@ -205,7 +211,7 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
           <div className="flex gap-8">
             {/* Half */}
             <Button
-              text="Half"
+              text={capitalize(t("common.half"))}
               variant="text"
               size="small"
               disabled={disabled}
@@ -223,7 +229,7 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
 
             {/* Max */}
             <Button
-              text="Max"
+              text={capitalize(t("common.max"))}
               variant="text"
               size="small"
               disabled={disabled}
@@ -241,13 +247,15 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
         {/* Available Amount */}
         {hasAvailableAmount && availableAmount && (
           <span className={amountTextClasses}>
-            Available: {availableAmount}
+            {capitalize(t("common.available"))}: {availableAmount}
           </span>
         )}
 
         {/* Max Amount */}
         {hasMaxAmount && maxAmount && (
-          <span className={amountTextClasses}>Max: {maxAmount}</span>
+          <span className={amountTextClasses}>
+            {capitalize(t("common.max"))}: {maxAmount}
+          </span>
         )}
       </div>
     </div>

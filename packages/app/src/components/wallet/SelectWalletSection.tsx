@@ -57,7 +57,9 @@ const SelectWalletSection: React.FC<SelectWalletSectionProps> = ({
               i18nKey="wallet.connectWalletDisclaimer"
               components={{
                 terms: <Link href="/terms" className="text-link underline" />,
-                privacy: <Link href="/privacy" className="text-link underline" />,
+                privacy: (
+                  <Link href="/privacy" className="text-link underline" />
+                ),
               }}
             />
           </div>

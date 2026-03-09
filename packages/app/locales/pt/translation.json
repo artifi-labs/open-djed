@@ -29,12 +29,19 @@
   },
   "common": {
     "above": "",
+    "available": "",
     "below": "",
     "burnedToken": "",
     "currencyValue": "",
     "fees": "",
+    "filters": {
+      "clearAll": ""
+    },
+    "half": "",
+    "max": "",
     "maximum": "",
     "minimum": "",
+    "mintAndBurnNow": "",
     "mintedToken": "",
     "months": {
       "june": ""
@@ -72,13 +79,19 @@
       }
     },
     "analyticsOverview": "",
+    "baseCost": "",
+    "mintFee": "",
     "name": "",
+    "operatorFee": "",
+    "price": "",
+    "refundableDeposit": "",
     "reserveDetails": {
       "currentRatio": "",
       "maxRatio": "",
       "minRatio": "",
       "reserveValue": ""
     },
+    "totalCost": "",
     "transactionSummary": {
       "description": "",
       "title": ""
@@ -97,7 +110,9 @@
         "transparentFees": ""
       },
       "title": ""
-    }
+    },
+    "youPay": "",
+    "youReceive": ""
   },
   "months": {
     "may": ""
@@ -122,12 +137,15 @@
   },
   "orders": {
     "allOrders": "",
-    "mintAndBurnNow": "",
     "noOrders": "",
     "noOrdersDescription": "",
+    "noOrdersMatchFilters": "",
+    "noOrdersToDisplay": "",
     "noWalletDescription": "",
+    "ordersWillAppear": "",
     "pageTitle": "",
-    "title": ""
+    "title": "",
+    "tryAdjustingFilters": ""
   },
   "privacy": {
     "effectiveDate": "",
@@ -292,7 +310,6 @@
     "connectWalletDisclaimer": "",
     "copiedAddress": "",
     "copyAddress": "",
-    "mintAndBurnNow": "",
     "noWalletsDetected": "",
     "title": ""
   }

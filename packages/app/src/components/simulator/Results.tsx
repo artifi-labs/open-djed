@@ -323,7 +323,9 @@ const Results: React.FC<ResultsProps> = ({ inputs }) => {
           {/* Fees */}
           <div className="flex flex-col justify-start gap-8">
             <div className="flex flex-row items-center gap-8">
-              <p className="min-w-auto text-sm font-medium">{t("common.fees")}</p>
+              <p className="min-w-auto text-sm font-medium">
+                {t("common.fees")}
+              </p>
               <Tooltip
                 text={
                   detailedFees
@@ -358,7 +360,9 @@ const Results: React.FC<ResultsProps> = ({ inputs }) => {
           {/* Rewards */}
           <div className="flex flex-col justify-start gap-8">
             <div className="flex flex-row items-center gap-8">
-              <p className="min-w-auto text-sm font-medium">{t("common.rewards")}</p>
+              <p className="min-w-auto text-sm font-medium">
+                {t("common.rewards")}
+              </p>
               <Tooltip
                 text={
                   detailedRewards

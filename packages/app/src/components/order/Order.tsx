@@ -51,9 +51,7 @@ const Order = () => {
             {/* TITLE & DESCRIPTION */}
             <div className="flex flex-col gap-6">
               <p className="text-lg font-semibold">{t("orders.noOrders")}</p>
-              <p className="text-sm">
-                {t("orders.noWalletDescription")}
-              </p>
+              <p className="text-sm">{t("orders.noWalletDescription")}</p>
             </div>
 
             <Button
