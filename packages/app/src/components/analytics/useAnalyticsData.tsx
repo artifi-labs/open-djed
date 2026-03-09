@@ -11,6 +11,8 @@ import { capitalize } from "@/lib/utils"
 import type { Token } from "@/lib/tokens"
 import { Rational, shenADARate, shenUSDRate } from "@open-djed/math"
 import { env } from "@/lib/envLoader"
+import { ParseKeys } from "i18next"
+import { useTranslation } from "react-i18next"
 
 export type ReserveRatioChartEntry = {
   id: number
@@ -83,29 +85,30 @@ export type Currency = (typeof CURRENCY_OPTIONS)[number]
 
 export type ChartPeriodValue = "W" | "M" | "Y" | "All"
 export const CHART_PERIOD_OPTIONS: Array<{
-  label: string
+  label: ParseKeys,
   value: ChartPeriodValue
 }> = [
   {
-    label: "This Week",
+    label: "common.period.week",
     value: "W",
   },
   {
-    label: "This Month",
+    label: "common.period.month",
     value: "M",
   },
   {
-    label: "This Year",
+    label: "common.period.year",
     value: "Y",
   },
   {
-    label: "All Time",
+    label: "common.period.all",
     value: "All",
   },
 ]
 export type ChartPeriod = (typeof CHART_PERIOD_OPTIONS)[number]
 
 export function useAnalyticsData() {
+  const { t } = useTranslation()
   const client = useApiClient()
   const { reserveRatio } = useReserveDetails()
   const { showToast } = useToast()
@@ -212,7 +215,7 @@ export function useAnalyticsData() {
         }
 
         showToast({
-          message: `Failed to get historical reserve ratio data.`,
+          message: t("analytics.failedToGetHistoricalReserveRatioData"),
           type: "error",
         })
       } finally {
@@ -279,7 +282,7 @@ export function useAnalyticsData() {
         }
 
         showToast({
-          message: `Failed to get historical ${capitalize(token)} market cap data.`,
+          message: t("analytics.failedToGetHistoricalMarketCapData", { token: capitalize(token) }),
           type: "error",
         })
       }
@@ -351,7 +354,7 @@ export function useAnalyticsData() {
         }
 
         showToast({
-          message: `Failed to get historical token price data.`,
+          message: t("analytics.failedToGetHistoricalTokenPriceData"),
           type: "error",
         })
       }
@@ -401,7 +404,7 @@ export function useAnalyticsData() {
         }
 
         showToast({
-          message: `Failed to get historical reserve ratio data.`,
+          message: t("analytics.failedToGetHistoricalReserveRatioData"),
           type: "error",
         })
       } finally {
@@ -436,7 +439,7 @@ export function useAnalyticsData() {
         }
 
         showToast({
-          message: `Failed to get historical Djed - Dex prices.`,
+          message: t("analytics.failedToGetHistoricalDjedDexPrices"),
           type: "error",
         })
       }

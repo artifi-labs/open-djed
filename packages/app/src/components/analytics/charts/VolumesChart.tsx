@@ -5,6 +5,7 @@ import { FinancialAreaChart } from "@/components/charts/FinancialAreaChart"
 import { useViewport } from "@/hooks/useViewport"
 import type { Currency, VolumeChartEntry } from "../useAnalyticsData"
 import { formatAxisValue } from "@/lib/utils"
+import { useTranslation } from "react-i18next"
 
 type VolumeChartProps = {
   title?: string
@@ -13,7 +14,7 @@ type VolumeChartProps = {
 }
 
 const VolumeChart: React.FC<VolumeChartProps> = ({ data, currency }) => {
-  console.log("volumes: ", data)
+  const { t } = useTranslation()
   const { isMobile } = useViewport()
   const isUSD = currency.value === "USD"
 
@@ -46,37 +47,37 @@ const VolumeChart: React.FC<VolumeChartProps> = ({ data, currency }) => {
   const lines = [
     {
       dataKey: "totalDjed",
-      name: "Total DJED",
+      name: t("analytics.totalDjed"),
       stroke: "var(--color-supportive-1-500)",
     },
     {
       dataKey: "totalShen",
-      name: "Total SHEN",
+      name: t("analytics.totalShen"),
       stroke: "var(--color-supportive-5-300)",
     },
     {
       dataKey: "total",
-      name: "Total Volume",
+      name: t("analytics.totalVolume"),
       stroke: "var(--color-supportive-2-500)",
     },
     {
       dataKey: "djedMinted",
-      name: "DJED Minted",
+      name: t("common.mintedToken", { token: "DJED" }),
       stroke: "var(--color-supportive-1-300)",
     },
     {
       dataKey: "djedBurned",
-      name: "DJED Burned",
+      name: t("common.burnedToken", { token: "DJED" }),
       stroke: "var(--color-supportive-1-700)",
     },
     {
       dataKey: "shenMinted",
-      name: "SHEN Minted",
+      name: t("common.mintedToken", { token: "SHEN" }),
       stroke: "var(--color-supportive-4-300)",
     },
     {
       dataKey: "shenBurned",
-      name: "SHEN Burned",
+      name: t("common.burnedToken", { token: "SHEN" }),
       stroke: "var(--color-lilac-400)",
     },
   ]

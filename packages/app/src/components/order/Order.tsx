@@ -12,8 +12,10 @@ import BaseCard from "@/components/card/BaseCard"
 import { useEffect, useState } from "react"
 import { ORDERS_PER_PAGE } from "@/lib/constants"
 import Chip from "@/components/Chip"
+import { useTranslation } from "react-i18next"
 
 const Order = () => {
+  const { t } = useTranslation()
   const { wallet } = useWallet()
   const { openWalletSidebar } = useSidebar()
   const [selectedFilter, setSelectedFilter] = useState<StatusFilters>("All")
@@ -48,16 +50,14 @@ const Order = () => {
           <div className="flex flex-col items-center justify-center gap-24 text-center">
             {/* TITLE & DESCRIPTION */}
             <div className="flex flex-col gap-6">
-              <p className="text-lg font-semibold">No orders to display yet.</p>
-
+              <p className="text-lg font-semibold">{t("orders.noOrders")}</p>
               <p className="text-sm">
-                Once the wallet is connected and activity starts, orders will
-                appear here
+                {t("orders.noWalletDescription")}
               </p>
             </div>
 
             <Button
-              text="Connect wallet"
+              text={t("common.wallet.connectWallet")}
               variant="accent"
               size="small"
               onClick={() => openWalletSidebar()}

@@ -5,6 +5,7 @@ import ListItem from "../ListItem"
 import Link from "next/link"
 import type { WalletName } from "../Wallet"
 import { capitalizeLower } from "@/lib/utils"
+import { Trans } from "react-i18next"
 
 export type WalletMetadata = {
   id: string
@@ -52,16 +53,13 @@ const SelectWalletSection: React.FC<SelectWalletSectionProps> = ({
         </div>
         <div className="desktop:p-24 p-16">
           <div className="flex flex-col text-center">
-            <p className="text-secondary self-stretch text-xs">
-              By connecting you agree to our{" "}
-              <Link href="/terms" className="text-link underline">
-                Terms & Services
-              </Link>{" "}
-              and{" "}
-              <Link href="/privacy" className="text-link underline">
-                Privacy Policy
-              </Link>
-            </p>
+            <Trans
+              i18nKey="wallet.connectWalletDisclaimer"
+              components={{
+                terms: <Link href="/terms" className="text-link underline" />,
+                privacy: <Link href="/privacy" className="text-link underline" />,
+              }}
+            />
           </div>
         </div>
       </div>

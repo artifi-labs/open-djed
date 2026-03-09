@@ -3,6 +3,7 @@ import Sidebar from "./modals/Sidebar"
 import { type ContextualMenuItem } from "./ContextualMenu"
 import { env } from "@/lib/envLoader"
 import { useViewport } from "@/hooks/useViewport"
+import { useTranslation } from "react-i18next"
 // import { useEffect, useState } from "react"
 // import { SUPPORTED_LANGUAGES } from "@/lib/constants"
 // import { useTranslation } from "react-i18next"
@@ -16,7 +17,7 @@ export default function SettingsSidebar({
   onClose: () => void
   onBack?: () => void
 }) {
-  // const { i18n } = useTranslation()
+const { t } = useTranslation()
   const { NETWORK, CONFIG } = env
   const { isMobile } = useViewport()
 
@@ -59,7 +60,7 @@ export default function SettingsSidebar({
 
   return (
     <Sidebar
-      title="Settings"
+      title={t("settings.title")}
       headerClassName="pl-16 pr-6 py-12 desktop:px-24"
       hasLeadingIcon={isMobile ? "Arrow-Left" : undefined}
       headerAction={null}
@@ -82,9 +83,9 @@ export default function SettingsSidebar({
         </div> */}
 
         <div className="flex w-full flex-col items-start justify-start gap-10">
-          <span className="text-secondary text-xs">Network</span>
+          <span className="text-secondary text-xs">{t("settings.network.title")}</span>
           <Dropdown
-            text={currentNetworkItem?.text || "Select Network"}
+            text={currentNetworkItem?.text || t("settings.network.select")}
             size="medium"
             hasTag={false}
             menuItems={networkItems}

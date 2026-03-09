@@ -12,6 +12,7 @@ import ButtonIcon from "../ButtonIcon"
 import Tooltip from "../tooltip/Tooltip"
 import { useProtocolData } from "@/hooks/useProtocolData"
 import { env } from "@/lib/envLoader"
+import { useTranslation } from "react-i18next"
 
 type WalletDetailProps = {
   name: WalletName
@@ -31,6 +32,7 @@ const WalletDetail: React.FC<WalletDetailProps> = ({
   onDisconnect,
   balance,
 }) => {
+  const { t } = useTranslation()
   const { copy, copied } = useClipboard()
   const { data } = useProtocolData()
   const { NETWORK } = env
@@ -76,7 +78,7 @@ const WalletDetail: React.FC<WalletDetailProps> = ({
             </span>
             <Tooltip
               tooltipDirection="bottom"
-              text={copied ? "Copied address!" : "Copy address"}
+              text={copied ? t("wallet.copiedAddress") : t("wallet.copyAddress")}
             >
               <Icon
                 name="Copy"

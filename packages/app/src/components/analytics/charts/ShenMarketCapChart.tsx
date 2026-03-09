@@ -7,6 +7,7 @@ import { type Currency } from "../useAnalyticsData"
 import { Legend } from "recharts"
 import { ChartLegend } from "@/components/charts/legend/ChartLegend"
 import { formatAxisValue } from "@/lib/utils"
+import { useTranslation } from "react-i18next"
 
 type ShenMarketCapChartProps = {
   title?: string
@@ -28,6 +29,7 @@ export const ShenMarketCapChart: React.FC<ShenMarketCapChartProps> = ({
   data,
   currency,
 }) => {
+  const { t } = useTranslation()
   const { isMobile } = useViewport()
   const valueKey = currency.value === "USD" ? "usdValue" : "adaValue"
 
@@ -53,7 +55,7 @@ export const ShenMarketCapChart: React.FC<ShenMarketCapChartProps> = ({
   const lines = [
     {
       dataKey: valueKey,
-      name: currency.value === "USD" ? "USD Value" : "ADA Value",
+      name: currency.value === "USD" ? t("common.currencyValue", { currency: "USD" }) : t("common.currencyValue", { currency: "ADA" }),
       stroke:
         currency.value === "USD"
           ? "var(--color-supportive-1-500)"

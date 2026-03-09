@@ -8,6 +8,7 @@ import {
   ReferenceArea,
 } from "recharts"
 import React from "react"
+import { useTranslation } from "react-i18next"
 
 type ReserveRatioOverTimeChartProps = {
   data: ReserveRatioChartEntry[]
@@ -16,6 +17,7 @@ type ReserveRatioOverTimeChartProps = {
 export const ReserveRatioOverTimeChart: React.FC<
   ReserveRatioOverTimeChartProps
 > = ({ data }) => {
+  const { t } = useTranslation()
   const yTickFormatter = (value: number | string) =>
     `${Number(value).toFixed(0)}%`
 
@@ -64,7 +66,7 @@ export const ReserveRatioOverTimeChart: React.FC<
   const lines = [
     {
       dataKey: "reserveRatio",
-      name: "Reserve Ratio",
+      name: t("reserve.reserveRatio"),
     },
   ]
 

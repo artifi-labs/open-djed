@@ -10,38 +10,11 @@ import { toISODate, formatDateLabel, formatUSD } from "@/lib/utils"
 import type { ScenarioInputs } from "./calculations"
 import Icon from "../icons/Icon"
 import Tooltip from "../tooltip/Tooltip"
+import { useTranslation } from "react-i18next"
 
 export type InputActionProps = {
   values: ScenarioInputs
   onUpdate: (field: keyof ScenarioInputs, value: string | number) => void
-}
-
-const SCENARIO_CONFIG: Record<
-  keyof ScenarioInputs,
-  { label: string; tooltip: string }
-> = {
-  usdAmount: {
-    label: "USD Amount",
-    tooltip: "The amount of USD you want to invest in SHEN",
-  },
-  buyDate: {
-    label: "Buy Date",
-    tooltip: "The date you bought SHEN",
-  },
-  sellDate: {
-    label: "Sell Date",
-    tooltip: "The date you plan to sell SHEN",
-  },
-  buyAdaPrice: {
-    label: "Buy ADA Price",
-    tooltip:
-      "The ADA price when you buy SHEN, used to calculate your profit/loss",
-  },
-  sellAdaPrice: {
-    label: "Sell ADA Price",
-    tooltip:
-      "The ADA price when you sell SHEN, used to calculate your profit/loss",
-  },
 }
 
 const FieldLabel = ({
@@ -62,6 +35,8 @@ const FieldLabel = ({
 )
 
 const InputAction: React.FC<InputActionProps> = ({ values, onUpdate }) => {
+  const { t } = useTranslation()
+
   const handleValueChange = (field: keyof ScenarioInputs, val: string) => {
     onUpdate(field, val)
   }
@@ -81,10 +56,37 @@ const InputAction: React.FC<InputActionProps> = ({ values, onUpdate }) => {
     return [{ end: lastDisabled }]
   }, [values.buyDate])
 
+
+  const SCENARIO_CONFIG: Record<
+    keyof ScenarioInputs,
+    { label: string; tooltip: string }
+  > = {
+    usdAmount: {
+      label: t("simulator.usdAmount.label"),
+      tooltip: t("simulator.usdAmount.tooltip"),
+    },
+    buyDate: {
+      label: t("simulator.buyDate.label"),
+      tooltip: t("simulator.buyDate.tooltip"),
+    },
+    sellDate: {
+      label: t("simulator.sellDate.label"),
+      tooltip: t("simulator.sellDate.tooltip"),
+    },
+    buyAdaPrice: {
+      label: t("simulator.buyAdaPrice.label"),
+      tooltip: t("simulator.buyAdaPrice.tooltip"),
+    },
+    sellAdaPrice: {
+      label: t("simulator.sellAdaPrice.label"),
+      tooltip: t("simulator.sellAdaPrice.tooltip"),
+    },
+  }
+
   return (
     <BaseCard className="desktop:p-24 desktop:self-stretch p-16">
       <div className="desktop:gap-24 flex flex-col gap-16">
-        <div className="flex flex-col font-medium">Scenario</div>
+        <div className="flex flex-col font-medium">{t("simulator.scenario")}</div>
         {/* Content */}
         <div className="desktop:gap-24 flex flex-col gap-18">
           <div className="desktop:gap-32 flex flex-col gap-14">

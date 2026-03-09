@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next"
 import type { Currency, ChartPeriod } from "../analytics/useAnalyticsData"
 import { type ContextualMenuItem } from "../ContextualMenu"
 import { type ReserveBoundsType } from "../dashboard/useMintBurnAction"
@@ -52,28 +53,32 @@ export const InfoBanner: React.FC<InfoBannerProps> = ({
   currentRatio,
   percentage,
   type,
-}) => (
-  <div className="flex flex-row items-center gap-8">
-    <div className="flex flex-row items-center gap-6">
-      <p className="text-tertiary text-[10px]">Current ratio:</p>
-      <p className="desktop:text-base test-sm font-semibold">{currentRatio}%</p>
-    </div>
+}) => {
+  const { t } = useTranslation()
 
-    <div className="flex flex-row gap-2">
-      <Icon
-        name={type === "below" ? "Arrow-Down" : "Arrow-Top"}
-        size={16}
-        iconColor={type === "below" ? "text-error-text" : "text-success-text"}
-      />
-      <p
-        className={`text-xs ${type === "below" ? "text-error-text" : "text-success-text"}`}
-      >
-        {percentage}% {type === "below" ? "below" : "above"}{" "}
-        {type === "below" ? "minimum" : "maximum"}
-      </p>
+  return (
+    <div className="flex flex-row items-center gap-8">
+      <div className="flex flex-row items-center gap-6">
+        <p className="text-tertiary text-[10px]">{t("analytics.currentRatio")}:</p>
+        <p className="desktop:text-base test-sm font-semibold">{currentRatio}%</p>
+      </div>
+
+      <div className="flex flex-row gap-2">
+        <Icon
+          name={type === "below" ? "Arrow-Down" : "Arrow-Top"}
+          size={16}
+          iconColor={type === "below" ? "text-error-text" : "text-success-text"}
+        />
+        <p
+          className={`text-xs ${type === "below" ? "text-error-text" : "text-success-text"}`}
+        >
+          {percentage}% {type === "below" ? t("common.below") : t("common.above")}{" "}
+          {type === "below" ? t("common.minimum") : t("common.maximum")}
+        </p>
+      </div>
     </div>
-  </div>
-)
+  )
+}
 
 export default function ChartCard({
   children,
@@ -87,9 +92,11 @@ export default function ChartCard({
   warning,
   info,
 }: ChartCardProps) {
+  const { t } = useTranslation()
+
   const periodMenuItems: ContextualMenuItem[] = periodItems.map((item) => ({
     key: item.value,
-    text: item.label,
+    text: t(item.label),
     onClick: () => onPeriodChange?.(item),
   }))
 

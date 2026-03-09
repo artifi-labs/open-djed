@@ -8,6 +8,8 @@ import type { ActionType } from "./actionConfig"
 import type { useMintBurnAction } from "./useMintBurnAction"
 import Snackbar from "../Snackbar"
 import { useReserveDetails } from "@/hooks/useReserveDetails"
+import { useTranslation } from "react-i18next"
+import { capitalize } from "@/lib/utils"
 
 export type ActionsProps = {
   action: ReturnType<typeof useMintBurnAction>
@@ -15,14 +17,15 @@ export type ActionsProps = {
 }
 
 const Actions: React.FC<ActionsProps> = ({ action, onActionChange }) => {
+  const { t } = useTranslation()
   const tabs: TabItem[] = [
-    { key: "Mint", leadingIcon: "Mint", text: "Mint" },
-    { key: "Burn", leadingIcon: "Burn", text: "Burn" },
+    { key: "Mint", leadingIcon: "Mint", text: capitalize(t("action.mint")) },
+    { key: "Burn", leadingIcon: "Burn", text: capitalize(t("action.burn")) },
   ]
 
   const descriptionText: Record<ActionType, string> = {
-    Mint: "Mint DJED, SHEN by depositing ADA into the protocol.",
-    Burn: "Burn DJED, SHEN to withdraw your ADA from the protocol.",
+    Mint: t("dashboard.action.Mint.description"),
+    Burn: t("dashboard.action.Burn.description"),
   }
 
   const { reserveWarning } = useReserveDetails()

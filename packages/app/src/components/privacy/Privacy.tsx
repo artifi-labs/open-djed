@@ -1,11 +1,12 @@
 "use client"
 
+import { capitalize } from "@/lib/utils"
 import { Trans, useTranslation } from "react-i18next"
 
 const Privacy = () => {
   const { t } = useTranslation()
 
-  const month = t("months.june")
+  const month = capitalize(t("common.months.june"))
   const day = 3
   const year = 2025
   const effectiveDate = `${month} ${day}, ${year}`
