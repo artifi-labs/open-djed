@@ -2,7 +2,7 @@ import Order from "@/components/order/Order"
 import { buildTitle } from "@/lib/metadata"
 import type { Metadata } from "next"
 
-export async function generateMetadata(): Metadata {
+export function generateMetadata(): Metadata {
   return {
     title: buildTitle("orders.pageTitle"),
   }

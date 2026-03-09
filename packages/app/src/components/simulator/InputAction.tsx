@@ -6,7 +6,7 @@ import InputField from "../input-fields/InputField"
 import Dropdown from "../Dropdown"
 import Calendar from "../calendar/Calendar"
 import { type CalendarValue } from "../calendar/Calendar.types"
-import { toISODate, formatDateLabel, formatUSD } from "@/lib/utils"
+import { toISODate, formatDateLabel, formatUSD, capitalize } from "@/lib/utils"
 import type { ScenarioInputs } from "./calculations"
 import Icon from "../icons/Icon"
 import Tooltip from "../tooltip/Tooltip"
@@ -119,7 +119,10 @@ const InputAction: React.FC<InputActionProps> = ({ values, onUpdate }) => {
                   <Dropdown
                     size="medium"
                     leadingIcon="Calendar"
-                    text={formatDateLabel(values[id])}
+                    text={
+                      formatDateLabel(values[id]) ||
+                      capitalize(t("common.select"))
+                    }
                     hasTag={false}
                     trailingIcon="Chevron-down"
                     menuItems={[]}

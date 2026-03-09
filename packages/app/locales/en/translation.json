@@ -44,7 +44,18 @@
     "mintAndBurnNow": "",
     "mintedToken": "",
     "months": {
-      "june": ""
+      "april": "",
+      "august": "",
+      "december": "",
+      "february": "",
+      "january": "",
+      "july": "",
+      "june": "",
+      "march": "",
+      "may": "",
+      "november": "",
+      "october": "",
+      "september": ""
     },
     "period": {
       "all": "",
@@ -53,9 +64,28 @@
       "week": "",
       "year": ""
     },
+    "periodItems": {
+      "lastMonth": "",
+      "lastWeek": "",
+      "thisMonth": "",
+      "thisQuarter": "",
+      "thisWeek": "",
+      "thisYear": "",
+      "today": ""
+    },
     "rewards": "",
+    "select": "",
     "wallet": {
       "connectWallet": ""
+    },
+    "weekDays": {
+      "friday": "",
+      "monday": "",
+      "saturday": "",
+      "sunday": "",
+      "thursday": "",
+      "tuesday": "",
+      "wednesday": ""
     }
   },
   "components": {
