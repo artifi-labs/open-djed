@@ -13,6 +13,7 @@ import {
 import { ShenMarketCapChart } from "./charts/ShenMarketCapChart"
 import { ShenYieldChart } from "./charts/ShenYieldChart"
 import { DjedDexPriceChart } from "./charts/DjedDexPriceChart"
+import VolumeChart from "./charts/VolumesChart"
 
 const Analytics = () => {
   const {
