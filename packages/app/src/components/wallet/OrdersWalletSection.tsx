@@ -50,7 +50,7 @@ export default function OrdersWalletSection({ wallet }: { wallet: Wallet }) {
                   {t("orders.noOrders")}
                 </span>
                 <span className="text-center text-xs md:text-sm">
-                  {t("orders.noOrdersDescription")}
+                  {t("orders.noOrdersDescription")}.
                 </span>
               </div>
               <Link href={"/"} className="w-full">

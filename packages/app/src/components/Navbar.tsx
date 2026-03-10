@@ -140,7 +140,7 @@ export const Navbar = () => {
     if (!wallet) return t("navbar.wallet.connect")
     if (wallet.balance.handle) return `$${wallet.balance.handle}`
     if (wallet.address) return `${shortenString(wallet.address)}`
-    return t("navbar.wallet.loading")
+    return `${t("navbar.wallet.loading")}...`
   }
 
   const walletButtonText = getWalletButtonText()

@@ -53,15 +53,17 @@ const SelectWalletSection: React.FC<SelectWalletSectionProps> = ({
         </div>
         <div className="desktop:p-24 p-16">
           <div className="flex flex-col text-center">
-            <Trans
-              i18nKey="wallet.connectWalletDisclaimer"
-              components={{
-                terms: <Link href="/terms" className="text-link underline" />,
-                privacy: (
-                  <Link href="/privacy" className="text-link underline" />
-                ),
-              }}
-            />
+            <p className="text-secondary self-stretch text-xs">
+              <Trans
+                i18nKey="wallet.connectWalletDisclaimer"
+                components={{
+                  terms: <Link href="/terms" className="text-link underline" />,
+                  privacy: (
+                    <Link href="/privacy" className="text-link underline" />
+                  ),
+                }}
+              />
+            </p>
           </div>
         </div>
       </div>
