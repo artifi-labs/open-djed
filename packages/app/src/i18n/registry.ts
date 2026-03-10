@@ -1,5 +1,6 @@
 import { t } from "i18next"
 
+t("dashboard.pageTitle")
 t("analytics.pageTitle")
 t("simulator.pageTitle")
 t("orders.pageTitle")
@@ -20,11 +21,11 @@ t("common.period.month")
 t("common.period.year")
 t("common.period.all")
 
-t("simulator.whatIsSimulator.fees")
-t("simulator.whatIsSimulator.rewards")
-t("simulator.whatIsSimulator.feesEarned")
-t("simulator.whatIsSimulator.profitOrLoss")
-t("simulator.whatIsSimulator.totalEstimatedPNL")
+t("simulator.whatIsSimulator.items.fees")
+t("simulator.whatIsSimulator.items.rewards")
+t("simulator.whatIsSimulator.items.feesEarned")
+t("simulator.whatIsSimulator.items.profitOrLoss")
+t("simulator.whatIsSimulator.items.totalEstimatedPNL")
 
 t("dashboard.baseCost")
 t("dashboard.mintFee")
@@ -61,3 +62,10 @@ t("common.periodItems.thisQuarter")
 t("common.periodItems.thisYear")
 t("common.periodItems.lastWeek")
 t("common.periodItems.lastMonth")
+
+t("orders.status.created")
+t("orders.status.completed")
+t("orders.status.canceled")
+
+t("action.mint")
+t("action.burn")

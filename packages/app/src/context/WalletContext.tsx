@@ -103,7 +103,9 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
 
         if ((await api.getNetworkId()) !== networkIds[NETWORK]) {
           showToast({
-            message: t("wallet.incorrectNetwork", { network: capitalize(NETWORK)}),
+            message: t("wallet.incorrectNetwork", {
+              network: capitalize(NETWORK),
+            }),
             type: "error",
           })
           return

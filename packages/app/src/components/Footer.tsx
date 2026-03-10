@@ -141,7 +141,11 @@ const Footer = () => {
 
         <div className="flex flex-row justify-start gap-4">
           <Icon name="Legal" size={16} />
-          <p className="text-xs">{t("components.footer.allRights", { year: new Date().getFullYear() })}</p>
+          <p className="text-xs">
+            {t("components.footer.allRights", {
+              year: new Date().getFullYear(),
+            })}
+          </p>
         </div>
       </footer>
     )
@@ -173,7 +177,9 @@ const Footer = () => {
           <div className="flex flex-row justify-center gap-4">
             <Icon name="Legal" size={16} />
             <p className="text-xs font-medium">
-              {t("components.footer.allRights", { year: new Date().getFullYear() })}
+              {t("components.footer.allRights", {
+                year: new Date().getFullYear(),
+              })}
             </p>
           </div>
         </div>
