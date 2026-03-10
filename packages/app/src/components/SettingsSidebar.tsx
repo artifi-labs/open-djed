@@ -5,9 +5,7 @@ import { env } from "@/lib/envLoader"
 import { useViewport } from "@/hooks/useViewport"
 import { useTranslation } from "react-i18next"
 import { capitalize } from "@/lib/utils"
-// import { useEffect, useState } from "react"
-// import { SUPPORTED_LANGUAGES } from "@/lib/constants"
-// import { useTranslation } from "react-i18next"
+import { SUPPORTED_LANGUAGES } from "@/lib/constants"
 
 export default function SettingsSidebar({
   isOpen,
@@ -18,32 +16,27 @@ export default function SettingsSidebar({
   onClose: () => void
   onBack?: () => void
 }) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { NETWORK, CONFIG } = env
   const { isMobile } = useViewport()
 
-  // const [activeLanguage, setActiveLanguage] = useState<string>("en")
-  // const [_isClient, setIsClient] = useState(false)
+  const supportedLanguages = SUPPORTED_LANGUAGES.map((lang) => ({
+    key: lang.code,
+    text: lang.label,
+  }))
 
-  // useEffect(() => {
-  //   setIsClient(true)
-  //   setActiveLanguage(i18n.language)
-  // }, [i18n.language])
+  const activeLanguage = i18n.language
 
-  // const supportedLanguages = SUPPORTED_LANGUAGES.map((lang) => ({
-  //   key: lang.code,
-  //   text: lang.label,
-  // }))
+  const handleLanguageChange = (item: ContextualMenuItem) => {
+    const newLang = item.key as string
+    i18n.changeLanguage(newLang).catch((err) => {
+      console.error("Failed to change language:", err)
+    })
+  }
 
-  // const handleLanguageChange = async (item: ContextualMenuItem) => {
-  //   const newLang = item.key as string
-  //   setActiveLanguage(newLang)
-  //   await i18n.changeLanguage(newLang)
-  // }
-
-  // const currentLanguageItem = supportedLanguages.find(
-  //   (lang) => lang.key === activeLanguage,
-  // )
+  const currentLanguageItem = supportedLanguages.find(
+    (lang) => lang.key === activeLanguage,
+  )
 
   const networkItems = Object.keys(CONFIG).map((key) => ({
     key: key,
@@ -71,7 +64,7 @@ export default function SettingsSidebar({
       paddingClassName="px-16 py-8 desktop:px-24"
     >
       <div className="flex h-full w-full flex-col items-start justify-start gap-18">
-        {/* <div className="flex w-full flex-col items-start justify-start gap-10">
+        <div className="flex w-full flex-col items-start justify-start gap-10">
           <span className="text-secondary text-xs">Language</span>
           <Dropdown
             text={currentLanguageItem?.text || "English"}
@@ -81,7 +74,7 @@ export default function SettingsSidebar({
             onChange={handleLanguageChange}
             trailingIcon="Chevron-down"
           />
-        </div> */}
+        </div>
 
         <div className="flex w-full flex-col items-start justify-start gap-10">
           <span className="text-secondary text-xs">
