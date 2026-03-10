@@ -4,95 +4,86 @@
     "mint": "Mint"
   },
   "analytics": {
-    "currentRatio": "",
-    "description": "",
-    "djedDexPrice": "",
-    "djedMarketCap": "",
-    "failedToGetHistoricalDjedDexPrices": "",
-    "failedToGetHistoricalMarketCapData": "",
-    "failedToGetHistoricalReserveRatioData": "",
-    "failedToGetHistoricalTokenPriceData": "",
+    "analyticsOverview": "<gradient>Analytics</gradient> Overview",
+    "currentRatio": "Current Ratio",
+    "description": "Real-time insights into protocol metrics and market dynamics",
+    "djedDexPrice": "DJED Price vs Secondary Markets",
+    "djedMarketCap": "DJED Market Cap",
+    "failedToGetHistoricalDjedDexPrices": "Failed to get historical Djed - Dex prices.",
+    "failedToGetHistoricalMarketCapData": "Failed to get historical {{token}} market cap data.",
+    "failedToGetHistoricalReserveRatioData": "Failed to get historical reserve ratio data.",
+    "failedToGetHistoricalTokenPriceData": "Failed to get historical token price data.",
+    "failedToGetHistoricalVolumeData": "Failed to get historical volume data.",
     "pageTitle": "Analytics",
     "reserve": {
       "warning": {
-        "above": "",
-        "below": ""
+        "above": "SHEN minting unavailable: reserve ratio above maximum.",
+        "below": "DJED minting/SHEN burning unavailable: reserve ratio below minimum."
       }
     },
-    "reserveRatioOverTime": "",
-    "shenAdaPrice": "",
-    "shenMarketCap": "",
-    "totalDjed": "",
-    "totalShen": "",
-    "totalVolume": "",
-    "volumes": ""
+    "reserveRatioOverTime": "Reserve Ratio Over Time",
+    "shenAdaPrice": "SHEN Price & ADA Price",
+    "shenMarketCap": "SHEN Market Cap",
+    "totalDjed": "Total DJED",
+    "totalShen": "Total SHEN",
+    "totalVolume": "Total Volume",
+    "volumes": "Volume Analytics"
   },
   "common": {
-    "above": "",
-    "available": "",
-    "below": "",
-    "burnedToken": "",
+    "above": "Above",
+    "available": "Available",
+    "below": "Below",
+    "burnedToken": "{{token}} Burned",
     "copiedAddress": "Copied address",
     "copyAddress": "Copy address",
-    "currencyValue": "",
-    "date": "",
-    "fees": "",
-    "filters": {
-      "clearAll": ""
-    },
-    "half": "",
-    "max": "",
-    "maximum": "",
-    "minimum": "",
+    "currencyValue": "{{currency}} Value",
+    "fees": "Fees",
+    "half": "Half",
+    "max": "Max",
+    "maximum": "Maximum",
+    "minimum": "Minimum",
     "mintAndBurnNow": "Mint & Burn Now",
-    "mintedToken": "",
+    "mintedToken": "{{token}} Minted",
     "months": {
-      "april": "",
-      "august": "",
-      "december": "",
-      "february": "",
-      "january": "",
-      "july": "",
-      "june": "",
-      "march": "",
-      "may": "",
-      "november": "",
-      "october": "",
-      "september": ""
+      "april": "April",
+      "august": "August",
+      "december": "December",
+      "february": "February",
+      "january": "January",
+      "july": "July",
+      "june": "June",
+      "march": "March",
+      "may": "May",
+      "november": "November",
+      "october": "October",
+      "september": "September"
     },
-    "paid": "",
     "period": {
-      "all": "",
-      "day": "",
-      "month": "",
-      "week": "",
-      "year": ""
+      "all": "All Time",
+      "day": "Today",
+      "month": "This Month",
+      "week": "This Week",
+      "year": "This Year"
     },
     "periodItems": {
-      "lastMonth": "",
-      "lastWeek": "",
-      "thisMonth": "",
-      "thisQuarter": "",
-      "thisWeek": "",
-      "thisYear": "",
-      "today": ""
+      "lastMonth": "Last Month",
+      "lastWeek": "Last Week",
+      "thisMonth": "This Month",
+      "thisQuarter": "This Quarter",
+      "thisWeek": "This Week",
+      "thisYear": "This Year",
+      "today": "Today"
     },
-    "received": "",
     "rewards": "",
-    "select": "",
-    "status": "",
-    "type": "",
-    "wallet": {
-      "connectWallet": ""
-    },
+    "select": "Select",
     "weekDays": {
-      "friday": "",
-      "monday": "",
-      "saturday": "",
-      "sunday": "",
-      "thursday": "",
-      "tuesday": "",
-      "wednesday": ""
+      "friday": "Friday",
+      "monday": "Monday",
+      "saturday": "Saturday",
+      "sunday": "Sunday",
+      "thursday": "Thursday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday"
     }
   },
   "components": {
@@ -120,7 +111,6 @@
       "minAction": "{{action}} {{minMessage}}",
       "wallet": "Connect Wallet to {{action}}"
     },
-    "analyticsOverview": "",
     "baseCost": "Base Cost",
     "mintFee": "Mint Fee",
     "name": "",
@@ -198,6 +188,9 @@
       "created": "Created"
     },
     "table": {
+      "filters": {
+        "clearAll": "Clear all filters"
+      },
       "header": {
         "date": "Date",
         "orders": "Orders",

@@ -4,6 +4,7 @@
     "mint": ""
   },
   "analytics": {
+    "analyticsOverview": "",
     "currentRatio": "",
     "description": "",
     "djedDexPrice": "",
@@ -12,6 +13,7 @@
     "failedToGetHistoricalMarketCapData": "",
     "failedToGetHistoricalReserveRatioData": "",
     "failedToGetHistoricalTokenPriceData": "",
+    "failedToGetHistoricalVolumeData": "",
     "pageTitle": "",
     "reserve": {
       "warning": {
@@ -35,11 +37,7 @@
     "copiedAddress": "",
     "copyAddress": "",
     "currencyValue": "",
-    "date": "",
     "fees": "",
-    "filters": {
-      "clearAll": ""
-    },
     "half": "",
     "max": "",
     "maximum": "",
@@ -60,7 +58,6 @@
       "october": "",
       "september": ""
     },
-    "paid": "",
     "period": {
       "all": "",
       "day": "",
@@ -77,14 +74,8 @@
       "thisYear": "",
       "today": ""
     },
-    "received": "",
     "rewards": "",
     "select": "",
-    "status": "",
-    "type": "",
-    "wallet": {
-      "connectWallet": ""
-    },
     "weekDays": {
       "friday": "",
       "monday": "",
@@ -120,7 +111,6 @@
       "minAction": "",
       "wallet": ""
     },
-    "analyticsOverview": "",
     "baseCost": "",
     "mintFee": "",
     "name": "",
@@ -198,6 +188,9 @@
       "created": ""
     },
     "table": {
+      "filters": {
+        "clearAll": ""
+      },
       "header": {
         "date": "",
         "orders": "",

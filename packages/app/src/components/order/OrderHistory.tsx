@@ -316,13 +316,13 @@ const MobileCell = ({ order }: { order: Order }) => {
         <div className="flex w-full flex-col gap-8">
           <div className="flex w-full flex-row items-center justify-between">
             <span className="text-tertiary text-xxs">
-              {capitalize(t("common.type"))}
+              {capitalize(t("orders.table.header.type"))}
             </span>
             <span className="text-xs">{order.action}</span>
           </div>
           <div className="flex w-full flex-row items-center justify-between">
             <span className="text-tertiary text-xxs">
-              {capitalize(t("common.date"))}
+              {capitalize(t("orders.table.header.date"))}
             </span>
             <span className="text-xs">
               {formatDate(BigInt(new Date(order.orderDate).getTime()))}
@@ -330,7 +330,7 @@ const MobileCell = ({ order }: { order: Order }) => {
           </div>
           <div className="flex w-full flex-row items-center justify-between">
             <span className="text-tertiary text-xxs">
-              {capitalize(t("common.paid"))}
+              {capitalize(t("orders.table.header.paid"))}
             </span>
             <div className="flex items-center gap-2">
               <span>{formatAda(order.paid)}</span>
@@ -339,7 +339,7 @@ const MobileCell = ({ order }: { order: Order }) => {
           </div>
           <div className="flex w-full flex-row items-center justify-between">
             <span className="text-tertiary text-xxs">
-              {capitalize(t("common.received"))}
+              {capitalize(t("orders.table.header.received"))}
             </span>
             <div className="flex items-center gap-2">
               <span>{formatAda(order.received)}</span>
@@ -348,7 +348,7 @@ const MobileCell = ({ order }: { order: Order }) => {
           </div>
           <div className="flex w-full flex-row items-center justify-between">
             <span className="text-tertiary text-xxs">
-              {capitalize(t("common.status"))}
+              {capitalize(t("orders.table.header.status"))}
             </span>
             <Tag
               type={statusConfig.type}
@@ -567,7 +567,7 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({
 
           {filters ? (
             <Button
-              text={t("common.filters.clearAll")}
+              text={t("orders.table.filters.clearAll")}
               variant="secondary"
               size="small"
               onClick={handleClearFilters}
