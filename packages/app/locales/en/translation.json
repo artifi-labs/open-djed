@@ -219,10 +219,10 @@
   },
   "settings": {
     "network": {
-      "select": "",
-      "title": ""
+      "select": "Select Network",
+      "title": "Network"
     },
-    "title": ""
+    "title": "Settings"
   },
   "simulator": {
     "buyAdaPrice": {
