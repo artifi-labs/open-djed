@@ -25,8 +25,8 @@ export const useReserveDetails = () => {
     reserveBounds === "in-bounds"
       ? null
       : reserveBounds === "below"
-        ? t("reserve.warning.below")
-        : t("reserve.warning.above")
+        ? t("reserve.warning.below", { percentage: minRatio })
+        : t("reserve.warning.above", { percentage: maxRatio })
 
   const reserveChartWarning: string | null =
     reserveBounds === "in-bounds"
