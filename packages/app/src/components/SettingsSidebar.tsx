@@ -4,6 +4,7 @@ import { type ContextualMenuItem } from "./ContextualMenu"
 import { env } from "@/lib/envLoader"
 import { useViewport } from "@/hooks/useViewport"
 import { useTranslation } from "react-i18next"
+import { capitalize } from "@/lib/utils"
 // import { useEffect, useState } from "react"
 // import { SUPPORTED_LANGUAGES } from "@/lib/constants"
 // import { useTranslation } from "react-i18next"
@@ -60,7 +61,7 @@ export default function SettingsSidebar({
 
   return (
     <Sidebar
-      title={t("settings.title")}
+      title={capitalize(t("settings.title"))}
       headerClassName="pl-16 pr-6 py-12 desktop:px-24"
       hasLeadingIcon={isMobile ? "Arrow-Left" : undefined}
       headerAction={null}

@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next"
 const Term = () => {
   const { t } = useTranslation()
 
-  const month = t("months.may")
+  const month = t("common.months.may")
   const day = 15
   const year = 2025
   const effectiveDate = `${month} ${day}, ${year}`

@@ -34,6 +34,8 @@
     "available": "",
     "below": "",
     "burnedToken": "",
+    "copiedAddress": "",
+    "copyAddress": "",
     "currencyValue": "",
     "fees": "",
     "filters": {
@@ -110,10 +112,16 @@
         "description": ""
       }
     },
+    "actionButton": {
+      "fillAmount": "",
+      "minAction": "",
+      "wallet": ""
+    },
     "baseCost": "",
     "mintFee": "",
     "name": "",
     "operatorFee": "",
+    "pageTitle": "",
     "price": "",
     "refundableDeposit": "",
     "reserveDetails": {
@@ -129,24 +137,21 @@
     },
     "whatIsOpenDjed": {
       "description": "",
-      "title": ""
-    },
-    "whyOpenDjed": {
-      "items": {
-        "communityFirst": "",
-        "globalAccess": "",
-        "openSource": "",
-        "protocolCompatible": "",
-        "reliable": "",
-        "transparentFees": ""
-      },
-      "title": ""
+      "title": "",
+      "whyOpenDjed": {
+        "items": {
+          "communityFirst": "",
+          "globalAccess": "",
+          "openSource": "",
+          "protocolCompatible": "",
+          "reliable": "",
+          "transparentFees": ""
+        },
+        "title": ""
+      }
     },
     "youPay": "",
     "youReceive": ""
-  },
-  "months": {
-    "may": ""
   },
   "navbar": {
     "analytics": {
@@ -175,6 +180,11 @@
     "noWalletDescription": "",
     "ordersWillAppear": "",
     "pageTitle": "",
+    "status": {
+      "canceled": "",
+      "completed": "",
+      "created": ""
+    },
     "title": "",
     "tryAdjustingFilters": ""
   },
@@ -285,12 +295,14 @@
     "whatIsSimulator": {
       "description": "",
       "disclaimer": "",
-      "fees": "",
-      "feesEarned": "",
-      "profitOrLoss": "",
-      "rewards": "",
-      "title": "",
-      "totalEstimatedPNL": ""
+      "items": {
+        "fees": "",
+        "feesEarned": "",
+        "profitOrLoss": "",
+        "rewards": "",
+        "totalEstimatedPNL": ""
+      },
+      "title": ""
     }
   },
   "terms": {
@@ -337,11 +349,18 @@
     "pageTitle": ""
   },
   "wallet": {
+    "connected": "",
+    "connectionFailed": "",
     "connectWallet": "",
     "connectWalletDisclaimer": "",
-    "copiedAddress": "",
-    "copyAddress": "",
+    "disconnected": "",
+    "incorrectNetwork": "",
     "noWalletsDetected": "",
+    "orders": {
+      "cancel": "",
+      "paid": "",
+      "received": ""
+    },
     "title": ""
   }
 }

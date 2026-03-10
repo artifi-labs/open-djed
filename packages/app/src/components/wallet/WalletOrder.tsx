@@ -8,6 +8,8 @@ import { type OrderStatus, useOrders } from "@/hooks/useOrders"
 import { type Order } from "@open-djed/api"
 import { STATUS_CONFIG } from "../order/OrderHistory"
 import { CARDANOSCAN_BASE_URL } from "@/lib/constants"
+import { useTranslation } from "react-i18next"
+import { capitalize } from "@/lib/utils"
 
 type WalletOrderProps = {
   order: Order
@@ -15,6 +17,7 @@ type WalletOrderProps = {
 }
 
 const WalletOrder: React.FC<WalletOrderProps> = ({ order, divider }) => {
+  const { t } = useTranslation()
   const { handleCancelOrder, formatDate } = useOrders()
 
   const formatLovelace = (amount: bigint) =>
@@ -32,12 +35,12 @@ const WalletOrder: React.FC<WalletOrderProps> = ({ order, divider }) => {
           type={statusConfig.type}
           role="Secondary"
           size="small"
-          text={statusConfig.text}
+          text={t(statusConfig.i18nKey)}
         />
         <div className="flex flex-row items-center gap-8">
           {order.status === "Created" && (
             <Button
-              text="Cancel"
+              text={t("wallet.orders.cancel")}
               variant="secondary"
               size="small"
               onClick={() => {
@@ -66,20 +69,22 @@ const WalletOrder: React.FC<WalletOrderProps> = ({ order, divider }) => {
             checked={false}
             size="small"
           />
-          <span className="text-xs">{order.action}</span>
+          <span className="text-xs">
+            {capitalize(t(`action.${order.action.toLowerCase()}`))}
+          </span>
           <span className="bg-secondary h-0.75 w-0.75 rounded-full"></span>
           <span className="text-secondary text-[10px]">
             {formatDate(BigInt(new Date(order.orderDate).getTime()))}
-            {/*{order.orderDate.toString()}*/}
           </span>
         </div>
         <div className="flex flex-row items-center gap-4">
           <span className="text-xs">
-            Paid: {formatLovelace(order.paid ?? 0n)}
+            {t("wallet.orders.paid")}: {formatLovelace(order.paid ?? 0n)}
           </span>
           <span className="bg-secondary h-0.75 w-0.75 rounded-full"></span>
           <span className="text-xs">
-            Received: {formatLovelace(order.received ?? 0n)}
+            {t("wallet.orders.received")}:{" "}
+            {formatLovelace(order.received ?? 0n)}
           </span>
         </div>
       </div>

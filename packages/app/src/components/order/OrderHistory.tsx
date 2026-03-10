@@ -22,6 +22,7 @@ import Asset from "../Asset"
 import { CARDANOSCAN_BASE_URL, ORDERS_PER_PAGE } from "@/lib/constants"
 import type { Order } from "@open-djed/api"
 import { useTranslation } from "react-i18next"
+import { type ParseKeys } from "i18next"
 
 interface RowItem {
   columns: { content: React.ReactNode }[]
@@ -60,13 +61,29 @@ const headersMobile: HeaderItem[] = [
 
 export const STATUS_CONFIG: Record<
   OrderStatus,
-  { type: "success" | "warning" | "error" | "surface"; text: string }
+  {
+    type: "success" | "warning" | "error" | "surface"
+    text: string
+    i18nKey: ParseKeys
+  }
 > = {
   // Processing: { type: "surface", text: "Processing" },
-  Created: { type: "surface", text: "Created" },
-  Completed: { type: "success", text: "Completed" },
+  Created: {
+    type: "surface",
+    text: "Created",
+    i18nKey: "orders.status.created",
+  },
+  Completed: {
+    type: "success",
+    text: "Completed",
+    i18nKey: "orders.status.completed",
+  },
   // Cancelling: { type: "warning", text: "Cancelling" },
-  Canceled: { type: "surface", text: "Canceled" },
+  Canceled: {
+    type: "surface",
+    text: "Canceled",
+    i18nKey: "orders.status.canceled",
+  },
   // Failed: { type: "error", text: "Failed" },
   // Expired: { type: "error", text: "Expired" },
 }

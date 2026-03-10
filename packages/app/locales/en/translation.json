@@ -1,7 +1,7 @@
 {
   "action": {
-    "burn": "",
-    "mint": ""
+    "burn": "Burn",
+    "mint": "Mint"
   },
   "analytics": {
     "analyticsOverview": "<gradient>Analytics</gradient> Overview",
@@ -14,7 +14,7 @@
     "failedToGetHistoricalReserveRatioData": "Failed to get historical reserve ratio data.",
     "failedToGetHistoricalTokenPriceData": "Failed to get historical token price data.",
     "failedToGetHistoricalVolumeData": "Failed to get historical volume data.",
-    "pageTitle": "",
+    "pageTitle": "Analytics",
     "reserve": {
       "warning": {
         "above": "SHEN minting unavailable: reserve ratio above maximum.",
@@ -34,6 +34,8 @@
     "available": "Available",
     "below": "Below",
     "burnedToken": "{{token}} Burned",
+    "copiedAddress": "Copied address",
+    "copyAddress": "Copy address",
     "currencyValue": "{{currency}} Value",
     "fees": "",
     "filters": {
@@ -43,7 +45,7 @@
     "max": "Max",
     "maximum": "Maximum",
     "minimum": "Minimum",
-    "mintAndBurnNow": "",
+    "mintAndBurnNow": "Mint & Burn Now",
     "mintedToken": "{{token}} Minted",
     "months": {
       "april": "",
@@ -92,90 +94,98 @@
   },
   "components": {
     "footer": {
-      "allRights": "",
+      "allRights": "{{year}} Artifi. All rights are reserved",
       "privacyPolicy": {
-        "text": ""
+        "text": "Privacy Policy"
       },
       "terms": {
-        "text": ""
+        "text": "Terms & Conditions"
       }
     }
   },
   "dashboard": {
     "action": {
       "Burn": {
-        "description": ""
+        "description": "Burn DJED, SHEN to withdraw your ADA from the protocol."
       },
       "Mint": {
-        "description": ""
+        "description": "Mint DJED, SHEN by depositing ADA into the protocol."
       }
     },
-    "baseCost": "",
-    "mintFee": "",
-    "name": "",
-    "operatorFee": "",
-    "price": "",
-    "refundableDeposit": "",
-    "reserveDetails": {
-      "currentRatio": "",
-      "maxRatio": "",
-      "minRatio": "",
-      "reserveValue": ""
+    "actionButton": {
+      "fillAmount": "Fill in the Amount to {{action}}",
+      "minAction": "{{action}} {{minMessage}}",
+      "wallet": "Connect Wallet to {{action}}"
     },
-    "totalCost": "",
+    "baseCost": "Base Cost",
+    "mintFee": "Mint Fee",
+    "name": "",
+    "operatorFee": "Operator Fee",
+    "pageTitle": "Dashboard",
+    "price": "Price",
+    "refundableDeposit": "Refundable Deposit",
+    "reserveDetails": {
+      "currentRatio": "Current Ratio",
+      "maxRatio": "Max Ratio",
+      "minRatio": "Min Ratio",
+      "reserveValue": "Reserve Value"
+    },
+    "totalCost": "Total Cost",
     "transactionSummary": {
-      "description": "",
-      "title": ""
+      "description": "Start by entering an amount to see the full cost breackdown.",
+      "title": "Transaction Summary"
     },
     "whatIsOpenDjed": {
-      "description": "",
-      "title": ""
+      "description": "Open DJED is a transparent, community-driven web app for interacting with the DJED algorithmic stablecoin on Cardano, built entirely open source by Artifi Labs. It recreates the original DJED experience with full protocol compatibility - offering a more reliable, accessible, and auditable alternative.",
+      "title": "What is Open DJED?",
+      "whyOpenDjed": {
+        "items": {
+          "communityFirst": "<strong>Protocol compatible:</strong> Same overcollateralized logic as DJED.",
+          "globalAccess": "<strong>Open source:</strong> Fully auditable, forkable, and community-owned.",
+          "openSource": "<strong>Community first:</strong> Built for and by Cardano users.",
+          "protocolCompatible": "<strong>Reliable:</strong> Works even if the COTI app is down.",
+          "reliable": "<strong>Global access:</strong> No geographic restrictions.",
+          "transparentFees": "<strong>Transparent & low fees:</strong> Same COTI fee structure, ~0.1 ADA cheaper."
+        },
+        "title": "Why Open DJED?"
+      }
     },
-    "whyOpenDjed": {
-      "items": {
-        "communityFirst": "",
-        "globalAccess": "",
-        "openSource": "",
-        "protocolCompatible": "",
-        "reliable": "",
-        "transparentFees": ""
-      },
-      "title": ""
-    },
-    "youPay": "",
-    "youReceive": ""
-  },
-  "months": {
-    "may": ""
+    "youPay": "You pay",
+    "youReceive": "You Receive"
   },
   "navbar": {
     "analytics": {
-      "title": ""
+      "title": "Analytics"
     },
     "dashboard": {
-      "title": ""
+      "title": "Dashboard"
     },
     "orders": {
-      "title": ""
+      "title": "Orders"
     },
     "simulator": {
-      "title": ""
+      "title": "Simulator"
     },
     "wallet": {
-      "connect": "",
-      "loading": ""
+      "connect": "Connect Wallet",
+      "loading": "Loading Address"
     }
   },
   "orders": {
-    "allOrders": "",
-    "noOrders": "",
-    "noOrdersDescription": "",
+    "allOrders": "All orders",
+    "noOrders": "No orders yet",
+    "noOrdersDescription": "Looks like this wallet hasn't made any trades",
     "noOrdersMatchFilters": "",
     "noOrdersToDisplay": "",
     "noWalletDescription": "",
     "ordersWillAppear": "",
-    "pageTitle": "",
-    "title": "",
+    "pageTitle": "Orders",
+    "status": {
+      "canceled": "Canceled",
+      "completed": "Completed",
+      "created": "Created"
+    },
+    "title": "Orders",
     "tryAdjustingFilters": ""
   },
   "privacy": {
@@ -212,21 +222,21 @@
     "title": ""
   },
   "privacyPolicy": {
-    "pageTitle": ""
+    "pageTitle": "Privacy Policy"
   },
   "reserve": {
     "reserveRatio": "Reserve Ratio",
     "warning": {
-      "above": "",
-      "below": ""
+      "above": "SHEN minting is not permitted when the reserve ratio rises above {{percentage}}%.",
+      "below": "DJED minting and SHEN burning is not permitted when the reserve ratio drops below {{percentage}}%."
     }
   },
   "settings": {
     "network": {
-      "select": "",
-      "title": ""
+      "select": "Select Network",
+      "title": "Network"
     },
-    "title": ""
+    "title": "Settings"
   },
   "simulator": {
     "buyAdaPrice": {
@@ -237,8 +247,8 @@
       "label": "",
       "tooltip": ""
     },
-    "description": "",
-    "pageTitle": "",
+    "description": "Check the outcomes of investing in SHEN quickly and clearly",
+    "pageTitle": "Simulator",
     "results": {
       "chart": {
         "profitOverTime": {
@@ -266,7 +276,7 @@
           "tooltip": ""
         }
       },
-      "title": ""
+      "title": "SHEN Trade Simulator"
     },
     "scenario": "",
     "sellAdaPrice": {
@@ -283,14 +293,16 @@
       "tooltip": ""
     },
     "whatIsSimulator": {
-      "description": "",
-      "disclaimer": "",
-      "fees": "",
-      "feesEarned": "",
-      "profitOrLoss": "",
-      "rewards": "",
-      "title": "",
-      "totalEstimatedPNL": ""
+      "description": "The Trade Simulator helps you understand how profitable a SHEN investment could be. By entering the amount of USD to invest, your buy and sell dates, and ADA prices, the tool estimates",
+      "disclaimer": "It's not a trading tool - it's a calculator that shows how your returns change based on the inputs you choose, so you can plan your strategy with clarity. It should not be considered financial advice.",
+      "items": {
+        "fees": "Fees you pay when buying and selling",
+        "feesEarned": "Fees earned from minting and burning activity in the protocol",
+        "profitOrLoss": "Profit or loss from ADA price movement",
+        "rewards": "ADA rewards you earn while holding SHEN",
+        "totalEstimatedPNL": "Your total estimated PNL"
+      },
+      "title": "What is the trade simulator?"
     }
   },
   "terms": {
@@ -334,14 +346,21 @@
     "welcome": ""
   },
   "termsOfService": {
-    "pageTitle": ""
+    "pageTitle": "Terms of Service"
   },
   "wallet": {
-    "connectWallet": "",
-    "connectWalletDisclaimer": "",
-    "copiedAddress": "",
-    "copyAddress": "",
-    "noWalletsDetected": "",
-    "title": ""
+    "connected": "Your wallet has been successfully connected",
+    "connectionFailed": "Failed to connect your wallet",
+    "connectWallet": "Connect Wallet",
+    "connectWalletDisclaimer": "By connecting you agree to our <terms>Terms & Services</terms> and <privacy>Privacy Policy</privacy>",
+    "disconnected": "Your wallet has been disconnected",
+    "incorrectNetwork": "Please connect to a {{network}} wallet`",
+    "noWalletsDetected": "No wallets detected",
+    "orders": {
+      "cancel": "Cancel",
+      "paid": "Paid",
+      "received": "Received"
+    },
+    "title": "Wallet"
   }
 }
