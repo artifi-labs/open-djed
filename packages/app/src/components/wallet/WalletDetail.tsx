@@ -79,7 +79,7 @@ const WalletDetail: React.FC<WalletDetailProps> = ({
             <Tooltip
               tooltipDirection="bottom"
               text={
-                copied ? t("wallet.copiedAddress") : t("wallet.copyAddress")
+                copied ? `${t("common.copiedAddress")}!` : t("common.copyAddress")
               }
             >
               <Icon

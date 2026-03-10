@@ -32,6 +32,8 @@
     "available": "",
     "below": "",
     "burnedToken": "",
+    "copiedAddress": "",
+    "copyAddress": "",
     "currencyValue": "",
     "fees": "",
     "filters": {
@@ -333,10 +335,12 @@
     "pageTitle": ""
   },
   "wallet": {
+    "connected": "",
+    "connectionFailed": "",
     "connectWallet": "",
     "connectWalletDisclaimer": "",
-    "copiedAddress": "",
-    "copyAddress": "",
+    "disconnected": "",
+    "incorrectNetwork": "",
     "noWalletsDetected": "",
     "title": ""
   }

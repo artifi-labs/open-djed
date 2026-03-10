@@ -32,6 +32,8 @@
     "available": "",
     "below": "",
     "burnedToken": "",
+    "copiedAddress": "Copied address",
+    "copyAddress": "Copy address",
     "currencyValue": "",
     "fees": "",
     "filters": {
@@ -41,7 +43,7 @@
     "max": "",
     "maximum": "",
     "minimum": "",
-    "mintAndBurnNow": "",
+    "mintAndBurnNow": "Mint & Burn Now",
     "mintedToken": "",
     "months": {
       "april": "",
@@ -163,15 +165,15 @@
     }
   },
   "orders": {
-    "allOrders": "",
-    "noOrders": "",
-    "noOrdersDescription": "",
+    "allOrders": "All orders",
+    "noOrders": "No orders yet",
+    "noOrdersDescription": "Looks like this wallet hasn't made any trades",
     "noOrdersMatchFilters": "",
     "noOrdersToDisplay": "",
     "noWalletDescription": "",
     "ordersWillAppear": "",
     "pageTitle": "",
-    "title": "",
+    "title": "Orders",
     "tryAdjustingFilters": ""
   },
   "privacy": {
@@ -333,11 +335,13 @@
     "pageTitle": ""
   },
   "wallet": {
-    "connectWallet": "",
-    "connectWalletDisclaimer": "",
-    "copiedAddress": "",
-    "copyAddress": "",
-    "noWalletsDetected": "",
-    "title": ""
+    "connected": "Your wallet has been successfully connected",
+    "connectionFailed": "Failed to connect your wallet",
+    "connectWallet": "Connect Wallet",
+    "connectWalletDisclaimer": "By connecting you agree to our <terms>Terms & Services</terms> and <privacy>Privacy Policy</privacy>",
+    "disconnected": "Your wallet has been disconnected",
+    "incorrectNetwork": "Please connect to a {{network}} wallet`",
+    "noWalletsDetected": "No wallets detected",
+    "title": "Wallet"
   }
 }
