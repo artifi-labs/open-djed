@@ -267,6 +267,10 @@
     "description": "",
     "pageTitle": "",
     "results": {
+      "ada": {
+        "label": "",
+        "tooltip": ""
+      },
       "chart": {
         "profitOverTime": {
           "title": ""
@@ -278,10 +282,34 @@
       },
       "description": "",
       "fees": {
+        "buyFee": {
+          "label": "",
+          "tooltip": ""
+        },
         "detailed": {
           "tooltip": ""
         },
+        "earnedFee": {
+          "label": "",
+          "tooltip": ""
+        },
+        "sellFee": {
+          "label": "",
+          "tooltip": ""
+        },
         "simplified": {
+          "tooltip": ""
+        },
+        "stakingRewards": {
+          "label": "",
+          "tooltip": ""
+        },
+        "totalFee": {
+          "label": "",
+          "tooltip": ""
+        },
+        "totalRewards": {
+          "label": "",
           "tooltip": ""
         }
       },
@@ -292,6 +320,10 @@
         "simplified": {
           "tooltip": ""
         }
+      },
+      "shen": {
+        "label": "",
+        "tooltip": ""
       },
       "title": ""
     },
