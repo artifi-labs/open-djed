@@ -7,6 +7,7 @@ import ButtonIcon from "./ButtonIcon"
 import { type Order } from "@open-djed/api"
 import { useViewport } from "@/hooks/useViewport"
 import { type OrderStatus } from "@/hooks/useOrders"
+import { useTranslation } from "react-i18next"
 
 interface TransactionDetailsProps {
   row: {
@@ -21,6 +22,7 @@ const TransactionDetails: React.FC<TransactionDetailsProps> = ({
   row,
   hasBorder,
 }) => {
+  const { t } = useTranslation()
   const { isMobile } = useViewport()
   const [isOpen, setIsOpen] = React.useState(false)
 
@@ -100,7 +102,7 @@ const TransactionDetails: React.FC<TransactionDetailsProps> = ({
               {isCreated && (
                 <div className="flex flex-col gap-2 px-16 py-12 text-xs">
                   <span className="text-tertiary text-xxs">
-                    Estimated Execution Fee:
+                    {t("orders.estimatedExecutionFee")}:
                   </span>
                   <div className="text-primary">
                     {(Number(raw.fees) / 1_000_000).toFixed(2)} ₳
@@ -145,7 +147,7 @@ const TransactionDetails: React.FC<TransactionDetailsProps> = ({
                   {/* Executed Fee */}
                   <div className="flex flex-col gap-2 px-16 py-12">
                     <span className="text-tertiary text-xxs">
-                      Executed Fee:
+                      {t("orders.executedFee")}:
                     </span>
                     <div className="text-primary">
                       {raw.fees === undefined

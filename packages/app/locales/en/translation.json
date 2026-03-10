@@ -37,10 +37,7 @@
     "copiedAddress": "Copied address",
     "copyAddress": "Copy address",
     "currencyValue": "{{currency}} Value",
-    "fees": "",
-    "filters": {
-      "clearAll": ""
-    },
+    "fees": "Fees",
     "half": "Half",
     "max": "Max",
     "maximum": "Maximum",
@@ -48,18 +45,18 @@
     "mintAndBurnNow": "Mint & Burn Now",
     "mintedToken": "{{token}} Minted",
     "months": {
-      "april": "",
-      "august": "",
-      "december": "",
-      "february": "",
-      "january": "",
-      "july": "",
-      "june": "",
-      "march": "",
-      "may": "",
-      "november": "",
-      "october": "",
-      "september": ""
+      "april": "April",
+      "august": "August",
+      "december": "December",
+      "february": "February",
+      "january": "January",
+      "july": "July",
+      "june": "June",
+      "march": "March",
+      "may": "May",
+      "november": "November",
+      "october": "October",
+      "september": "September"
     },
     "period": {
       "all": "All Time",
@@ -69,27 +66,24 @@
       "year": "This Year"
     },
     "periodItems": {
-      "lastMonth": "",
-      "lastWeek": "",
-      "thisMonth": "",
-      "thisQuarter": "",
-      "thisWeek": "",
-      "thisYear": "",
-      "today": ""
+      "lastMonth": "Last Month",
+      "lastWeek": "Last Week",
+      "thisMonth": "This Month",
+      "thisQuarter": "This Quarter",
+      "thisWeek": "This Week",
+      "thisYear": "This Year",
+      "today": "Today"
     },
     "rewards": "",
-    "select": "",
-    "wallet": {
-      "connectWallet": ""
-    },
+    "select": "Select",
     "weekDays": {
-      "friday": "",
-      "monday": "",
-      "saturday": "",
-      "sunday": "",
-      "thursday": "",
-      "tuesday": "",
-      "wednesday": ""
+      "friday": "Friday",
+      "monday": "Monday",
+      "saturday": "Saturday",
+      "sunday": "Sunday",
+      "thursday": "Thursday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday"
     }
   },
   "components": {
@@ -173,20 +167,43 @@
   },
   "orders": {
     "allOrders": "All orders",
+    "cancel": "Cancel",
+    "cancellationDescription": "You're about to cancel your order. Once canceled, the order will be removed and no longer processed.",
+    "cancelOrder": "Cancel Order",
+    "confirmCancellation": "Confirm Cancellation",
+    "dismiss": "Dismiss",
+    "estimatedExecutionFee": "Estimated Execution Fee",
+    "executedFee": "Executed Fee",
     "noOrders": "No orders yet",
     "noOrdersDescription": "Looks like this wallet hasn't made any trades",
-    "noOrdersMatchFilters": "",
-    "noOrdersToDisplay": "",
-    "noWalletDescription": "",
-    "ordersWillAppear": "",
+    "noOrdersMatchFilters": "No orders match your filters",
+    "noOrdersToDisplay": "No orders to display yet",
+    "noWalletDescription": "Once the wallet is connected and activity starts, orders will appear here",
+    "orderCanceled": "Your order has been canceled.",
+    "ordersWillAppear": "Orders will appear here after your first trade",
     "pageTitle": "Orders",
     "status": {
       "canceled": "Canceled",
       "completed": "Completed",
       "created": "Created"
     },
+    "table": {
+      "filters": {
+        "clearAll": "Clear all filters"
+      },
+      "header": {
+        "date": "Date",
+        "orders": "Orders",
+        "paid": "Paid",
+        "received": "Received",
+        "status": "Status",
+        "token": "Token",
+        "type": "Type"
+      }
+    },
     "title": "Orders",
-    "tryAdjustingFilters": ""
+    "tryAdjustingFilters": "Try adjusting or clearing your filters to see more results",
+    "viewTransaction": "View Transaction"
   },
   "privacy": {
     "effectiveDate": "",

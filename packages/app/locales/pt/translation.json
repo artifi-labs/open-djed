@@ -38,9 +38,6 @@
     "copyAddress": "",
     "currencyValue": "",
     "fees": "",
-    "filters": {
-      "clearAll": ""
-    },
     "half": "",
     "max": "",
     "maximum": "",
@@ -79,9 +76,6 @@
     },
     "rewards": "",
     "select": "",
-    "wallet": {
-      "connectWallet": ""
-    },
     "weekDays": {
       "friday": "",
       "monday": "",
@@ -173,11 +167,19 @@
   },
   "orders": {
     "allOrders": "",
+    "cancel": "",
+    "cancellationDescription": "",
+    "cancelOrder": "",
+    "confirmCancellation": "",
+    "dismiss": "",
+    "estimatedExecutionFee": "",
+    "executedFee": "",
     "noOrders": "",
     "noOrdersDescription": "",
     "noOrdersMatchFilters": "",
     "noOrdersToDisplay": "",
     "noWalletDescription": "",
+    "orderCanceled": "",
     "ordersWillAppear": "",
     "pageTitle": "",
     "status": {
@@ -185,8 +187,23 @@
       "completed": "",
       "created": ""
     },
+    "table": {
+      "filters": {
+        "clearAll": ""
+      },
+      "header": {
+        "date": "",
+        "orders": "",
+        "paid": "",
+        "received": "",
+        "status": "",
+        "token": "",
+        "type": ""
+      }
+    },
     "title": "",
-    "tryAdjustingFilters": ""
+    "tryAdjustingFilters": "",
+    "viewTransaction": ""
   },
   "privacy": {
     "effectiveDate": "",

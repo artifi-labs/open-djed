@@ -55,7 +55,7 @@ const Order = () => {
             </div>
 
             <Button
-              text={t("common.wallet.connectWallet")}
+              text={t("wallet.connectWallet")}
               variant="accent"
               size="small"
               onClick={() => openWalletSidebar()}
