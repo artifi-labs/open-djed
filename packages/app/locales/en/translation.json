@@ -104,30 +104,35 @@
   "dashboard": {
     "action": {
       "Burn": {
-        "description": ""
+        "description": "Burn DJED, SHEN to withdraw your ADA from the protocol."
       },
       "Mint": {
-        "description": ""
+        "description": "Mint DJED, SHEN by depositing ADA into the protocol."
       }
     },
-    "analyticsOverview": "",
-    "baseCost": "",
-    "mintFee": "",
-    "name": "",
-    "operatorFee": "",
-    "pageTitle": "Dashboard",
-    "price": "",
-    "refundableDeposit": "",
-    "reserveDetails": {
-      "currentRatio": "",
-      "maxRatio": "",
-      "minRatio": "",
-      "reserveValue": ""
+    "actionButton": {
+      "fillAmount": "Fill in the Amount to {{action}}",
+      "minAction": "{{action}} {{minMessage}}",
+      "wallet": "Connect Wallet to {{action}}"
     },
-    "totalCost": "",
+    "analyticsOverview": "",
+    "baseCost": "Base Cost",
+    "mintFee": "Mint Fee",
+    "name": "",
+    "operatorFee": "Operator Fee",
+    "pageTitle": "Dashboard",
+    "price": "Price",
+    "refundableDeposit": "Refundable Deposit",
+    "reserveDetails": {
+      "currentRatio": "Current Ratio",
+      "maxRatio": "Max Ratio",
+      "minRatio": "Min Ratio",
+      "reserveValue": "Reserve Value"
+    },
+    "totalCost": "Total Cost",
     "transactionSummary": {
-      "description": "",
-      "title": ""
+      "description": "Start by entering an amount to see the full cost breackdown.",
+      "title": "Transaction Summary"
     },
     "whatIsOpenDjed": {
       "description": "Open DJED is a transparent, community-driven web app for interacting with the DJED algorithmic stablecoin on Cardano, built entirely open source by Artifi Labs. It recreates the original DJED experience with full protocol compatibility - offering a more reliable, accessible, and auditable alternative.",
@@ -144,8 +149,8 @@
         "title": "Why Open DJED?"
       }
     },
-    "youPay": "",
-    "youReceive": ""
+    "youPay": "You pay",
+    "youReceive": "You Receive"
   },
   "navbar": {
     "analytics": {
@@ -219,10 +224,10 @@
     "pageTitle": "Privacy Policy"
   },
   "reserve": {
-    "reserveRatio": "",
+    "reserveRatio": "Reserve Ratio",
     "warning": {
-      "above": "",
-      "below": ""
+      "above": "SHEN minting is not permitted when the reserve ratio rises above {{percentage}}%.",
+      "below": "DJED minting and SHEN burning is not permitted when the reserve ratio drops below {{percentage}}%."
     }
   },
   "settings": {

@@ -92,10 +92,13 @@ const Action: React.FC<ActionProps> = ({
       (hasWalletConnected && (payEmpty || receiveEmpty)) || disabledDueToReserve
 
     const text = !hasWalletConnected
-      ? `Connect Wallet to ${actionText}`
+      ? t("dashboard.actionButton.wallet", { action: actionText })
       : payEmpty || receiveEmpty
-        ? `Fill in the Amount to ${actionText}`
-        : `${actionText} ${minMessage}`
+        ? t("dashboard.actionButton.fillAmount", { action: actionText })
+        : t("dashboard.actionButton.minAction", {
+            action: actionText,
+            minMessage: minMessage,
+          })
     return { isDisabled, text }
   }, [hasWalletConnected, actionType, payValues, receiveValues])
 
