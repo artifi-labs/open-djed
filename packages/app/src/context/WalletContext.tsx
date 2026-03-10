@@ -16,6 +16,7 @@ import { useToast } from "./ToastContext"
 import { ALLOWED_WALLETS } from "@/lib/constants"
 import { env } from "@/lib/envLoader"
 import { capitalize } from "@/lib/utils"
+import { useTranslation } from "react-i18next"
 
 export type WalletMetadata = {
   id: string
@@ -79,6 +80,7 @@ const uint8ArrayToHexString = (uint8Array: Uint8Array) =>
     .join("")
 
 export function WalletProvider({ children }: { children: React.ReactNode }) {
+  const { t } = useTranslation()
   const { showToast } = useToast()
   const [wallet, setWallet] = useState<Wallet | null>(null)
   const [wallets, setWallets] = useState<WalletMetadata[]>([])
@@ -101,7 +103,9 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
 
         if ((await api.getNetworkId()) !== networkIds[NETWORK]) {
           showToast({
-            message: `Please connect to a ${capitalize(NETWORK)} wallet`,
+            message: t("wallet.incorrectNetwork", {
+              network: capitalize(NETWORK),
+            }),
             type: "error",
           })
           return
@@ -193,14 +197,14 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
         // Prevent showing notification on auto-reconnect
         if (showConnectNotification) {
           showToast({
-            message: "Your wallet has been successfully connected.",
+            message: `${t("wallet.connected")}.`,
             type: "success",
           })
         }
       } catch (err) {
         console.error(`Failed to enable ${id}`, err)
         showToast({
-          message: "Failed to connect your wallet.",
+          message: `${t("wallet.connectionFailed")}.`,
           type: "error",
         })
       }
@@ -240,7 +244,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
     setWallet(null)
     setConnectedWalletId(null)
     showToast({
-      message: "Your wallet has been disconnected.",
+      message: `${t("wallet.disconnected")}.`,
       type: "error",
     })
   }
