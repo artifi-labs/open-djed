@@ -128,24 +128,21 @@
     },
     "whatIsOpenDjed": {
       "description": "",
-      "title": ""
-    },
-    "whyOpenDjed": {
-      "items": {
-        "communityFirst": "",
-        "globalAccess": "",
-        "openSource": "",
-        "protocolCompatible": "",
-        "reliable": "",
-        "transparentFees": ""
-      },
-      "title": ""
+      "title": "",
+      "whyOpenDjed": {
+        "items": {
+          "communityFirst": "",
+          "globalAccess": "",
+          "openSource": "",
+          "protocolCompatible": "",
+          "reliable": "",
+          "transparentFees": ""
+        },
+        "title": ""
+      }
     },
     "youPay": "",
     "youReceive": ""
-  },
-  "months": {
-    "may": ""
   },
   "navbar": {
     "analytics": {

@@ -90,12 +90,12 @@
   },
   "components": {
     "footer": {
-      "allRights": "",
+      "allRights": "{{year}} Artifi. All rights are reserved",
       "privacyPolicy": {
-        "text": ""
+        "text": "Privacy Policy"
       },
       "terms": {
-        "text": ""
+        "text": "Terms & Conditions"
       }
     }
   },
@@ -127,42 +127,39 @@
       "title": ""
     },
     "whatIsOpenDjed": {
-      "description": "",
-      "title": ""
-    },
-    "whyOpenDjed": {
-      "items": {
-        "communityFirst": "",
-        "globalAccess": "",
-        "openSource": "",
-        "protocolCompatible": "",
-        "reliable": "",
-        "transparentFees": ""
-      },
-      "title": ""
+      "description": "Open DJED is a transparent, community-driven web app for interacting with the DJED algorithmic stablecoin on Cardano, built entirely open source by Artifi Labs. It recreates the original DJED experience with full protocol compatibility - offering a more reliable, accessible, and auditable alternative.",
+      "title": "What is Open DJED?",
+      "whyOpenDjed": {
+        "items": {
+          "communityFirst": "<strong>Protocol compatible:</strong> Same overcollateralized logic as DJED.",
+          "globalAccess": "<strong>Open source:</strong> Fully auditable, forkable, and community-owned.",
+          "openSource": "<strong>Community first:</strong> Built for and by Cardano users.",
+          "protocolCompatible": "<strong>Reliable:</strong> Works even if the COTI app is down.",
+          "reliable": "<strong>Global access:</strong> No geographic restrictions.",
+          "transparentFees": "<strong>Transparent & low fees:</strong> Same COTI fee structure, ~0.1 ADA cheaper."
+        },
+        "title": "Why Open DJED?"
+      }
     },
     "youPay": "",
     "youReceive": ""
   },
-  "months": {
-    "may": ""
-  },
   "navbar": {
     "analytics": {
-      "title": ""
+      "title": "Analytics"
     },
     "dashboard": {
-      "title": ""
+      "title": "Dashboard"
     },
     "orders": {
-      "title": ""
+      "title": "Orders"
     },
     "simulator": {
-      "title": ""
+      "title": "Simulator"
     },
     "wallet": {
-      "connect": "",
-      "loading": ""
+      "connect": "Connect Wallet",
+      "loading": "Loading Address"
     }
   },
   "orders": {
