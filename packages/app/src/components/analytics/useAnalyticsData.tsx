@@ -5,13 +5,12 @@ import { useToast } from "@/context/ToastContext"
 import { useProtocolData } from "@/hooks/useProtocolData"
 import { useReserveDetails } from "@/hooks/useReserveDetails"
 import { AppError } from "@open-djed/api/src/errors"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import type { TokenMarketCap } from "../../../../db/generated/prisma/enums"
 import { capitalize } from "@/lib/utils"
 import type { Token } from "@/lib/tokens"
 import { Rational, shenADARate, shenUSDRate } from "@open-djed/math"
 import { env } from "@/lib/envLoader"
-import { type ParseKeys } from "i18next"
 import { useTranslation } from "react-i18next"
 
 export type ReserveRatioChartEntry = {
@@ -84,27 +83,12 @@ export const CURRENCY_OPTIONS: Array<{ label: string; value: CurrencyValue }> =
 export type Currency = (typeof CURRENCY_OPTIONS)[number]
 
 export type ChartPeriodValue = "W" | "M" | "Y" | "All"
-export const CHART_PERIOD_OPTIONS: Array<{
-  label: ParseKeys
-  value: ChartPeriodValue
-}> = [
-  {
-    label: "common.period.week",
-    value: "W",
-  },
-  {
-    label: "common.period.month",
-    value: "M",
-  },
-  {
-    label: "common.period.year",
-    value: "Y",
-  },
-  {
-    label: "common.period.all",
-    value: "All",
-  },
-]
+export const CHART_PERIOD_OPTIONS = [
+  { labelKey: "common.period.week", value: "W" },
+  { labelKey: "common.period.month", value: "M" },
+  { labelKey: "common.period.year", value: "Y" },
+  { labelKey: "common.period.all", value: "All" },
+] as const
 export type ChartPeriod = (typeof CHART_PERIOD_OPTIONS)[number]
 
 export function useAnalyticsData() {
@@ -115,18 +99,25 @@ export function useAnalyticsData() {
   const { data, isLoading } = useProtocolData()
   const { NETWORK } = env
 
+  const translatedPeriodOptions = useMemo(() => {
+    return CHART_PERIOD_OPTIONS.map((option) => ({
+      ...option,
+      label: t(option.labelKey),
+    }))
+  }, [t])
+
   const [reserveRatioData, setReserveRatioData] = useState<
     ReserveRatioChartEntry[]
   >([])
   const [reserveRatioPeriod, setReserveRatioPeriod] = useState<ChartPeriod>(
-    CHART_PERIOD_OPTIONS[0],
+    translatedPeriodOptions[0],
   )
 
   const [djedMCHistoricalData, setDjedMCHistoricalData] = useState<
     DjedMChartEntry[]
   >([])
   const [djedMCPeriod, setDjedMCPeriod] = useState<ChartPeriod>(
-    CHART_PERIOD_OPTIONS[0],
+    translatedPeriodOptions[0],
   )
   const [djedMCCurrency, setDjedMCCurrency] = useState<Currency>(
     CURRENCY_OPTIONS[0],
@@ -136,7 +127,7 @@ export function useAnalyticsData() {
     ShenMChartEntry[]
   >([])
   const [shenMCPeriod, setShenMCPeriod] = useState<ChartPeriod>(
-    CHART_PERIOD_OPTIONS[0],
+    translatedPeriodOptions[0],
   )
   const [shenMCCurrency, setShenMCCurrency] = useState<Currency>(
     CURRENCY_OPTIONS[0],
@@ -148,7 +139,7 @@ export function useAnalyticsData() {
       SHEN: [],
     })
   const [shenAdaPricePeriod, setShenAdaPricePeriod] = useState<ChartPeriod>(
-    CHART_PERIOD_OPTIONS[1],
+    translatedPeriodOptions[1],
   )
   const [shenAdaCurrency, setShenAdaCurrency] = useState<Currency>(
     CURRENCY_OPTIONS[0],
@@ -158,7 +149,7 @@ export function useAnalyticsData() {
     VolumeChartEntry[]
   >([])
   const [volumesPeriod, setVolumesPeriod] = useState<ChartPeriod>(
-    CHART_PERIOD_OPTIONS[0],
+    translatedPeriodOptions[0],
   )
   const [volumesCurrency, setVolumesCurrency] = useState<Currency>(
     CURRENCY_OPTIONS[0],
@@ -168,7 +159,7 @@ export function useAnalyticsData() {
     DjedDexPrices[]
   >([])
   const [djedDexPeriod, setDjedDexPeriod] = useState<ChartPeriod>(
-    CHART_PERIOD_OPTIONS[1],
+    translatedPeriodOptions[1],
   )
   const [djedDexCurrency, setDjedDexCurrency] = useState<Currency>(
     CURRENCY_OPTIONS[NETWORK === "Mainnet" ? 0 : 1],
@@ -406,7 +397,7 @@ export function useAnalyticsData() {
         }
 
         showToast({
-          message: t("analytics.failedToGetHistoricalReserveRatioData"),
+          message: t("analytics.failedToGetHistoricalVolumeData"),
           type: "error",
         })
       } finally {
@@ -515,5 +506,6 @@ export function useAnalyticsData() {
     setDjedDexCurrency,
     setDjedDexPeriod,
     isLoadingReserve,
+    translatedPeriodOptions,
   }
 }
