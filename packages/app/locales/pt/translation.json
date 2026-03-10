@@ -4,6 +4,7 @@
     "mint": ""
   },
   "analytics": {
+    "analyticsOverview": "",
     "currentRatio": "",
     "description": "",
     "djedDexPrice": "",
@@ -12,6 +13,7 @@
     "failedToGetHistoricalMarketCapData": "",
     "failedToGetHistoricalReserveRatioData": "",
     "failedToGetHistoricalTokenPriceData": "",
+    "failedToGetHistoricalVolumeData": "",
     "pageTitle": "",
     "reserve": {
       "warning": {
@@ -108,7 +110,6 @@
         "description": ""
       }
     },
-    "analyticsOverview": "",
     "baseCost": "",
     "mintFee": "",
     "name": "",
