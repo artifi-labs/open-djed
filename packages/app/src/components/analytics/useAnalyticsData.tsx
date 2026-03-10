@@ -89,7 +89,9 @@ export const CHART_PERIOD_OPTIONS = [
   { labelKey: "common.period.year", value: "Y" },
   { labelKey: "common.period.all", value: "All" },
 ] as const
-export type ChartPeriod = (typeof CHART_PERIOD_OPTIONS)[number]
+export type ChartPeriod = (typeof CHART_PERIOD_OPTIONS)[number] & {
+  label?: string
+}
 
 export function useAnalyticsData() {
   const { t } = useTranslation()
