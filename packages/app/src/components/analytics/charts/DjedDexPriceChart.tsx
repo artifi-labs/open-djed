@@ -86,12 +86,6 @@ export const DjedDexPriceChart: React.FC<DjedDexPriceChartProps> = ({
       xKey="date"
       lines={lines}
       yTickFormatter={yTickFormatter}
-    >
-      <Legend
-        content={<ChartLegend />}
-        verticalAlign="top"
-        wrapperStyle={{ left: 0, width: "100%", top: 0 }}
-      />
-    </FinancialAreaChart>
+    />
   )
 }
