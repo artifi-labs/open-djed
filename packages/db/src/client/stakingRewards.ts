@@ -14,7 +14,7 @@ export const getStakingRewardsByDateRange = async (
   const dateRange = getValidDateRange(startDate, endDate)
   if (!dateRange) return []
 
-  return prisma.aDAStakingRewards.findMany({
+  return await prisma.aDAStakingRewards.findMany({
     where: {
       timestamp: { gte: dateRange.rangeStart, lt: dateRange.rangeEndExclusive },
     },
@@ -24,7 +24,7 @@ export const getStakingRewardsByDateRange = async (
 
 export const getPeriodStakingRewards = async (period: Period) => {
   const startIso = getStartIso(period)
-  return prisma.aDAStakingRewards.findMany({
+  return await prisma.aDAStakingRewards.findMany({
     where: {
       timestamp: { gte: startIso },
     },
