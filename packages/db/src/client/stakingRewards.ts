@@ -41,18 +41,6 @@ export const getLatestStakingReward = () =>
 
 export const getAllStakingRewards = () => prisma.aDAStakingRewards.findMany()
 
-export const getLast12StakingRewards = async () => {
-  return await prisma.aDAStakingRewards.findMany({
-    take: 12,
-    orderBy: {
-      epoch: "desc",
-    },
-    select: {
-      rate: true,
-    },
-  })
-}
-
 export const getLast12DaysStakingRewardsRate = async () => {
   const last12DaysRewardsRate = await prisma.aDAStakingRewards.findMany({
     take: 12,
@@ -81,7 +69,6 @@ export const getSumStakingRewardsRate = async (
   const dateRange = getValidDateRange(startDate, endDate)
   if (!dateRange) return []
 
-
   const [rewards, last12DaysRewardsRate] = await Promise.all([
     getStakingRewardsByDateRange(startDate, endDate),
     getLast12DaysStakingRewardsRate(),
@@ -104,7 +91,6 @@ export const getSumStakingRewardsRate = async (
   const missingDays = Math.max(0, totalDaysInRange - daysWithData)
   const projectedStakingRewardsRate = missingDays * last12DaysRewardsRate
   const totalStakingRewardsRate = realizedRateSum + projectedStakingRewardsRate
-
 
   return totalStakingRewardsRate
 }
