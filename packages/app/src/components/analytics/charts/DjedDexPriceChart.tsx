@@ -3,8 +3,6 @@
 import { FinancialAreaChart } from "@/components/charts/FinancialAreaChart"
 import { useMemo } from "react"
 import { type DjedDexPrices, type Currency } from "../useAnalyticsData"
-import { Legend } from "recharts"
-import { ChartLegend } from "@/components/charts/legend/ChartLegend"
 import { env } from "@/lib/envLoader"
 
 type DjedDexPriceChartProps = {
@@ -86,12 +84,6 @@ export const DjedDexPriceChart: React.FC<DjedDexPriceChartProps> = ({
       xKey="date"
       lines={lines}
       yTickFormatter={yTickFormatter}
-    >
-      <Legend
-        content={<ChartLegend />}
-        verticalAlign="top"
-        wrapperStyle={{ left: 0, width: "100%", top: 0 }}
-      />
-    </FinancialAreaChart>
+    />
   )
 }
