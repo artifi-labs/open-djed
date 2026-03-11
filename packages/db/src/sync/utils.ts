@@ -495,6 +495,17 @@ export async function getAssetTxsUpUntilSpecifiedTime(
 
       if (!Array.isArray(pageResult) || pageResult.length === 0) break
 
+      // at least always get the latest tx
+      // this will cover days where no new pool/oracle state was created
+      // avoiding blank days and/or time-weight average miscalculations
+      if (txPage === 1) {
+        const latestTx = pageResult[0]
+        if (latestTx) {
+          everyOrderTx.push(latestTx)
+          pageResult.shift()
+        }
+      }
+
       const validTxs = pageResult.filter((tx) => tx.block_time >= specifiedTime)
 
       everyOrderTx.push(...validTxs)
