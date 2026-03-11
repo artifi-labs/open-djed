@@ -12,7 +12,7 @@
     "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv ./cloudflare-env.d.ts",
-    "extract": "bunx i18next-parser"
+    "locales-extract": "bunx i18next-parser"
   },
   "dependencies": {
     "@dcspark/cardano-multiplatform-lib-browser": "^6.2.0",

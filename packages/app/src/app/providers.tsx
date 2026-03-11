@@ -20,17 +20,14 @@ export const Providers = ({ children }: ProvidersProps) => {
   )
 
   return (
-   
-      <ClientProvider apiUrl={env.API_URL}>
-        <QueryClientProvider client={queryClient}>
-          <ToastProvider>
-            <WalletProvider>
-              <SidebarProvider>
-                {children}
-              </SidebarProvider>
-            </WalletProvider>
-          </ToastProvider>
-        </QueryClientProvider>
-      </ClientProvider>
+    <ClientProvider apiUrl={env.API_URL}>
+      <QueryClientProvider client={queryClient}>
+        <ToastProvider>
+          <WalletProvider>
+            <SidebarProvider>{children}</SidebarProvider>
+          </WalletProvider>
+        </ToastProvider>
+      </QueryClientProvider>
+    </ClientProvider>
   )
 }

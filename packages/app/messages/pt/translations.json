@@ -22,12 +22,65 @@
         "below": "",
         "above": ""
       }
+    },
+    "analyticsOverview": ""
+  },
+  "keywords": {
+    "opensource": "Open Source",
+    "software": "Software",
+    "development": "Desenvolvimento",
+    "defi_full": "Finança Descentralizada",
+    "software_dev": "Desenvolvimento de Software"
+  },
+  "metadata": {
+    "layout": {
+      "description": ""
     }
   },
   "notFound": {
     "title": "",
     "subtitle": "",
     "buttonText": ""
+  },
+  "orders": {
+    "pageTitle": "",
+    "noOrders": "",
+    "noWalletDescription": "",
+    "cancel": "",
+    "confirmCancellation": "",
+    "cancellationDescription": "",
+    "cancelOrder": "",
+    "dismiss": "",
+    "orderCanceled": "",
+    "table": {
+      "header": {
+        "type": "",
+        "date": "",
+        "paid": "",
+        "received": "",
+        "status": "",
+        "token": "",
+        "orders": ""
+      },
+      "filters": {
+        "clearAll": ""
+      }
+    },
+    "viewTransaction": "",
+    "noOrdersMatchFilters": "",
+    "noOrdersToDisplay": "",
+    "tryAdjustingFilters": "",
+    "ordersWillAppear": "",
+    "estimatedExecutionFee": "",
+    "executedFee": "",
+    "title": "",
+    "allOrders": "",
+    "noOrdersDescription": "",
+    "status": {
+      "created": "",
+      "completed": "",
+      "cancelled": ""
+    }
   },
   "dashboard": {
     "pageTitle": "olllaaa",
@@ -48,9 +101,7 @@
     },
     "whatIsOpenDjed": {
       "title": "",
-      "description": "",
       "whyOpenDjed": {
-        "title": "",
         "items": {
           "protocolCompatible": "",
           "openSource": "",
@@ -58,8 +109,10 @@
           "reliable": "",
           "globalAccess": "",
           "transparentFees": ""
-        }
-      }
+        },
+        "title": ""
+      },
+      "description": ""
     },
     "reserveDetails": {
       "currentRatio": "",
@@ -71,13 +124,39 @@
       "title": "",
       "description": ""
     },
-    "name": "",
     "baseCost": "",
     "mintFee": "",
     "operatorFee": "",
     "totalCost": "",
     "refundableDeposit": "",
     "price": ""
+  },
+  "privacyPolicy": {
+    "pageTitle": "",
+    "title": "",
+    "effectiveDate": "",
+    "intro": "",
+    "sections": {
+      "dataCollection": "",
+      "wallets": "",
+      "analytics": "",
+      "openSource": "",
+      "authentication": "",
+      "policy": "",
+      "contact": ""
+    },
+    "paragraphs": {
+      "wallet": "",
+      "analytics1": "",
+      "analytics3": "",
+      "openSource": "",
+      "sourceCode": "",
+      "authentication": "",
+      "policy": "",
+      "contact": "",
+      "dataCollection": "",
+      "analytics2": ""
+    }
   },
   "simulator": {
     "pageTitle": "",
@@ -250,13 +329,6 @@
     "rewards": "",
     "copiedAddress": "",
     "copyAddress": "",
-    "period": {
-      "day": "",
-      "week": "",
-      "month": "",
-      "year": "",
-      "all": ""
-    },
     "weekDays": {
       "monday": "",
       "tuesday": "",
@@ -269,11 +341,18 @@
     "periodItems": {
       "today": "",
       "thisWeek": "",
-      "thisMonth": "",
-      "thisQuarter": "",
-      "thisYear": "",
       "lastWeek": "",
-      "lastMonth": ""
+      "thisMonth": "",
+      "lastMonth": "",
+      "thisQuarter": "",
+      "thisYear": ""
+    },
+    "period": {
+      "day": "",
+      "week": "",
+      "month": "",
+      "year": "",
+      "all": ""
     }
   },
   "reserve": {
@@ -316,49 +395,8 @@
       "loading": ""
     }
   },
-  "orders": {
-    "noOrders": "",
-    "noWalletDescription": "",
-    "cancel": "",
-    "confirmCancellation": "",
-    "cancellationDescription": "",
-    "cancelOrder": "",
-    "dismiss": "",
-    "orderCanceled": "",
-    "table": {
-      "header": {
-        "type": "",
-        "date": "",
-        "paid": "",
-        "received": "",
-        "status": "",
-        "token": "",
-        "orders": ""
-      },
-      "filters": {
-        "clearAll": ""
-      }
-    },
-    "viewTransaction": "",
-    "noOrdersMatchFilters": "",
-    "noOrdersToDisplay": "",
-    "tryAdjustingFilters": "",
-    "ordersWillAppear": "",
-    "estimatedExecutionFee": "",
-    "executedFee": "",
-    "title": "",
-    "allOrders": "",
-    "noOrdersDescription": "",
-    "pageTitle": "",
-    "status": {
-      "created": "",
-      "completed": "",
-      "canceled": ""
-    }
-  },
   "wallet": {
     "connectWallet": "",
-    "connectWalletDisclaimer": "",
     "orders": {
       "cancel": "",
       "paid": "",
@@ -369,32 +407,8 @@
     "incorrectNetwork": "",
     "connected": "",
     "connectionFailed": "",
-    "disconnected": ""
-  },
-  "privacyPolicy": {
-    "title": "",
-    "effectiveDate": "",
-    "intro": "",
-    "sections": {
-      "dataCollection": "",
-      "wallets": "",
-      "analytics": "",
-      "openSource": "",
-      "authentication": "",
-      "policy": "",
-      "contact": ""
-    },
-    "paragraphs": {
-      "wallet": "",
-      "analytics1": "",
-      "analytics3": "",
-      "openSource": "",
-      "sourceCode": "",
-      "authentication": "",
-      "policy": "",
-      "contact": ""
-    },
-    "pageTitle": ""
+    "disconnected": "",
+    "connectWalletDisclaimer": ""
   },
   "settings": {
     "title": "",

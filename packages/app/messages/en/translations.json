@@ -22,12 +22,65 @@
         "below": "DJED minting/SHEN burning unavailable: reserve ratio below minimum.",
         "above": "SHEN minting unavailable: reserve ratio above maximum."
       }
+    },
+    "analyticsOverview": "<gradient>Analytics</gradient> Overview"
+  },
+  "keywords": {
+    "opensource": "Open Source",
+    "software": "Software",
+    "development": "Development",
+    "defi_full": "Decentralized Finance",
+    "software_dev": "Software Development"
+  },
+  "metadata": {
+    "layout": {
+      "description": "Mint and burn DJED, Cardano's overcollateralized stablecoin, with our open-source platform. Transparent alternative to DJED.xyz - accessible 24/7 anywhere."
     }
   },
   "notFound": {
     "title": "",
     "subtitle": "",
     "buttonText": ""
+  },
+  "orders": {
+    "pageTitle": "Orders",
+    "noOrders": "No orders yet",
+    "noWalletDescription": "Once the wallet is connected and activity starts, orders will appear here",
+    "cancel": "Cancel",
+    "confirmCancellation": "Confirm Cancellation",
+    "cancellationDescription": "You're about to cancel your order. Once canceled, the order will be removed and no longer processed.",
+    "cancelOrder": "Cancel Order",
+    "dismiss": "Dismiss",
+    "orderCanceled": "Your order has been canceled.",
+    "table": {
+      "header": {
+        "type": "Type",
+        "date": "Date",
+        "paid": "Paid",
+        "received": "Received",
+        "status": "Status",
+        "token": "Token",
+        "orders": "Orders"
+      },
+      "filters": {
+        "clearAll": "Clear all filters"
+      }
+    },
+    "viewTransaction": "View Transaction",
+    "noOrdersMatchFilters": "No orders match your filters",
+    "noOrdersToDisplay": "No orders to display yet",
+    "tryAdjustingFilters": "Try adjusting or clearing your filters to see more results",
+    "ordersWillAppear": "Orders will appear here after your first trade",
+    "estimatedExecutionFee": "Estimated Execution Fee",
+    "executedFee": "Executed Fee",
+    "title": "Orders",
+    "allOrders": "All orders",
+    "noOrdersDescription": "Looks like this wallet hasn't made any trades",
+    "status": {
+      "created": "Created",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    }
   },
   "dashboard": {
     "pageTitle": "Dashboard",
@@ -48,9 +101,7 @@
     },
     "whatIsOpenDjed": {
       "title": "What is Open DJED?",
-      "description": "Open DJED is a transparent, community-driven web app for interacting with the DJED algorithmic stablecoin on Cardano, built entirely open source by Artifi Labs. It recreates the original DJED experience with full protocol compatibility - offering a more reliable, accessible, and auditable alternative.",
       "whyOpenDjed": {
-        "title": "Why Open DJED?",
         "items": {
           "protocolCompatible": "<strong>Reliable:</strong> Works even if the COTI app is down.",
           "openSource": "<strong>Community first:</strong> Built for and by Cardano users.",
@@ -58,8 +109,10 @@
           "reliable": "<strong>Global access:</strong> No geographic restrictions.",
           "globalAccess": "<strong>Open source:</strong> Fully auditable, forkable, and community-owned.",
           "transparentFees": "<strong>Transparent & low fees:</strong> Same COTI fee structure, ~0.1 ADA cheaper."
-        }
-      }
+        },
+        "title": "Why Open DJED?"
+      },
+      "description": "Open DJED is a transparent, community-driven web app for interacting with the DJED algorithmic stablecoin on Cardano, built entirely open source by Artifi Labs. It recreates the original DJED experience with full protocol compatibility - offering a more reliable, accessible, and auditable alternative."
     },
     "reserveDetails": {
       "currentRatio": "Current Ratio",
@@ -71,13 +124,39 @@
       "title": "Transaction Summary",
       "description": "Start by entering an amount to see the full cost breackdown."
     },
-    "name": "",
     "baseCost": "Base Cost",
     "mintFee": "Mint Fee",
     "operatorFee": "Operator Fee",
     "totalCost": "Total Cost",
     "refundableDeposit": "Refundable Deposit",
     "price": "Price"
+  },
+  "privacyPolicy": {
+    "pageTitle": "Privacy Policy",
+    "title": "Privacy Policy",
+    "effectiveDate": "Effective Date: {date}",
+    "intro": "Artifi Labs is committed to privacy and transparency. This Privacy Policy outlines what data we collect and how it is used.",
+    "sections": {
+      "dataCollection": "1. Data Collection",
+      "wallets": "2. Wallets",
+      "analytics": "3. Analytics and Telemetry",
+      "openSource": "4. Open Source",
+      "authentication": "5. No Authentication",
+      "policy": "6. Updates to This Policy",
+      "contact": "7. Contact"
+    },
+    "paragraphs": {
+      "wallet": "When users interact with the app using their Cardano wallet, we interact only with the wallet interface via the CIP-30 standard. We do not receive or store your private keys. We reserve the right to store your addresses and transactions for analytical purposes to allow us to learn from your usage of the app and to improve it based on this information.",
+      "analytics1": "We use PostHog to collect limited analytics and application telemetry. This helps us understand how the app is used and identify bugs or performance issues.",
+      "analytics3": "All analytics are used strictly for the purpose of improving the application experience.",
+      "openSource": "This application is open source and licensed under the",
+      "sourceCode": "Source code:",
+      "authentication": "The application does not use or require any user accounts, logins, or email registration. Access is anonymous.",
+      "policy": "We may revise this policy over time. Updates will be posted here with a new effective date.",
+      "contact": "If you have questions about this Privacy Policy, contact us at:",
+      "dataCollection": "We do not collect or store any personal data. Any data accessed or displayed by the application comes exclusively from publicly data available on the blockchain.",
+      "analytics2": "Data collected by PostHog does <strong>not</strong> include personally identifiable information. We do <strong>not</strong> store wallet addresses, names, emails, or any user credentials."
+    }
   },
   "simulator": {
     "pageTitle": "Simulator",
@@ -250,13 +329,6 @@
     "rewards": "Rewards",
     "copiedAddress": "Copied address",
     "copyAddress": "Copy address",
-    "period": {
-      "day": "Today",
-      "week": "This Week",
-      "month": "This Month",
-      "year": "This Year",
-      "all": "All Time"
-    },
     "weekDays": {
       "monday": "Monday",
       "tuesday": "Tuesday",
@@ -269,11 +341,18 @@
     "periodItems": {
       "today": "Today",
       "thisWeek": "This Week",
-      "thisMonth": "This Month",
-      "thisQuarter": "This Quarter",
-      "thisYear": "This Year",
       "lastWeek": "Last Week",
-      "lastMonth": "Last Month"
+      "thisMonth": "This Month",
+      "lastMonth": "Last Month",
+      "thisQuarter": "This Quarter",
+      "thisYear": "This Year"
+    },
+    "period": {
+      "day": "Today",
+      "week": "This Week",
+      "month": "This Month",
+      "year": "This Year",
+      "all": "All Time"
     }
   },
   "reserve": {
@@ -316,49 +395,8 @@
       "loading": "Loading Address"
     }
   },
-  "orders": {
-    "noOrders": "No orders yet",
-    "noWalletDescription": "Once the wallet is connected and activity starts, orders will appear here",
-    "cancel": "Cancel",
-    "confirmCancellation": "Confirm Cancellation",
-    "cancellationDescription": "You're about to cancel your order. Once canceled, the order will be removed and no longer processed.",
-    "cancelOrder": "Cancel Order",
-    "dismiss": "Dismiss",
-    "orderCanceled": "Your order has been canceled.",
-    "table": {
-      "header": {
-        "type": "Type",
-        "date": "Date",
-        "paid": "Paid",
-        "received": "Received",
-        "status": "Status",
-        "token": "Token",
-        "orders": "Orders"
-      },
-      "filters": {
-        "clearAll": "Clear all filters"
-      }
-    },
-    "viewTransaction": "View Transaction",
-    "noOrdersMatchFilters": "No orders match your filters",
-    "noOrdersToDisplay": "No orders to display yet",
-    "tryAdjustingFilters": "Try adjusting or clearing your filters to see more results",
-    "ordersWillAppear": "Orders will appear here after your first trade",
-    "estimatedExecutionFee": "Estimated Execution Fee",
-    "executedFee": "Executed Fee",
-    "title": "Orders",
-    "allOrders": "All orders",
-    "noOrdersDescription": "Looks like this wallet hasn't made any trades",
-    "pageTitle": "Orders",
-    "status": {
-      "created": "Created",
-      "completed": "Completed",
-      "canceled": "Canceled"
-    }
-  },
   "wallet": {
     "connectWallet": "Connect Wallet",
-    "connectWalletDisclaimer": "By connecting you agree to our <terms>Terms & Services</terms> and <privacy>Privacy Policy</privacy>",
     "orders": {
       "cancel": "Cancel",
       "paid": "Paid",
@@ -369,32 +407,8 @@
     "incorrectNetwork": "Please connect to a {network} wallet`",
     "connected": "Your wallet has been successfully connected",
     "connectionFailed": "Failed to connect your wallet",
-    "disconnected": "Your wallet has been disconnected"
-  },
-  "privacyPolicy": {
-    "title": "Privacy Policy",
-    "effectiveDate": "Effective Date: {date}",
-    "intro": "Artifi Labs is committed to privacy and transparency. This Privacy Policy outlines what data we collect and how it is used.",
-    "sections": {
-      "dataCollection": "1. Data Collection",
-      "wallets": "2. Wallets",
-      "analytics": "3. Analytics and Telemetry",
-      "openSource": "4. Open Source",
-      "authentication": "5. No Authentication",
-      "policy": "6. Updates to This Policy",
-      "contact": "7. Contact"
-    },
-    "paragraphs": {
-      "wallet": "When users interact with the app using their Cardano wallet, we interact only with the wallet interface via the CIP-30 standard. We do not receive or store your private keys. We reserve the right to store your addresses and transactions for analytical purposes to allow us to learn from your usage of the app and to improve it based on this information.",
-      "analytics1": "We use PostHog to collect limited analytics and application telemetry. This helps us understand how the app is used and identify bugs or performance issues.",
-      "analytics3": "All analytics are used strictly for the purpose of improving the application experience.",
-      "openSource": "This application is open source and licensed under the",
-      "sourceCode": "Source code:",
-      "authentication": "The application does not use or require any user accounts, logins, or email registration. Access is anonymous.",
-      "policy": "We may revise this policy over time. Updates will be posted here with a new effective date.",
-      "contact": "If you have questions about this Privacy Policy, contact us at:"
-    },
-    "pageTitle": "Privacy Policy"
+    "disconnected": "Your wallet has been disconnected",
+    "connectWalletDisclaimer": "By connecting you agree to our <terms>Terms & Services</terms> and <privacy>Privacy Policy</privacy>"
   },
   "settings": {
     "title": "Settings",

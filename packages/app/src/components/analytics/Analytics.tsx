@@ -51,7 +51,7 @@ const Analytics = () => {
       <div className="desktop:py-32 flex w-full flex-col items-center justify-center gap-8 py-16 text-center">
         <h1 className="font-bold">
           {t.rich("analytics.analyticsOverview", {
-            gradient: (chunks) => <span className="text-gradient-angular-1" />,
+            gradient: () => <span className="text-gradient-angular-1" />,
           })}
         </h1>
         <p className="text-secondary text-xs">{t("analytics.description")}</p>

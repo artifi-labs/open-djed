@@ -5,7 +5,7 @@ import { fallbackLng } from "./settings"
 
 function deepMerge(
   fallback: Record<string, unknown>,
-  override: Record<string, unknown>
+  override: Record<string, unknown>,
 ): Record<string, unknown> {
   const result = { ...fallback }
 
@@ -14,16 +14,16 @@ function deepMerge(
     const fallbackVal = fallback[key]
 
     if (
-      typeof overrideVal === 'object' &&
+      typeof overrideVal === "object" &&
       overrideVal !== null &&
-      typeof fallbackVal === 'object' &&
+      typeof fallbackVal === "object" &&
       fallbackVal !== null
     ) {
       result[key] = deepMerge(
         fallbackVal as Record<string, unknown>,
-        overrideVal as Record<string, unknown>
+        overrideVal as Record<string, unknown>,
       )
-    } else if (overrideVal !== '') {
+    } else if (overrideVal !== "") {
       result[key] = overrideVal
     }
   }
@@ -31,15 +31,20 @@ function deepMerge(
   return result
 }
 
-function removeEmptyStrings(obj: Record<string, unknown>): Record<string, unknown> {
-  return Object.entries(obj).reduce((acc, [key, value]) => {
-    if (typeof value === 'object' && value !== null) {
-      acc[key] = removeEmptyStrings(value as Record<string, unknown>)
-    } else if (value !== '') {
-      acc[key] = value
-    }
-    return acc
-  }, {} as Record<string, unknown>)
+function removeEmptyStrings(
+  obj: Record<string, unknown>,
+): Record<string, unknown> {
+  return Object.entries(obj).reduce(
+    (acc, [key, value]) => {
+      if (typeof value === "object" && value !== null) {
+        acc[key] = removeEmptyStrings(value as Record<string, unknown>)
+      } else if (value !== "") {
+        acc[key] = value
+      }
+      return acc
+    },
+    {} as Record<string, unknown>,
+  )
 }
 
 export default getRequestConfig(async ({ requestLocale }) => {
@@ -48,10 +53,13 @@ export default getRequestConfig(async ({ requestLocale }) => {
     ? requested
     : routing.defaultLocale
 
-  const fallbackMessages = (await import(`../../messages/${fallbackLng}/translations.json`)).default
-  const localeMessages = locale !== fallbackLng
-    ? (await import(`../../messages/${locale}/translations.json`)).default
-    : {}
+  const fallbackMessages = (
+    await import(`../../messages/${fallbackLng}/translations.json`)
+  ).default
+  const localeMessages =
+    locale !== fallbackLng
+      ? (await import(`../../messages/${locale}/translations.json`)).default
+      : {}
 
   return {
     locale,
@@ -59,6 +67,6 @@ export default getRequestConfig(async ({ requestLocale }) => {
     getMessageFallback({ key, namespace }) {
       return namespace ? `${namespace}.${key}` : key
     },
-    onError() {}
+    onError() {},
   }
 })

@@ -97,11 +97,9 @@ export default function ChartCard({
   warning,
   info,
 }: ChartCardProps) {
-  const t = useTranslations()
-
   const periodMenuItems: ContextualMenuItem[] = periodItems.map((item) => ({
     key: item.value,
-    text: t(item.label ?? item.labelKey),
+    text: item.label ?? item.labelKey,
     onClick: () => onPeriodChange?.(item),
   }))
 

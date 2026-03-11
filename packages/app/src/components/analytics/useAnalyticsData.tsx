@@ -420,7 +420,6 @@ export function useAnalyticsData() {
           const historicalData = (await res.json()) as DjedDexPrices[]
 
           if (period.value === "All") historicalData.shift()
-          console.log("data: ", historicalData)
           setDjedDexHistoricalData(historicalData)
         }
       } catch (err) {

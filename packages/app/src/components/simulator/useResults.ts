@@ -15,7 +15,6 @@ import {
   type ResultsData,
   useSimulatorResults,
 } from "./calculations"
-import { t, type TFunction } from "i18next"
 import { useTranslations } from "next-intl"
 
 export type ValueItem = {
@@ -58,7 +57,9 @@ type SectionConfig = {
   detailsType?: "fee" | "reward"
 }
 
-const createSectionConfigs: (t: TFunction) => SectionConfig[] = () => [
+const createSectionConfigs: (
+  t: ReturnType<typeof useTranslations>,
+) => SectionConfig[] = (t) => [
   {
     name: "shenPnl",
     label: t("simulator.results.shen.label"),

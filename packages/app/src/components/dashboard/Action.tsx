@@ -97,7 +97,7 @@ const Action: React.FC<ActionProps> = ({
         ? t("dashboard.actionButton.fillAmount", { action: actionText })
         : t("dashboard.actionButton.minAction", {
             action: actionText,
-            minMessage: minMessage,
+            minMessage: minMessage ?? "",
           })
     return { isDisabled, text }
   }, [hasWalletConnected, actionType, payValues, receiveValues])

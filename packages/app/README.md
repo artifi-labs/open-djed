@@ -10,9 +10,9 @@ Below you'll find a short overview of the technologies used, how to install and 
 - Routing: Next.js
 - Bundler / dev server: Turbopack
 - Cloud runtime: Cloudflare Workers (wrangler)
-- Internationalization: i18next + react-i18next
+- Internationalization: next-intl
 - Translation extraction: i18next-parser
-- Language files: JSON under `/locales/`
+- Language files: JSON under `/messages/`
 
 ## Prerequisites
 
@@ -58,7 +58,7 @@ This runs Cloudflare type generation, React Router typegen, and TypeScript build
 
 ## Translations (i18n)
 
-This app uses `i18next` and `react-i18next` for internationalization. Translation strings are extracted using `i18next-parser`.
+This app uses `next-intl` for internationalization. Translation strings are extracted using `i18next-parser`.
 
 ### Extract strings (generate/update locale files)
 
@@ -66,28 +66,28 @@ From the app package directory run:
 
 ```bash
 cd packages/app
-bun run i18n:extract
+bun run locales-extract
 ```
 
-The `i18n:extract` script uses `bunx i18next-parser` (configured by `i18next-parser.config.js` in this package). Extraction scans the source files for translation keys and updates JSON files under `packages/app/locales/` (for example `locales/en/` and `locales/pt/`).
+The `locales-extract` script uses `bunx i18next-parser` (configured by `i18next-parser.config.ts` in this package). Extraction scans the source files for translation keys and updates JSON files under `packages/app/messages/` (for example `messages/en/` and `messages/pt/`).
 
 After running the extractor, review and update the generated translations as needed, then commit the locale files.
 
-### Language detection and caching
-
-- The application uses the browser's preferred language (via the i18next browser language detector) to select the initial language. The detected language is cached in`localStorage` under the key `i18nextLng` so subsequent loads can read the cached value quickly.
-
 ### Editing translations
 
-- Locale files live in `packages/app/locales/<lang>/` as JSON files per namespace.
+- Locale files live in `packages/app/messages/<lang>/` as JSON files per namespace.
 - Edit those JSON files directly.
 
-## Local storage
+## Local Storage
 
-| Key          | Storage                         | Purpose                                              | Notes                                                                                                                                                                                                        |
-| ------------ | ------------------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `i18nextLng` | `localStorage`                  | Cached user language (selected or detected)          | Set by `i18next-browser-languagedetector`.                                                                                                                                                                   |
-| `theme`      | `localStorage` + cookie `theme` | Cached user theme preference (`'dark'` or `'light'`) | Theme is persisted in `localStorage` under `theme` and also written to a cookie named `theme` (in production the cookie is set for `.artifex.finance`). The app also respects system `prefers-color-scheme`. |
+| Key | Purpose | Notes |
+| --- | ------- | ----- |
+
+## Cookies
+
+| Key    | Purpose                            | Notes                                          |
+| ------ | ---------------------------------- | ---------------------------------------------- |
+| i18Lng | Caches user's language preference. | Set by `next-intl`'s cookie language detector. |
 
 ## TODO
 

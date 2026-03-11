@@ -33,25 +33,26 @@ export default function SettingsSidebar({
   }))
 
   const switchLocale = (newLocale: string) => {
-    if (newLocale === locale) return;
+    if (newLocale === locale) return
 
-    const segments = pathname.split("/").filter(Boolean);
+    const segments = pathname.split("/").filter(Boolean)
 
-    if (SUPPORTED_LANGUAGES.map(l => l.code).includes(segments[0])) {
-      segments.shift();
+    if (SUPPORTED_LANGUAGES.map((l) => l.code).includes(segments[0])) {
+      segments.shift()
     }
 
-    const pathnameWithoutLocale = "/" + segments.join("/");
-    const query = searchParams.toString();
+    const pathnameWithoutLocale = "/" + segments.join("/")
+    const query = searchParams.toString()
 
-    const newPath =`/${newLocale}${pathnameWithoutLocale}` + (query ? `?${query}` : "");
+    const newPath =
+      `/${newLocale}${pathnameWithoutLocale}` + (query ? `?${query}` : "")
 
-    router.push(newPath);
-  };
+    router.push(newPath)
+  }
 
   const handleLanguageChange = (item: ContextualMenuItem) => {
     const newLang = item.key as string
-    switchLocale(newLang);
+    switchLocale(newLang)
   }
 
   const currentLanguageItem = supportedLanguages.find(
@@ -85,7 +86,9 @@ export default function SettingsSidebar({
     >
       <div className="flex h-full w-full flex-col items-start justify-start gap-18">
         <div className="flex w-full flex-col items-start justify-start gap-10">
-          <span className="text-secondary text-xs">{t("settings.language.title")}</span>
+          <span className="text-secondary text-xs">
+            {t("settings.language.title")}
+          </span>
           <Dropdown
             text={currentLanguageItem?.text || t("common.select")}
             size="medium"

@@ -27,6 +27,7 @@ export const metadata: Metadata = {
   applicationName: APP_NAME,
   description: `Mint and burn DJED, Cardano's overcollateralized stablecoin, with our open-source platform. Transparent alternative to DJED.xyz - accessible 24/7 anywhere.`,
   keywords: [
+    "Stablecoin",
     "DJED",
     "djed",
     "SHEN",
@@ -34,7 +35,6 @@ export const metadata: Metadata = {
     "DeFi",
     "Cardano",
     "Open Source",
-    "Community-led",
     "Artifi Labs",
     "Software",
     "Development",
@@ -80,10 +80,19 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   return (
-    <html suppressHydrationWarning className={`${poppins.variable} bg-background-primary`}>
-      <body className={`${poppins.className} relative flex min-h-screen flex-col antialiased`}>
+    <html
+      suppressHydrationWarning
+      className={`${poppins.variable} bg-background-primary`}
+    >
+      <body
+        className={`${poppins.className} relative flex min-h-screen flex-col antialiased`}
+      >
         {children}
       </body>
     </html>

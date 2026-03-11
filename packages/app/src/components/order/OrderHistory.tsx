@@ -22,7 +22,6 @@ import Asset from "../Asset"
 import { CARDANOSCAN_BASE_URL, ORDERS_PER_PAGE } from "@/lib/constants"
 import type { Order } from "@open-djed/api"
 import { useTranslations } from "next-intl"
-import { type ParseKeys } from "i18next"
 import { capitalize } from "@/lib/utils"
 
 interface RowItem {
@@ -47,7 +46,7 @@ export const STATUS_CONFIG: Record<
   {
     type: "success" | "warning" | "error" | "surface"
     text: string
-    i18nKey: ParseKeys
+    i18nKey: string
   }
 > = {
   // Processing: { type: "surface", text: "Processing" },
@@ -205,7 +204,7 @@ const StatusCell = ({ status }: { status?: string | null }) => {
         type={config.type}
         role="Secondary"
         size="small"
-        text={t(`orders.status.${status?.toLowerCase()}`)}
+        text={t(config.i18nKey)}
       />
     </div>
   )
@@ -354,7 +353,7 @@ const MobileCell = ({ order }: { order: Order }) => {
               type={statusConfig.type}
               role="Secondary"
               size="small"
-              text={t(`orders.status.${order.status?.toLowerCase()}`)}
+              text={t(statusConfig.i18nKey)}
             />
           </div>
           {showCancel ? (

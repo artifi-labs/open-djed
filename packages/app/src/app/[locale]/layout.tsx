@@ -3,8 +3,45 @@ import { Providers } from "@/app/providers"
 import { Navbar } from "@/components/Navbar"
 import Footer from "@/components/Footer"
 import Background from "@/components/Background"
+import { getTranslations } from "next-intl/server"
 
-export default function LocaleLayout({ children }: { children: React.ReactNode; }) {
+export async function generateMetadata() {
+  const t = await getTranslations()
+
+  const keywords = [
+    "Stablecoin",
+    "Djed",
+    "Shen",
+    "DeFi",
+    "Cardano",
+    "Artifi Labs",
+    "Blockchain",
+    "Cryptocurrency",
+    "Web3",
+    t("keywords.opensource"),
+    t("keywords.software"),
+    t("keywords.development"),
+    t("keywords.defi_full"),
+    t("keywords.software_dev"),
+  ]
+
+  return {
+    description: t("metadata.layout.description"),
+    keywords: keywords,
+    openGraph: {
+      description: t("metadata.layout.description"),
+    },
+    twitter: {
+      description: t("metadata.layout.description"),
+    },
+  }
+}
+
+export default function LocaleLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   return (
     <NextIntlClientProvider>
       <Background />
