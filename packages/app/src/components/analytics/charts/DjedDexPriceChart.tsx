@@ -3,8 +3,6 @@
 import { FinancialAreaChart } from "@/components/charts/FinancialAreaChart"
 import { useMemo } from "react"
 import { type DjedDexPrices, type Currency } from "../useAnalyticsData"
-import { Legend } from "recharts"
-import { ChartLegend } from "@/components/charts/legend/ChartLegend"
 import { env } from "@/lib/envLoader"
 
 type DjedDexPriceChartProps = {
