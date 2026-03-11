@@ -6,30 +6,30 @@ import { Trans, useTranslation } from "react-i18next"
 const Privacy = () => {
   const { t } = useTranslation()
 
-  const month = capitalize(t("common.months.june"))
-  const day = 3
+  const month = capitalize(t("common.months.march"))
+  const day = 11
   const year = 2025
   const effectiveDate = `${month} ${day}, ${year}`
 
   return (
     <div className="flex w-full flex-col items-center justify-center gap-10 p-8">
       <div className="flex flex-col text-center">
-        <h1 className="text-4xl font-bold">{t("privacy.title")}</h1>
+        <h1 className="text-4xl font-bold">{t("privacyPolicy.title")}</h1>
         <p className="text-muted-foreground mt-1 text-sm">
-          {t("privacy.effectiveDate", { date: effectiveDate })}
+          {t("privacyPolicy.effectiveDate", { date: effectiveDate })}
         </p>
       </div>
 
       <div className="flex w-full max-w-4xl flex-col gap-6 text-base leading-relaxed">
-        <p>{t("privacy.intro")}</p>
+        <p>{t("privacyPolicy.intro")}</p>
 
         <section>
           <h2 className="mb-2 text-xl font-semibold">
-            {t("privacy.sections.dataCollection")}
+            {t("privacyPolicy.sections.dataCollection")}
           </h2>
           <p>
             <Trans
-              i18nKey="privacy.paragraphs.noPersonalData"
+              i18nKey="privacyPolicy.paragraphs.noPersonalData"
               components={{ strong: <strong /> }}
             />
           </p>
@@ -37,53 +37,31 @@ const Privacy = () => {
 
         <section>
           <h3 className="mb-1 text-lg font-medium">
-            {t("privacy.sections.wallets")}
+            {t("privacyPolicy.sections.wallets")}
           </h3>
-          <p>{t("privacy.paragraphs.wallet")}</p>
+          <p>{t("privacyPolicy.paragraphs.wallet")}</p>
         </section>
 
         <section>
           <h2 className="mb-2 text-xl font-semibold">
-            {t("privacy.sections.cookies")}
+            {t("privacyPolicy.sections.analytics")}
           </h2>
+          <p>{t("privacyPolicy.paragraphs.analytics1")}</p>
           <p>
             <Trans
-              i18nKey="privacy.paragraphs.cookies"
+              i18nKey="privacyPolicy.paragraphs.analytics2"
               components={{ strong: <strong /> }}
             />
           </p>
-          <ul className="list-inside list-disc space-y-1">
-            <li>{t("privacy.list.theme")}</li>
-            <li>{t("privacy.list.network")}</li>
-          </ul>
-          <p>
-            <Trans
-              i18nKey="privacy.paragraphs.cookiesDetails"
-              components={{ strong: <strong /> }}
-            />
-          </p>
+          <p>{t("privacyPolicy.paragraphs.analytics3")}</p>
         </section>
 
         <section>
           <h2 className="mb-2 text-xl font-semibold">
-            {t("privacy.sections.analytics")}
-          </h2>
-          <p>{t("privacy.paragraphs.analytics1")}</p>
-          <p>
-            <Trans
-              i18nKey="privacy.paragraphs.analytics2"
-              components={{ strong: <strong /> }}
-            />
-          </p>
-          <p>{t("privacy.paragraphs.analytics3")}</p>
-        </section>
-
-        <section>
-          <h2 className="mb-2 text-xl font-semibold">
-            {t("privacy.sections.openSource")}
+            {t("privacyPolicy.sections.openSource")}
           </h2>
           <p>
-            {t("privacy.paragraphs.openSource")}{" "}
+            {t("privacyPolicy.paragraphs.openSource")}{" "}
             <a
               href="https://www.gnu.org/licenses/gpl-3.0.html"
               target="_blank"
@@ -95,7 +73,7 @@ const Privacy = () => {
             .
           </p>
           <p>
-            {t("privacy.paragraphs.sourceCode")}{" "}
+            {t("privacyPolicy.paragraphs.sourceCode")}{" "}
             <a
               href="https://github.com/artifi-labs/open-djed"
               target="_blank"
@@ -109,24 +87,24 @@ const Privacy = () => {
 
         <section>
           <h2 className="mb-2 text-xl font-semibold">
-            {t("privacy.sections.authentication")}
+            {t("privacyPolicy.sections.authentication")}
           </h2>
-          <p>{t("privacy.paragraphs.authentication")}</p>
+          <p>{t("privacyPolicy.paragraphs.authentication")}</p>
         </section>
 
         <section>
           <h2 className="mb-2 text-xl font-semibold">
-            {t("privacy.sections.policy")}
+            {t("privacyPolicy.sections.policy")}
           </h2>
-          <p> {t("privacy.paragraphs.policy")}</p>
+          <p> {t("privacyPolicy.paragraphs.policy")}</p>
         </section>
 
         <section>
           <h2 className="mb-2 text-xl font-semibold">
-            {t("privacy.sections.contact")}
+            {t("privacyPolicy.sections.contact")}
           </h2>
           <p>
-            {t("privacy.paragraphs.contact")}{" "}
+            {t("privacyPolicy.paragraphs.contact")}{" "}
             <a
               href="https://discord.gg/MhYP7w8n8p"
               target="_blank"

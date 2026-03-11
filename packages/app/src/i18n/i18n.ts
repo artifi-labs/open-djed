@@ -37,10 +37,9 @@ i18n
     },
 
     detection: {
-      order: ["cookie", "localStorage", "navigator"],
-      caches: ["cookie", "localStorage"],
+      order: ["localStorage", "navigator"],
+      caches: ["localStorage"],
       lookupLocalStorage: lookupLocalStorage,
-      lookupCookie: lookupLocalStorage,
     },
     react: {
       useSuspense: false,

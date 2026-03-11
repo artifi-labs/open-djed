@@ -205,21 +205,16 @@
     "tryAdjustingFilters": "",
     "viewTransaction": ""
   },
-  "privacy": {
+  "privacyPolicy": {
     "effectiveDate": "",
     "intro": "",
-    "list": {
-      "network": "",
-      "theme": ""
-    },
+    "pageTitle": "",
     "paragraphs": {
       "analytics1": "",
       "analytics2": "",
       "analytics3": "",
       "authentication": "",
       "contact": "",
-      "cookies": "",
-      "cookiesDetails": "",
       "noPersonalData": "",
       "openSource": "",
       "policy": "",
@@ -230,16 +225,12 @@
       "analytics": "",
       "authentication": "",
       "contact": "",
-      "cookies": "",
       "dataCollection": "",
       "openSource": "",
       "policy": "",
       "wallets": ""
     },
     "title": ""
-  },
-  "privacyPolicy": {
-    "pageTitle": ""
   },
   "reserve": {
     "reserveRatio": "",
@@ -354,8 +345,9 @@
       "title": ""
     }
   },
-  "terms": {
+  "termsOfService": {
     "effectiveDate": "",
+    "pageTitle": "",
     "sections": {
       "changes": {
         "content": "",
@@ -393,9 +385,6 @@
     },
     "title": "",
     "welcome": ""
-  },
-  "termsOfService": {
-    "pageTitle": ""
   },
   "wallet": {
     "connected": "",
