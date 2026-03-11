@@ -35,12 +35,32 @@ export const getDexDjedPrice = (amount: Amount[]) => {
   return adaAmt / djedAmt
 }
 
+/**
+ * Aggregates entries by their timestamp, sorts each bucket, and
+ * annotates each day with ISO start/end bounds so the subsequent weighting
+ * logic can reason about time spans.
+ * In case there is a time gap in the data, it is necessary to create mock day entries,
+ * to fill in those gaps. These mock entries are based on the last know real entries
+ * and will avoid blank days, whenever no new pool or oracle state was create for said day.
+ * @param entries the list of reserve entries generated from pool/oracle UTxOs
+ * @returns per-day buckets with start/end ISO timestamps and sorted entries
+ */
 export const breakIntoDaysDexs = (
   entries: OrderedDexOracleTxOs[],
 ): DailyUTxOs[] => {
+  if (entries.length === 0) return []
+
   const buckets = new Map<string, OrderedDexOracleTxOs[]>()
+  let minMs = Infinity
+  let maxMs = -Infinity
+
   for (const entry of entries) {
+    const ts = Date.parse(entry.value.timestamp)
+    minMs = Math.min(minMs, ts)
+    maxMs = Math.max(maxMs, ts)
+
     const day = getUtcDayKey(entry.value.timestamp)
+
     let dayEntries = buckets.get(day)
     if (!dayEntries) {
       dayEntries = []
@@ -49,16 +69,59 @@ export const breakIntoDaysDexs = (
     dayEntries.push(entry)
   }
 
-  return Array.from(buckets.entries())
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([day, dayEntries]) => ({
-      day,
-      startIso: formatDayIso(day),
-      endIso: formatDayEndIso(day),
+  const allDays: DailyUTxOs[] = []
+  const current = new Date(minMs)
+  const end = new Date(maxMs)
+  current.setUTCHours(0, 0, 0, 0)
+
+  let lastKnownDex: OrderedDexOracleTxOs | undefined = undefined
+  let lastKnownOracle: OrderedDexOracleTxOs | undefined = undefined
+
+  while (current <= end) {
+    const dayKey = getUtcDayKey(current.toISOString())
+    const dayStartIso = formatDayIso(dayKey)
+    const dayEntries = buckets.get(dayKey) ?? []
+
+    if (dayEntries.length === 0) {
+      if (lastKnownDex && lastKnownDex.key === "dex") {
+        dayEntries.push({
+          key: "dex",
+          value: { ...lastKnownDex.value, timestamp: dayStartIso },
+        } as OrderedDexOracleTxOs)
+      }
+      if (lastKnownOracle && lastKnownOracle.key === "oracle") {
+        dayEntries.push({
+          key: "oracle",
+          value: { ...lastKnownOracle.value, timestamp: dayStartIso },
+        } as OrderedDexOracleTxOs)
+      }
+    } else {
+      const dexs = dayEntries.filter(
+        (e): e is Extract<OrderedDexOracleTxOs, { key: "dex" }> =>
+          e.key === "dex",
+      )
+      const oracles = dayEntries.filter(
+        (e): e is Extract<OrderedDexOracleTxOs, { key: "oracle" }> =>
+          e.key === "oracle",
+      )
+
+      if (dexs.length > 0) lastKnownDex = dexs[dexs.length - 1]
+      if (oracles.length > 0) lastKnownOracle = oracles[oracles.length - 1]
+    }
+
+    allDays.push({
+      day: dayKey,
+      startIso: dayStartIso,
+      endIso: formatDayEndIso(dayKey),
       entries: dayEntries.sort((a, b) =>
         a.value.timestamp.localeCompare(b.value.timestamp),
       ),
-    }))
+    })
+
+    current.setUTCDate(current.getUTCDate() + 1)
+  }
+
+  return allDays
 }
 
 export const assignTimeWeightsToDexPriceDailyUTxOs = (
