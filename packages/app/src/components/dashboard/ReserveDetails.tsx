@@ -3,10 +3,10 @@ import BaseCard from "../card/BaseCard"
 import { ReserveGraph } from "./ReserveGraph"
 import { formatNumber, formatValue } from "@/lib/utils"
 import Divider from "../Divider"
-import { useTranslation } from "react-i18next"
+import { useTranslations } from "next-intl"
 
 const ReserveDetails = () => {
-  const { t } = useTranslation()
+  const t = useTranslations()
   const {
     reserveValueADA,
     reserveValueUSD,

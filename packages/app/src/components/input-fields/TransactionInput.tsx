@@ -13,7 +13,7 @@ import {
   formatLiveStringToNumber,
   sanitizeNumberInput,
 } from "@/lib/utils"
-import { useTranslation } from "react-i18next"
+import { useTranslations } from "next-intl"
 
 export type InputStatus = "default" | "warning" | "error" | "success"
 
@@ -74,7 +74,7 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
   onMaxClick,
   ...props
 }) => {
-  const { t } = useTranslation()
+  const t = useTranslations()
   const [internalValue, setInternalValue] = React.useState(defaultValue)
   const displayedValue = value !== undefined ? value : internalValue
   const inputValue = formatLiveStringToNumber(displayedValue, maxDecimalPlaces) // Format input value for display

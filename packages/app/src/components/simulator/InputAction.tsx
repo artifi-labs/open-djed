@@ -10,7 +10,7 @@ import { toISODate, formatDateLabel, formatUSD, capitalize } from "@/lib/utils"
 import type { ScenarioInputs } from "./calculations"
 import Icon from "../icons/Icon"
 import Tooltip from "../tooltip/Tooltip"
-import { useTranslation } from "react-i18next"
+import { useTranslations } from "next-intl"
 
 export type InputActionProps = {
   values: ScenarioInputs
@@ -35,7 +35,7 @@ const FieldLabel = ({
 )
 
 const InputAction: React.FC<InputActionProps> = ({ values, onUpdate }) => {
-  const { t } = useTranslation()
+  const t = useTranslations()
 
   const handleValueChange = (field: keyof ScenarioInputs, val: string) => {
     onUpdate(field, val)

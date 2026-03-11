@@ -1,5 +1,5 @@
 import Image from "next/image"
-import { useTranslation } from "react-i18next"
+import { useTranslations } from "next-intl"
 
 const ITEMS = [
   {
@@ -30,7 +30,7 @@ const ITEMS = [
 ]
 
 const SimulatorInfo = () => {
-  const { t } = useTranslation()
+  const t = useTranslations()
 
   return (
     <div className="text-secondary flex flex-col gap-16 text-sm">

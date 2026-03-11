@@ -7,10 +7,10 @@ import SimulatorInfo from "@/components/simulator/SimulatorInfo"
 import Results from "@/components/simulator/Results"
 import InputAction from "@/components/simulator/InputAction"
 import { useSimulatorActions } from "./useSimulatorActions"
-import { useTranslation } from "react-i18next"
+import { useTranslations } from "next-intl"
 
 export default function Simulator() {
-  const { t } = useTranslation()
+  const t = useTranslations()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const { inputs, onUpdate } = useSimulatorActions()
 

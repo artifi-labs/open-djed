@@ -6,7 +6,7 @@ import BaseCard from "../card/BaseCard"
 import Divider from "../Divider"
 import { useTransactionSummary } from "./useTransactionSummary"
 import { isEmptyValue } from "@/lib/utils"
-import { useTranslation } from "react-i18next"
+import { useTranslations } from "next-intl"
 import { type ParseKeys } from "i18next"
 
 export type TransactionSummaryProps = {
@@ -29,7 +29,7 @@ const TransactionSummaryItem: React.FC<TransactionItem> = ({
   label,
   values,
 }) => {
-  const { t } = useTranslation()
+  const t = useTranslations()
 
   return (
     <div className="flex flex-row gap-12">
@@ -55,7 +55,7 @@ const TransactionSummaryItem: React.FC<TransactionItem> = ({
 }
 
 const TransactionSummary: React.FC<TransactionSummaryProps> = ({ action }) => {
-  const { t } = useTranslation()
+  const t = useTranslations()
   const items = useTransactionSummary({ action })
   const totalPay = action.payValues[action.activePayToken]
   const isContentBlured = isEmptyValue(totalPay)

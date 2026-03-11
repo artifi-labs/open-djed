@@ -1,8 +1,8 @@
+import { useTranslations } from "next-intl"
 import React from "react"
-import { Trans, useTranslation } from "react-i18next"
 
 const OpenDjedContent = () => {
-  const { t } = useTranslation()
+  const t = useTranslations()
 
   const WHY_OPEN_DJED_KEYS = [
     "protocolCompatible",
@@ -26,10 +26,9 @@ const OpenDjedContent = () => {
         <ul className="ml-3 flex list-disc flex-col pl-3">
           {WHY_OPEN_DJED_KEYS.map((key) => (
             <li key={key}>
-              <Trans
-                i18nKey={`dashboard.whatIsOpenDjed.whyOpenDjed.items.${key}`}
-                components={{ strong: <strong /> }}
-              />
+              {t.rich(`dashboard.whatIsOpenDjed.whyOpenDjed.items.${key}`, {
+                strong: (chunks) => <strong>{chunks}</strong>
+              })}
             </li>
           ))}
         </ul>

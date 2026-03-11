@@ -8,7 +8,7 @@ import InputAction from "./InputAction"
 import type { Token } from "@/lib/tokens"
 import { useReserveDetails } from "@/hooks/useReserveDetails"
 import { type InputStatus } from "../input-fields/TransactionInput"
-import { useTranslation } from "react-i18next"
+import { useTranslations } from "next-intl"
 
 export type ActionProps = {
   actionType: ActionType
@@ -68,7 +68,7 @@ const Action: React.FC<ActionProps> = ({
   minWarningMessage,
   minMessage,
 }) => {
-  const { t } = useTranslation()
+  const t = useTranslations()
   const { reserveBounds } = useReserveDetails()
 
   const actionText = capitalize(actionType)

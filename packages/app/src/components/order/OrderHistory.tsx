@@ -21,7 +21,7 @@ import { useViewport } from "@/hooks/useViewport"
 import Asset from "../Asset"
 import { CARDANOSCAN_BASE_URL, ORDERS_PER_PAGE } from "@/lib/constants"
 import type { Order } from "@open-djed/api"
-import { useTranslation } from "react-i18next"
+import { useTranslations } from "next-intl"
 import { type ParseKeys } from "i18next"
 import { capitalize } from "@/lib/utils"
 
@@ -191,7 +191,7 @@ const ValueCell = ({
 }
 
 const StatusCell = ({ status }: { status?: string | null }) => {
-  const { t } = useTranslation()
+  const t = useTranslations()
 
   if (!status) return <span>-</span>
 
@@ -220,7 +220,7 @@ const ExternalCell = ({
   status?: string
   outIndex: number
 }) => {
-  const { t } = useTranslation()
+  const t = useTranslations()
   const [isDialogOpen, setIsDialogOpen] = React.useState(false)
   const [showSnackbar, setShowSnackbar] = React.useState(false)
   const { handleCancelOrder } = useOrders()
@@ -295,7 +295,7 @@ const ExternalCell = ({
 }
 
 const MobileCell = ({ order }: { order: Order }) => {
-  const { t } = useTranslation()
+  const t = useTranslations()
   const { handleCancelOrder, formatDate } = useOrders()
 
   const [isDialogOpen, setIsDialogOpen] = React.useState(false)
@@ -428,7 +428,7 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({
   serverSidePagination = false,
   totalPages = 0,
 }) => {
-  const { t } = useTranslation()
+  const t = useTranslations()
   const { isMobile } = useViewport()
 
   const rowsDesktop: RowItem[] = useMemo(() => {

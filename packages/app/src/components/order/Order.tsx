@@ -12,10 +12,10 @@ import BaseCard from "@/components/card/BaseCard"
 import { useEffect, useState } from "react"
 import { ORDERS_PER_PAGE } from "@/lib/constants"
 import Chip from "@/components/Chip"
-import { useTranslation } from "react-i18next"
+import { useTranslations } from "next-intl"
 
 const Order = () => {
-  const { t } = useTranslation()
+  const t = useTranslations()
   const { wallet } = useWallet()
   const { openWalletSidebar } = useSidebar()
   const [selectedFilter, setSelectedFilter] = useState<StatusFilters>("All")

@@ -8,10 +8,10 @@ import Button from "@/components/Button"
 import ReserveDetails from "@/components/dashboard/ReserveDetails"
 import Modal from "@/components/modals/Modal"
 import OpenDjedContent from "@/components/OpenDjedContent"
-import { useTranslation } from "react-i18next"
+import { useTranslations } from "next-intl"
 
 const Dashboard = () => {
-  const { t } = useTranslation()
+  const t = useTranslations()
   const action: ReturnType<typeof useMintBurnAction> = useMintBurnAction("Mint")
   const [isModalOpen, setIsModalOpen] = useState(false)
 

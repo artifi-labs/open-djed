@@ -16,7 +16,7 @@ import {
   useSimulatorResults,
 } from "./calculations"
 import { t, type TFunction } from "i18next"
-import { useTranslation } from "react-i18next"
+import { useTranslations } from "next-intl"
 
 export type ValueItem = {
   name: string
@@ -246,7 +246,7 @@ export function useResults(
   priceData?: { to: (v: Value, t: string) => number },
 ): Results {
   const { results: simulatorData } = useSimulatorResults(inputs)
-  const { t } = useTranslation()
+  const t = useTranslations()
 
   return useMemo(() => {
     const configs = createSectionConfigs(t)

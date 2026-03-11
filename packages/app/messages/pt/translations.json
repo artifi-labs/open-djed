@@ -1,0 +1,408 @@
+{
+  "analytics": {
+    "pageTitle": "",
+    "description": "",
+    "reserveRatioOverTime": "",
+    "djedMarketCap": "",
+    "shenMarketCap": "",
+    "volumes": "",
+    "shenAdaPrice": "",
+    "djedDexPrice": "",
+    "totalDjed": "",
+    "totalShen": "",
+    "totalVolume": "",
+    "failedToGetHistoricalReserveRatioData": "",
+    "failedToGetHistoricalMarketCapData": "",
+    "failedToGetHistoricalTokenPriceData": "",
+    "failedToGetHistoricalVolumeData": "",
+    "failedToGetHistoricalDjedDexPrices": "",
+    "currentRatio": "",
+    "reserve": {
+      "warning": {
+        "below": "",
+        "above": ""
+      }
+    }
+  },
+  "notFound": {
+    "title": "",
+    "subtitle": "",
+    "buttonText": ""
+  },
+  "dashboard": {
+    "pageTitle": "olllaaa",
+    "actionButton": {
+      "wallet": "",
+      "fillAmount": "",
+      "minAction": ""
+    },
+    "youPay": "ddd",
+    "youReceive": "",
+    "action": {
+      "Mint": {
+        "description": ""
+      },
+      "Burn": {
+        "description": "OLA"
+      }
+    },
+    "whatIsOpenDjed": {
+      "title": "",
+      "description": "",
+      "whyOpenDjed": {
+        "title": "",
+        "items": {
+          "protocolCompatible": "",
+          "openSource": "",
+          "communityFirst": "",
+          "reliable": "",
+          "globalAccess": "",
+          "transparentFees": ""
+        }
+      }
+    },
+    "reserveDetails": {
+      "currentRatio": "",
+      "minRatio": "",
+      "maxRatio": "",
+      "reserveValue": ""
+    },
+    "transactionSummary": {
+      "title": "",
+      "description": ""
+    },
+    "name": "",
+    "baseCost": "",
+    "mintFee": "",
+    "operatorFee": "",
+    "totalCost": "",
+    "refundableDeposit": "",
+    "price": ""
+  },
+  "simulator": {
+    "pageTitle": "",
+    "usdAmount": {
+      "label": "",
+      "tooltip": ""
+    },
+    "buyDate": {
+      "label": "",
+      "tooltip": ""
+    },
+    "sellDate": {
+      "label": "",
+      "tooltip": ""
+    },
+    "buyAdaPrice": {
+      "label": "",
+      "tooltip": ""
+    },
+    "sellAdaPrice": {
+      "label": "",
+      "tooltip": ""
+    },
+    "scenario": "",
+    "results": {
+      "title": "",
+      "description": "",
+      "comparison": {
+        "title": "",
+        "description": ""
+      },
+      "fees": {
+        "simplified": {
+          "tooltip": ""
+        },
+        "detailed": {
+          "tooltip": ""
+        },
+        "buyFee": {
+          "label": "",
+          "tooltip": ""
+        },
+        "sellFee": {
+          "label": "",
+          "tooltip": ""
+        },
+        "totalFee": {
+          "label": "",
+          "tooltip": ""
+        },
+        "stakingRewards": {
+          "label": "",
+          "tooltip": ""
+        },
+        "earnedFee": {
+          "label": "",
+          "tooltip": ""
+        },
+        "totalRewards": {
+          "label": "",
+          "tooltip": ""
+        }
+      },
+      "rewards": {
+        "simplified": {
+          "tooltip": ""
+        },
+        "detailed": {
+          "tooltip": ""
+        }
+      },
+      "chart": {
+        "profitOverTime": {
+          "title": ""
+        }
+      },
+      "shen": {
+        "label": "",
+        "tooltip": ""
+      },
+      "ada": {
+        "label": "",
+        "tooltip": ""
+      }
+    },
+    "title": "",
+    "description": "",
+    "whatIsSimulator": {
+      "title": "",
+      "description": "",
+      "disclaimer": "",
+      "items": {
+        "fees": "",
+        "rewards": "",
+        "feesEarned": "",
+        "profitOrLoss": "",
+        "totalEstimatedPNL": ""
+      }
+    }
+  },
+  "termsOfService": {
+    "pageTitle": "",
+    "title": "",
+    "effectiveDate": "",
+    "welcome": "",
+    "sections": {
+      "description": {
+        "title": "",
+        "content": ""
+      },
+      "use": {
+        "title": "",
+        "content": ""
+      },
+      "license": {
+        "title": "",
+        "part1": "",
+        "linkText": "",
+        "part2": "",
+        "part3": ""
+      },
+      "wallet": {
+        "title": "",
+        "content": ""
+      },
+      "disclaimers": {
+        "title": "",
+        "item1": "",
+        "item2": "",
+        "item3": ""
+      },
+      "changes": {
+        "title": "",
+        "content": ""
+      },
+      "contact": {
+        "title": "",
+        "content": ""
+      }
+    }
+  },
+  "common": {
+    "currencyValue": "",
+    "mintedToken": "",
+    "burnedToken": "",
+    "below": "",
+    "above": "",
+    "minimum": "",
+    "maximum": "",
+    "available": "",
+    "half": "",
+    "max": "",
+    "mintAndBurnNow": "",
+    "months": {
+      "march": "",
+      "may": "",
+      "january": "",
+      "february": "",
+      "april": "",
+      "june": "",
+      "july": "",
+      "august": "",
+      "september": "",
+      "october": "",
+      "november": "",
+      "december": ""
+    },
+    "select": "",
+    "fees": "",
+    "rewards": "",
+    "copiedAddress": "",
+    "copyAddress": "",
+    "period": {
+      "day": "",
+      "week": "",
+      "month": "",
+      "year": "",
+      "all": ""
+    },
+    "weekDays": {
+      "monday": "",
+      "tuesday": "",
+      "wednesday": "",
+      "thursday": "",
+      "friday": "",
+      "saturday": "",
+      "sunday": ""
+    },
+    "periodItems": {
+      "today": "",
+      "thisWeek": "",
+      "thisMonth": "",
+      "thisQuarter": "",
+      "thisYear": "",
+      "lastWeek": "",
+      "lastMonth": ""
+    }
+  },
+  "reserve": {
+    "reserveRatio": "",
+    "warning": {
+      "below": "",
+      "above": ""
+    }
+  },
+  "action": {
+    "mint": "",
+    "burn": ""
+  },
+  "components": {
+    "footer": {
+      "privacyPolicy": {
+        "text": ""
+      },
+      "terms": {
+        "text": ""
+      },
+      "allRights": ""
+    }
+  },
+  "navbar": {
+    "dashboard": {
+      "title": ""
+    },
+    "analytics": {
+      "title": ""
+    },
+    "simulator": {
+      "title": ""
+    },
+    "orders": {
+      "title": ""
+    },
+    "wallet": {
+      "connect": "",
+      "loading": ""
+    }
+  },
+  "orders": {
+    "noOrders": "",
+    "noWalletDescription": "",
+    "cancel": "",
+    "confirmCancellation": "",
+    "cancellationDescription": "",
+    "cancelOrder": "",
+    "dismiss": "",
+    "orderCanceled": "",
+    "table": {
+      "header": {
+        "type": "",
+        "date": "",
+        "paid": "",
+        "received": "",
+        "status": "",
+        "token": "",
+        "orders": ""
+      },
+      "filters": {
+        "clearAll": ""
+      }
+    },
+    "viewTransaction": "",
+    "noOrdersMatchFilters": "",
+    "noOrdersToDisplay": "",
+    "tryAdjustingFilters": "",
+    "ordersWillAppear": "",
+    "estimatedExecutionFee": "",
+    "executedFee": "",
+    "title": "",
+    "allOrders": "",
+    "noOrdersDescription": "",
+    "pageTitle": "",
+    "status": {
+      "created": "",
+      "completed": "",
+      "canceled": ""
+    }
+  },
+  "wallet": {
+    "connectWallet": "",
+    "connectWalletDisclaimer": "",
+    "orders": {
+      "cancel": "",
+      "paid": "",
+      "received": ""
+    },
+    "title": "",
+    "noWalletsDetected": "",
+    "incorrectNetwork": "",
+    "connected": "",
+    "connectionFailed": "",
+    "disconnected": ""
+  },
+  "privacyPolicy": {
+    "title": "",
+    "effectiveDate": "",
+    "intro": "",
+    "sections": {
+      "dataCollection": "",
+      "wallets": "",
+      "analytics": "",
+      "openSource": "",
+      "authentication": "",
+      "policy": "",
+      "contact": ""
+    },
+    "paragraphs": {
+      "wallet": "",
+      "analytics1": "",
+      "analytics3": "",
+      "openSource": "",
+      "sourceCode": "",
+      "authentication": "",
+      "policy": "",
+      "contact": ""
+    },
+    "pageTitle": ""
+  },
+  "settings": {
+    "title": "",
+    "language": {
+      "title": ""
+    },
+    "network": {
+      "title": ""
+    }
+  }
+}

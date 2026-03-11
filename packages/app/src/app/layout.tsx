@@ -1,10 +1,6 @@
-import "./styles/globals.css"
+import "@/app/styles/globals.css"
 import { Poppins } from "next/font/google"
 import { env } from "@/lib/envLoader"
-import { Providers } from "./providers"
-import Footer from "@/components/Footer"
-import { Navbar } from "@/components/Navbar"
-import Background from "@/components/Background"
 import { type Metadata } from "next"
 import {
   APP_NAME,
@@ -84,28 +80,11 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="en"
-      suppressHydrationWarning
-      className={`${poppins.variable} bg-background-primary`}
-    >
-      <body
-        className={`${poppins.className} relative flex min-h-screen flex-col antialiased`}
-      >
-        <Background />
-        <Providers>
-          <Navbar />
-          <main className="px-page-margin flex w-full flex-1 flex-col items-center">
-            {children}
-          </main>
-          <Footer />
-        </Providers>
+    <html suppressHydrationWarning className={`${poppins.variable} bg-background-primary`}>
+      <body className={`${poppins.className} relative flex min-h-screen flex-col antialiased`}>
+        {children}
       </body>
     </html>
   )

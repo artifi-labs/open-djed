@@ -14,7 +14,7 @@ import Divider from "../Divider"
 import { useLocalStorage } from "usehooks-ts"
 import { aggregateByBucket } from "@/utils/timeseries"
 import type { AggregationConfig, DataRow } from "@/utils/timeseries"
-import { useTranslation } from "react-i18next"
+import { useTranslations } from "next-intl"
 
 export type ResultsProps = {
   inputs: ScenarioInputs
@@ -93,7 +93,7 @@ const ResultSummaryItem: React.FC<ResultItem> = ({
 }
 
 const Results: React.FC<ResultsProps> = ({ inputs }) => {
-  const { t } = useTranslation()
+  const t = useTranslations()
   const { totals, feeDetails, rewardDetails } = useResults(inputs)
   const { results: simulatorData, error } = useSimulatorResults(inputs)
   const { showToast } = useToast()

@@ -1,10 +1,10 @@
 "use client"
 
 import { capitalize } from "@/lib/utils"
-import { Trans, useTranslation } from "react-i18next"
+import { useTranslations } from "next-intl"
 
 const Privacy = () => {
-  const { t } = useTranslation()
+  const t = useTranslations()
 
   const month = capitalize(t("common.months.march"))
   const day = 11
@@ -28,10 +28,9 @@ const Privacy = () => {
             {t("privacyPolicy.sections.dataCollection")}
           </h2>
           <p>
-            <Trans
-              i18nKey="privacyPolicy.paragraphs.noPersonalData"
-              components={{ strong: <strong /> }}
-            />
+            {t.rich("privacyPolicy.paragraphs.dataCollection", {
+              strong: (chunks) => <strong>{chunks}</strong>,
+            })}
           </p>
         </section>
 
@@ -48,10 +47,9 @@ const Privacy = () => {
           </h2>
           <p>{t("privacyPolicy.paragraphs.analytics1")}</p>
           <p>
-            <Trans
-              i18nKey="privacyPolicy.paragraphs.analytics2"
-              components={{ strong: <strong /> }}
-            />
+            {t.rich("privacyPolicy.paragraphs.analytics2", {
+              strong: (chunks) => <strong>{chunks}</strong>,
+            })}
           </p>
           <p>{t("privacyPolicy.paragraphs.analytics3")}</p>
         </section>

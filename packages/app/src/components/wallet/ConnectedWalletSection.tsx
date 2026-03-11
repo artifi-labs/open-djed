@@ -8,7 +8,7 @@ import type { WalletName } from "../Wallet"
 import WalletBalance from "./WalletBalance"
 import Divider from "../Divider"
 import OrdersWalletSection from "./OrdersWalletSection"
-import { useTranslation } from "react-i18next"
+import { useTranslations } from "next-intl"
 
 interface ConnectedWalletSectionProps {
   wallet: Wallet
@@ -19,7 +19,7 @@ const ConnectedWalletSection: React.FC<ConnectedWalletSectionProps> = ({
   wallet,
   disconnect,
 }) => {
-  const { t } = useTranslation()
+  const t = useTranslations()
   const { closeSidebar } = useSidebar()
 
   return (

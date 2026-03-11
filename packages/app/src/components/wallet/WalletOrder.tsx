@@ -8,7 +8,7 @@ import { type OrderStatus, useOrders } from "@/hooks/useOrders"
 import { type Order } from "@open-djed/api"
 import { STATUS_CONFIG } from "../order/OrderHistory"
 import { CARDANOSCAN_BASE_URL } from "@/lib/constants"
-import { useTranslation } from "react-i18next"
+import { useTranslations } from "next-intl"
 import { capitalize } from "@/lib/utils"
 
 type WalletOrderProps = {
@@ -17,7 +17,7 @@ type WalletOrderProps = {
 }
 
 const WalletOrder: React.FC<WalletOrderProps> = ({ order, divider }) => {
-  const { t } = useTranslation()
+  const t = useTranslations()
   const { handleCancelOrder, formatDate } = useOrders()
 
   const formatLovelace = (amount: bigint) =>

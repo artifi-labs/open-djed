@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next"
+import { useTranslations } from "next-intl"
 import type { Currency, ChartPeriod } from "../analytics/useAnalyticsData"
 import { type ContextualMenuItem } from "../ContextualMenu"
 import { type ReserveBoundsType } from "../dashboard/useMintBurnAction"
@@ -54,7 +54,7 @@ export const InfoBanner: React.FC<InfoBannerProps> = ({
   percentage,
   type,
 }) => {
-  const { t } = useTranslation()
+  const t = useTranslations()
 
   return (
     <div className="flex flex-row items-center gap-8">
@@ -97,7 +97,7 @@ export default function ChartCard({
   warning,
   info,
 }: ChartCardProps) {
-  const { t } = useTranslation()
+  const t = useTranslations()
 
   const periodMenuItems: ContextualMenuItem[] = periodItems.map((item) => ({
     key: item.value,

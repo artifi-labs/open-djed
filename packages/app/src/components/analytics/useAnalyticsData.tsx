@@ -11,7 +11,7 @@ import { capitalize } from "@/lib/utils"
 import type { Token } from "@/lib/tokens"
 import { Rational, shenADARate, shenUSDRate } from "@open-djed/math"
 import { env } from "@/lib/envLoader"
-import { useTranslation } from "react-i18next"
+import { useTranslations } from "next-intl"
 
 export type ReserveRatioChartEntry = {
   id: number
@@ -94,7 +94,7 @@ export type ChartPeriod = (typeof CHART_PERIOD_OPTIONS)[number] & {
 }
 
 export function useAnalyticsData() {
-  const { t } = useTranslation()
+  const t = useTranslations()
   const client = useApiClient()
   const { reserveRatio } = useReserveDetails()
   const { showToast } = useToast()

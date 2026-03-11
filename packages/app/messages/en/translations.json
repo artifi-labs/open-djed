@@ -1,0 +1,408 @@
+{
+  "analytics": {
+    "pageTitle": "Analytics",
+    "description": "Real-time insights into protocol metrics and market dynamics",
+    "reserveRatioOverTime": "Reserve Ratio Over Time",
+    "djedMarketCap": "DJED Market Cap",
+    "shenMarketCap": "SHEN Market Cap",
+    "volumes": "Volume Analytics",
+    "shenAdaPrice": "SHEN Price & ADA Price",
+    "djedDexPrice": "DJED Price vs Secondary Markets",
+    "totalDjed": "Total DJED",
+    "totalShen": "Total SHEN",
+    "totalVolume": "Total Volume",
+    "failedToGetHistoricalReserveRatioData": "Failed to get historical reserve ratio data.",
+    "failedToGetHistoricalMarketCapData": "Failed to get historical {token} market cap data.",
+    "failedToGetHistoricalTokenPriceData": "Failed to get historical token price data.",
+    "failedToGetHistoricalVolumeData": "Failed to get historical volume data.",
+    "failedToGetHistoricalDjedDexPrices": "Failed to get historical Djed - Dex prices.",
+    "currentRatio": "Current Ratio",
+    "reserve": {
+      "warning": {
+        "below": "DJED minting/SHEN burning unavailable: reserve ratio below minimum.",
+        "above": "SHEN minting unavailable: reserve ratio above maximum."
+      }
+    }
+  },
+  "notFound": {
+    "title": "",
+    "subtitle": "",
+    "buttonText": ""
+  },
+  "dashboard": {
+    "pageTitle": "Dashboard",
+    "actionButton": {
+      "wallet": "Connect Wallet to {action}",
+      "fillAmount": "Fill in the Amount to {action}",
+      "minAction": "{action} {minMessage}"
+    },
+    "youPay": "You pay",
+    "youReceive": "You Receive",
+    "action": {
+      "Mint": {
+        "description": "Mint DJED, SHEN by depositing ADA into the protocol."
+      },
+      "Burn": {
+        "description": "Burn DJED, SHEN to withdraw your ADA from the protocol."
+      }
+    },
+    "whatIsOpenDjed": {
+      "title": "What is Open DJED?",
+      "description": "Open DJED is a transparent, community-driven web app for interacting with the DJED algorithmic stablecoin on Cardano, built entirely open source by Artifi Labs. It recreates the original DJED experience with full protocol compatibility - offering a more reliable, accessible, and auditable alternative.",
+      "whyOpenDjed": {
+        "title": "Why Open DJED?",
+        "items": {
+          "protocolCompatible": "<strong>Reliable:</strong> Works even if the COTI app is down.",
+          "openSource": "<strong>Community first:</strong> Built for and by Cardano users.",
+          "communityFirst": "<strong>Protocol compatible:</strong> Same overcollateralized logic as DJED.",
+          "reliable": "<strong>Global access:</strong> No geographic restrictions.",
+          "globalAccess": "<strong>Open source:</strong> Fully auditable, forkable, and community-owned.",
+          "transparentFees": "<strong>Transparent & low fees:</strong> Same COTI fee structure, ~0.1 ADA cheaper."
+        }
+      }
+    },
+    "reserveDetails": {
+      "currentRatio": "Current Ratio",
+      "minRatio": "Min Ratio",
+      "maxRatio": "Max Ratio",
+      "reserveValue": "Reserve Value"
+    },
+    "transactionSummary": {
+      "title": "Transaction Summary",
+      "description": "Start by entering an amount to see the full cost breackdown."
+    },
+    "name": "",
+    "baseCost": "Base Cost",
+    "mintFee": "Mint Fee",
+    "operatorFee": "Operator Fee",
+    "totalCost": "Total Cost",
+    "refundableDeposit": "Refundable Deposit",
+    "price": "Price"
+  },
+  "simulator": {
+    "pageTitle": "Simulator",
+    "usdAmount": {
+      "label": "USD Amount",
+      "tooltip": "The amount of USD you want to invest in SHEN."
+    },
+    "buyDate": {
+      "label": "Buy Date",
+      "tooltip": "The date you bought SHEN."
+    },
+    "sellDate": {
+      "label": "Sell Date",
+      "tooltip": "The date when you sell SHEN."
+    },
+    "buyAdaPrice": {
+      "label": "Buy ADA Price",
+      "tooltip": "The ADA price when you buy SHEN, used to calculate your profit/loss."
+    },
+    "sellAdaPrice": {
+      "label": "Sell ADA Price",
+      "tooltip": "The ADA price when you sell SHEN, used to calculate your profit/loss."
+    },
+    "scenario": "Scenario",
+    "results": {
+      "title": "Simulator Results",
+      "description": "Start by entering an amount to see the results.",
+      "comparison": {
+        "title": "Your Returns Comparison (SHEN vs ADA)",
+        "description": "This chart shows alternative outcomes of holding SHEN or ADA."
+      },
+      "fees": {
+        "simplified": {
+          "tooltip": "See simplified rewards."
+        },
+        "detailed": {
+          "tooltip": "See detailed rewards breakdown."
+        },
+        "buyFee": {
+          "label": "Buy Fee",
+          "tooltip": "A fee applied when purchasing Djed/Shen. This helps maintain the protocol and is shared with SHEN holders."
+        },
+        "sellFee": {
+          "label": "Sell Fee",
+          "tooltip": "A fee applied when selling Djed/Shen. This helps maintain the protocol and is shared with SHEN holders."
+        },
+        "totalFee": {
+          "label": "Total Fees",
+          "tooltip": "Total fees applied when buying/selling Djed/Shen. This helps maintain the protocol and is shared with SHEN holders."
+        },
+        "stakingRewards": {
+          "label": "ADA Staking Rewards",
+          "tooltip": "The rewards you earn on the staked ADA backing your SHEN. Staked ADA helps secure the Cardano network and generates passive income."
+        },
+        "earnedFee": {
+          "label": "Buy/Sell Fees Earned",
+          "tooltip": "The total fees collected from buy and sell transactions. These are distributed to SHEN Holders. This is the sum of the buy and sell fees during a given period or projected for a period in the future."
+        },
+        "totalRewards": {
+          "label": "Total Rewards",
+          "tooltip": "The sum of the rewards you earn on the staked ADA backing your SHEN and the total fees collected from buy and sell transactions, that are distributed to SHEN Holders."
+        }
+      },
+      "rewards": {
+        "simplified": {
+          "tooltip": "See simplified fees."
+        },
+        "detailed": {
+          "tooltip": "See detailed fees breakdown."
+        }
+      },
+      "chart": {
+        "profitOverTime": {
+          "title": "Profit Over Time"
+        }
+      },
+      "shen": {
+        "label": "SHEN PNL",
+        "tooltip": "This shows the profit or loss you would make if you invest in SHEN, including fees and rewards."
+      },
+      "ada": {
+        "label": "ADA PNL",
+        "tooltip": "This shows the profit or loss you would make by simply holding ADA, without buying SHEN."
+      }
+    },
+    "title": "SHEN Trade Simulator",
+    "description": "Check the outcomes of investing in SHEN quickly and clearly",
+    "whatIsSimulator": {
+      "title": "What is the trade simulator?",
+      "description": "The Trade Simulator helps you understand how profitable a SHEN investment could be. By entering the amount of USD to invest, your buy and sell dates, and ADA prices, the tool estimates",
+      "disclaimer": "It's not a trading tool - it's a calculator that shows how your returns change based on the inputs you choose, so you can plan your strategy with clarity. It should not be considered financial advice.",
+      "items": {
+        "fees": "Fees you pay when buying and selling",
+        "rewards": "ADA rewards you earn while holding SHEN",
+        "feesEarned": "Fees earned from minting and burning activity in the protocol",
+        "profitOrLoss": "Profit or loss from ADA price movement",
+        "totalEstimatedPNL": "Your total estimated PNL"
+      }
+    }
+  },
+  "termsOfService": {
+    "pageTitle": "Terms of Service",
+    "title": "Terms of Service",
+    "effectiveDate": "Effective Date: {date}",
+    "welcome": "Welcome to Open Djed! By accessing or using our application, you agree to be bound by these Terms of Service (\"Terms\"). If you do not agree with any part of these Terms, you may not use the application.",
+    "sections": {
+      "description": {
+        "title": "1. Description",
+        "content": "Open Djed is an open-source web application that interacts with the Cardano blockchain. Users can connect their Cardano wallets via the CIP-30 standard to interact with the app."
+      },
+      "use": {
+        "title": "2. Use of the Application",
+        "content": " You agree to use the application in compliance with all applicable laws and regulations. You may not use the application in any manner that could harm, disable, or impair the application or interfere with others’ use of it"
+      },
+      "license": {
+        "title": "3. Open Source License",
+        "part1": "This application is open source and licensed under the",
+        "linkText": "GNU General Public License v3.0 (GPL-3.0)",
+        "part2": "You are free to use, modify, and redistribute the software, provided that any modifications or derivative works are also licensed under the GPL-3.0 license. You must include a copy of the GPL license when redistributing.",
+        "part3": "View the source code on GitHub:"
+      },
+      "wallet": {
+        "title": "4. Wallet Interactions",
+        "content": "The application uses the Cardano CIP-30 wallet integration standard to enable users to connect supported wallets. We do not control, store, or transmit wallet private keys. All interactions with the blockchain occur via the user's wallet provider."
+      },
+      "disclaimers": {
+        "title": "5. Disclaimers",
+        "item1": "This application is provided \"as is\", without warranty of any kind.",
+        "item2": "We make no guarantees regarding uptime, correctness, or suitability for any purpose.",
+        "item3": "Users are responsible for any transactions they submit using their wallet."
+      },
+      "changes": {
+        "title": "6. Changes",
+        "content": "We may revise these Terms from time to time. Any changes will be reflected on this page with an updated effective date."
+      },
+      "contact": {
+        "title": "7. Contact",
+        "content": "For questions about these Terms, contact us at:"
+      }
+    }
+  },
+  "common": {
+    "currencyValue": "{currency} Value",
+    "mintedToken": "{token} Minted",
+    "burnedToken": "{token} Burned",
+    "below": "Below",
+    "above": "Above",
+    "minimum": "Minimum",
+    "maximum": "Maximum",
+    "available": "Available",
+    "half": "Half",
+    "max": "Max",
+    "mintAndBurnNow": "Mint & Burn Now",
+    "months": {
+      "march": "March",
+      "may": "May",
+      "january": "January",
+      "february": "February",
+      "april": "April",
+      "june": "June",
+      "july": "July",
+      "august": "August",
+      "september": "September",
+      "october": "October",
+      "november": "November",
+      "december": "December"
+    },
+    "select": "Select",
+    "fees": "Fees",
+    "rewards": "Rewards",
+    "copiedAddress": "Copied address",
+    "copyAddress": "Copy address",
+    "period": {
+      "day": "Today",
+      "week": "This Week",
+      "month": "This Month",
+      "year": "This Year",
+      "all": "All Time"
+    },
+    "weekDays": {
+      "monday": "Monday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday",
+      "thursday": "Thursday",
+      "friday": "Friday",
+      "saturday": "Saturday",
+      "sunday": "Sunday"
+    },
+    "periodItems": {
+      "today": "Today",
+      "thisWeek": "This Week",
+      "thisMonth": "This Month",
+      "thisQuarter": "This Quarter",
+      "thisYear": "This Year",
+      "lastWeek": "Last Week",
+      "lastMonth": "Last Month"
+    }
+  },
+  "reserve": {
+    "reserveRatio": "Reserve Ratio",
+    "warning": {
+      "below": "DJED minting and SHEN burning is not permitted when the reserve ratio drops below {percentage}%.",
+      "above": "SHEN minting is not permitted when the reserve ratio rises above {percentage}%."
+    }
+  },
+  "action": {
+    "mint": "Mint",
+    "burn": "Burn"
+  },
+  "components": {
+    "footer": {
+      "privacyPolicy": {
+        "text": "Privacy Policy"
+      },
+      "terms": {
+        "text": "Terms & Conditions"
+      },
+      "allRights": "{year} Artifi. All rights are reserved"
+    }
+  },
+  "navbar": {
+    "dashboard": {
+      "title": "Dashboard"
+    },
+    "analytics": {
+      "title": "Analytics"
+    },
+    "simulator": {
+      "title": "Simulator"
+    },
+    "orders": {
+      "title": "Orders"
+    },
+    "wallet": {
+      "connect": "Connect Wallet",
+      "loading": "Loading Address"
+    }
+  },
+  "orders": {
+    "noOrders": "No orders yet",
+    "noWalletDescription": "Once the wallet is connected and activity starts, orders will appear here",
+    "cancel": "Cancel",
+    "confirmCancellation": "Confirm Cancellation",
+    "cancellationDescription": "You're about to cancel your order. Once canceled, the order will be removed and no longer processed.",
+    "cancelOrder": "Cancel Order",
+    "dismiss": "Dismiss",
+    "orderCanceled": "Your order has been canceled.",
+    "table": {
+      "header": {
+        "type": "Type",
+        "date": "Date",
+        "paid": "Paid",
+        "received": "Received",
+        "status": "Status",
+        "token": "Token",
+        "orders": "Orders"
+      },
+      "filters": {
+        "clearAll": "Clear all filters"
+      }
+    },
+    "viewTransaction": "View Transaction",
+    "noOrdersMatchFilters": "No orders match your filters",
+    "noOrdersToDisplay": "No orders to display yet",
+    "tryAdjustingFilters": "Try adjusting or clearing your filters to see more results",
+    "ordersWillAppear": "Orders will appear here after your first trade",
+    "estimatedExecutionFee": "Estimated Execution Fee",
+    "executedFee": "Executed Fee",
+    "title": "Orders",
+    "allOrders": "All orders",
+    "noOrdersDescription": "Looks like this wallet hasn't made any trades",
+    "pageTitle": "Orders",
+    "status": {
+      "created": "Created",
+      "completed": "Completed",
+      "canceled": "Canceled"
+    }
+  },
+  "wallet": {
+    "connectWallet": "Connect Wallet",
+    "connectWalletDisclaimer": "By connecting you agree to our <terms>Terms & Services</terms> and <privacy>Privacy Policy</privacy>",
+    "orders": {
+      "cancel": "Cancel",
+      "paid": "Paid",
+      "received": "Received"
+    },
+    "title": "Wallet",
+    "noWalletsDetected": "No wallets detected",
+    "incorrectNetwork": "Please connect to a {network} wallet`",
+    "connected": "Your wallet has been successfully connected",
+    "connectionFailed": "Failed to connect your wallet",
+    "disconnected": "Your wallet has been disconnected"
+  },
+  "privacyPolicy": {
+    "title": "Privacy Policy",
+    "effectiveDate": "Effective Date: {date}",
+    "intro": "Artifi Labs is committed to privacy and transparency. This Privacy Policy outlines what data we collect and how it is used.",
+    "sections": {
+      "dataCollection": "1. Data Collection",
+      "wallets": "2. Wallets",
+      "analytics": "3. Analytics and Telemetry",
+      "openSource": "4. Open Source",
+      "authentication": "5. No Authentication",
+      "policy": "6. Updates to This Policy",
+      "contact": "7. Contact"
+    },
+    "paragraphs": {
+      "wallet": "When users interact with the app using their Cardano wallet, we interact only with the wallet interface via the CIP-30 standard. We do not receive or store your private keys. We reserve the right to store your addresses and transactions for analytical purposes to allow us to learn from your usage of the app and to improve it based on this information.",
+      "analytics1": "We use PostHog to collect limited analytics and application telemetry. This helps us understand how the app is used and identify bugs or performance issues.",
+      "analytics3": "All analytics are used strictly for the purpose of improving the application experience.",
+      "openSource": "This application is open source and licensed under the",
+      "sourceCode": "Source code:",
+      "authentication": "The application does not use or require any user accounts, logins, or email registration. Access is anonymous.",
+      "policy": "We may revise this policy over time. Updates will be posted here with a new effective date.",
+      "contact": "If you have questions about this Privacy Policy, contact us at:"
+    },
+    "pageTitle": "Privacy Policy"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": {
+      "title": "Language"
+    },
+    "network": {
+      "title": "Network"
+    }
+  }
+}

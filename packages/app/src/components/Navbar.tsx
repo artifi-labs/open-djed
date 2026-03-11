@@ -17,7 +17,7 @@ import Logo from "./Logo"
 import { useViewport } from "@/hooks/useViewport"
 import Icon from "./icons/Icon"
 import { env } from "@/lib/envLoader"
-import { useTranslation } from "react-i18next"
+import { useTranslations } from "next-intl"
 
 type NavigationItem = {
   label: string
@@ -109,7 +109,7 @@ const NetworkBadge: React.FC<NetworkBadgeProps> = ({
 }
 
 export const Navbar = () => {
-  const { t } = useTranslation()
+  const t = useTranslations()
   const { NETWORK, CONFIG } = env
   const { isMobile } = useViewport()
   const { wallet } = useWallet()

@@ -4,7 +4,7 @@ import { type IconName } from "../icons/Icon"
 import Tag from "../Tag"
 import Divider from "../Divider"
 import { capitalize, formatNumber } from "@/lib/utils"
-import { useTranslation } from "react-i18next"
+import { useTranslations } from "next-intl"
 
 type ValueShowcaseProps = {
   asset: AssetProps
@@ -29,7 +29,7 @@ const ValueShowcase: React.FC<ValueShowcaseProps> = ({
   tagTrailingIcon,
   suffix,
 }) => {
-  const { t } = useTranslation()
+  const t = useTranslations()
   const showValue = value || defaultValue
 
   return (
