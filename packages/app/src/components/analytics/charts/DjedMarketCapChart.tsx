@@ -12,8 +12,8 @@ type DjedMarketCapChartProps = {
   title?: string
   data: {
     timestamp: string
-    adaValue: string
-    usdValue: string
+    adaValue: number
+    usdValue: number
   }[]
   currency: Currency
 }
@@ -36,6 +36,7 @@ export const DjedMarketCapChart: React.FC<DjedMarketCapChartProps> = ({
       return { rows: [] }
     }
 
+    // TODO: Remove this map
     const mapped: ChartRow[] = data.map((entry) => ({
       date: entry.timestamp,
       adaValue: Number(entry.adaValue),

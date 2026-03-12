@@ -13,7 +13,6 @@ type VolumeChartProps = {
 }
 
 const VolumeChart: React.FC<VolumeChartProps> = ({ data, currency }) => {
-  console.log("volumes: ", data)
   const { isMobile } = useViewport()
   const isUSD = currency.value === "USD"
 

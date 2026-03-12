@@ -12,8 +12,8 @@ type ShenMarketCapChartProps = {
   title?: string
   data: {
     timestamp: string
-    adaValue: string
-    usdValue: string
+    adaValue: number
+    usdValue: number
   }[]
   currency: Currency
 }
@@ -36,6 +36,7 @@ export const ShenMarketCapChart: React.FC<ShenMarketCapChartProps> = ({
       return { rows: [] }
     }
 
+    //TODO: REMOVE THIS
     const mapped: ChartRow[] = data.map((entry) => ({
       date: entry.timestamp,
       adaValue: Number(entry.adaValue),

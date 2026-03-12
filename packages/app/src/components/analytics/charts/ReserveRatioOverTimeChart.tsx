@@ -16,6 +16,11 @@ type ReserveRatioOverTimeChartProps = {
 export const ReserveRatioOverTimeChart: React.FC<
   ReserveRatioOverTimeChartProps
 > = ({ data }) => {
+  // Handle case where data is undefined or empty
+  if (!data?.length) {
+    data = []
+  }
+
   const yTickFormatter = (value: number | string) =>
     `${Number(value).toFixed(0)}%`
 
