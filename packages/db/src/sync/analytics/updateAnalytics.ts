@@ -2,7 +2,6 @@ import { prisma } from "../../../lib/prisma"
 import { logger } from "../../utils/logger"
 import type { OrderedPoolOracleTxOs, Transaction } from "../types"
 import {
-  blockfrostFetch,
   getAssetTxsUpUntilSpecifiedTime,
   getEveryResultFromPaginatedEndpoint,
   processPoolOracleTxs,
@@ -121,13 +120,6 @@ export async function handleAnalyticsUpdates(
     registry.poolAssetId,
     timestampStr,
   )
-  if (newPoolTxs.length < 1) {
-    const latestPoolTx = (await blockfrostFetch(
-      `/assets/${registry.poolAssetId}/transactions?page=1&count=1&order=desc`,
-    )) as Transaction[]
-
-    newPoolTxs.push(...latestPoolTx)
-  }
 
   const newOracleTxs = await getAssetTxsUpUntilSpecifiedTime(
     registry.oracleAssetId,
