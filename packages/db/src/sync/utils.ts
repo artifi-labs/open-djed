@@ -495,26 +495,22 @@ export async function getAssetTxsUpUntilSpecifiedTime(
 
       if (!Array.isArray(pageResult) || pageResult.length === 0) break
 
-      // at least always get the latest tx
+      // at least always get the last tx before the specified time
       // this will cover days where no new pool/oracle state was created
       // avoiding blank days and/or time-weight average miscalculations
-      if (txPage === 1) {
-        const latestTx = pageResult[0]
-        if (latestTx) {
-          everyOrderTx.push(latestTx)
-          pageResult.shift()
-        }
-      }
-
-      const validTxs = pageResult.filter((tx) => tx.block_time >= specifiedTime)
-
-      everyOrderTx.push(...validTxs)
-
-      if (validTxs.length < pageResult.length) {
+      const olderTxIndex = pageResult.findIndex(
+        (tx) => tx.block_time < specifiedTime,
+      )
+      if (olderTxIndex !== -1) {
+        // it went past the specified time,
+        // We take everything newer PLUS the first one older than the specified time
+        const validTxs = pageResult.slice(0, olderTxIndex + 1)
+        everyOrderTx.push(...validTxs)
         break
+      } else {
+        everyOrderTx.push(...pageResult)
+        txPage++
       }
-
-      txPage++
     } catch (error) {
       logger.error(error, `Error fetching page ${txPage}:`)
       break
@@ -529,18 +525,31 @@ export const formatDayEndIso = (day: string) => `${day}T23:59:59.999Z`
 export const MS_PER_DAY = 24 * 60 * 60 * 1000
 
 /**
- * Aggregates reserve entries by their timestamp, sorts each bucket, and
+ * Aggregates entries by their timestamp, sorts each bucket, and
  * annotates each day with ISO start/end bounds so the subsequent weighting
  * logic can reason about time spans.
+ * In case there is a time gap in the data, it is necessary to create mock day entries,
+ * to fill in those gaps. These mock entries are based on the last know real entries
+ * and will avoid blank days, whenever no new pool or oracle state was create for said day.
  * @param entries the list of reserve entries generated from pool/oracle UTxOs
  * @returns per-day buckets with start/end ISO timestamps and sorted entries
  */
 export const breakIntoDays = (
   entries: OrderedPoolOracleTxOs[],
 ): DailyUTxOs[] => {
+  if (entries.length === 0) return []
+
   const buckets = new Map<string, OrderedPoolOracleTxOs[]>()
+  let minMs = Infinity
+  let maxMs = -Infinity
+
   for (const entry of entries) {
+    const ts = Date.parse(entry.value.timestamp)
+    minMs = Math.min(minMs, ts)
+    maxMs = Math.max(maxMs, ts)
+
     const day = getUtcDayKey(entry.value.timestamp)
+
     let dayEntries = buckets.get(day)
     if (!dayEntries) {
       dayEntries = []
@@ -549,16 +558,59 @@ export const breakIntoDays = (
     dayEntries.push(entry)
   }
 
-  return Array.from(buckets.entries())
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([day, dayEntries]) => ({
-      day,
-      startIso: formatDayIso(day),
-      endIso: formatDayEndIso(day),
+  const allDays: DailyUTxOs[] = []
+  const current = new Date(minMs)
+  const end = new Date(maxMs)
+  current.setUTCHours(0, 0, 0, 0)
+
+  let lastKnownPool: OrderedPoolOracleTxOs | undefined = undefined
+  let lastKnownOracle: OrderedPoolOracleTxOs | undefined = undefined
+
+  while (current <= end) {
+    const dayKey = getUtcDayKey(current.toISOString())
+    const dayStartIso = formatDayIso(dayKey)
+    const dayEntries = buckets.get(dayKey) ?? []
+
+    if (dayEntries.length === 0) {
+      if (lastKnownPool && lastKnownPool.key === "pool") {
+        dayEntries.push({
+          key: "pool",
+          value: { ...lastKnownPool.value, timestamp: dayStartIso },
+        } as OrderedPoolOracleTxOs)
+      }
+      if (lastKnownOracle && lastKnownOracle.key === "oracle") {
+        dayEntries.push({
+          key: "oracle",
+          value: { ...lastKnownOracle.value, timestamp: dayStartIso },
+        } as OrderedPoolOracleTxOs)
+      }
+    } else {
+      const pools = dayEntries.filter(
+        (e): e is Extract<OrderedPoolOracleTxOs, { key: "pool" }> =>
+          e.key === "pool",
+      )
+      const oracles = dayEntries.filter(
+        (e): e is Extract<OrderedPoolOracleTxOs, { key: "oracle" }> =>
+          e.key === "oracle",
+      )
+
+      if (pools.length > 0) lastKnownPool = pools[pools.length - 1]
+      if (oracles.length > 0) lastKnownOracle = oracles[oracles.length - 1]
+    }
+
+    allDays.push({
+      day: dayKey,
+      startIso: dayStartIso,
+      endIso: formatDayEndIso(dayKey),
       entries: dayEntries.sort((a, b) =>
         a.value.timestamp.localeCompare(b.value.timestamp),
       ),
-    }))
+    })
+
+    current.setUTCDate(current.getUTCDate() + 1)
+  }
+
+  return allDays
 }
 
 export const withBlockTime = (
