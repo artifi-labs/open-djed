@@ -16,7 +16,7 @@ import { useToast } from "./ToastContext"
 import { ALLOWED_WALLETS } from "@/lib/constants"
 import { env } from "@/lib/envLoader"
 import { capitalize } from "@/lib/utils"
-import { useTranslation } from "react-i18next"
+import { useTranslations } from "next-intl"
 
 export type WalletMetadata = {
   id: string
@@ -80,7 +80,7 @@ const uint8ArrayToHexString = (uint8Array: Uint8Array) =>
     .join("")
 
 export function WalletProvider({ children }: { children: React.ReactNode }) {
-  const { t } = useTranslation()
+  const t = useTranslations()
   const { showToast } = useToast()
   const [wallet, setWallet] = useState<Wallet | null>(null)
   const [wallets, setWallets] = useState<WalletMetadata[]>([])

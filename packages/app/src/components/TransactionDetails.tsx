@@ -7,7 +7,7 @@ import ButtonIcon from "./ButtonIcon"
 import { type Order } from "@open-djed/api"
 import { useViewport } from "@/hooks/useViewport"
 import { type OrderStatus } from "@/hooks/useOrders"
-import { useTranslation } from "react-i18next"
+import { useTranslations } from "next-intl"
 
 interface TransactionDetailsProps {
   row: {
@@ -22,7 +22,7 @@ const TransactionDetails: React.FC<TransactionDetailsProps> = ({
   row,
   hasBorder,
 }) => {
-  const { t } = useTranslation()
+  const t = useTranslations()
   const { isMobile } = useViewport()
   const [isOpen, setIsOpen] = React.useState(false)
 

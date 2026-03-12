@@ -26,7 +26,7 @@ import {
   normalizedDay,
   segmentIntoWeeks,
 } from "./Calendar.utils"
-import { useTranslation } from "react-i18next"
+import { useTranslations } from "next-intl"
 
 const Shortcut: React.FC<ShortcutProps> = ({
   itemKey,
@@ -115,7 +115,7 @@ const Calendar: React.FC<CalendarProps> = ({
   maxYear = new Date().getFullYear() + 100,
   onChange,
 }) => {
-  const { t } = useTranslation()
+  const t = useTranslations()
   const isDateDisabledFn = (date: Date, disabled?: DateRange[]): boolean => {
     if (!disabled?.length) return false
 

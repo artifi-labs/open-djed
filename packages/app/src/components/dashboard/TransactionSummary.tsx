@@ -6,8 +6,7 @@ import BaseCard from "../card/BaseCard"
 import Divider from "../Divider"
 import { useTransactionSummary } from "./useTransactionSummary"
 import { isEmptyValue } from "@/lib/utils"
-import { useTranslation } from "react-i18next"
-import { type ParseKeys } from "i18next"
+import { useTranslations } from "next-intl"
 
 export type TransactionSummaryProps = {
   action: ReturnType<typeof useMintBurnAction>
@@ -20,7 +19,7 @@ export type Valueitem = {
 
 export type TransactionItem = {
   parentIndex: number
-  label: ParseKeys
+  label: string
   values?: Valueitem[]
 }
 
@@ -29,11 +28,9 @@ const TransactionSummaryItem: React.FC<TransactionItem> = ({
   label,
   values,
 }) => {
-  const { t } = useTranslation()
-
   return (
     <div className="flex flex-row gap-12">
-      <p className="text-secondary flex-1 text-xs">{t(label)}</p>
+      <p className="text-secondary flex-1 text-xs">{label}</p>
 
       {/* Values */}
       <div className="flex flex-row gap-12">
@@ -55,7 +52,7 @@ const TransactionSummaryItem: React.FC<TransactionItem> = ({
 }
 
 const TransactionSummary: React.FC<TransactionSummaryProps> = ({ action }) => {
-  const { t } = useTranslation()
+  const t = useTranslations()
   const items = useTransactionSummary({ action })
   const totalPay = action.payValues[action.activePayToken]
   const isContentBlured = isEmptyValue(totalPay)
@@ -89,11 +86,7 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({ action }) => {
         </p>
         <div className="desktop:gap-16 flex flex-col gap-14">
           {items.map((item, index) => (
-            <TransactionSummaryItem
-              key={item.label}
-              {...item}
-              parentIndex={index}
-            />
+            <TransactionSummaryItem key={index} {...item} parentIndex={index} />
           ))}
         </div>
       </div>

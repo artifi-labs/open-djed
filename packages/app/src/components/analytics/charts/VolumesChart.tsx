@@ -5,7 +5,7 @@ import { FinancialAreaChart } from "@/components/charts/FinancialAreaChart"
 import { useViewport } from "@/hooks/useViewport"
 import type { Currency, VolumeChartEntry } from "../useAnalyticsData"
 import { formatAxisValue } from "@/lib/utils"
-import { useTranslation } from "react-i18next"
+import { useTranslations } from "next-intl"
 
 type VolumeChartProps = {
   title?: string
@@ -14,7 +14,7 @@ type VolumeChartProps = {
 }
 
 const VolumeChart: React.FC<VolumeChartProps> = ({ data, currency }) => {
-  const { t } = useTranslation()
+  const t = useTranslations()
   const { isMobile } = useViewport()
   const isUSD = currency.value === "USD"
 

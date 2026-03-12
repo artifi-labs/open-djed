@@ -1,10 +1,10 @@
 import { type ReserveBoundsType } from "@/components/dashboard/useMintBurnAction"
 import { maxReserveRatio, minReserveRatio } from "@open-djed/math"
 import { useProtocolData } from "./useProtocolData"
-import { useTranslation } from "react-i18next"
+import { useTranslations } from "next-intl"
 
 export const useReserveDetails = () => {
-  const { t } = useTranslation()
+  const t = useTranslations()
   const { isLoading, data } = useProtocolData()
 
   const reserveValueADA = data?.protocolData.reserve.amount || { ADA: 0 }

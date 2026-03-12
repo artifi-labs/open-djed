@@ -12,7 +12,7 @@ import ButtonIcon from "../ButtonIcon"
 import Tooltip from "../tooltip/Tooltip"
 import { useProtocolData } from "@/hooks/useProtocolData"
 import { env } from "@/lib/envLoader"
-import { useTranslation } from "react-i18next"
+import { useTranslations } from "next-intl"
 
 type WalletDetailProps = {
   name: WalletName
@@ -32,7 +32,7 @@ const WalletDetail: React.FC<WalletDetailProps> = ({
   onDisconnect,
   balance,
 }) => {
-  const { t } = useTranslation()
+  const t = useTranslations()
   const { copy, copied } = useClipboard()
   const { data } = useProtocolData()
   const { NETWORK } = env

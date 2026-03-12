@@ -4,7 +4,7 @@ import type { Wallet, WalletMetadata } from "@/context/WalletContext"
 import Sidebar from "../modals/Sidebar"
 import ConnectedWalletSection from "./ConnectedWalletSection"
 import SelectWalletSection from "./SelectWalletSection"
-import { useTranslation } from "react-i18next"
+import { useTranslations } from "next-intl"
 
 export default function WalletSidebar({
   wallet,
@@ -21,7 +21,7 @@ export default function WalletSidebar({
   isOpen: boolean
   onClose: () => void
 }) {
-  const { t } = useTranslation()
+  const t = useTranslations()
   return (
     <Sidebar
       title={wallet ? t("wallet.title") : t("wallet.connectWallet")}

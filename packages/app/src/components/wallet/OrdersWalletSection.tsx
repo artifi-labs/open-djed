@@ -7,10 +7,10 @@ import { useOrders } from "@/hooks/useOrders"
 import { useEffect } from "react"
 import { type Wallet } from "@/context/WalletContext"
 import { ORDERS_SIDEBAR } from "@/lib/constants"
-import { useTranslation } from "react-i18next"
+import { useTranslations } from "next-intl"
 
 export default function OrdersWalletSection({ wallet }: { wallet: Wallet }) {
-  const { t } = useTranslation()
+  const t = useTranslations()
   const { closeSidebar } = useSidebar()
   const { orders, fetchOrders } = useOrders()
 

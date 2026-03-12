@@ -1,16 +1,16 @@
+import { useTranslations } from "next-intl"
 import React from "react"
-import { Trans, useTranslation } from "react-i18next"
 
 const OpenDjedContent = () => {
-  const { t } = useTranslation()
+  const t = useTranslations()
 
   const WHY_OPEN_DJED_KEYS = [
-    "protocolCompatible",
-    "openSource",
-    "communityFirst",
-    "reliable",
-    "globalAccess",
-    "transparentFees",
+    t("dashboard.whatIsOpenDjed.whyOpenDjed.items.protocolCompatible"),
+    t("dashboard.whatIsOpenDjed.whyOpenDjed.items.openSource"),
+    t("dashboard.whatIsOpenDjed.whyOpenDjed.items.communityFirst"),
+    t("dashboard.whatIsOpenDjed.whyOpenDjed.items.reliable"),
+    t("dashboard.whatIsOpenDjed.whyOpenDjed.items.globalAccess"),
+    t("dashboard.whatIsOpenDjed.whyOpenDjed.items.transparentFees"),
   ] as const
 
   return (
@@ -24,12 +24,11 @@ const OpenDjedContent = () => {
           {t("dashboard.whatIsOpenDjed.whyOpenDjed.title")}
         </h3>
         <ul className="ml-3 flex list-disc flex-col pl-3">
-          {WHY_OPEN_DJED_KEYS.map((key) => (
-            <li key={key}>
-              <Trans
-                i18nKey={`dashboard.whatIsOpenDjed.whyOpenDjed.items.${key}`}
-                components={{ strong: <strong /> }}
-              />
+          {WHY_OPEN_DJED_KEYS.map((key, index) => (
+            <li key={index}>
+              {t.rich(key, {
+                strong: (chunks) => <strong>{chunks}</strong>,
+              })}
             </li>
           ))}
         </ul>

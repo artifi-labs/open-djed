@@ -1,10 +1,13 @@
 import Analytics from "@/components/analytics/Analytics"
 import { buildTitle } from "@/lib/metadata"
 import type { Metadata } from "next"
+import { getTranslations } from "next-intl/server"
 
-export function generateMetadata(): Metadata {
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations()
+
   return {
-    title: buildTitle("analytics.pageTitle"),
+    title: buildTitle(t("analytics.pageTitle")),
   }
 }
 

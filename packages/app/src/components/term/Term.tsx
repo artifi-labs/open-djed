@@ -1,8 +1,8 @@
 "use client"
-import { useTranslation } from "react-i18next"
+import { useTranslations } from "next-intl"
 
 const Term = () => {
-  const { t } = useTranslation()
+  const t = useTranslations()
 
   const month = t("common.months.may")
   const day = 15

@@ -15,7 +15,7 @@ import {
   TWITTER_URL,
   WEBSITE_URL,
 } from "@/lib/constants"
-import { useTranslation } from "react-i18next"
+import { useTranslations } from "next-intl"
 
 type FooterItem = {
   label: string
@@ -70,7 +70,7 @@ const SocialIcons: React.FC<SocialIconProps> = ({ items }) => {
 }
 
 const Footer = () => {
-  const { t } = useTranslation()
+  const t = useTranslations()
   const { isMobile, isDesktop } = useViewport()
 
   const footerItems: FooterItem[] = [

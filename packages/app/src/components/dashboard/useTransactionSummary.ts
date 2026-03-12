@@ -3,6 +3,7 @@ import { transactionSummaryBuilder } from "./transactionSummaryBuilder"
 import { formatNumber, formatValue, type Value } from "@/lib/utils"
 import { type useMintBurnAction } from "./useMintBurnAction"
 import type { Token } from "@/lib/tokens"
+import { useTranslations } from "next-intl"
 
 type Action = ReturnType<typeof useMintBurnAction>
 type DisplayValue = [string, string]
@@ -147,9 +148,11 @@ const getActiveToken = (
   return isPay ? action.activeReceiveToken : action.activePayToken
 }
 
-const createSectionConfigs = (): SectionConfig[] => [
+const createSectionConfigs = (
+  t: ReturnType<typeof useTranslations>,
+): SectionConfig[] => [
   {
-    label: "dashboard.baseCost",
+    label: t("dashboard.baseCost"),
     read: (_, data) => data.baseCost,
     default: (action) => {
       const isMint = action.actionType === "Mint"
@@ -158,7 +161,7 @@ const createSectionConfigs = (): SectionConfig[] => [
     },
   },
   {
-    label: "dashboard.mintFee",
+    label: t("dashboard.mintFee"),
     read: (_, data) => data.actionFee,
     default: (action) => {
       const isMint = action.actionType === "Mint"
@@ -167,12 +170,12 @@ const createSectionConfigs = (): SectionConfig[] => [
     },
   },
   {
-    label: "dashboard.operatorFee",
+    label: t("dashboard.operatorFee"),
     read: (_, data) => data.operatorFee,
     default: () => ["0.00 ADA", "$0.00"],
   },
   {
-    label: "dashboard.totalCost",
+    label: t("dashboard.totalCost"),
     read: (_, data) => data.totalCost,
     default: (action) => {
       const isBurn = action.actionType === "Burn"
@@ -186,12 +189,12 @@ const createSectionConfigs = (): SectionConfig[] => [
     },
   },
   {
-    label: "dashboard.refundableDeposit",
+    label: t("dashboard.refundableDeposit"),
     read: (action) => action.protocolData?.protocolData.refundableDeposit,
     default: () => ["0.00 ADA", "$0.00"],
   },
   {
-    label: "dashboard.price",
+    label: t("dashboard.price"),
     read: (_, data) => data.price,
     default: (action) => {
       const isMint = action.actionType === "Mint"
@@ -217,13 +220,14 @@ const addSectionToBuilder = (
 const buildSummary = (
   action: Action,
   actionData: Action["actionData"],
+  t: ReturnType<typeof useTranslations>,
   toUSD?: ToUSDConverter,
 ) => {
   const builder = transactionSummaryBuilder()
   const isEmpty = !actionData || Object.keys(actionData).length === 0
   const entries = isEmpty ? [] : Object.entries(actionData)
 
-  const sections = createSectionConfigs()
+  const sections = createSectionConfigs(t)
 
   sections.forEach((section) => {
     const values = isEmpty
@@ -238,9 +242,10 @@ const buildSummary = (
 
 export function useTransactionSummary({ action }: { action: Action }) {
   const { actionData, data } = action
+  const t = useTranslations()
 
   return useMemo(() => {
     const toUSD = data ? (value: Value) => data.to(value, "DJED") : undefined
-    return buildSummary(action, actionData, toUSD)
-  }, [action, actionData, data])
+    return buildSummary(action, actionData, t, toUSD)
+  }, [action, actionData, data, t])
 }

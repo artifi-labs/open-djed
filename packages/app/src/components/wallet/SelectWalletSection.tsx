@@ -5,7 +5,7 @@ import ListItem from "../ListItem"
 import Link from "next/link"
 import type { WalletName } from "../Wallet"
 import { capitalizeLower } from "@/lib/utils"
-import { Trans } from "react-i18next"
+import { useTranslations } from "next-intl"
 
 export type WalletMetadata = {
   id: string
@@ -26,6 +26,8 @@ const SelectWalletSection: React.FC<SelectWalletSectionProps> = ({
   wallets,
   onClick,
 }) => {
+  const t = useTranslations()
+
   return (
     <div className="desktop:gap-24 flex h-full flex-col">
       <div className="desktop:px-24 px-16">
@@ -55,15 +57,18 @@ const SelectWalletSection: React.FC<SelectWalletSectionProps> = ({
         <div className="desktop:p-24 p-16">
           <div className="flex flex-col text-center">
             <p className="text-secondary self-stretch text-xs">
-              <Trans
-                i18nKey="wallet.connectWalletDisclaimer"
-                components={{
-                  terms: <Link href="/terms" className="text-link underline" />,
-                  privacy: (
-                    <Link href="/privacy" className="text-link underline" />
-                  ),
-                }}
-              />
+              {t.rich("wallet.connectWalletDisclaimer", {
+                terms: (chunks) => (
+                  <Link href="/terms" className="text-link underline">
+                    {chunks}
+                  </Link>
+                ),
+                privacy: (chunks) => (
+                  <Link href="/privacy" className="text-link underline">
+                    {chunks}
+                  </Link>
+                ),
+              })}
             </p>
           </div>
         </div>

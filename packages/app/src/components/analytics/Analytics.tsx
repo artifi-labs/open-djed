@@ -9,10 +9,10 @@ import { useAnalyticsData, CURRENCY_OPTIONS } from "./useAnalyticsData"
 import { ShenMarketCapChart } from "./charts/ShenMarketCapChart"
 import VolumeChart from "./charts/VolumesChart"
 import { DjedDexPriceChart } from "./charts/DjedDexPriceChart"
-import { Trans, useTranslation } from "react-i18next"
+import { useTranslations } from "next-intl"
 
 const Analytics = () => {
-  const { t } = useTranslation()
+  const t = useTranslations()
   const {
     translatedPeriodOptions,
     reserveRatioData,
@@ -50,12 +50,9 @@ const Analytics = () => {
     <div className="desktop:pt-32 desktop:pb-64 mx-auto flex w-full max-w-280 flex-1 flex-col">
       <div className="desktop:py-32 flex w-full flex-col items-center justify-center gap-8 py-16 text-center">
         <h1 className="font-bold">
-          <Trans
-            i18nKey="analytics.analyticsOverview"
-            components={{
-              gradient: <span className="text-gradient-angular-1" />,
-            }}
-          />
+          {t.rich("analytics.analyticsOverview", {
+            gradient: () => <span className="text-gradient-angular-1" />,
+          })}
         </h1>
         <p className="text-secondary text-xs">{t("analytics.description")}</p>
       </div>

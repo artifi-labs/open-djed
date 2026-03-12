@@ -21,8 +21,7 @@ import { useViewport } from "@/hooks/useViewport"
 import Asset from "../Asset"
 import { CARDANOSCAN_BASE_URL, ORDERS_PER_PAGE } from "@/lib/constants"
 import type { Order } from "@open-djed/api"
-import { useTranslation } from "react-i18next"
-import { type ParseKeys } from "i18next"
+import { useTranslations } from "next-intl"
 import { capitalize } from "@/lib/utils"
 
 interface RowItem {
@@ -47,7 +46,7 @@ export const STATUS_CONFIG: Record<
   {
     type: "success" | "warning" | "error" | "surface"
     text: string
-    i18nKey: ParseKeys
+    i18nKey: string
   }
 > = {
   // Processing: { type: "surface", text: "Processing" },
@@ -191,7 +190,7 @@ const ValueCell = ({
 }
 
 const StatusCell = ({ status }: { status?: string | null }) => {
-  const { t } = useTranslation()
+  const t = useTranslations()
 
   if (!status) return <span>-</span>
 
@@ -205,7 +204,7 @@ const StatusCell = ({ status }: { status?: string | null }) => {
         type={config.type}
         role="Secondary"
         size="small"
-        text={t(`orders.status.${status?.toLowerCase()}`)}
+        text={t(config.i18nKey)}
       />
     </div>
   )
@@ -220,7 +219,7 @@ const ExternalCell = ({
   status?: string
   outIndex: number
 }) => {
-  const { t } = useTranslation()
+  const t = useTranslations()
   const [isDialogOpen, setIsDialogOpen] = React.useState(false)
   const [showSnackbar, setShowSnackbar] = React.useState(false)
   const { handleCancelOrder } = useOrders()
@@ -295,7 +294,7 @@ const ExternalCell = ({
 }
 
 const MobileCell = ({ order }: { order: Order }) => {
-  const { t } = useTranslation()
+  const t = useTranslations()
   const { handleCancelOrder, formatDate } = useOrders()
 
   const [isDialogOpen, setIsDialogOpen] = React.useState(false)
@@ -354,7 +353,7 @@ const MobileCell = ({ order }: { order: Order }) => {
               type={statusConfig.type}
               role="Secondary"
               size="small"
-              text={t(`orders.status.${order.status?.toLowerCase()}`)}
+              text={t(statusConfig.i18nKey)}
             />
           </div>
           {showCancel ? (
@@ -428,7 +427,7 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({
   serverSidePagination = false,
   totalPages = 0,
 }) => {
-  const { t } = useTranslation()
+  const t = useTranslations()
   const { isMobile } = useViewport()
 
   const rowsDesktop: RowItem[] = useMemo(() => {
