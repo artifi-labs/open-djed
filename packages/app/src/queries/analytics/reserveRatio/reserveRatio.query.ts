@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
-import { reserveRatioResponseSchema } from "./reserveRatio.schema"
+import { ReserveRatioResponseSchema } from "./reserveRatio.schema"
 import { useApiClient } from "@/context/ApiClientContext"
 import type { ChartPeriodValue } from "@/components/analytics/useAnalyticsData"
 import { analyticsKeys } from "../keys"
@@ -25,7 +25,7 @@ export function useReserveRatioQuery({ period }: Params) {
 
       const json = await res.json()
 
-      const parsed = reserveRatioResponseSchema.parse(json)
+      const parsed = ReserveRatioResponseSchema.parse(json)
 
       return parsed.map((entry) => ({
         ...entry,

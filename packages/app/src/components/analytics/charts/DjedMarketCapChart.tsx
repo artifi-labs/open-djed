@@ -7,14 +7,11 @@ import { type Currency } from "../useAnalyticsData"
 import { Legend } from "recharts"
 import { ChartLegend } from "@/components/charts/legend/ChartLegend"
 import { formatAxisValue } from "@/lib/utils"
+import type { MarketCapResponse } from "@/queries/analytics/marketCap/marketCap.schema"
 
 type DjedMarketCapChartProps = {
   title?: string
-  data: {
-    timestamp: string
-    adaValue: number
-    usdValue: number
-  }[]
+  data: MarketCapResponse
   currency: Currency
 }
 

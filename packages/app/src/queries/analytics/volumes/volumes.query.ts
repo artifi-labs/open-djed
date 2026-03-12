@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query"
 import { useApiClient } from "@/context/ApiClientContext"
 import type { ChartPeriodValue } from "@/components/analytics/useAnalyticsData"
 import { analyticsKeys } from "../keys"
-import { volumesResponseSchema } from "./volumes.schema"
+import { VolumesResponseSchema } from "./volumes.schema"
 
 type Params = {
   period: ChartPeriodValue
@@ -27,7 +27,7 @@ export function useVolumeQuery({ period }: Params) {
 
       const json = await res.json()
 
-      const parsed = volumesResponseSchema.parse(json)
+      const parsed = VolumesResponseSchema.parse(json)
 
       return parsed
     },

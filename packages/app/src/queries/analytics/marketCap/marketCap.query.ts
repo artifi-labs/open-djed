@@ -3,7 +3,7 @@ import { useApiClient } from "@/context/ApiClientContext"
 import type { ChartPeriodValue } from "@/components/analytics/useAnalyticsData"
 import { analyticsKeys } from "../keys"
 import type { TokenMarketCap } from "../../../../../db/generated/prisma/enums"
-import { marketCapResponseSchema } from "./marketCap.schema"
+import { MarketCapResponseSchema } from "./marketCap.schema"
 
 type Params = {
   token: TokenMarketCap
@@ -30,7 +30,7 @@ export function useMarketCapQuery({ period, token }: Params) {
 
       const json = await res.json()
 
-      const parsed = marketCapResponseSchema.parse(json)
+      const parsed = MarketCapResponseSchema.parse(json)
 
       return parsed.map((entry) => ({
         ...entry,

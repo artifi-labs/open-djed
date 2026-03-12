@@ -1,6 +1,6 @@
 import { z } from "zod"
 
-export const djedDexPricesEntrySchema = z.object({
+export const DjedDexPricesEntrySchema = z.object({
   id: z.number(),
   timestamp: z.string(),
   token: z.literal("DJED"),
@@ -12,4 +12,7 @@ export const djedDexPricesEntrySchema = z.object({
   wingridersUsdValue: z.number(),
 })
 
-export const djedDexPricesResponseSchema = z.array(djedDexPricesEntrySchema)
+export const DjedDexPricesResponseSchema = z.array(DjedDexPricesEntrySchema)
+
+export type DjedDexPricesEntry = z.infer<typeof DjedDexPricesEntrySchema>
+export type DjedDexPricesResponse = z.infer<typeof DjedDexPricesResponseSchema>

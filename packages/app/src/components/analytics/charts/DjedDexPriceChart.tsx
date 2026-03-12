@@ -2,11 +2,12 @@
 
 import { FinancialAreaChart } from "@/components/charts/FinancialAreaChart"
 import { useMemo } from "react"
-import { type DjedDexPrices, type Currency } from "../useAnalyticsData"
+import { type Currency } from "../useAnalyticsData"
 import { env } from "@/lib/envLoader"
+import type { DjedDexPricesResponse } from "@/queries/analytics/dexPrices/djedDexPrices.schema"
 
 type DjedDexPriceChartProps = {
-  data: DjedDexPrices[]
+  data: DjedDexPricesResponse
   currency: Currency
 }
 

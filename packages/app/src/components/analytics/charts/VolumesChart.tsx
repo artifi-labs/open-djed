@@ -3,12 +3,13 @@
 import React, { useMemo } from "react"
 import { FinancialAreaChart } from "@/components/charts/FinancialAreaChart"
 import { useViewport } from "@/hooks/useViewport"
-import type { Currency, VolumeChartEntry } from "../useAnalyticsData"
+import type { Currency } from "../useAnalyticsData"
 import { formatAxisValue } from "@/lib/utils"
+import type { VolumesResponse } from "@/queries/analytics/volumes/volumes.schema"
 
 type VolumeChartProps = {
   title?: string
-  data: VolumeChartEntry[]
+  data: VolumesResponse
   currency: Currency
 }
 

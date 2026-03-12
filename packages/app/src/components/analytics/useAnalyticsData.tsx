@@ -2,74 +2,12 @@
 
 import { useToast } from "@/context/ToastContext"
 import { useEffect, useState } from "react"
-import type { Token } from "@/lib/tokens"
 import { env } from "@/lib/envLoader"
 import { useReserveRatioQuery } from "@/queries/analytics/reserveRatio/reserveRatio.query"
 import { useMarketCapQuery } from "@/queries/analytics/marketCap/marketCap.query"
 import { useVolumeQuery } from "@/queries/analytics/volumes/volumes.query"
 import { useDjedDexPricesQuery } from "@/queries/analytics/dexPrices/djedDexPrices.query"
 import { useShenAdaPriceQuery } from "@/queries/analytics/shenAdaPrice/shenAdaPrice.query"
-
-export type ReserveRatioChartEntry = {
-  id: number
-  timestamp: string
-  reserveRatio: number
-}
-export type DjedMChartEntry = {
-  id: number
-  timestamp: string
-  usdValue: string
-  adaValue: string
-}
-export type ShenMChartEntry = {
-  id: number
-  timestamp: string
-  usdValue: string
-  adaValue: string
-}
-
-export type TokenPriceChartEntry = {
-  id: number
-  timestamp: string
-  adaValue: number
-  usdValue: number
-  token: Exclude<Token, "DJED">
-}
-export type TokenPriceByToken = Record<
-  Exclude<Token, "DJED">,
-  TokenPriceChartEntry[]
->
-
-export type VolumeChartEntry = {
-  id: number
-  timestamp: string
-  djedMintedUSD: number
-  djedBurnedUSD: number
-  shenMintedUSD: number
-  shenBurnedUSD: number
-  djedMintedADA: number
-  djedBurnedADA: number
-  shenMintedADA: number
-  shenBurnedADA: number
-  totalDjedVolumeUSD: number
-  totalShenVolumeUSD: number
-  totalDjedVolumeADA: number
-  totalShenVolumeADA: number
-  totalVolumeUSD: number
-  totalVolumeADA: number
-}
-
-export type DjedDexPrices = {
-  id: number
-  timestamp: string
-  adaValue: number
-  usdValue: number
-  minswapUsdValue?: number
-  minswapAdaValue?: number
-  wingridersUsdValue?: number
-  wingridersAdaValue?: number
-  token: "DJED"
-}
 
 export type CurrencyValue = "ADA" | "USD"
 export const CURRENCY_OPTIONS: Array<{ label: string; value: CurrencyValue }> =

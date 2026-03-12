@@ -1,6 +1,6 @@
 import { z } from "zod"
 
-export const shenAdaPriceEntrySchema = z.object({
+export const ShenAdaPriceEntrySchema = z.object({
   id: z.number(),
   timestamp: z.string(),
   usdValue: z.number(),
@@ -8,7 +8,10 @@ export const shenAdaPriceEntrySchema = z.object({
   token: z.enum(["ADA", "SHEN"]),
 })
 
-export const shenAdaPriceResponseSchema = z.object({
-  ADA: z.array(shenAdaPriceEntrySchema),
-  SHEN: z.array(shenAdaPriceEntrySchema),
+export const ShenAdaPriceResponseSchema = z.object({
+  ADA: z.array(ShenAdaPriceEntrySchema),
+  SHEN: z.array(ShenAdaPriceEntrySchema),
 })
+
+export type ShenAdaPriceEntry = z.infer<typeof ShenAdaPriceEntrySchema>
+export type ShenAdaPriceResponse = z.infer<typeof ShenAdaPriceResponseSchema>

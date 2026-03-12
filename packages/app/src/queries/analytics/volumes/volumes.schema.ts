@@ -1,6 +1,6 @@
 import { z } from "zod"
 
-export const volumesEntrySchema = z.object({
+export const VolumesEntrySchema = z.object({
   id: z.number(),
   timestamp: z.string(),
   djedMintedUSD: z.number(),
@@ -19,4 +19,7 @@ export const volumesEntrySchema = z.object({
   totalVolumeADA: z.number(),
 })
 
-export const volumesResponseSchema = z.array(volumesEntrySchema)
+export const VolumesResponseSchema = z.array(VolumesEntrySchema)
+
+export type VolumesEntry = z.infer<typeof VolumesEntrySchema>
+export type VolumesResponse = z.infer<typeof VolumesResponseSchema>

@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query"
 import { useApiClient } from "@/context/ApiClientContext"
 import type { ChartPeriodValue } from "@/components/analytics/useAnalyticsData"
 import { analyticsKeys } from "../keys"
-import { djedDexPricesResponseSchema } from "./djedDexPrices.schema"
+import { DjedDexPricesResponseSchema } from "./djedDexPrices.schema"
 
 type Params = {
   period: ChartPeriodValue
@@ -27,7 +27,7 @@ export function useDjedDexPricesQuery({ period }: Params) {
 
       const json = await res.json()
 
-      const parsed = djedDexPricesResponseSchema.parse(json)
+      const parsed = DjedDexPricesResponseSchema.parse(json)
 
       return parsed
     },

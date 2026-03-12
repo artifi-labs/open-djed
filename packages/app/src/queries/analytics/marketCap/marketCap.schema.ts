@@ -1,6 +1,6 @@
 import { z } from "zod"
 
-export const marketCapEntrySchema = z.object({
+export const MarketCapEntrySchema = z.object({
   id: z.number(),
   timestamp: z.string(),
   marketCap: z.number(),
@@ -8,4 +8,6 @@ export const marketCapEntrySchema = z.object({
   usdValue: z.number(),
 })
 
-export const marketCapResponseSchema = z.array(marketCapEntrySchema)
+export const MarketCapResponseSchema = z.array(MarketCapEntrySchema)
+export type MarketCapEntry = z.infer<typeof MarketCapEntrySchema>
+export type MarketCapResponse = z.infer<typeof MarketCapResponseSchema>

@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query"
 import { useApiClient } from "@/context/ApiClientContext"
 import type { ChartPeriodValue } from "@/components/analytics/useAnalyticsData"
 import { analyticsKeys } from "../keys"
-import { shenAdaPriceResponseSchema } from "./shenAdaPrice.schema"
+import { ShenAdaPriceResponseSchema } from "./shenAdaPrice.schema"
 
 type Params = {
   period: ChartPeriodValue
@@ -26,7 +26,7 @@ export function useShenAdaPriceQuery({ period }: Params) {
       if (!res.ok) throw new Error("Error fetching SHEN/ADA price")
 
       const json = await res.json()
-      return shenAdaPriceResponseSchema.parse(json)
+      return ShenAdaPriceResponseSchema.parse(json)
     },
   })
 }

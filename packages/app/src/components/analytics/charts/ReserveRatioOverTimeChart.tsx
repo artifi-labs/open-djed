@@ -1,5 +1,4 @@
 import { FinancialAreaChart } from "@/components/charts/FinancialAreaChart"
-import { type ReserveRatioChartEntry } from "../useAnalyticsData"
 import {
   type BarShapeProps,
   type DotProps,
@@ -8,9 +7,10 @@ import {
   ReferenceArea,
 } from "recharts"
 import React from "react"
+import type { ReserveRatioResponse } from "@/queries/analytics/reserveRatio/reserveRatio.schema"
 
 type ReserveRatioOverTimeChartProps = {
-  data: ReserveRatioChartEntry[]
+  data: ReserveRatioResponse
 }
 
 export const ReserveRatioOverTimeChart: React.FC<
