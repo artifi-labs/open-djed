@@ -8,4 +8,19 @@ export default {
   keepRemoved: false,
 
   defaultValue: "",
+
+  lexers: {
+    tsx: [
+      {
+        lexer: "JsxLexer",
+        functions: ["t", "t.rich"],
+      },
+    ],
+    ts: [
+      {
+        lexer: "JavascriptLexer",
+        functions: ["t", "t.rich"],
+      },
+    ],
+  },
 }

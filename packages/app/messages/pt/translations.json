@@ -1,6 +1,7 @@
 {
   "analytics": {
     "pageTitle": "",
+    "analyticsOverview": "",
     "description": "",
     "reserveRatioOverTime": "",
     "djedMarketCap": "",
@@ -22,8 +23,7 @@
         "below": "",
         "above": ""
       }
-    },
-    "analyticsOverview": ""
+    }
   },
   "keywords": {
     "opensource": "Open Source",
@@ -37,10 +37,63 @@
       "description": ""
     }
   },
-  "notFound": {
-    "title": "",
-    "subtitle": "",
-    "buttonText": ""
+  "common": {
+    "illustration": "",
+    "currencyValue": "",
+    "mintedToken": "",
+    "burnedToken": "",
+    "below": "",
+    "above": "",
+    "minimum": "",
+    "maximum": "",
+    "available": "",
+    "half": "",
+    "max": "",
+    "mintAndBurnNow": "",
+    "months": {
+      "march": "",
+      "may": "",
+      "january": "",
+      "february": "",
+      "april": "",
+      "june": "",
+      "july": "",
+      "august": "",
+      "september": "",
+      "october": "",
+      "november": "",
+      "december": ""
+    },
+    "select": "",
+    "fees": "",
+    "rewards": "",
+    "copiedAddress": "",
+    "copyAddress": "",
+    "weekDays": {
+      "monday": "",
+      "tuesday": "",
+      "wednesday": "",
+      "thursday": "",
+      "friday": "",
+      "saturday": "",
+      "sunday": ""
+    },
+    "periodItems": {
+      "today": "",
+      "thisWeek": "",
+      "lastWeek": "",
+      "thisMonth": "",
+      "lastMonth": "",
+      "thisQuarter": "",
+      "thisYear": ""
+    },
+    "period": {
+      "day": "",
+      "week": "",
+      "month": "",
+      "year": "",
+      "all": ""
+    }
   },
   "orders": {
     "pageTitle": "",
@@ -146,16 +199,16 @@
       "contact": ""
     },
     "paragraphs": {
+      "dataCollection": "",
       "wallet": "",
       "analytics1": "",
+      "analytics2": "",
       "analytics3": "",
       "openSource": "",
       "sourceCode": "",
       "authentication": "",
       "policy": "",
-      "contact": "",
-      "dataCollection": "",
-      "analytics2": ""
+      "contact": ""
     }
   },
   "simulator": {
@@ -298,63 +351,6 @@
       }
     }
   },
-  "common": {
-    "currencyValue": "",
-    "mintedToken": "",
-    "burnedToken": "",
-    "below": "",
-    "above": "",
-    "minimum": "",
-    "maximum": "",
-    "available": "",
-    "half": "",
-    "max": "",
-    "mintAndBurnNow": "",
-    "months": {
-      "march": "",
-      "may": "",
-      "january": "",
-      "february": "",
-      "april": "",
-      "june": "",
-      "july": "",
-      "august": "",
-      "september": "",
-      "october": "",
-      "november": "",
-      "december": ""
-    },
-    "select": "",
-    "fees": "",
-    "rewards": "",
-    "copiedAddress": "",
-    "copyAddress": "",
-    "weekDays": {
-      "monday": "",
-      "tuesday": "",
-      "wednesday": "",
-      "thursday": "",
-      "friday": "",
-      "saturday": "",
-      "sunday": ""
-    },
-    "periodItems": {
-      "today": "",
-      "thisWeek": "",
-      "lastWeek": "",
-      "thisMonth": "",
-      "lastMonth": "",
-      "thisQuarter": "",
-      "thisYear": ""
-    },
-    "period": {
-      "day": "",
-      "week": "",
-      "month": "",
-      "year": "",
-      "all": ""
-    }
-  },
   "reserve": {
     "reserveRatio": "",
     "warning": {
@@ -397,6 +393,7 @@
   },
   "wallet": {
     "connectWallet": "",
+    "connectWalletDisclaimer": "",
     "orders": {
       "cancel": "",
       "paid": "",
@@ -407,8 +404,7 @@
     "incorrectNetwork": "",
     "connected": "",
     "connectionFailed": "",
-    "disconnected": "",
-    "connectWalletDisclaimer": ""
+    "disconnected": ""
   },
   "settings": {
     "title": "",
@@ -417,6 +413,19 @@
     },
     "network": {
       "title": ""
+    }
+  },
+  "errors": {
+    "404": {
+      "pageTitle": "",
+      "title": "",
+      "content": {
+        "content1": "",
+        "content2": ""
+      },
+      "button": {
+        "text": ""
+      }
     }
   }
 }

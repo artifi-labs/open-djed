@@ -1,0 +1,24 @@
+{
+  "dashboard": {
+    "name": ""
+  },
+  "orders": {
+    "status": {
+      "canceled": "Canceled"
+    }
+  },
+  "notFound": {
+    "404": {
+      "Title": "Lost in the blockchain void",
+      "Content": "This page has drifted off the network. Let's reconnect you to the main chain",
+      "pageTitle": "Page Not Found",
+      "title": "Lost in the blockchain void",
+      "content1": "This page has drifted off the network.",
+      "content2": "Let's reconnect you to the main chain",
+      "buttonText": "Return Home"
+    },
+    "title": "",
+    "subtitle": "",
+    "buttonText": ""
+  }
+}

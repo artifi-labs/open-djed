@@ -1,6 +1,7 @@
 {
   "analytics": {
     "pageTitle": "Analytics",
+    "analyticsOverview": "<gradient>Analytics</gradient> Overview",
     "description": "Real-time insights into protocol metrics and market dynamics",
     "reserveRatioOverTime": "Reserve Ratio Over Time",
     "djedMarketCap": "DJED Market Cap",
@@ -22,8 +23,7 @@
         "below": "DJED minting/SHEN burning unavailable: reserve ratio below minimum.",
         "above": "SHEN minting unavailable: reserve ratio above maximum."
       }
-    },
-    "analyticsOverview": "<gradient>Analytics</gradient> Overview"
+    }
   },
   "keywords": {
     "opensource": "Open Source",
@@ -37,10 +37,63 @@
       "description": "Mint and burn DJED, Cardano's overcollateralized stablecoin, with our open-source platform. Transparent alternative to DJED.xyz - accessible 24/7 anywhere."
     }
   },
-  "notFound": {
-    "title": "",
-    "subtitle": "",
-    "buttonText": ""
+  "common": {
+    "illustration": "Illustration",
+    "currencyValue": "{currency} Value",
+    "mintedToken": "{token} Minted",
+    "burnedToken": "{token} Burned",
+    "below": "Below",
+    "above": "Above",
+    "minimum": "Minimum",
+    "maximum": "Maximum",
+    "available": "Available",
+    "half": "Half",
+    "max": "Max",
+    "mintAndBurnNow": "Mint & Burn Now",
+    "months": {
+      "march": "March",
+      "may": "May",
+      "january": "January",
+      "february": "February",
+      "april": "April",
+      "june": "June",
+      "july": "July",
+      "august": "August",
+      "september": "September",
+      "october": "October",
+      "november": "November",
+      "december": "December"
+    },
+    "select": "Select",
+    "fees": "Fees",
+    "rewards": "Rewards",
+    "copiedAddress": "Copied address",
+    "copyAddress": "Copy address",
+    "weekDays": {
+      "monday": "Monday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday",
+      "thursday": "Thursday",
+      "friday": "Friday",
+      "saturday": "Saturday",
+      "sunday": "Sunday"
+    },
+    "periodItems": {
+      "today": "Today",
+      "thisWeek": "This Week",
+      "lastWeek": "Last Week",
+      "thisMonth": "This Month",
+      "lastMonth": "Last Month",
+      "thisQuarter": "This Quarter",
+      "thisYear": "This Year"
+    },
+    "period": {
+      "day": "Today",
+      "week": "This Week",
+      "month": "This Month",
+      "year": "This Year",
+      "all": "All Time"
+    }
   },
   "orders": {
     "pageTitle": "Orders",
@@ -146,16 +199,16 @@
       "contact": "7. Contact"
     },
     "paragraphs": {
+      "dataCollection": "We do not collect or store any personal data. Any data accessed or displayed by the application comes exclusively from publicly data available on the blockchain.",
       "wallet": "When users interact with the app using their Cardano wallet, we interact only with the wallet interface via the CIP-30 standard. We do not receive or store your private keys. We reserve the right to store your addresses and transactions for analytical purposes to allow us to learn from your usage of the app and to improve it based on this information.",
       "analytics1": "We use PostHog to collect limited analytics and application telemetry. This helps us understand how the app is used and identify bugs or performance issues.",
+      "analytics2": "Data collected by PostHog does <strong>not</strong> include personally identifiable information. We do <strong>not</strong> store wallet addresses, names, emails, or any user credentials.",
       "analytics3": "All analytics are used strictly for the purpose of improving the application experience.",
       "openSource": "This application is open source and licensed under the",
       "sourceCode": "Source code:",
       "authentication": "The application does not use or require any user accounts, logins, or email registration. Access is anonymous.",
       "policy": "We may revise this policy over time. Updates will be posted here with a new effective date.",
-      "contact": "If you have questions about this Privacy Policy, contact us at:",
-      "dataCollection": "We do not collect or store any personal data. Any data accessed or displayed by the application comes exclusively from publicly data available on the blockchain.",
-      "analytics2": "Data collected by PostHog does <strong>not</strong> include personally identifiable information. We do <strong>not</strong> store wallet addresses, names, emails, or any user credentials."
+      "contact": "If you have questions about this Privacy Policy, contact us at:"
     }
   },
   "simulator": {
@@ -298,63 +351,6 @@
       }
     }
   },
-  "common": {
-    "currencyValue": "{currency} Value",
-    "mintedToken": "{token} Minted",
-    "burnedToken": "{token} Burned",
-    "below": "Below",
-    "above": "Above",
-    "minimum": "Minimum",
-    "maximum": "Maximum",
-    "available": "Available",
-    "half": "Half",
-    "max": "Max",
-    "mintAndBurnNow": "Mint & Burn Now",
-    "months": {
-      "march": "March",
-      "may": "May",
-      "january": "January",
-      "february": "February",
-      "april": "April",
-      "june": "June",
-      "july": "July",
-      "august": "August",
-      "september": "September",
-      "october": "October",
-      "november": "November",
-      "december": "December"
-    },
-    "select": "Select",
-    "fees": "Fees",
-    "rewards": "Rewards",
-    "copiedAddress": "Copied address",
-    "copyAddress": "Copy address",
-    "weekDays": {
-      "monday": "Monday",
-      "tuesday": "Tuesday",
-      "wednesday": "Wednesday",
-      "thursday": "Thursday",
-      "friday": "Friday",
-      "saturday": "Saturday",
-      "sunday": "Sunday"
-    },
-    "periodItems": {
-      "today": "Today",
-      "thisWeek": "This Week",
-      "lastWeek": "Last Week",
-      "thisMonth": "This Month",
-      "lastMonth": "Last Month",
-      "thisQuarter": "This Quarter",
-      "thisYear": "This Year"
-    },
-    "period": {
-      "day": "Today",
-      "week": "This Week",
-      "month": "This Month",
-      "year": "This Year",
-      "all": "All Time"
-    }
-  },
   "reserve": {
     "reserveRatio": "Reserve Ratio",
     "warning": {
@@ -397,6 +393,7 @@
   },
   "wallet": {
     "connectWallet": "Connect Wallet",
+    "connectWalletDisclaimer": "By connecting you agree to our <terms>Terms & Services</terms> and <privacy>Privacy Policy</privacy>",
     "orders": {
       "cancel": "Cancel",
       "paid": "Paid",
@@ -407,8 +404,7 @@
     "incorrectNetwork": "Please connect to a {network} wallet`",
     "connected": "Your wallet has been successfully connected",
     "connectionFailed": "Failed to connect your wallet",
-    "disconnected": "Your wallet has been disconnected",
-    "connectWalletDisclaimer": "By connecting you agree to our <terms>Terms & Services</terms> and <privacy>Privacy Policy</privacy>"
+    "disconnected": "Your wallet has been disconnected"
   },
   "settings": {
     "title": "Settings",
@@ -417,6 +413,19 @@
     },
     "network": {
       "title": "Network"
+    }
+  },
+  "errors": {
+    "404": {
+      "pageTitle": "Page Not Found",
+      "title": "Lost in the blockchain void",
+      "content": {
+        "content1": "This page has drifted off the network.",
+        "content2": "Let's reconnect you to the main chain"
+      },
+      "button": {
+        "text": "Return Home"
+      }
     }
   }
 }

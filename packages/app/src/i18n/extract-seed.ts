@@ -49,10 +49,9 @@ function seed() {
   t("simulator.whatIsSimulator.items.profitOrLoss")
   t("simulator.whatIsSimulator.items.totalEstimatedPNL")
 
-  t("wallet.connectWalletDisclaimer")
-
-  t("analytics.analyticsOverview")
-
-  t("privacyPolicy.paragraphs.dataCollection")
-  t("privacyPolicy.paragraphs.analytics2")
+  t("errors.404.pageTitle")
+  t("errors.404.title")
+  t("errors.404.content.content1")
+  t("errors.404.content.content2")
+  t("errors.404.button.text")
 }

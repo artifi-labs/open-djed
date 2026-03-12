@@ -1,0 +1,24 @@
+{
+  "dashboard": {
+    "name": ""
+  },
+  "orders": {
+    "status": {
+      "canceled": ""
+    }
+  },
+  "notFound": {
+    "404": {
+      "Title": "",
+      "Content": "",
+      "pageTitle": "",
+      "title": "",
+      "content1": "",
+      "content2": "",
+      "buttonText": ""
+    },
+    "title": "",
+    "subtitle": "",
+    "buttonText": ""
+  }
+}

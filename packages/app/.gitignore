@@ -56,6 +56,3 @@ next-env.d.ts
 .vscode
 
 .next
-
-# Locales
-translations_old.json
