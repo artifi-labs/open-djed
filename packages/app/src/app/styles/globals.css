@@ -444,11 +444,16 @@
     font-size: var(--text-h3);
     line-height: var(--text-h3--line-height);
   }
+}
 
-  * {
-    scrollbar-width: thin;
-    scrollbar-color: var(--color-brand-primary, #343657) transparent;
-  }
+/* Scrollbar styles */
+body::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+body {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-brand-primary, #343657) transparent;
 }
 
 @media (max-width: 1024px) {

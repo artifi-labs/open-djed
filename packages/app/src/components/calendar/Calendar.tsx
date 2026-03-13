@@ -309,11 +309,11 @@ const Calendar: React.FC<CalendarProps> = ({
             activeItem={{
               key: currentDate.getMonth(),
               text: capitalizeLower(
-                t(Object.keys(months)[currentDate.getMonth()]),
+                t(Object.values(months)[currentDate.getMonth()].i18nKey),
               ),
             }}
-            menuItems={Object.entries(months).map(([name, month], index) => ({
-              key: name,
+            menuItems={Object.entries(months).map(([, month], index) => ({
+              key: index,
               text: capitalizeLower(t(month.i18nKey)),
               icon: currentDate.getMonth() === index ? "Checkmark" : undefined,
             }))}
