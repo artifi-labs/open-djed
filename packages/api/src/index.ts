@@ -342,6 +342,11 @@ const historicalDataHandler = <T>(
   }
 }
 
+export type MarketCapValue = {
+  ADA: bigint
+  USD: bigint
+}
+
 const tokenSchema = z.enum(["DJED", "SHEN"]).openapi({ example: "DJED" })
 export type TokenType = z.infer<typeof tokenSchema>
 

@@ -1,13 +1,18 @@
 "use client"
 
 import { useToast } from "@/context/ToastContext"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { env } from "@/lib/envLoader"
 import { useReserveRatioQuery } from "@/queries/analytics/reserveRatio/reserveRatio.query"
 import { useMarketCapQuery } from "@/queries/analytics/marketCap/marketCap.query"
 import { useVolumeQuery } from "@/queries/analytics/volumes/volumes.query"
 import { useDjedDexPricesQuery } from "@/queries/analytics/dexPrices/djedDexPrices.query"
 import { useShenAdaPriceQuery } from "@/queries/analytics/shenAdaPrice/shenAdaPrice.query"
+import { useReserveDetails } from "@/hooks/useReserveDetails"
+import { useProtocolData } from "@/hooks/useProtocolData"
+import { Rational, shenADARate, shenUSDRate } from "@open-djed/math"
+import type { MarketCapResponse } from "@/queries/analytics/marketCap/marketCap.schema"
+import type { MarketCapValue } from "@open-djed/api"
 
 export type CurrencyValue = "ADA" | "USD"
 export const CURRENCY_OPTIONS: Array<{ label: string; value: CurrencyValue }> =
@@ -41,9 +46,35 @@ export const CHART_PERIOD_OPTIONS: Array<{
 ]
 export type ChartPeriod = (typeof CHART_PERIOD_OPTIONS)[number]
 
+function formatMarketCapData(
+  rawData: MarketCapResponse,
+  protocolMarketCap?: MarketCapValue,
+) {
+  if (!rawData) return []
+
+  const formatted = rawData.map((entry) => ({
+    ...entry,
+    usdValue: Number(entry.usdValue) / 1e6,
+    adaValue: Number(entry.adaValue) / 1e6,
+  }))
+
+  if (protocolMarketCap) {
+    formatted.push({
+      id: -1,
+      timestamp: new Date().toISOString(),
+      adaValue: Number(protocolMarketCap.ADA) / 1e6,
+      usdValue: Number(protocolMarketCap.USD) / 1e6,
+    })
+  }
+
+  return formatted
+}
+
 export function useAnalyticsData() {
   const { showToast } = useToast()
   const { NETWORK } = env
+  const { reserveRatio } = useReserveDetails()
+  const { data, isLoading } = useProtocolData()
 
   const [reserveRatioPeriod, setReserveRatioPeriod] = useState<ChartPeriod>(
     CHART_PERIOD_OPTIONS[0],
@@ -82,6 +113,7 @@ export function useAnalyticsData() {
     CURRENCY_OPTIONS[NETWORK === "Mainnet" ? 0 : 1],
   )
 
+  // Queries
   const { data: reserveRatioData, error: reserveRatioError } =
     useReserveRatioQuery({ period: reserveRatioPeriod.value })
 
@@ -107,6 +139,72 @@ export function useAnalyticsData() {
     period: shenAdaPricePeriod.value,
   })
 
+  // Data formatting
+  const formattedReserveRatioData = useMemo(() => {
+    if (!reserveRatioData) return []
+
+    const updated = reserveRatioData.map((entry) => ({
+      ...entry,
+      reserveRatio: Number(entry.reserveRatio) * 100,
+    }))
+
+    if (reserveRatio !== undefined) {
+      updated.push({
+        id: -1,
+        timestamp: new Date().toISOString(),
+        reserveRatio,
+      })
+    }
+
+    return updated
+  }, [reserveRatioData, reserveRatio])
+
+  const formattedDjedMCData = useMemo(() => {
+    if (!djedMCData || !data) return []
+
+    return formatMarketCapData(djedMCData, data.protocolData.DJED.marketCap)
+  }, [djedMCData, isLoading, data])
+
+  const formattedShenMCData = useMemo(() => {
+    if (!shenMCData || !data) return []
+
+    return formatMarketCapData(shenMCData, data.protocolData.SHEN.marketCap)
+  }, [shenMCData, isLoading, data])
+
+  const formattedShenAdaData = useMemo(() => {
+    if (!shenAdaData) return { ADA: [], SHEN: [] }
+
+    const result = {
+      ADA: [...shenAdaData.ADA],
+      SHEN: [...shenAdaData.SHEN],
+    }
+
+    if (data && result.ADA.length && result.SHEN.length) {
+      const todayKey = new Date().toISOString()
+
+      result.ADA[result.ADA.length - 1] = {
+        ...result.ADA[result.ADA.length - 1],
+        timestamp: todayKey,
+        token: "ADA",
+        adaValue: 1,
+        usdValue: new Rational(
+          data.oracleDatum.oracleFields.adaUSDExchangeRate,
+        ).toNumber(),
+      }
+
+      result.SHEN[result.SHEN.length - 1] = {
+        ...result.SHEN[result.SHEN.length - 1],
+        timestamp: todayKey,
+        token: "SHEN",
+        adaValue: shenADARate(data.poolDatum, data.oracleDatum).toNumber(),
+        usdValue: shenUSDRate(data.poolDatum, data.oracleDatum).toNumber(),
+      }
+    }
+
+    return result
+  }, [shenAdaData, data])
+
+  // Error handling
   useEffect(() => {
     if (reserveRatioError) {
       showToast({
@@ -162,20 +260,20 @@ export function useAnalyticsData() {
   }, [shenAdaError, showToast])
 
   return {
-    reserveRatioData: reserveRatioData || [],
+    reserveRatioData: formattedReserveRatioData || [],
     reserveRatioPeriod,
     setReserveRatioPeriod,
-    djedMCHistoricalData: djedMCData || [],
+    djedMCHistoricalData: formattedDjedMCData || [],
     djedMCPeriod,
     setDjedMCPeriod,
     djedMCCurrency,
     setDjedMCCurrency,
-    shenMCHistoricalData: shenMCData || [],
+    shenMCHistoricalData: formattedShenMCData || [],
     shenMCPeriod,
     setShenMCPeriod,
     shenMCCurrency,
     setShenMCCurrency,
-    shenAdaHistoricalData: shenAdaData ?? { ADA: [], SHEN: [] },
+    shenAdaHistoricalData: formattedShenAdaData ?? { ADA: [], SHEN: [] },
     shenAdaPricePeriod,
     setShenAdaPricePeriod,
     shenAdaCurrency,

@@ -1,8 +1,4 @@
-"use client"
-
 import { FinancialAreaChart } from "@/components/charts/FinancialAreaChart"
-import { useViewport } from "@/hooks/useViewport"
-import { useMemo } from "react"
 import { type Currency } from "../useAnalyticsData"
 import { Legend } from "recharts"
 import { ChartLegend } from "@/components/charts/legend/ChartLegend"
@@ -15,33 +11,11 @@ type ShenMarketCapChartProps = {
   currency: Currency
 }
 
-type ChartRow = {
-  date: string | number
-  adaValue?: number
-  usdValue?: number
-}
-
 export const ShenMarketCapChart: React.FC<ShenMarketCapChartProps> = ({
   data,
   currency,
 }) => {
-  const { isMobile } = useViewport()
   const valueKey = currency.value === "USD" ? "usdValue" : "adaValue"
-
-  const { rows } = useMemo(() => {
-    if (!data?.length) {
-      return { rows: [] }
-    }
-
-    //TODO: REMOVE THIS
-    const mapped: ChartRow[] = data.map((entry) => ({
-      date: entry.timestamp,
-      adaValue: Number(entry.adaValue),
-      usdValue: Number(entry.usdValue),
-    }))
-
-    return { rows: mapped }
-  }, [data, isMobile])
 
   const yTickFormatter = (value: number | string) =>
     currency.value === "USD"
@@ -61,8 +35,8 @@ export const ShenMarketCapChart: React.FC<ShenMarketCapChartProps> = ({
 
   return (
     <FinancialAreaChart
-      data={rows}
-      xKey="date"
+      data={data}
+      xKey="timestamp"
       lines={lines}
       yTickFormatter={yTickFormatter}
     >

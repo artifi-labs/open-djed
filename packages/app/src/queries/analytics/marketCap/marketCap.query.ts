@@ -32,10 +32,7 @@ export function useMarketCapQuery({ period, token }: Params) {
 
       const parsed = MarketCapResponseSchema.parse(json)
 
-      return parsed.map((entry) => ({
-        ...entry,
-        marketCap: Number(entry.marketCap),
-      }))
+      return parsed
     },
   })
 }

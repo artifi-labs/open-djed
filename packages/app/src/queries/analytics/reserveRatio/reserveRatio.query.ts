@@ -27,10 +27,7 @@ export function useReserveRatioQuery({ period }: Params) {
 
       const parsed = ReserveRatioResponseSchema.parse(json)
 
-      return parsed.map((entry) => ({
-        ...entry,
-        reserveRatio: Number(entry.reserveRatio) * 100,
-      }))
+      return parsed
     },
   })
 }
