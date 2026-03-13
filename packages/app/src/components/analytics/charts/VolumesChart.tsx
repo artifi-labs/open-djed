@@ -1,42 +1,17 @@
-"use client"
-
-import React, { useMemo } from "react"
+import React from "react"
 import { FinancialAreaChart } from "@/components/charts/FinancialAreaChart"
-import { useViewport } from "@/hooks/useViewport"
-import type { Currency, VolumeChartEntry } from "../useAnalyticsData"
+import type { Currency } from "../useAnalyticsData"
 import { formatAxisValue } from "@/lib/utils"
+import type { VolumesResponse } from "@/queries/analytics/volumes/volumes.schema"
 
 type VolumeChartProps = {
   title?: string
-  data: VolumeChartEntry[]
+  data: VolumesResponse
   currency: Currency
 }
 
 const VolumeChart: React.FC<VolumeChartProps> = ({ data, currency }) => {
-  console.log("volumes: ", data)
-  const { isMobile } = useViewport()
   const isUSD = currency.value === "USD"
-
-  const { rows } = useMemo(() => {
-    if (!data?.length) return { rows: [] }
-
-    return {
-      rows: data.map((entry) => ({
-        date: entry.timestamp,
-
-        djedMinted: isUSD ? entry.djedMintedUSD : entry.djedMintedADA,
-        djedBurned: isUSD ? entry.djedBurnedUSD : entry.djedBurnedADA,
-
-        shenMinted: isUSD ? entry.shenMintedUSD : entry.shenMintedADA,
-        shenBurned: isUSD ? entry.shenBurnedUSD : entry.shenBurnedADA,
-
-        totalDjed: isUSD ? entry.totalDjedVolumeUSD : entry.totalDjedVolumeADA,
-        totalShen: isUSD ? entry.totalShenVolumeUSD : entry.totalShenVolumeADA,
-
-        total: isUSD ? entry.totalVolumeUSD : entry.totalVolumeADA,
-      })),
-    }
-  }, [data, isUSD, isMobile])
 
   const yTickFormatter = (value: number | string) =>
     currency.value === "USD"
@@ -45,46 +20,46 @@ const VolumeChart: React.FC<VolumeChartProps> = ({ data, currency }) => {
 
   const lines = [
     {
-      dataKey: "totalDjed",
+      dataKey: isUSD ? "totalDjedVolumeUSD" : "totalDjedVolumeADA",
       name: "Total DJED",
       stroke: "var(--color-supportive-1-500)",
     },
     {
-      dataKey: "totalShen",
+      dataKey: isUSD ? "totalShenVolumeUSD" : "totalShenVolumeADA",
       name: "Total SHEN",
       stroke: "var(--color-supportive-5-300)",
     },
     {
-      dataKey: "total",
-      name: "Total Volume",
-      stroke: "var(--color-supportive-2-500)",
-    },
-    {
-      dataKey: "djedMinted",
+      dataKey: isUSD ? "djedMintedUSD" : "djedMintedADA",
       name: "DJED Minted",
       stroke: "var(--color-supportive-1-300)",
     },
     {
-      dataKey: "djedBurned",
+      dataKey: isUSD ? "djedBurnedUSD" : "djedBurnedADA",
       name: "DJED Burned",
       stroke: "var(--color-supportive-1-700)",
     },
     {
-      dataKey: "shenMinted",
+      dataKey: isUSD ? "shenMintedUSD" : "shenMintedADA",
       name: "SHEN Minted",
       stroke: "var(--color-supportive-4-300)",
     },
     {
-      dataKey: "shenBurned",
+      dataKey: isUSD ? "shenBurnedUSD" : "shenBurnedADA",
       name: "SHEN Burned",
       stroke: "var(--color-lilac-400)",
+    },
+    {
+      dataKey: isUSD ? "totalVolumeUSD" : "totalVolumeADA",
+      name: "Total Volume",
+      stroke: "var(--color-supportive-2-500)",
     },
   ]
 
   return (
     <FinancialAreaChart
-      data={rows}
-      xKey="date"
+      data={data}
+      xKey="timestamp"
       lines={lines}
       yTickFormatter={yTickFormatter}
     />

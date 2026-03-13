@@ -1,49 +1,21 @@
-"use client"
-
 import { FinancialAreaChart } from "@/components/charts/FinancialAreaChart"
-import { useViewport } from "@/hooks/useViewport"
-import { useMemo } from "react"
 import { type Currency } from "../useAnalyticsData"
 import { Legend } from "recharts"
 import { ChartLegend } from "@/components/charts/legend/ChartLegend"
 import { formatAxisValue } from "@/lib/utils"
+import type { MarketCapResponse } from "@/queries/analytics/marketCap/marketCap.schema"
 
 type DjedMarketCapChartProps = {
   title?: string
-  data: {
-    timestamp: string
-    adaValue: string
-    usdValue: string
-  }[]
+  data: MarketCapResponse
   currency: Currency
-}
-
-type ChartRow = {
-  date: string | number
-  adaValue?: number
-  usdValue?: number
 }
 
 export const DjedMarketCapChart: React.FC<DjedMarketCapChartProps> = ({
   data,
   currency,
 }) => {
-  const { isMobile } = useViewport()
   const valueKey = currency.value === "USD" ? "usdValue" : "adaValue"
-
-  const { rows } = useMemo(() => {
-    if (!data?.length) {
-      return { rows: [] }
-    }
-
-    const mapped: ChartRow[] = data.map((entry) => ({
-      date: entry.timestamp,
-      adaValue: Number(entry.adaValue),
-      usdValue: Number(entry.usdValue),
-    }))
-
-    return { rows: mapped }
-  }, [data, isMobile])
 
   const yTickFormatter = (value: number | string) =>
     currency.value === "USD"
@@ -63,8 +35,8 @@ export const DjedMarketCapChart: React.FC<DjedMarketCapChartProps> = ({
 
   return (
     <FinancialAreaChart
-      data={rows}
-      xKey="date"
+      data={data}
+      xKey="timestamp"
       lines={lines}
       yTickFormatter={yTickFormatter}
     >
