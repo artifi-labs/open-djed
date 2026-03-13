@@ -9,14 +9,13 @@
     "volumes": "Volume Analytics",
     "shenAdaPrice": "SHEN Price & ADA Price",
     "djedDexPrice": "DJED Price vs Secondary Markets",
-    "totalDjed": "Total DJED",
-    "totalShen": "Total SHEN",
-    "totalVolume": "Total Volume",
-    "failedToGetHistoricalReserveRatioData": "Failed to get historical reserve ratio data.",
-    "failedToGetHistoricalMarketCapData": "Failed to get historical {token} market cap data.",
-    "failedToGetHistoricalTokenPriceData": "Failed to get historical token price data.",
-    "failedToGetHistoricalVolumeData": "Failed to get historical volume data.",
-    "failedToGetHistoricalDjedDexPrices": "Failed to get historical Djed - Dex prices.",
+    "total": "Total {analytic}",
+    "volume": "Volume",
+    "mintedToken": "{token} Minted",
+    "burnedToken": "{token} Burned",
+    "errors": {
+      "failedToFetch": "Failed to get {analytic} cap data."
+    },
     "currentRatio": "Current Ratio",
     "reserve": {
       "warning": {
@@ -40,8 +39,6 @@
   "common": {
     "illustration": "Illustration",
     "currencyValue": "{currency} Value",
-    "mintedToken": "{token} Minted",
-    "burnedToken": "{token} Burned",
     "below": "Below",
     "above": "Above",
     "minimum": "Minimum",

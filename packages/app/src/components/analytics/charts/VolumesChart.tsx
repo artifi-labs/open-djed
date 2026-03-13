@@ -23,42 +23,37 @@ const VolumeChart: React.FC<VolumeChartProps> = ({ data, currency }) => {
   const lines = [
     {
       dataKey: isUSD ? "totalDjedVolumeUSD" : "totalDjedVolumeADA",
-      name: t("analytics.totalDjed"),
+      name: t("analytics.total", {analytic: "DJED"}),
       stroke: "var(--color-supportive-1-500)",
     },
     {
       dataKey: isUSD ? "totalShenVolumeUSD" : "totalShenVolumeADA",
-      name: t("analytics.totalShen"),
+      name: t("analytics.total", {analytic: "SHEN"}),
       stroke: "var(--color-supportive-5-300)",
     },
     {
-      dataKey: isUSD ? "totalVolumeUSD" : "totalVolumeADA",
-      name: t("analytics.totalVolume"),
-      stroke: "var(--color-supportive-2-500)",
-    },
-    {
       dataKey: isUSD ? "djedMintedUSD" : "djedMintedADA",
-      name: t("analytics.djedMinted"),
+      name: t("analytics.mintedToken", {token: "DJED"}),
       stroke: "var(--color-supportive-1-300)",
     },
     {
       dataKey: isUSD ? "djedBurnedUSD" : "djedBurnedADA",
-      name: t("common.burnedToken", { token: "DJED" }),
+      name: t("analytics.burnedToken", { token: "DJED" }),
       stroke: "var(--color-supportive-1-700)",
     },
     {
       dataKey: isUSD ? "shenMintedUSD" : "shenMintedADA",
-      name: t("common.mintedToken", { token: "SHEN" }),
+      name: t("analytics.mintedToken", { token: "SHEN" }),
       stroke: "var(--color-supportive-4-300)",
     },
     {
       dataKey: isUSD ? "shenBurnedUSD" : "shenBurnedADA",
-      name: t("common.burnedToken", { token: "SHEN" }),
+      name: t("analytics.burnedToken", { token: "SHEN" }),
       stroke: "var(--color-lilac-400)",
     },
     {
       dataKey: isUSD ? "totalVolumeUSD" : "totalVolumeADA",
-      name: "Total Volume",
+      name: t("analytics.total", {analytic: t("analytics.volume")}),
       stroke: "var(--color-supportive-2-500)",
     },
   ]

@@ -9,76 +9,11 @@ import { useVolumeQuery } from "@/queries/analytics/volumes/volumes.query"
 import { useDjedDexPricesQuery } from "@/queries/analytics/dexPrices/djedDexPrices.query"
 import { useShenAdaPriceQuery } from "@/queries/analytics/shenAdaPrice/shenAdaPrice.query"
 import { useReserveDetails } from "@/hooks/useReserveDetails"
-import { AppError } from "@open-djed/api/src/errors"
-import { useCallback, useEffect, useMemo, useState } from "react"
-import type { TokenMarketCap } from "../../../../db/generated/prisma/enums"
-import { capitalize } from "@/lib/utils"
-import type { Token } from "@/lib/tokens"
 import { useProtocolData } from "@/hooks/useProtocolData"
 import { Rational, shenADARate, shenUSDRate } from "@open-djed/math"
-import { env } from "@/lib/envLoader"
 import { useTranslations } from "next-intl"
-
-export type ReserveRatioChartEntry = {
-  id: number
-  timestamp: string
-  reserveRatio: number
-}
-export type DjedMChartEntry = {
-  id: number
-  timestamp: string
-  usdValue: string
-  adaValue: string
-}
-export type ShenMChartEntry = {
-  id: number
-  timestamp: string
-  usdValue: string
-  adaValue: string
-}
-
-export type TokenPriceChartEntry = {
-  id: number
-  timestamp: string
-  adaValue: number
-  usdValue: number
-  token: Exclude<Token, "DJED">
-}
-export type TokenPriceByToken = Record<
-  Exclude<Token, "DJED">,
-  TokenPriceChartEntry[]
->
-
-export type VolumeChartEntry = {
-  id: number
-  timestamp: string
-  djedMintedUSD: number
-  djedBurnedUSD: number
-  shenMintedUSD: number
-  shenBurnedUSD: number
-  djedMintedADA: number
-  djedBurnedADA: number
-  shenMintedADA: number
-  shenBurnedADA: number
-  totalDjedVolumeUSD: number
-  totalShenVolumeUSD: number
-  totalDjedVolumeADA: number
-  totalShenVolumeADA: number
-  totalVolumeUSD: number
-  totalVolumeADA: number
-}
-
-export type DjedDexPrices = {
-  id: number
-  timestamp: string
-  adaValue: number
-  usdValue: number
-  minswapUsdValue?: number
-  minswapAdaValue?: number
-  wingridersUsdValue?: number
-  wingridersAdaValue?: number
-  token: "DJED"
-}
+import type { MarketCapResponse } from "@/queries/analytics/marketCap/marketCap.schema"
+import type { MarketCapValue } from "@open-djed/api"
 
 export type CurrencyValue = "ADA" | "USD"
 export const CURRENCY_OPTIONS: Array<{ label: string; value: CurrencyValue }> =
@@ -269,7 +204,7 @@ export function useAnalyticsData() {
   useEffect(() => {
     if (reserveRatioError) {
       showToast({
-        message: "Failed to get historical reserve ratio data.",
+        message: t("analytics.errors.failedToFetch", {analytic: t("analytics.reserveRatioOverTime")}),
         type: "error",
       })
     }
@@ -278,7 +213,7 @@ export function useAnalyticsData() {
   useEffect(() => {
     if (djedMCError) {
       showToast({
-        message: "Failed to get historical market cap data.",
+        message: t("analytics.errors.failedToFetch", {analytic: t("analytics.djedMarketCap")}),
         type: "error",
       })
     }
@@ -287,7 +222,7 @@ export function useAnalyticsData() {
   useEffect(() => {
     if (shenMCError) {
       showToast({
-        message: "Failed to get historical market cap data.",
+        message: t("analytics.errors.failedToFetch", {analytic: t("analytics.shenMarketCap")}),
         type: "error",
       })
     }
@@ -296,7 +231,7 @@ export function useAnalyticsData() {
   useEffect(() => {
     if (volumesError) {
       showToast({
-        message: "Failed to get historical volume data.",
+        message: t("analytics.errors.failedToFetch", {analytic: t("analytics.volumes")}),
         type: "error",
       })
     }
@@ -305,7 +240,7 @@ export function useAnalyticsData() {
   useEffect(() => {
     if (djedDexsError) {
       showToast({
-        message: "Failed to get historical Djed Dex Prices data.",
+        message: t("analytics.errors.failedToFetch", {analytic: t("analytics.djedDexPrice")}),
         type: "error",
       })
     }
@@ -314,7 +249,7 @@ export function useAnalyticsData() {
   useEffect(() => {
     if (shenAdaError) {
       showToast({
-        message: "Failed to get historical Shen Ada Price data.",
+        message: t("analytics.errors.failedToFetch", {analytic: t("analytics.shenAdaPrice")}),
         type: "error",
       })
     }

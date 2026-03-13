@@ -20,5 +20,22 @@
     "title": "",
     "subtitle": "",
     "buttonText": ""
+  },
+  "analytics": {
+    "failedToGetHistoricalReserveRatioData": "Failed to get historical reserve ratio data.",
+    "failedToGetHistoricalMarketCapData": "Failed to get historical {token} market cap data.",
+    "failedToGetHistoricalTokenPriceData": "Failed to get historical token price data.",
+    "failedToGetHistoricalVolumeData": "Failed to get historical volume data.",
+    "failedToGetHistoricalDjedDexPrices": "Failed to get historical Djed - Dex prices.",
+    "djedDexPrices": "",
+    "marketCap": "",
+    "totalDjed": "Total DJED",
+    "totalShen": "Total SHEN",
+    "totalVolume": "Total Volume",
+    "djedMinted": ""
+  },
+  "common": {
+    "burnedToken": "{token} Burned",
+    "mintedToken": "{token} Minted"
   }
 }

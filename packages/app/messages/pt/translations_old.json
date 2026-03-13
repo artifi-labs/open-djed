@@ -20,5 +20,23 @@
     "title": "",
     "subtitle": "",
     "buttonText": ""
+  },
+  "analytics": {
+    "failedToGetHistoricalReserveRatioData": "",
+    "failedToGetHistoricalMarketCapData": "",
+    "failedToGetHistoricalTokenPriceData": "",
+    "failedToGetHistoricalVolumeData": "",
+    "failedToGetHistoricalDjedDexPrices": "",
+    "djedDexPrices": "",
+    "marketCap": "",
+    "reserveRatio": "",
+    "totalDjed": "",
+    "totalShen": "",
+    "totalVolume": "",
+    "djedMinted": ""
+  },
+  "common": {
+    "burnedToken": "",
+    "mintedToken": ""
   }
 }

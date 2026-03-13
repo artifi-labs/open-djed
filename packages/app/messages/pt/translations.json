@@ -9,14 +9,13 @@
     "volumes": "",
     "shenAdaPrice": "",
     "djedDexPrice": "",
-    "totalDjed": "",
-    "totalShen": "",
-    "totalVolume": "",
-    "failedToGetHistoricalReserveRatioData": "",
-    "failedToGetHistoricalMarketCapData": "",
-    "failedToGetHistoricalTokenPriceData": "",
-    "failedToGetHistoricalVolumeData": "",
-    "failedToGetHistoricalDjedDexPrices": "",
+    "total": "",
+    "volume": "",
+    "mintedToken": "",
+    "burnedToken": "",
+    "errors": {
+      "failedToFetch": ""
+    },
     "currentRatio": "",
     "reserve": {
       "warning": {
@@ -40,8 +39,6 @@
   "common": {
     "illustration": "",
     "currencyValue": "",
-    "mintedToken": "",
-    "burnedToken": "",
     "below": "",
     "above": "",
     "minimum": "",
