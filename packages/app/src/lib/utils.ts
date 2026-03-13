@@ -320,9 +320,9 @@ export const toISODate = (date: Date) => {
  * @returns The formatted label, or "Select" for empty/invalid dates
  */
 export const formatDateLabel = (value?: string) => {
-  if (!value) return "Select"
+  if (!value) return null
   const date = new Date(value)
-  if (Number.isNaN(date.getTime())) return "Select"
+  if (Number.isNaN(date.getTime())) return null
   const day = `${date.getDate()}`.padStart(2, "0")
   const month = date.toLocaleString("en-US", { month: "short" })
   const year = date.getFullYear()

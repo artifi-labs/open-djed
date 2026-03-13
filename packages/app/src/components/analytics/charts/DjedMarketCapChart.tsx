@@ -3,6 +3,7 @@ import { type Currency } from "../useAnalyticsData"
 import { Legend } from "recharts"
 import { ChartLegend } from "@/components/charts/legend/ChartLegend"
 import { formatAxisValue } from "@/lib/utils"
+import { useTranslations } from "next-intl"
 import type { MarketCapResponse } from "@/queries/analytics/marketCap/marketCap.schema"
 
 type DjedMarketCapChartProps = {
@@ -15,6 +16,7 @@ export const DjedMarketCapChart: React.FC<DjedMarketCapChartProps> = ({
   data,
   currency,
 }) => {
+  const t = useTranslations()
   const valueKey = currency.value === "USD" ? "usdValue" : "adaValue"
 
   const yTickFormatter = (value: number | string) =>
@@ -25,7 +27,10 @@ export const DjedMarketCapChart: React.FC<DjedMarketCapChartProps> = ({
   const lines = [
     {
       dataKey: valueKey,
-      name: currency.value === "USD" ? "USD Value" : "ADA Value",
+      name:
+        currency.value === "USD"
+          ? t("common.currencyValue", { currency: "USD" })
+          : t("common.currencyValue", { currency: "ADA" }),
       stroke:
         currency.value === "USD"
           ? "var(--color-supportive-1-500)"

@@ -8,6 +8,7 @@ import InputAction from "./InputAction"
 import type { Token } from "@/lib/tokens"
 import { useReserveDetails } from "@/hooks/useReserveDetails"
 import { type InputStatus } from "../input-fields/TransactionInput"
+import { useTranslations } from "next-intl"
 
 export type ActionProps = {
   actionType: ActionType
@@ -67,6 +68,7 @@ const Action: React.FC<ActionProps> = ({
   minWarningMessage,
   minMessage,
 }) => {
+  const t = useTranslations()
   const { reserveBounds } = useReserveDetails()
 
   const actionText = capitalize(actionType)
@@ -90,17 +92,20 @@ const Action: React.FC<ActionProps> = ({
       (hasWalletConnected && (payEmpty || receiveEmpty)) || disabledDueToReserve
 
     const text = !hasWalletConnected
-      ? `Connect Wallet to ${actionText}`
+      ? t("dashboard.actionButton.wallet", { action: actionText })
       : payEmpty || receiveEmpty
-        ? `Fill in the Amount to ${actionText}`
-        : `${actionText} ${minMessage}`
+        ? t("dashboard.actionButton.fillAmount", { action: actionText })
+        : t("dashboard.actionButton.minAction", {
+            action: actionText,
+            minMessage: minMessage ?? "",
+          })
     return { isDisabled, text }
   }, [hasWalletConnected, actionType, payValues, receiveValues])
 
   const inputs = [
     {
       key: "pay",
-      label: "You Pay",
+      label: t("dashboard.youPay"),
       coins: config.pay,
       hasLeadingIcon: !bothSelected && config.payHasLeadingIcon,
       showDual: config.payShowDual && bothSelected,
@@ -120,7 +125,7 @@ const Action: React.FC<ActionProps> = ({
     },
     {
       key: "receive",
-      label: "You Receive",
+      label: t("dashboard.youReceive"),
       coins: config.receive,
       hasLeadingIcon: !bothSelected && config.receiveHasLeadingIcon,
       showDual: config.receiveShowDual && bothSelected,

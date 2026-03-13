@@ -8,8 +8,10 @@ import Button from "@/components/Button"
 import ReserveDetails from "@/components/dashboard/ReserveDetails"
 import Modal from "@/components/modals/Modal"
 import OpenDjedContent from "@/components/OpenDjedContent"
+import { useTranslations } from "next-intl"
 
 const Dashboard = () => {
+  const t = useTranslations()
   const action: ReturnType<typeof useMintBurnAction> = useMintBurnAction("Mint")
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -25,7 +27,7 @@ const Dashboard = () => {
           <Button
             variant="text"
             size="medium"
-            text="What is Open DJED?"
+            text={t("dashboard.whatIsOpenDjed.title")}
             onClick={() => setIsModalOpen(true)}
           />
         </div>
@@ -33,7 +35,7 @@ const Dashboard = () => {
 
       {/* Modal */}
       <Modal
-        title="What is Open DJED?"
+        title={t("dashboard.whatIsOpenDjed.title")}
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         className="desktop:p-42 p-32"

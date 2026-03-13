@@ -15,6 +15,7 @@ import {
   TWITTER_URL,
   WEBSITE_URL,
 } from "@/lib/constants"
+import { useTranslations } from "next-intl"
 
 type FooterItem = {
   label: string
@@ -69,15 +70,16 @@ const SocialIcons: React.FC<SocialIconProps> = ({ items }) => {
 }
 
 const Footer = () => {
+  const t = useTranslations()
   const { isMobile, isDesktop } = useViewport()
 
   const footerItems: FooterItem[] = [
     {
-      label: "Privacy Policy",
+      label: t("components.footer.privacyPolicy.text"),
       href: "/privacy",
     },
     {
-      label: "Terms & Conditions",
+      label: t("components.footer.terms.text"),
       href: "/terms",
     },
     {
@@ -139,7 +141,11 @@ const Footer = () => {
 
         <div className="flex flex-row justify-start gap-4">
           <Icon name="Legal" size={16} />
-          <p className="text-xs">2026 Artifi. All rights are reserved</p>
+          <p className="text-xs">
+            {t("components.footer.allRights", {
+              year: new Date().getFullYear(),
+            })}
+          </p>
         </div>
       </footer>
     )
@@ -171,7 +177,9 @@ const Footer = () => {
           <div className="flex flex-row justify-center gap-4">
             <Icon name="Legal" size={16} />
             <p className="text-xs font-medium">
-              2026 Artifi. All rights are reserved
+              {t("components.footer.allRights", {
+                year: new Date().getFullYear(),
+              })}
             </p>
           </div>
         </div>

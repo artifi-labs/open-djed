@@ -1,0 +1,428 @@
+{
+  "analytics": {
+    "pageTitle": "",
+    "analyticsOverview": "",
+    "description": "",
+    "reserveRatioOverTime": "",
+    "djedMarketCap": "",
+    "shenMarketCap": "",
+    "volumes": "",
+    "shenAdaPrice": "",
+    "djedDexPrice": "",
+    "total": "",
+    "volume": "",
+    "mintedToken": "",
+    "burnedToken": "",
+    "errors": {
+      "failedToFetch": ""
+    },
+    "currentRatio": "",
+    "reserve": {
+      "warning": {
+        "below": "",
+        "above": ""
+      }
+    }
+  },
+  "keywords": {
+    "opensource": "Open Source",
+    "software": "Software",
+    "development": "Desenvolvimento",
+    "defi_full": "Finança Descentralizada",
+    "software_dev": "Desenvolvimento de Software"
+  },
+  "metadata": {
+    "layout": {
+      "description": ""
+    }
+  },
+  "common": {
+    "illustration": "",
+    "currencyValue": "",
+    "below": "",
+    "above": "",
+    "minimum": "",
+    "maximum": "",
+    "available": "",
+    "half": "",
+    "max": "",
+    "mintAndBurnNow": "",
+    "months": {
+      "march": "",
+      "may": "",
+      "january": "",
+      "february": "",
+      "april": "",
+      "june": "",
+      "july": "",
+      "august": "",
+      "september": "",
+      "october": "",
+      "november": "",
+      "december": ""
+    },
+    "select": "",
+    "fees": "",
+    "rewards": "",
+    "copiedAddress": "",
+    "copyAddress": "",
+    "weekDays": {
+      "monday": "",
+      "tuesday": "",
+      "wednesday": "",
+      "thursday": "",
+      "friday": "",
+      "saturday": "",
+      "sunday": ""
+    },
+    "periodItems": {
+      "today": "",
+      "thisWeek": "",
+      "lastWeek": "",
+      "thisMonth": "",
+      "lastMonth": "",
+      "thisQuarter": "",
+      "thisYear": ""
+    },
+    "period": {
+      "day": "",
+      "week": "",
+      "month": "",
+      "year": "",
+      "all": ""
+    }
+  },
+  "orders": {
+    "pageTitle": "",
+    "noOrders": "",
+    "noWalletDescription": "",
+    "cancel": "",
+    "confirmCancellation": "",
+    "cancellationDescription": "",
+    "cancelOrder": "",
+    "dismiss": "",
+    "orderCanceled": "",
+    "table": {
+      "header": {
+        "type": "",
+        "date": "",
+        "paid": "",
+        "received": "",
+        "status": "",
+        "token": "",
+        "orders": ""
+      },
+      "filters": {
+        "clearAll": ""
+      }
+    },
+    "viewTransaction": "",
+    "noOrdersMatchFilters": "",
+    "noOrdersToDisplay": "",
+    "tryAdjustingFilters": "",
+    "ordersWillAppear": "",
+    "estimatedExecutionFee": "",
+    "executedFee": "",
+    "title": "",
+    "allOrders": "",
+    "noOrdersDescription": "",
+    "status": {
+      "created": "",
+      "completed": "",
+      "cancelled": ""
+    }
+  },
+  "dashboard": {
+    "pageTitle": "olllaaa",
+    "actionButton": {
+      "wallet": "",
+      "fillAmount": "",
+      "minAction": ""
+    },
+    "youPay": "ddd",
+    "youReceive": "",
+    "action": {
+      "Mint": {
+        "description": ""
+      },
+      "Burn": {
+        "description": "OLA"
+      }
+    },
+    "whatIsOpenDjed": {
+      "title": "",
+      "whyOpenDjed": {
+        "items": {
+          "protocolCompatible": "",
+          "openSource": "",
+          "communityFirst": "",
+          "reliable": "",
+          "globalAccess": "",
+          "transparentFees": ""
+        },
+        "title": ""
+      },
+      "description": ""
+    },
+    "reserveDetails": {
+      "currentRatio": "",
+      "minRatio": "",
+      "maxRatio": "",
+      "reserveValue": ""
+    },
+    "transactionSummary": {
+      "title": "",
+      "description": ""
+    },
+    "baseCost": "",
+    "mintFee": "",
+    "operatorFee": "",
+    "totalCost": "",
+    "refundableDeposit": "",
+    "price": ""
+  },
+  "privacyPolicy": {
+    "pageTitle": "",
+    "title": "",
+    "effectiveDate": "",
+    "intro": "",
+    "sections": {
+      "dataCollection": "",
+      "wallets": "",
+      "analytics": "",
+      "openSource": "",
+      "authentication": "",
+      "policy": "",
+      "contact": ""
+    },
+    "paragraphs": {
+      "dataCollection": "",
+      "wallet": "",
+      "analytics1": "",
+      "analytics2": "",
+      "analytics3": "",
+      "openSource": "",
+      "sourceCode": "",
+      "authentication": "",
+      "policy": "",
+      "contact": ""
+    }
+  },
+  "simulator": {
+    "pageTitle": "",
+    "usdAmount": {
+      "label": "",
+      "tooltip": ""
+    },
+    "buyDate": {
+      "label": "",
+      "tooltip": ""
+    },
+    "sellDate": {
+      "label": "",
+      "tooltip": ""
+    },
+    "buyAdaPrice": {
+      "label": "",
+      "tooltip": ""
+    },
+    "sellAdaPrice": {
+      "label": "",
+      "tooltip": ""
+    },
+    "scenario": "",
+    "results": {
+      "title": "",
+      "description": "",
+      "comparison": {
+        "title": "",
+        "description": ""
+      },
+      "fees": {
+        "simplified": {
+          "tooltip": ""
+        },
+        "detailed": {
+          "tooltip": ""
+        },
+        "buyFee": {
+          "label": "",
+          "tooltip": ""
+        },
+        "sellFee": {
+          "label": "",
+          "tooltip": ""
+        },
+        "totalFee": {
+          "label": "",
+          "tooltip": ""
+        },
+        "stakingRewards": {
+          "label": "",
+          "tooltip": ""
+        },
+        "earnedFee": {
+          "label": "",
+          "tooltip": ""
+        },
+        "totalRewards": {
+          "label": "",
+          "tooltip": ""
+        }
+      },
+      "rewards": {
+        "simplified": {
+          "tooltip": ""
+        },
+        "detailed": {
+          "tooltip": ""
+        }
+      },
+      "chart": {
+        "profitOverTime": {
+          "title": ""
+        }
+      },
+      "shen": {
+        "label": "",
+        "tooltip": ""
+      },
+      "ada": {
+        "label": "",
+        "tooltip": ""
+      }
+    },
+    "title": "",
+    "description": "",
+    "whatIsSimulator": {
+      "title": "",
+      "description": "",
+      "disclaimer": "",
+      "items": {
+        "fees": "",
+        "rewards": "",
+        "feesEarned": "",
+        "profitOrLoss": "",
+        "totalEstimatedPNL": ""
+      }
+    }
+  },
+  "termsOfService": {
+    "pageTitle": "",
+    "title": "",
+    "effectiveDate": "",
+    "welcome": "",
+    "sections": {
+      "description": {
+        "title": "",
+        "content": ""
+      },
+      "use": {
+        "title": "",
+        "content": ""
+      },
+      "license": {
+        "title": "",
+        "part1": "",
+        "linkText": "",
+        "part2": "",
+        "part3": ""
+      },
+      "wallet": {
+        "title": "",
+        "content": ""
+      },
+      "disclaimers": {
+        "title": "",
+        "item1": "",
+        "item2": "",
+        "item3": ""
+      },
+      "changes": {
+        "title": "",
+        "content": ""
+      },
+      "contact": {
+        "title": "",
+        "content": ""
+      }
+    }
+  },
+  "reserve": {
+    "reserveRatio": "",
+    "warning": {
+      "below": "",
+      "above": ""
+    }
+  },
+  "action": {
+    "mint": "",
+    "burn": ""
+  },
+  "components": {
+    "footer": {
+      "privacyPolicy": {
+        "text": ""
+      },
+      "terms": {
+        "text": ""
+      },
+      "allRights": ""
+    }
+  },
+  "navbar": {
+    "dashboard": {
+      "title": ""
+    },
+    "analytics": {
+      "title": ""
+    },
+    "simulator": {
+      "title": ""
+    },
+    "orders": {
+      "title": ""
+    },
+    "wallet": {
+      "connect": "",
+      "loading": ""
+    }
+  },
+  "wallet": {
+    "connectWallet": "",
+    "connectWalletDisclaimer": "",
+    "orders": {
+      "cancel": "",
+      "paid": "",
+      "received": ""
+    },
+    "title": "",
+    "noWalletsDetected": "",
+    "incorrectNetwork": "",
+    "connected": "",
+    "connectionFailed": "",
+    "disconnected": ""
+  },
+  "settings": {
+    "title": "",
+    "language": {
+      "title": ""
+    },
+    "network": {
+      "title": ""
+    }
+  },
+  "errors": {
+    "404": {
+      "pageTitle": "",
+      "title": "",
+      "content": {
+        "content1": "",
+        "content2": ""
+      },
+      "button": {
+        "text": ""
+      }
+    }
+  }
+}

@@ -11,6 +11,7 @@ import { useShenAdaPriceQuery } from "@/queries/analytics/shenAdaPrice/shenAdaPr
 import { useReserveDetails } from "@/hooks/useReserveDetails"
 import { useProtocolData } from "@/hooks/useProtocolData"
 import { Rational, shenADARate, shenUSDRate } from "@open-djed/math"
+import { useTranslations } from "next-intl"
 import type { MarketCapResponse } from "@/queries/analytics/marketCap/marketCap.schema"
 import type { MarketCapValue } from "@open-djed/api"
 
@@ -23,28 +24,15 @@ export const CURRENCY_OPTIONS: Array<{ label: string; value: CurrencyValue }> =
 export type Currency = (typeof CURRENCY_OPTIONS)[number]
 
 export type ChartPeriodValue = "W" | "M" | "Y" | "All"
-export const CHART_PERIOD_OPTIONS: Array<{
-  label: string
-  value: ChartPeriodValue
-}> = [
-  {
-    label: "This Week",
-    value: "W",
-  },
-  {
-    label: "This Month",
-    value: "M",
-  },
-  {
-    label: "This Year",
-    value: "Y",
-  },
-  {
-    label: "All Time",
-    value: "All",
-  },
-]
-export type ChartPeriod = (typeof CHART_PERIOD_OPTIONS)[number]
+export const CHART_PERIOD_OPTIONS = [
+  { labelKey: "common.period.week", value: "W" },
+  { labelKey: "common.period.month", value: "M" },
+  { labelKey: "common.period.year", value: "Y" },
+  { labelKey: "common.period.all", value: "All" },
+] as const
+export type ChartPeriod = (typeof CHART_PERIOD_OPTIONS)[number] & {
+  label?: string
+}
 
 function formatMarketCapData(
   rawData: MarketCapResponse,
@@ -71,43 +59,51 @@ function formatMarketCapData(
 }
 
 export function useAnalyticsData() {
+  const t = useTranslations()
   const { showToast } = useToast()
   const { NETWORK } = env
   const { reserveRatio } = useReserveDetails()
   const { data, isLoading } = useProtocolData()
 
+  const translatedPeriodOptions = useMemo(() => {
+    return CHART_PERIOD_OPTIONS.map((option) => ({
+      ...option,
+      label: t(option.labelKey),
+    }))
+  }, [t])
+
   const [reserveRatioPeriod, setReserveRatioPeriod] = useState<ChartPeriod>(
-    CHART_PERIOD_OPTIONS[0],
+    translatedPeriodOptions[0],
   )
   const [djedMCPeriod, setDjedMCPeriod] = useState<ChartPeriod>(
-    CHART_PERIOD_OPTIONS[0],
+    translatedPeriodOptions[0],
   )
   const [djedMCCurrency, setDjedMCCurrency] = useState<Currency>(
     CURRENCY_OPTIONS[0],
   )
   const [shenMCPeriod, setShenMCPeriod] = useState<ChartPeriod>(
-    CHART_PERIOD_OPTIONS[0],
+    translatedPeriodOptions[0],
   )
   const [shenMCCurrency, setShenMCCurrency] = useState<Currency>(
     CURRENCY_OPTIONS[0],
   )
 
   const [shenAdaPricePeriod, setShenAdaPricePeriod] = useState<ChartPeriod>(
-    CHART_PERIOD_OPTIONS[1],
+    translatedPeriodOptions[1],
   )
   const [shenAdaCurrency, setShenAdaCurrency] = useState<Currency>(
     CURRENCY_OPTIONS[0],
   )
 
   const [volumesPeriod, setVolumesPeriod] = useState<ChartPeriod>(
-    CHART_PERIOD_OPTIONS[0],
+    translatedPeriodOptions[0],
   )
   const [volumesCurrency, setVolumesCurrency] = useState<Currency>(
     CURRENCY_OPTIONS[0],
   )
 
   const [djedDexPeriod, setDjedDexPeriod] = useState<ChartPeriod>(
-    CHART_PERIOD_OPTIONS[1],
+    translatedPeriodOptions[1],
   )
   const [djedDexCurrency, setDjedDexCurrency] = useState<Currency>(
     CURRENCY_OPTIONS[NETWORK === "Mainnet" ? 0 : 1],
@@ -208,7 +204,9 @@ export function useAnalyticsData() {
   useEffect(() => {
     if (reserveRatioError) {
       showToast({
-        message: "Failed to get historical reserve ratio data.",
+        message: t("analytics.errors.failedToFetch", {
+          analytic: t("analytics.reserveRatioOverTime"),
+        }),
         type: "error",
       })
     }
@@ -217,7 +215,9 @@ export function useAnalyticsData() {
   useEffect(() => {
     if (djedMCError) {
       showToast({
-        message: "Failed to get historical market cap data.",
+        message: t("analytics.errors.failedToFetch", {
+          analytic: t("analytics.djedMarketCap"),
+        }),
         type: "error",
       })
     }
@@ -226,7 +226,9 @@ export function useAnalyticsData() {
   useEffect(() => {
     if (shenMCError) {
       showToast({
-        message: "Failed to get historical market cap data.",
+        message: t("analytics.errors.failedToFetch", {
+          analytic: t("analytics.shenMarketCap"),
+        }),
         type: "error",
       })
     }
@@ -235,7 +237,9 @@ export function useAnalyticsData() {
   useEffect(() => {
     if (volumesError) {
       showToast({
-        message: "Failed to get historical volume data.",
+        message: t("analytics.errors.failedToFetch", {
+          analytic: t("analytics.volumes"),
+        }),
         type: "error",
       })
     }
@@ -244,7 +248,9 @@ export function useAnalyticsData() {
   useEffect(() => {
     if (djedDexsError) {
       showToast({
-        message: "Failed to get historical Djed Dex Prices data.",
+        message: t("analytics.errors.failedToFetch", {
+          analytic: t("analytics.djedDexPrice"),
+        }),
         type: "error",
       })
     }
@@ -253,7 +259,9 @@ export function useAnalyticsData() {
   useEffect(() => {
     if (shenAdaError) {
       showToast({
-        message: "Failed to get historical Shen Ada Price data.",
+        message: t("analytics.errors.failedToFetch", {
+          analytic: t("analytics.shenAdaPrice"),
+        }),
         type: "error",
       })
     }
@@ -288,5 +296,6 @@ export function useAnalyticsData() {
     djedDexPeriod,
     setDjedDexCurrency,
     setDjedDexPeriod,
+    translatedPeriodOptions,
   }
 }

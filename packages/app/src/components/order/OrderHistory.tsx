@@ -21,6 +21,8 @@ import { useViewport } from "@/hooks/useViewport"
 import Asset from "../Asset"
 import { CARDANOSCAN_BASE_URL, ORDERS_PER_PAGE } from "@/lib/constants"
 import type { Order } from "@open-djed/api"
+import { useTranslations } from "next-intl"
+import { capitalize } from "@/lib/utils"
 
 interface RowItem {
   columns: { content: React.ReactNode }[]
@@ -39,33 +41,31 @@ interface OrderHistoryProps {
   totalPages?: number
 }
 
-const headersDesktop: HeaderItem[] = [
-  { column: "Token", columnKey: "token", size: "medium", sortable: true },
-  { column: "Type", columnKey: "type", size: "medium", sortable: true },
-  { column: "Date", columnKey: "date", size: "medium", sortable: true },
-  { column: "Paid", columnKey: "paid", size: "medium" },
-  { column: "Received", columnKey: "received", size: "medium" },
-  { column: "Status", columnKey: "status", size: "medium" },
-  {
-    column: undefined,
-    columnKey: "actions",
-    size: "small",
-  },
-]
-
-const headersMobile: HeaderItem[] = [
-  { column: "Orders", columnKey: "orders", size: "auto", sortable: false },
-]
-
 export const STATUS_CONFIG: Record<
   OrderStatus,
-  { type: "success" | "warning" | "error" | "surface"; text: string }
+  {
+    type: "success" | "warning" | "error" | "surface"
+    text: string
+    i18nKey: string
+  }
 > = {
   // Processing: { type: "surface", text: "Processing" },
-  Created: { type: "surface", text: "Created" },
-  Completed: { type: "success", text: "Completed" },
+  Created: {
+    type: "surface",
+    text: "Created",
+    i18nKey: "orders.status.created",
+  },
+  Completed: {
+    type: "success",
+    text: "Completed",
+    i18nKey: "orders.status.completed",
+  },
   // Cancelling: { type: "warning", text: "Cancelling" },
-  Canceled: { type: "surface", text: "Canceled" },
+  Canceled: {
+    type: "surface",
+    text: "Canceled",
+    i18nKey: "orders.status.canceled",
+  },
   // Failed: { type: "error", text: "Failed" },
   // Expired: { type: "error", text: "Expired" },
 }
@@ -190,6 +190,8 @@ const ValueCell = ({
 }
 
 const StatusCell = ({ status }: { status?: string | null }) => {
+  const t = useTranslations()
+
   if (!status) return <span>-</span>
 
   const config = STATUS_CONFIG[status as OrderStatus]
@@ -202,7 +204,7 @@ const StatusCell = ({ status }: { status?: string | null }) => {
         type={config.type}
         role="Secondary"
         size="small"
-        text={config.text}
+        text={t(config.i18nKey)}
       />
     </div>
   )
@@ -217,6 +219,7 @@ const ExternalCell = ({
   status?: string
   outIndex: number
 }) => {
+  const t = useTranslations()
   const [isDialogOpen, setIsDialogOpen] = React.useState(false)
   const [showSnackbar, setShowSnackbar] = React.useState(false)
   const { handleCancelOrder } = useOrders()
@@ -239,7 +242,7 @@ const ExternalCell = ({
       {showCancel && (
         <>
           <Button
-            text="Cancel"
+            text={t("orders.cancel")}
             variant="secondary"
             size="small"
             onClick={() => setIsDialogOpen(true)}
@@ -247,16 +250,16 @@ const ExternalCell = ({
 
           {isDialogOpen && (
             <Dialog
-              title="Confirm Cancellation"
-              description="You’re about to cancel your order. Once canceled, the order will be removed and no longer processed."
+              title={t("orders.confirmCancellation")}
+              description={t("orders.cancellationDescription")}
               type="Info"
               hasActions
               hasIcon
               hasPrimaryButton
               primaryButtonVariant="destructive"
-              primaryButtonLabel="Cancel Order"
+              primaryButtonLabel={t("orders.cancelOrder")}
               hasSecondaryButton
-              secondaryButtonLabel="Dismiss"
+              secondaryButtonLabel={t("orders.dismiss")}
               hasSkrim={true}
               onSecondaryButtonClick={handleCloseDialog}
               onPrimaryButtonClick={() => {
@@ -277,7 +280,7 @@ const ExternalCell = ({
       {showSnackbar && (
         <div className="fixed right-24 bottom-24 z-50">
           <Snackbar
-            text="Your order has been canceled."
+            text={t("orders.orderCanceled")}
             type="success"
             closeIcon={true}
             leadingIcon="Checkmark"
@@ -291,6 +294,7 @@ const ExternalCell = ({
 }
 
 const MobileCell = ({ order }: { order: Order }) => {
+  const t = useTranslations()
   const { handleCancelOrder, formatDate } = useOrders()
 
   const [isDialogOpen, setIsDialogOpen] = React.useState(false)
@@ -310,42 +314,52 @@ const MobileCell = ({ order }: { order: Order }) => {
         </div>
         <div className="flex w-full flex-col gap-8">
           <div className="flex w-full flex-row items-center justify-between">
-            <span className="text-tertiary text-xxs">Type</span>
+            <span className="text-tertiary text-xxs">
+              {capitalize(t("orders.table.header.type"))}
+            </span>
             <span className="text-xs">{order.action}</span>
           </div>
           <div className="flex w-full flex-row items-center justify-between">
-            <span className="text-tertiary text-xxs">Date</span>
+            <span className="text-tertiary text-xxs">
+              {capitalize(t("orders.table.header.date"))}
+            </span>
             <span className="text-xs">
               {formatDate(BigInt(new Date(order.orderDate).getTime()))}
             </span>
           </div>
           <div className="flex w-full flex-row items-center justify-between">
-            <span className="text-tertiary text-xxs">Paid</span>
+            <span className="text-tertiary text-xxs">
+              {capitalize(t("orders.table.header.paid"))}
+            </span>
             <div className="flex items-center gap-2">
               <span>{formatAda(order.paid)}</span>
               <span>{showAdaPaid ? "ADA" : order.token}</span>
             </div>
           </div>
           <div className="flex w-full flex-row items-center justify-between">
-            <span className="text-tertiary text-xxs">Received</span>
+            <span className="text-tertiary text-xxs">
+              {capitalize(t("orders.table.header.received"))}
+            </span>
             <div className="flex items-center gap-2">
               <span>{formatAda(order.received)}</span>
               <span>{showAdaReceived ? "ADA" : order.token}</span>
             </div>
           </div>
           <div className="flex w-full flex-row items-center justify-between">
-            <span className="text-tertiary text-xxs">Status</span>
+            <span className="text-tertiary text-xxs">
+              {capitalize(t("orders.table.header.status"))}
+            </span>
             <Tag
               type={statusConfig.type}
               role="Secondary"
               size="small"
-              text={statusConfig.text}
+              text={t(statusConfig.i18nKey)}
             />
           </div>
           {showCancel ? (
             <div className="grid grid-cols-2 gap-8">
               <Button
-                text="Cancel"
+                text={t("orders.cancel")}
                 variant="secondary"
                 size="small"
                 onClick={() => setIsDialogOpen(true)}
@@ -355,7 +369,7 @@ const MobileCell = ({ order }: { order: Order }) => {
                 target="_blank"
               >
                 <Button
-                  text="View Transaction"
+                  text={t("orders.viewTransaction")}
                   variant="secondary"
                   size="small"
                   className="w-full"
@@ -368,7 +382,7 @@ const MobileCell = ({ order }: { order: Order }) => {
               target="_blank"
             >
               <Button
-                text="View Transaction"
+                text={t("orders.viewTransaction")}
                 variant="secondary"
                 size="small"
                 className="w-full"
@@ -379,16 +393,16 @@ const MobileCell = ({ order }: { order: Order }) => {
       </div>
       {isDialogOpen && (
         <Dialog
-          title="Confirm Cancellation"
-          description="You’re about to cancel your order. Once canceled, the order will be removed and no longer processed."
+          title={t("orders.confirmCancellation")}
+          description={t("orders.cancellationDescription")}
           type="Info"
           hasActions
           hasIcon
           hasPrimaryButton
           primaryButtonVariant="destructive"
-          primaryButtonLabel="Cancel Order"
+          primaryButtonLabel={t("orders.cancelOrder")}
           hasSecondaryButton
-          secondaryButtonLabel="Dismiss"
+          secondaryButtonLabel={t("orders.dismiss")}
           hasSkrim={true}
           onSecondaryButtonClick={() => setIsDialogOpen(false)}
           onPrimaryButtonClick={() => {
@@ -413,7 +427,9 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({
   serverSidePagination = false,
   totalPages = 0,
 }) => {
+  const t = useTranslations()
   const { isMobile } = useViewport()
+
   const rowsDesktop: RowItem[] = useMemo(() => {
     if (!data.length || isMobile) return []
     return data.map((order) => ({
@@ -421,7 +437,11 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({
       raw: order,
       columns: [
         { content: <TokenCell token={order.token} /> },
-        { content: <TypeCell action={order.action} /> },
+        {
+          content: (
+            <TypeCell action={t(`action.${order.action.toLowerCase()}`)} />
+          ),
+        },
         { content: <DateCell date={order.orderDate} /> },
         {
           content: (
@@ -443,7 +463,13 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({
             />
           ),
         },
-        { content: <StatusCell status={order.status} /> },
+        {
+          content: (
+            <StatusCell
+              status={t(`orders.status.${order.status?.toLowerCase()}`)}
+            />
+          ),
+        },
         {
           content: (
             <ExternalCell
@@ -466,6 +492,56 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({
     }))
   }, [data, isMobile])
 
+  const headersDesktop: HeaderItem[] = [
+    {
+      column: t("orders.table.header.token"),
+      columnKey: "token",
+      size: "medium",
+      sortable: true,
+    },
+    {
+      column: t("orders.table.header.type"),
+      columnKey: "type",
+      size: "medium",
+      sortable: true,
+    },
+    {
+      column: t("orders.table.header.date"),
+      columnKey: "date",
+      size: "medium",
+      sortable: true,
+    },
+    {
+      column: t("orders.table.header.paid"),
+      columnKey: "paid",
+      size: "medium",
+    },
+    {
+      column: t("orders.table.header.received"),
+      columnKey: "received",
+      size: "medium",
+    },
+    {
+      column: t("orders.table.header.status"),
+      columnKey: "status",
+      size: "medium",
+    },
+    {
+      column: undefined,
+      columnKey: "actions",
+      size: "small",
+    },
+  ]
+
+  const headersMobile: HeaderItem[] = [
+    {
+      column: t("orders.table.header.orders"),
+      columnKey: "orders",
+      size: "auto",
+      sortable: false,
+    },
+  ]
+
   if (!data.length) {
     return (
       <BaseCard
@@ -477,27 +553,31 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({
           <div className="flex flex-col gap-6">
             <p className="text-lg font-semibold">
               {filters
-                ? "No orders match your filters"
-                : "No orders to display yet"}
+                ? t("orders.noOrdersMatchFilters")
+                : t("orders.noOrdersToDisplay")}
             </p>
 
             <p className="text-sm">
               {filters
-                ? "Try adjusting or clearing your filters to see more results"
-                : "Orders will appear here after your first trade"}
+                ? t("orders.tryAdjustingFilters")
+                : t("orders.ordersWillAppear")}
             </p>
           </div>
 
           {filters ? (
             <Button
-              text="Clear all filters"
+              text={t("orders.table.filters.clearAll")}
               variant="secondary"
               size="small"
               onClick={handleClearFilters}
             />
           ) : (
             <Link href={"/"}>
-              <Button text="Mint & Burn Now" variant="accent" size="small" />
+              <Button
+                text={t("common.mintAndBurnNow")}
+                variant="accent"
+                size="small"
+              />
             </Link>
           )}
         </div>

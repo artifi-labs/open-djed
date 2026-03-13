@@ -7,6 +7,7 @@ import {
   ReferenceArea,
 } from "recharts"
 import React from "react"
+import { useTranslations } from "next-intl"
 import type { ReserveRatioResponse } from "@/queries/analytics/reserveRatio/reserveRatio.schema"
 
 type ReserveRatioOverTimeChartProps = {
@@ -16,6 +17,7 @@ type ReserveRatioOverTimeChartProps = {
 export const ReserveRatioOverTimeChart: React.FC<
   ReserveRatioOverTimeChartProps
 > = ({ data }) => {
+  const t = useTranslations()
   // Handle case where data is undefined or empty
   if (!data?.length) {
     data = []
@@ -69,7 +71,7 @@ export const ReserveRatioOverTimeChart: React.FC<
   const lines = [
     {
       dataKey: "reserveRatio",
-      name: "Reserve Ratio",
+      name: t("reserve.reserveRatio"),
     },
   ]
 
