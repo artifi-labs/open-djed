@@ -50,6 +50,7 @@ import {
   getPeriodAdaShenPrices,
   getPeriodMarketCap,
   getPeriodPricesForAllTokens,
+  getSumStakingRewardsRate,
   getPeriodReserveRatio,
   getPeriodVolume,
 } from "@open-djed/db"
@@ -352,6 +353,11 @@ const periodSchema = z
   .enum(["D", "W", "M", "Y", "All", "d", "w", "m", "y", "all"])
   .openapi({ example: "D" })
 export type PeriodType = z.infer<typeof periodSchema>
+
+const StakingRewardsSchema = z.object({
+  startDate: z.string().date(),
+  endDate: z.string().date(),
+})
 
 const app = new Hono()
   .basePath("/api")
@@ -871,6 +877,70 @@ const app = new Hono()
       }),
     ),
     historicalDataHandler(getPeriodVolume),
+  )
+  .get(
+    "/historical-staking-rewards",
+    cacheMiddleware,
+    describeRoute({
+      description: "Get historical staking rewards rate sum for a date range",
+      tags: ["Action"],
+      responses: {
+        200: {
+          description:
+            "Successfully got the historical staking rewards rate sum",
+          content: {
+            "text/plain": {
+              example: "Historical staking rewards rate sum",
+            },
+          },
+        },
+        400: {
+          description: "Bad Request",
+          content: {
+            "text/plain": {
+              example: "Bad Request",
+            },
+          },
+        },
+        500: {
+          description: "Internal Server Error",
+          content: {
+            "text/plain": {
+              example: "Internal Server Error",
+            },
+          },
+        },
+      },
+    }),
+    zValidator("query", StakingRewardsSchema),
+    async (c) => {
+      const { startDate, endDate } = c.req.valid("query")
+      const parsedStartDate = new Date(`${startDate}T00:00:00.000Z`)
+      const parsedEndDate = new Date(`${endDate}T00:00:00.000Z`)
+
+      const cacheKey = `historicalStakingRewards:${startDate}:${endDate}`
+      const cached = chainDataCache.get<number>(cacheKey)
+      if (cached !== undefined) return c.json(cached)
+
+      try {
+        const sumRates = await getSumStakingRewardsRate(
+          parsedStartDate,
+          parsedEndDate,
+        )
+        chainDataCache.set(cacheKey, sumRates)
+        return c.json(sumRates)
+      } catch (err) {
+        if (err instanceof AppError) {
+          console.error(`${err.name}: ${err.message}`)
+          return c.json({ error: err.name, message: err.message }, err.status)
+        }
+        console.error("Unhandled error:", err)
+        return c.json(
+          { error: "InternalServerError", message: "Something went wrong." },
+          500,
+        )
+      }
+    },
   )
 
 serve(

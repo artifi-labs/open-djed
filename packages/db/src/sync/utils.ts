@@ -977,3 +977,28 @@ export async function fetchTransactionsFromAddress(
   )
   return transactions
 }
+
+/**
+ * Normalizes date to 00:00:00.000 UTC
+ */
+export const toUtcDayStart = (date: Date) =>
+  new Date(
+    Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()),
+  )
+
+/**
+ * Builds an inclusive date range (`startDate`..`endDate`) as UTC bounds:
+ * `timestamp >= rangeStart` and `timestamp < rangeEndExclusive`
+ */
+export const getValidDateRange = (startDate: Date, endDate: Date) => {
+  const startMs = startDate.getTime()
+  const endMs = endDate.getTime()
+  if (!Number.isFinite(startMs) || !Number.isFinite(endMs)) return null
+  if (endMs < startMs) return null
+
+  const rangeStart = toUtcDayStart(startDate)
+  const rangeEndExclusive = toUtcDayStart(endDate)
+  rangeEndExclusive.setUTCDate(rangeEndExclusive.getUTCDate() + 1)
+
+  return { rangeStart, rangeEndExclusive }
+}
