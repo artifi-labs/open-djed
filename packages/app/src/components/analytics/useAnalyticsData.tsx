@@ -204,7 +204,9 @@ export function useAnalyticsData() {
   useEffect(() => {
     if (reserveRatioError) {
       showToast({
-        message: t("analytics.errors.failedToFetch", {analytic: t("analytics.reserveRatioOverTime")}),
+        message: t("analytics.errors.failedToFetch", {
+          analytic: t("analytics.reserveRatioOverTime"),
+        }),
         type: "error",
       })
     }
@@ -213,7 +215,9 @@ export function useAnalyticsData() {
   useEffect(() => {
     if (djedMCError) {
       showToast({
-        message: t("analytics.errors.failedToFetch", {analytic: t("analytics.djedMarketCap")}),
+        message: t("analytics.errors.failedToFetch", {
+          analytic: t("analytics.djedMarketCap"),
+        }),
         type: "error",
       })
     }
@@ -222,7 +226,9 @@ export function useAnalyticsData() {
   useEffect(() => {
     if (shenMCError) {
       showToast({
-        message: t("analytics.errors.failedToFetch", {analytic: t("analytics.shenMarketCap")}),
+        message: t("analytics.errors.failedToFetch", {
+          analytic: t("analytics.shenMarketCap"),
+        }),
         type: "error",
       })
     }
@@ -231,7 +237,9 @@ export function useAnalyticsData() {
   useEffect(() => {
     if (volumesError) {
       showToast({
-        message: t("analytics.errors.failedToFetch", {analytic: t("analytics.volumes")}),
+        message: t("analytics.errors.failedToFetch", {
+          analytic: t("analytics.volumes"),
+        }),
         type: "error",
       })
     }
@@ -240,7 +248,9 @@ export function useAnalyticsData() {
   useEffect(() => {
     if (djedDexsError) {
       showToast({
-        message: t("analytics.errors.failedToFetch", {analytic: t("analytics.djedDexPrice")}),
+        message: t("analytics.errors.failedToFetch", {
+          analytic: t("analytics.djedDexPrice"),
+        }),
         type: "error",
       })
     }
@@ -249,7 +259,9 @@ export function useAnalyticsData() {
   useEffect(() => {
     if (shenAdaError) {
       showToast({
-        message: t("analytics.errors.failedToFetch", {analytic: t("analytics.shenAdaPrice")}),
+        message: t("analytics.errors.failedToFetch", {
+          analytic: t("analytics.shenAdaPrice"),
+        }),
         type: "error",
       })
     }

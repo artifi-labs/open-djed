@@ -23,17 +23,17 @@ const VolumeChart: React.FC<VolumeChartProps> = ({ data, currency }) => {
   const lines = [
     {
       dataKey: isUSD ? "totalDjedVolumeUSD" : "totalDjedVolumeADA",
-      name: t("analytics.total", {analytic: "DJED"}),
+      name: t("analytics.total", { analytic: "DJED" }),
       stroke: "var(--color-supportive-1-500)",
     },
     {
       dataKey: isUSD ? "totalShenVolumeUSD" : "totalShenVolumeADA",
-      name: t("analytics.total", {analytic: "SHEN"}),
+      name: t("analytics.total", { analytic: "SHEN" }),
       stroke: "var(--color-supportive-5-300)",
     },
     {
       dataKey: isUSD ? "djedMintedUSD" : "djedMintedADA",
-      name: t("analytics.mintedToken", {token: "DJED"}),
+      name: t("analytics.mintedToken", { token: "DJED" }),
       stroke: "var(--color-supportive-1-300)",
     },
     {
@@ -53,7 +53,7 @@ const VolumeChart: React.FC<VolumeChartProps> = ({ data, currency }) => {
     },
     {
       dataKey: isUSD ? "totalVolumeUSD" : "totalVolumeADA",
-      name: t("analytics.total", {analytic: t("analytics.volume")}),
+      name: t("analytics.total", { analytic: t("analytics.volume") }),
       stroke: "var(--color-supportive-2-500)",
     },
   ]
