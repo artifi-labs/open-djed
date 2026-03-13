@@ -398,7 +398,7 @@
     },
     "title": "Wallet",
     "noWalletsDetected": "No wallets detected",
-    "incorrectNetwork": "Please connect to a {network} wallet`",
+    "incorrectNetwork": "Please connect to a {network} wallet",
     "connected": "Your wallet has been successfully connected",
     "connectionFailed": "Failed to connect your wallet",
     "disconnected": "Your wallet has been disconnected"

@@ -113,6 +113,8 @@ export const FinancialAreaChart: React.FC<FinancialAreaChartProps> = ({
                 dot={false}
                 hide={hiddenLines[line.dataKey]}
                 activeDot={{ stroke: "transparent", r: 3.5 }}
+                isAnimationActive
+                animationDuration={300}
                 {...line}
               />
 
