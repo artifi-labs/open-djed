@@ -60,12 +60,10 @@ export async function calculateStakingRewards() {
           `/epochs/${rewards.epoch}`,
         )) as {
           start_time: number
-          end_time: number
         }
         dataToInsert.push({
           epoch: rewards.epoch,
-          startTimestamp: new Date(epochInfo.start_time * 1000),
-          endTimestamp: new Date(epochInfo.end_time * 1000),
+          timestamp: new Date(epochInfo.start_time * 1000),
           rate,
         })
       } catch (error) {

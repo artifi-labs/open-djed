@@ -1,5 +1,5 @@
 .loading-icon {
-  background-image: url("/components/data-display/loading/Loading.svg");
+  background-image: url("/components/loading/Loading.svg");
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;

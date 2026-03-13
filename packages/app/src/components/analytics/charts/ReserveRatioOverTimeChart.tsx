@@ -1,5 +1,4 @@
 import { FinancialAreaChart } from "@/components/charts/FinancialAreaChart"
-import { type ReserveRatioChartEntry } from "../useAnalyticsData"
 import {
   type BarShapeProps,
   type DotProps,
@@ -9,15 +8,21 @@ import {
 } from "recharts"
 import React from "react"
 import { useTranslations } from "next-intl"
+import type { ReserveRatioResponse } from "@/queries/analytics/reserveRatio/reserveRatio.schema"
 
 type ReserveRatioOverTimeChartProps = {
-  data: ReserveRatioChartEntry[]
+  data: ReserveRatioResponse
 }
 
 export const ReserveRatioOverTimeChart: React.FC<
   ReserveRatioOverTimeChartProps
 > = ({ data }) => {
   const t = useTranslations()
+  // Handle case where data is undefined or empty
+  if (!data?.length) {
+    data = []
+  }
+
   const yTickFormatter = (value: number | string) =>
     `${Number(value).toFixed(0)}%`
 

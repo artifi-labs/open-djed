@@ -132,7 +132,7 @@ const Analytics = () => {
         </ChartCard>
       </div>
 
-      <div className="desktop:grid-cols-2 desktop:gap-24 grid grid-cols-1 gap-16 py-24">
+      <div className="desktop:gap-24 grid grid-cols-1 gap-16 py-24">
         <ChartCard
           period={shenAdaPricePeriod}
           periodItems={translatedPeriodOptions}
@@ -151,7 +151,7 @@ const Analytics = () => {
         {/* <ChartCard title="SHEN Yield"></ChartCard> */}
       </div>
 
-      <div className="desktop:gap-24 grid grid-cols-1 gap-16 py-24">
+      <div className="desktop:gap-24 grid grid-cols-1 gap-16">
         <ChartCard
           title={t("analytics.djedDexPrice")}
           period={djedDexPeriod}

@@ -150,7 +150,7 @@ const Results: React.FC<ResultsProps> = ({ inputs }) => {
     const {
       initialAdaHoldings: initialHoldings = 0,
       finalAdaHoldings: finalHoldings = 0,
-      stakingCredits: stakingRewards = [],
+      stakingRewards = 0,
       feesEarned = 0,
     } = simulatorData || {}
 
@@ -218,23 +218,12 @@ const Results: React.FC<ResultsProps> = ({ inputs }) => {
 
     const data: DataRow[] = []
 
-    // create a record with staking rewards date and value for easy lookup
-    const rewardsMap = stakingRewards.reduce(
-      (acc, entry) => {
-        const date = new Date(entry.date).toISOString()
-        acc[date] = (acc[date] || 0) + entry.reward
-        return acc
-      },
-      {} as Record<string, number>,
-    )
+    const dailyStakingRewards = totalDays > 0 ? stakingRewards / totalDays : 0
 
     // Calculate daily protocol fees earned
     const dailyFeesEarned = totalDays > 0 ? feesEarned / totalDays : 0
 
-    const totalRewards = stakingRewards.reduce(
-      (acc, entry) => acc + entry.reward,
-      0,
-    )
+    const totalRewards = stakingRewards
     const holdingsEndBase = initialHoldings + totalRewards + feesEarned
     const shenValueFactor =
       holdingsEndBase > 0 ? finalHoldings / holdingsEndBase : 1
@@ -246,9 +235,8 @@ const Results: React.FC<ResultsProps> = ({ inputs }) => {
     for (let i = 0; i < totalDays; i++) {
       const d = new Date(startDate.getTime() + i * dayInMs).toISOString()
 
-      // Accumulate staking rewards for this day
-      const rewardToday = rewardsMap[d] || 0
-      currentHoldings += rewardToday
+      // Accumulate staking rewards for this day.
+      currentHoldings += dailyStakingRewards
 
       // Accumulate protocol fees earned (distributed daily)
       currentHoldings += dailyFeesEarned

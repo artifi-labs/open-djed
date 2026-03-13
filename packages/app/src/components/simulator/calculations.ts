@@ -1,10 +1,11 @@
 "use client"
 
 import * as React from "react"
+import { useApiClient } from "@/context/ApiClientContext"
 import { useProtocolData } from "@/hooks/useProtocolData"
-import { expectedStakingReturn, type CreditEntry } from "@/lib/staking"
 import { sumValues, valueTo } from "@/lib/utils"
 import { toAdaUsdExchangeRate } from "@open-djed/math"
+import { useQuery } from "@tanstack/react-query"
 
 export interface ScenarioInputs {
   usdAmount: number
@@ -19,7 +20,6 @@ export interface ResultsData {
   sellFee: number
   totalFees: number
   stakingRewards: number
-  stakingCredits: CreditEntry[]
   feesEarned: number
   totalRewards: number
   adaPnl: number
@@ -55,16 +55,44 @@ const calculateFeesEarned = (
 }
 
 export function useSimulatorResults(inputs: ScenarioInputs) {
+  const client = useApiClient()
   const { data: protocolData } = useProtocolData()
+  const hasDateRange = Boolean(inputs.buyDate && inputs.sellDate)
+  const stakingRewardsRateQuery = useQuery({
+    queryKey: [
+      "simulator-historical-staking-rewards",
+      inputs.buyDate,
+      inputs.sellDate,
+    ],
+    enabled: hasDateRange,
+    queryFn: async () => {
+      const res = await client.api["historical-staking-rewards"].$get({
+        query: {
+          startDate: inputs.buyDate,
+          endDate: inputs.sellDate,
+        },
+      })
+
+      if (!res.ok) throw new Error("Failed to fetch staking rewards.")
+
+      const data = await res.json()
+      return Number(data ?? 0)
+    },
+  })
+  const stakingRewardsRate = stakingRewardsRateQuery.data ?? 0
 
   const results = React.useMemo(() => {
-    if (!protocolData || inputs.usdAmount <= 0) {
+    if (!protocolData || inputs.usdAmount <= 0 || !hasDateRange) {
       return { data: null, error: null }
     }
 
     try {
       return {
-        data: calculateSimulatorResults(inputs, protocolData),
+        data: calculateSimulatorResults(
+          inputs,
+          protocolData,
+          stakingRewardsRate,
+        ),
         error: null,
       }
     } catch (err) {
@@ -73,20 +101,22 @@ export function useSimulatorResults(inputs: ScenarioInputs) {
         error: err instanceof Error ? err.message : "Invalid ADA price.",
       }
     }
-  }, [inputs, protocolData])
+  }, [hasDateRange, inputs, protocolData, stakingRewardsRate])
 
   return {
     results: results.data,
     error: results.error,
-    isLoading: !protocolData,
+    isLoading:
+      !protocolData || (hasDateRange && stakingRewardsRateQuery.isLoading),
   }
 }
 
 function calculateSimulatorResults(
   inputs: ScenarioInputs,
   protocolData: ProtocolData,
+  stakingRewardsRatePercent: number,
 ): ResultsData {
-  const { usdAmount, buyDate, sellDate, buyAdaPrice, sellAdaPrice } = inputs
+  const { usdAmount, buyAdaPrice, sellAdaPrice } = inputs
 
   // Build a new oracle datum using a user-provided ADA/USD price.
   const newOracleDatum = (adaUsd: number): ProtocolData["oracleDatum"] => {
@@ -112,7 +142,6 @@ function calculateSimulatorResults(
     { type: "In", amount: protocolData.to({ DJED: usdAmount }, "SHEN") },
     { oracleDatum: buyOracleDatum },
   )
-  console.log(buyActionData.toReceive.SHEN ?? 0)
 
   const buyFeeAda = protocolData.to(
     sumValues(buyActionData.actionFee, buyActionData.operatorFee),
@@ -120,13 +149,8 @@ function calculateSimulatorResults(
   )
 
   const initialAdaHoldings = buyActionData.baseCost.ADA ?? 0
-
-  // Staking rewards
-  const stakingInfo = expectedStakingReturn(usdAmount, buyDate, sellDate, {
-    aprPercent: 2.5,
-  })
   const stakingRewardsAda =
-    stakingInfo.totalCreditedRewards + stakingInfo.totalPendingRewards
+    initialAdaHoldings * (stakingRewardsRatePercent / 100)
 
   const feesEarnedAda = calculateFeesEarned(
     protocolData,
@@ -170,7 +194,6 @@ function calculateSimulatorResults(
     totalFees: buyFeeAda + sellFeeAda,
     totalRewards: stakingRewardsAda + feesEarnedAda,
     stakingRewards: stakingRewardsAda,
-    stakingCredits: stakingInfo.credits,
     feesEarned: feesEarnedAda,
     adaPnl,
     adaPnlPercent: usdAmount > 0 ? (adaPnl / usdAmount) * 100 : 0,
