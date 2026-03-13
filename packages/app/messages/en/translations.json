@@ -10,9 +10,9 @@
     "shenAdaPrice": "SHEN Price & ADA Price",
     "djedDexPrice": "DJED Price vs Secondary Markets",
     "total": "Total {analytic}",
-    "volume": "Volume",
     "mintedToken": "{token} Minted",
     "burnedToken": "{token} Burned",
+    "volume": "Volume",
     "errors": {
       "failedToFetch": "Failed to get {analytic} cap data."
     },
@@ -136,8 +136,7 @@
     "pageTitle": "Dashboard",
     "actionButton": {
       "wallet": "Connect Wallet to {action}",
-      "fillAmount": "Fill in the Amount to {action}",
-      "minAction": "{action} {minMessage}"
+      "fillAmount": "Fill in the Amount to {action}"
     },
     "youPay": "You pay",
     "youReceive": "You Receive",
@@ -297,7 +296,7 @@
     "whatIsSimulator": {
       "title": "What is the trade simulator?",
       "description": "The Trade Simulator helps you understand how profitable a SHEN investment could be. By entering the amount of USD to invest, your buy and sell dates, and ADA prices, the tool estimates",
-      "disclaimer": "It's not a trading tool - it's a calculator that shows how your returns change based on the inputs you choose, so you can plan your strategy with clarity. It should not be considered financial advice.",
+      "disclaimer": "It's not a trading tool. it's a calculator that shows how your returns change based on the inputs you choose, so you can plan your strategy with clarity. It should not be considered financial advice.",
       "items": {
         "fees": "Fees you pay when buying and selling",
         "rewards": "ADA rewards you earn while holding SHEN",
