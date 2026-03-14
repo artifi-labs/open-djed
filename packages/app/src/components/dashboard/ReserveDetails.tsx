@@ -3,8 +3,10 @@ import BaseCard from "../card/BaseCard"
 import { ReserveGraph } from "./ReserveGraph"
 import { formatNumber, formatValue } from "@/lib/utils"
 import Divider from "../Divider"
+import { useTranslations } from "next-intl"
 
 const ReserveDetails = () => {
+  const t = useTranslations()
   const {
     reserveValueADA,
     reserveValueUSD,
@@ -19,7 +21,9 @@ const ReserveDetails = () => {
     <div className="desktop:grid-cols-2 desktop:gap-24 desktop:pt-32 grid grid-cols-1 gap-16 pt-16">
       <BaseCard overlay={isLoading || !hasData}>
         <div className="desktop:pb-0 flex w-full flex-col justify-between gap-24 pb-12">
-          <span className="mb-1 text-sm font-medium">Reserve Ratio</span>
+          <span className="mb-1 text-sm font-medium">
+            {t("reserve.reserveRatio")}
+          </span>
           <ReserveGraph
             currentRatio={!hasData ? undefined : reserveRatio}
             minRatio={minRatio}
@@ -34,7 +38,7 @@ const ReserveDetails = () => {
             {/* Current Ratio */}
             <div className="flex shrink-0 items-center gap-8">
               <span className="text-secondary text-xs whitespace-nowrap">
-                Current Ratio:
+                {t("dashboard.reserveDetails.currentRatio")}:
               </span>
               <span className="text-primary text-sm font-medium whitespace-nowrap">
                 {formatNumber(reserveRatio, { maximumFractionDigits: 2 })} %
@@ -44,7 +48,7 @@ const ReserveDetails = () => {
             {/* Min Ratio */}
             <div className="flex shrink-0 items-center gap-8">
               <span className="text-secondary text-xs whitespace-nowrap">
-                Min Ratio:
+                {t("dashboard.reserveDetails.minRatio")}:
               </span>
               <span className="text-primary text-sm font-medium whitespace-nowrap">
                 {minRatio} %
@@ -54,7 +58,7 @@ const ReserveDetails = () => {
             {/* Max Ratio */}
             <div className="flex shrink-0 items-center gap-8">
               <span className="text-secondary text-xs whitespace-nowrap">
-                Max Ratio:
+                {t("dashboard.reserveDetails.maxRatio")}:
               </span>
               <span className="text-primary text-sm font-medium whitespace-nowrap">
                 {maxRatio} %
@@ -66,7 +70,7 @@ const ReserveDetails = () => {
           {/* Reserve Value */}
           <div className="flex w-full flex-wrap items-center justify-between gap-4">
             <span className="text-secondary text-xs whitespace-nowrap">
-              Reserve Value
+              {t("dashboard.reserveDetails.reserveValue")}
             </span>
 
             <div className="flex min-w-0 items-center gap-6">

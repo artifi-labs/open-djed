@@ -8,6 +8,7 @@ import type { WalletName } from "../Wallet"
 import WalletBalance from "./WalletBalance"
 import Divider from "../Divider"
 import OrdersWalletSection from "./OrdersWalletSection"
+import { useTranslations } from "next-intl"
 
 interface ConnectedWalletSectionProps {
   wallet: Wallet
@@ -18,6 +19,7 @@ const ConnectedWalletSection: React.FC<ConnectedWalletSectionProps> = ({
   wallet,
   disconnect,
 }) => {
+  const t = useTranslations()
   const { closeSidebar } = useSidebar()
 
   return (
@@ -41,7 +43,7 @@ const ConnectedWalletSection: React.FC<ConnectedWalletSectionProps> = ({
                 className="w-full"
                 variant="primary"
                 onClick={() => closeSidebar()}
-                text="Mint & Burn Now"
+                text={t("common.mintAndBurnNow")}
               />
             </Link>
           </div>

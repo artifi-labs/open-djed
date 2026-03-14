@@ -17,6 +17,7 @@ import Logo from "./Logo"
 import { useViewport } from "@/hooks/useViewport"
 import Icon from "./icons/Icon"
 import { env } from "@/lib/envLoader"
+import { useTranslations } from "next-intl"
 
 type NavigationItem = {
   label: string
@@ -108,6 +109,7 @@ const NetworkBadge: React.FC<NetworkBadgeProps> = ({
 }
 
 export const Navbar = () => {
+  const t = useTranslations()
   const { NETWORK, CONFIG } = env
   const { isMobile } = useViewport()
   const { wallet } = useWallet()
@@ -129,16 +131,16 @@ export const Navbar = () => {
   }
 
   const navLinks: { label: string; href: string }[] = [
-    { label: "Dashboard", href: "/" },
-    { label: "Analytics", href: "/analytics" },
-    { label: "Simulator", href: "/simulator" },
-    { label: "Orders", href: "/orders" },
+    { label: t("navbar.dashboard.title"), href: "/" },
+    { label: t("navbar.analytics.title"), href: "/analytics" },
+    { label: t("navbar.simulator.title"), href: "/simulator" },
+    { label: t("navbar.orders.title"), href: "/orders" },
   ]
   const getWalletButtonText = () => {
-    if (!wallet) return "Connect wallet"
+    if (!wallet) return t("navbar.wallet.connect")
     if (wallet.balance.handle) return `$${wallet.balance.handle}`
     if (wallet.address) return `${shortenString(wallet.address)}`
-    return "Loading address..."
+    return `${t("navbar.wallet.loading")}...`
   }
 
   const walletButtonText = getWalletButtonText()

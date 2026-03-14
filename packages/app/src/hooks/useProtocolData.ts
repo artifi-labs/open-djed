@@ -8,7 +8,7 @@ import {
   valueToADA,
   type Value,
 } from "@/lib/utils"
-import type { TokenType, ActionType } from "@open-djed/api"
+import type { TokenType, ActionType, MarketCapValue } from "@open-djed/api"
 import {
   djedADABurnRate,
   djedADAMintRate,
@@ -72,10 +72,7 @@ export function useProtocolData() {
               circulatingSupply: Value
               mintableAmount: Value
               burnableAmount: Value
-              marketCap: {
-                USD: bigint
-                ADA: bigint
-              }
+              marketCap: MarketCapValue
             }
           > & {
             reserve: {

@@ -378,8 +378,7 @@ export type Volume = {
 
 export type ADAStakingRewards = {
   epoch: number
-  startTimestamp: Date
-  endTimestamp: Date
+  timestamp: Date
   rate: number
 }
 

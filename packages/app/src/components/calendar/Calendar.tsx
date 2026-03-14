@@ -8,7 +8,7 @@ import InputField from "../input-fields/InputField"
 import { useState, useCallback } from "react"
 import DropdownButton from "../DropdownButton"
 import type { ContextualMenuItem } from "../ContextualMenu"
-import { capitalizeLower } from "@/lib/utils"
+import { capitalize, capitalizeLower } from "@/lib/utils"
 import type {
   CalendarProps,
   DateRange,
@@ -17,7 +17,7 @@ import type {
   ShortcutsProps,
   TimeString,
 } from "./Calendar.types"
-import { months, periodItems, shortWeekDays } from "./Calendar.constants"
+import { months, periodItems, weekDays } from "./Calendar.constants"
 import {
   applyTimeToDay,
   isInRange,
@@ -26,6 +26,7 @@ import {
   normalizedDay,
   segmentIntoWeeks,
 } from "./Calendar.utils"
+import { useTranslations } from "next-intl"
 
 const Shortcut: React.FC<ShortcutProps> = ({
   itemKey,
@@ -114,6 +115,7 @@ const Calendar: React.FC<CalendarProps> = ({
   maxYear = new Date().getFullYear() + 100,
   onChange,
 }) => {
+  const t = useTranslations()
   const isDateDisabledFn = (date: Date, disabled?: DateRange[]): boolean => {
     if (!disabled?.length) return false
 
@@ -301,14 +303,18 @@ const Calendar: React.FC<CalendarProps> = ({
         />
         <div className="flex items-center gap-8">
           <DropdownButton
-            text={capitalizeLower(months[currentDate.getMonth()])}
+            text={capitalizeLower(
+              t(Object.values(months)[currentDate.getMonth()].i18nKey),
+            )}
             activeItem={{
               key: currentDate.getMonth(),
-              text: capitalizeLower(months[currentDate.getMonth()]),
+              text: capitalizeLower(
+                t(Object.values(months)[currentDate.getMonth()].i18nKey),
+              ),
             }}
-            menuItems={months.map((month, index) => ({
+            menuItems={Object.entries(months).map(([, month], index) => ({
               key: index,
-              text: capitalizeLower(month),
+              text: capitalizeLower(t(month.i18nKey)),
               icon: currentDate.getMonth() === index ? "Checkmark" : undefined,
             }))}
             leadingIcon="Chevron-down"
@@ -339,7 +345,10 @@ const Calendar: React.FC<CalendarProps> = ({
         {resolvedHasPeriodSelection && (
           <>
             <Shortcuts
-              items={periodItems}
+              items={periodItems.map((item) => ({
+                key: item.key,
+                text: capitalize(t(item.i18nKey)),
+              }))}
               activeKey={activePeriod}
               onClick={handlePeriodClick}
             />
@@ -355,9 +364,9 @@ const Calendar: React.FC<CalendarProps> = ({
           className="grid h-full w-full grid-cols-7 gap-y-8"
           style={{ gridTemplateRows: "auto repeat(5, 1fr)" }}
         >
-          {shortWeekDays.map((d) => (
-            <div key={d} className="text-center text-xs font-medium">
-              {d}
+          {Object.entries(weekDays).map(([name, d]) => (
+            <div key={name} className="text-center text-xs font-medium">
+              {capitalize(t(d.i18nKey).slice(0, 3))}
             </div>
           ))}
 

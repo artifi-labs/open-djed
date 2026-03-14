@@ -7,8 +7,10 @@ import { useOrders } from "@/hooks/useOrders"
 import { useEffect } from "react"
 import { type Wallet } from "@/context/WalletContext"
 import { ORDERS_SIDEBAR } from "@/lib/constants"
+import { useTranslations } from "next-intl"
 
 export default function OrdersWalletSection({ wallet }: { wallet: Wallet }) {
+  const t = useTranslations()
   const { closeSidebar } = useSidebar()
   const { orders, fetchOrders } = useOrders()
 
@@ -19,7 +21,7 @@ export default function OrdersWalletSection({ wallet }: { wallet: Wallet }) {
   return (
     <>
       <div className="flex h-full w-full flex-col gap-12 overflow-y-auto py-8">
-        <h1 className="text-sm font-medium">Orders</h1>
+        <h1 className="text-sm font-medium">{t("orders.title")}</h1>
         <div className="flex h-full w-full flex-col gap-12">
           {orders.length > 0 ? (
             <>
@@ -34,7 +36,7 @@ export default function OrdersWalletSection({ wallet }: { wallet: Wallet }) {
               })}
               <Link href={"/orders"} className="w-full">
                 <Button
-                  text={"All orders"}
+                  text={t("orders.allOrders")}
                   className="w-full"
                   variant="secondary"
                   onClick={() => closeSidebar()}
@@ -45,15 +47,15 @@ export default function OrdersWalletSection({ wallet }: { wallet: Wallet }) {
             <div className="flex h-full w-full flex-col items-center justify-center gap-12">
               <div className="flex w-full flex-col items-center justify-center gap-6">
                 <span className="text-sm font-semibold md:text-base">
-                  No orders yet
+                  {t("orders.noOrders")}
                 </span>
                 <span className="text-center text-xs md:text-sm">
-                  Looks like this wallet hasn't made any trades.
+                  {t("orders.noOrdersDescription")}.
                 </span>
               </div>
               <Link href={"/"} className="w-full">
                 <Button
-                  text={"Mint & Burn Now"}
+                  text={t("common.mintAndBurnNow")}
                   className="w-full"
                   variant="outlined"
                   onClick={() => closeSidebar()}
