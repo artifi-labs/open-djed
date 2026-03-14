@@ -132,53 +132,27 @@ export type AddressKey = {
   stakeKeyHash: string
 }
 
+// 'poolDatum' is optional because not every order have one.
 export type OrderUTxOWithDatumAndBlock = {
-  orderDatum: {
-    address: {
-      paymentKeyHash: [string]
-      stakeKeyHash: [[[string]]]
-    }
-    actionFields:
-      | {
-          MintDJED: {
-            djedAmount: bigint
-            adaAmount: bigint
-          }
-        }
-      | {
-          BurnDJED: {
-            djedAmount: bigint
-          }
-        }
-      | {
-          MintSHEN: {
-            shenAmount: bigint
-            adaAmount: bigint
-          }
-        }
-      | {
-          BurnSHEN: {
-            shenAmount: bigint
-          }
-        }
-    adaUSDExchangeRate: {
-      numerator: bigint
-      denominator: bigint
-    }
-    creationDate: bigint
-    orderStateTokenMintingPolicyId: string
-  }
+  timestamp: string
+  orderDatum: OrderDatum
+  poolDatum?: PoolDatum
+  tx_hash: string
+  output_index: number
+  consumed_by_tx: string | null
   block_hash: string
   block_slot: number
-  tx_hash: string
   address: string
   amount: Amount[]
   collateral: boolean
   data_hash: string | null
   inline_datum: string | null
-  output_index: number
   reference_script_hash: string | null
-  consumed_by_tx: string | null
+}
+
+// Use after filtering, so 'poolDatum' is guaranteed to exist.
+export type OrderUTxOWithPoolDatum = OrderUTxOWithDatumAndBlock & {
+  poolDatum: PoolDatum
 }
 
 export enum OrderStatus {
