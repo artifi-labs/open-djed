@@ -392,12 +392,12 @@ const Results: React.FC<ResultsProps> = ({ inputs }) => {
             {
               dataKey: "adaPnlUsd_avg",
               name: "ADA PNL",
-              stroke: "var(--color-accent-3)",
+              stroke: "var(--color-accent-1)",
             },
             {
               dataKey: "shenPnlUsd_avg",
               name: "SHEN PNL",
-              stroke: "var(--color-accent-1)",
+              stroke: "var(--color-accent-3)",
             },
           ]}
           xTickFormatter={xAxisFormatter}
