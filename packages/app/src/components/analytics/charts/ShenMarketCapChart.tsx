@@ -1,49 +1,23 @@
-"use client"
-
 import { FinancialAreaChart } from "@/components/charts/FinancialAreaChart"
-import { useViewport } from "@/hooks/useViewport"
-import { useMemo } from "react"
 import { type Currency } from "../useAnalyticsData"
 import { Legend } from "recharts"
 import { ChartLegend } from "@/components/charts/legend/ChartLegend"
 import { formatAxisValue } from "@/lib/utils"
+import { useTranslations } from "next-intl"
+import type { MarketCapResponse } from "@/queries/analytics/marketCap/marketCap.schema"
 
 type ShenMarketCapChartProps = {
   title?: string
-  data: {
-    timestamp: string
-    adaValue: string
-    usdValue: string
-  }[]
+  data: MarketCapResponse
   currency: Currency
-}
-
-type ChartRow = {
-  date: string | number
-  adaValue?: number
-  usdValue?: number
 }
 
 export const ShenMarketCapChart: React.FC<ShenMarketCapChartProps> = ({
   data,
   currency,
 }) => {
-  const { isMobile } = useViewport()
+  const t = useTranslations()
   const valueKey = currency.value === "USD" ? "usdValue" : "adaValue"
-
-  const { rows } = useMemo(() => {
-    if (!data?.length) {
-      return { rows: [] }
-    }
-
-    const mapped: ChartRow[] = data.map((entry) => ({
-      date: entry.timestamp,
-      adaValue: Number(entry.adaValue),
-      usdValue: Number(entry.usdValue),
-    }))
-
-    return { rows: mapped }
-  }, [data, isMobile])
 
   const yTickFormatter = (value: number | string) =>
     currency.value === "USD"
@@ -53,7 +27,10 @@ export const ShenMarketCapChart: React.FC<ShenMarketCapChartProps> = ({
   const lines = [
     {
       dataKey: valueKey,
-      name: currency.value === "USD" ? "USD Value" : "ADA Value",
+      name:
+        currency.value === "USD"
+          ? t("common.currencyValue", { currency: "USD" })
+          : t("common.currencyValue", { currency: "ADA" }),
       stroke:
         currency.value === "USD"
           ? "var(--color-supportive-1-500)"
@@ -63,8 +40,8 @@ export const ShenMarketCapChart: React.FC<ShenMarketCapChartProps> = ({
 
   return (
     <FinancialAreaChart
-      data={rows}
-      xKey="date"
+      data={data}
+      xKey="timestamp"
       lines={lines}
       yTickFormatter={yTickFormatter}
     >

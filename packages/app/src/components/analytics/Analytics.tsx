@@ -5,18 +5,17 @@ import ChartCard from "../card/ChartCard"
 import { DjedMarketCapChart } from "./charts/DjedMarketCapChart"
 import { ReserveRatioOverTimeChart } from "./charts/ReserveRatioOverTimeChart"
 import { ShenAdaPriceChart } from "./charts/ShenAdaPriceChart"
-import {
-  useAnalyticsData,
-  CHART_PERIOD_OPTIONS,
-  CURRENCY_OPTIONS,
-} from "./useAnalyticsData"
+import { useAnalyticsData, CURRENCY_OPTIONS } from "./useAnalyticsData"
 import { ShenMarketCapChart } from "./charts/ShenMarketCapChart"
 import { ShenYieldChart } from "./charts/ShenYieldChart"
 import { DjedDexPriceChart } from "./charts/DjedDexPriceChart"
+import { useTranslations } from "next-intl"
 import VolumeChart from "./charts/VolumesChart"
 
 const Analytics = () => {
+  const t = useTranslations()
   const {
+    translatedPeriodOptions,
     reserveRatioData,
     reserveRatioPeriod,
     setReserveRatioPeriod,
@@ -56,19 +55,19 @@ const Analytics = () => {
     <div className="desktop:pt-32 desktop:pb-64 mx-auto flex w-full max-w-280 flex-1 flex-col">
       <div className="desktop:py-32 flex w-full flex-col items-center justify-center gap-8 py-16 text-center">
         <h1 className="font-bold">
-          <span className="text-gradient-angular-1">Analytics</span> Overview
+          {t.rich("analytics.analyticsOverview", {
+            gradient: () => <span className="text-gradient-angular-1" />,
+          })}
         </h1>
-        <p className="text-secondary text-xs">
-          Real-time insights into protocol metrics and market dynamics
-        </p>
+        <p className="text-secondary text-xs">{t("analytics.description")}</p>
       </div>
 
       <div className="desktop:gap-24 grid grid-cols-1 gap-16">
         <ChartCard
           period={reserveRatioPeriod}
-          periodItems={[...CHART_PERIOD_OPTIONS]}
+          periodItems={translatedPeriodOptions}
           onPeriodChange={setReserveRatioPeriod}
-          title="Reserve Ratio Over Time"
+          title={t("analytics.reserveRatioOverTime")}
           warning={
             reserveChartWarning
               ? {
@@ -92,9 +91,9 @@ const Analytics = () => {
       </div>
       <div className="desktop:grid-cols-2 desktop:gap-24 grid grid-cols-1 gap-16 py-24">
         <ChartCard
-          title="DJED Market Cap"
+          title={t("analytics.djedMarketCap")}
           period={djedMCPeriod}
-          periodItems={[...CHART_PERIOD_OPTIONS]}
+          periodItems={translatedPeriodOptions}
           onPeriodChange={setDjedMCPeriod}
           currency={djedMCCurrency}
           onCurrencyChange={setDjedMCCurrency}
@@ -106,9 +105,9 @@ const Analytics = () => {
           />
         </ChartCard>
         <ChartCard
-          title="SHEN Market Cap"
+          title={t("analytics.shenMarketCap")}
           period={shenMCPeriod}
-          periodItems={[...CHART_PERIOD_OPTIONS]}
+          periodItems={translatedPeriodOptions}
           onPeriodChange={setShenMCPeriod}
           currency={shenMCCurrency}
           onCurrencyChange={setShenMCCurrency}
@@ -123,9 +122,9 @@ const Analytics = () => {
 
       <div className="desktop:gap-24 grid grid-cols-1 gap-16">
         <ChartCard
-          title="Volume Analytics"
+          title={t("analytics.volumes")}
           period={volumesPeriod}
-          periodItems={[...CHART_PERIOD_OPTIONS]}
+          periodItems={translatedPeriodOptions}
           onPeriodChange={setVolumesPeriod}
           currency={volumesCurrency}
           currencyItems={[...CURRENCY_OPTIONS]}
@@ -141,12 +140,12 @@ const Analytics = () => {
       <div className="desktop:grid-cols-2 desktop:gap-24 grid grid-cols-1 gap-16 py-24">
         <ChartCard
           period={shenAdaPricePeriod}
-          periodItems={[...CHART_PERIOD_OPTIONS]}
+          periodItems={translatedPeriodOptions}
           onPeriodChange={setShenAdaPricePeriod}
           currency={shenAdaCurrency}
           onCurrencyChange={setShenAdaCurrency}
           currencyItems={[...CURRENCY_OPTIONS]}
-          title="SHEN Price & ADA Price"
+          title={t("analytics.shenAdaPrice")}
         >
           <ShenAdaPriceChart
             data={shenAdaHistoricalData}
@@ -157,18 +156,18 @@ const Analytics = () => {
         <ChartCard
           title="SHEN Yield"
           period={shenYieldPeriod}
-          periodItems={[...CHART_PERIOD_OPTIONS]}
+          periodItems={translatedPeriodOptions}
           onPeriodChange={setShenYieldPeriod}
         >
           <ShenYieldChart data={[...shenYieldData, ...projectedYield]} />
         </ChartCard>
       </div>
 
-      <div className="desktop:gap-24 grid grid-cols-1 gap-16 py-24">
+      <div className="desktop:gap-24 grid grid-cols-1 gap-16">
         <ChartCard
-          title="DJED Price vs Secondary Markets"
+          title={t("analytics.djedDexPrice")}
           period={djedDexPeriod}
-          periodItems={[...CHART_PERIOD_OPTIONS]}
+          periodItems={translatedPeriodOptions}
           onPeriodChange={setDjedDexPeriod}
           currency={djedDexCurrency}
           currencyItems={[...CURRENCY_OPTIONS]}

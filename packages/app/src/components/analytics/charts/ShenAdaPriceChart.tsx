@@ -3,10 +3,11 @@
 import { useMemo } from "react"
 import { FinancialAreaChart } from "@/components/charts/FinancialAreaChart"
 import { useViewport } from "@/hooks/useViewport"
-import type { Currency, TokenPriceByToken } from "../useAnalyticsData"
+import type { Currency } from "../useAnalyticsData"
+import type { ShenAdaPriceResponse } from "@/queries/analytics/shenAdaPrice/shenAdaPrice.schema"
 
 type ShenAdaPriceChartProps = {
-  data: TokenPriceByToken
+  data: ShenAdaPriceResponse
   currency: Currency
 }
 

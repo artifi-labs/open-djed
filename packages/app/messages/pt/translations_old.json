@@ -1,0 +1,42 @@
+{
+  "dashboard": {
+    "name": ""
+  },
+  "orders": {
+    "status": {
+      "canceled": ""
+    }
+  },
+  "notFound": {
+    "404": {
+      "Title": "",
+      "Content": "",
+      "pageTitle": "",
+      "title": "",
+      "content1": "",
+      "content2": "",
+      "buttonText": ""
+    },
+    "title": "",
+    "subtitle": "",
+    "buttonText": ""
+  },
+  "analytics": {
+    "failedToGetHistoricalReserveRatioData": "",
+    "failedToGetHistoricalMarketCapData": "",
+    "failedToGetHistoricalTokenPriceData": "",
+    "failedToGetHistoricalVolumeData": "",
+    "failedToGetHistoricalDjedDexPrices": "",
+    "djedDexPrices": "",
+    "marketCap": "",
+    "reserveRatio": "",
+    "totalDjed": "",
+    "totalShen": "",
+    "totalVolume": "",
+    "djedMinted": ""
+  },
+  "common": {
+    "burnedToken": "",
+    "mintedToken": ""
+  }
+}

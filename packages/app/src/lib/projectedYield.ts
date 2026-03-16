@@ -1,4 +1,4 @@
-import { type ShenYieldChartEntry } from "@/components/analytics/useAnalyticsData"
+import type { ShenYieldChartEntry } from "@/queries/analytics/shenYield/shenYield.schema"
 
 export const calculateProjectedYield = (
   data: ShenYieldChartEntry[],

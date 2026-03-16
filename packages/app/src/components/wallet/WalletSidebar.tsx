@@ -4,6 +4,7 @@ import type { Wallet, WalletMetadata } from "@/context/WalletContext"
 import Sidebar from "../modals/Sidebar"
 import ConnectedWalletSection from "./ConnectedWalletSection"
 import SelectWalletSection from "./SelectWalletSection"
+import { useTranslations } from "next-intl"
 
 export default function WalletSidebar({
   wallet,
@@ -20,9 +21,10 @@ export default function WalletSidebar({
   isOpen: boolean
   onClose: () => void
 }) {
+  const t = useTranslations()
   return (
     <Sidebar
-      title={wallet ? "Wallet" : "Connect Wallet"}
+      title={wallet ? t("wallet.title") : t("wallet.connectWallet")}
       isOpen={isOpen}
       onClose={onClose}
       paddingClassName="p-0"
@@ -31,7 +33,7 @@ export default function WalletSidebar({
       {wallet ? (
         <ConnectedWalletSection wallet={wallet} disconnect={disconnect} />
       ) : wallets.length <= 0 ? (
-        <span>No wallets detected</span>
+        <span>{t("wallet.noWalletsDetected")}</span>
       ) : (
         <SelectWalletSection wallets={wallets} onClick={connect} />
       )}

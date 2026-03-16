@@ -15,6 +15,7 @@ import {
   type ResultsData,
   useSimulatorResults,
 } from "./calculations"
+import { useTranslations } from "next-intl"
 
 export type ValueItem = {
   name: string
@@ -56,12 +57,13 @@ type SectionConfig = {
   detailsType?: "fee" | "reward"
 }
 
-const createSectionConfigs: () => SectionConfig[] = () => [
+const createSectionConfigs: (
+  t: ReturnType<typeof useTranslations>,
+) => SectionConfig[] = (t) => [
   {
     name: "shenPnl",
-    label: "SHEN PNL",
-    tooltip:
-      "This shows the profit or loss you would make if you invest in SHEN, including fees and rewards.",
+    label: t("simulator.results.shen.label"),
+    tooltip: t("simulator.results.shen.tooltip"),
     isTotal: true,
     read: (d: Partial<ResultsData>) => ({
       main: d.shenPnl ?? 0,
@@ -83,9 +85,8 @@ const createSectionConfigs: () => SectionConfig[] = () => [
   },
   {
     name: "adaPnl",
-    label: "ADA PNL",
-    tooltip:
-      "This shows the profit or loss you would make by simply holding ADA, without buying SHEN.",
+    label: t("simulator.results.ada.label"),
+    tooltip: t("simulator.results.ada.tooltip"),
     isTotal: true,
     read: (d: Partial<ResultsData>) => ({
       main: d.adaPnl ?? 0,
@@ -107,9 +108,8 @@ const createSectionConfigs: () => SectionConfig[] = () => [
   },
   {
     name: "buyFee",
-    label: "Buy Fee",
-    tooltip:
-      "A fee applied when purchasing Djed/Shen. This helps maintain the protocol and is shared with SHEN holders",
+    label: t("simulator.results.fees.buyFee.label"),
+    tooltip: t("simulator.results.fees.buyFee.tooltip"),
     read: (d: Partial<ResultsData>) => ({
       main: d.buyFee ?? 0,
       sub: d.buyFee ?? 0,
@@ -125,9 +125,8 @@ const createSectionConfigs: () => SectionConfig[] = () => [
   },
   {
     name: "sellFee",
-    label: "Sell Fee",
-    tooltip:
-      "A fee applied when selling Djed/Shen. This helps maintain the protocol and is shared with SHEN holders",
+    label: t("simulator.results.fees.sellFee.label"),
+    tooltip: t("simulator.results.fees.sellFee.tooltip"),
     read: (d: Partial<ResultsData>) => ({
       main: d.sellFee ?? 0,
       sub: d.sellFee ?? 0,
@@ -143,9 +142,8 @@ const createSectionConfigs: () => SectionConfig[] = () => [
   },
   {
     name: "totalFees",
-    label: "Total Fees",
-    tooltip:
-      "Total fees applied when buying/selling Djed/Shen. This helps maintain the protocol and is shared with SHEN holders",
+    label: t("simulator.results.fees.totalFee.label"),
+    tooltip: t("simulator.results.fees.totalFee.tooltip"),
     read: (d: Partial<ResultsData>) => ({
       main: d.totalFees ?? 0,
       sub: d.buyFee ?? 0,
@@ -177,9 +175,8 @@ const createSectionConfigs: () => SectionConfig[] = () => [
   },
   {
     name: "stakingRewards",
-    label: "ADA Staking Rewards",
-    tooltip:
-      "The rewards you earn on the staked ADA backing your SHEN. Staked ADA helps secure the Cardano network and generates passive income",
+    label: t("simulator.results.fees.stakingRewards.label"),
+    tooltip: t("simulator.results.fees.stakingRewards.tooltip"),
     read: (d: Partial<ResultsData>) => ({
       main: d.stakingRewards ?? 0,
       sub: d.stakingRewards ?? 0,
@@ -195,9 +192,8 @@ const createSectionConfigs: () => SectionConfig[] = () => [
   },
   {
     name: "feesEarned",
-    label: "Buy/Sell Fees Earned",
-    tooltip:
-      "The total fees collected from buy and sell transactions. These are distributed to SHEN Holders. This is the sum of the buy and sell fees during a given period or projected for a period in the future",
+    label: t("simulator.results.fees.earnedFee.label"),
+    tooltip: t("simulator.results.fees.earnedFee.tooltip"),
     read: (d: Partial<ResultsData>) => ({
       main: d.feesEarned ?? 0,
       sub: d.feesEarned ?? 0,
@@ -213,9 +209,8 @@ const createSectionConfigs: () => SectionConfig[] = () => [
   },
   {
     name: "totalRewards",
-    label: "Total Rewards",
-    tooltip:
-      "The sum of the rewards you earn on the staked ADA backing your SHEN and the total fees collected from buy and sell transactions, that are distributed to SHEN Holders.",
+    label: t("simulator.results.fees.totalRewards.label"),
+    tooltip: t("simulator.results.fees.totalRewards.tooltip"),
     read: (d: Partial<ResultsData>) => ({
       main: d.totalRewards ?? 0,
       sub: d.feesEarned ?? 0,
@@ -252,9 +247,10 @@ export function useResults(
   priceData?: { to: (v: Value, t: string) => number },
 ): Results {
   const { results: simulatorData } = useSimulatorResults(inputs)
+  const t = useTranslations()
 
   return useMemo(() => {
-    const configs = createSectionConfigs()
+    const configs = createSectionConfigs(t)
     const isReady =
       !isEmptyValue(inputs.usdAmount) &&
       !isEmptyValue(inputs.buyAdaPrice) &&

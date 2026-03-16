@@ -1,8 +1,8 @@
-import { useTranslation } from "react-i18next"
+import { useTranslations } from "next-intl"
 import type { ActionType } from "@open-djed/api"
 
 export function useActionLabels(): Record<ActionType, string> {
-  const { t } = useTranslation()
+  const t = useTranslations()
 
   return {
     Mint: t("action.mint"),

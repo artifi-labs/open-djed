@@ -7,8 +7,10 @@ import SimulatorInfo from "@/components/simulator/SimulatorInfo"
 import Results from "@/components/simulator/Results"
 import InputAction from "@/components/simulator/InputAction"
 import { useSimulatorActions } from "./useSimulatorActions"
+import { useTranslations } from "next-intl"
 
 export default function Simulator() {
+  const t = useTranslations()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const { inputs, onUpdate } = useSimulatorActions()
 
@@ -17,9 +19,9 @@ export default function Simulator() {
       {/* Header */}
       <div className="desktop:flex-row flex flex-col justify-between gap-12">
         <div className="desktop:gap-6 flex flex-col gap-4">
-          <h2 className="text font-bold">SHEN Trade Simulator</h2>
+          <h2 className="text font-bold">{t("simulator.title")}</h2>
           <span className="text-secondary text-sm">
-            Check the outcomes of investing in SHEN quickly and clearly
+            {t("simulator.description")}
           </span>
         </div>
 
@@ -27,7 +29,7 @@ export default function Simulator() {
           <Button
             variant="text"
             size="medium"
-            text="What is the trade simulator?"
+            text={t("simulator.whatIsSimulator.title")}
             onClick={() => setIsModalOpen(true)}
           />
         </div>
@@ -35,7 +37,7 @@ export default function Simulator() {
 
       {/* Modal */}
       <Modal
-        title="What is the trade simulator?"
+        title={t("simulator.whatIsSimulator.title")}
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         className="desktop:p-42 p-32"

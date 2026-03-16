@@ -1,85 +1,23 @@
 "use client"
 
-import { useApiClient } from "@/context/ApiClientContext"
 import { useToast } from "@/context/ToastContext"
-import { useProtocolData } from "@/hooks/useProtocolData"
-import { useReserveDetails } from "@/hooks/useReserveDetails"
-import { AppError } from "@open-djed/api/src/errors"
-import { useCallback, useEffect, useState } from "react"
-import type { TokenMarketCap } from "../../../../db/generated/prisma/enums"
-import { capitalize } from "@/lib/utils"
-import type { Token } from "@/lib/tokens"
-import { Rational, shenADARate, shenUSDRate } from "@open-djed/math"
-import { calculateProjectedYield } from "@/lib/projectedYield"
+import { useEffect, useMemo, useState } from "react"
 import { env } from "@/lib/envLoader"
-
-export type ReserveRatioChartEntry = {
-  id: number
-  timestamp: string
-  reserveRatio: number
-}
-export type DjedMChartEntry = {
-  id: number
-  timestamp: string
-  usdValue: string
-  adaValue: string
-}
-export type ShenMChartEntry = {
-  id: number
-  timestamp: string
-  usdValue: string
-  adaValue: string
-}
-
-export type TokenPriceChartEntry = {
-  id: number
-  timestamp: string
-  adaValue: number
-  usdValue: number
-  token: Exclude<Token, "DJED">
-}
-export type TokenPriceByToken = Record<
-  Exclude<Token, "DJED">,
-  TokenPriceChartEntry[]
->
-
-export type VolumeChartEntry = {
-  id: number
-  timestamp: string
-  djedMintedUSD: number
-  djedBurnedUSD: number
-  shenMintedUSD: number
-  shenBurnedUSD: number
-  djedMintedADA: number
-  djedBurnedADA: number
-  shenMintedADA: number
-  shenBurnedADA: number
-  totalDjedVolumeUSD: number
-  totalShenVolumeUSD: number
-  totalDjedVolumeADA: number
-  totalShenVolumeADA: number
-  totalVolumeUSD: number
-  totalVolumeADA: number
-}
-
-export type DjedDexPrices = {
-  id: number
-  timestamp: string
-  adaValue: number
-  usdValue: number
-  minswapUsdValue?: number
-  minswapAdaValue?: number
-  wingridersUsdValue?: number
-  wingridersAdaValue?: number
-  token: "DJED"
-}
-
-export type ShenYieldChartEntry = {
-  id: number
-  timestamp: string
-  yield: number
-  isProjected: boolean
-}
+import { useReserveRatioQuery } from "@/queries/analytics/reserveRatio/reserveRatio.query"
+import { useMarketCapQuery } from "@/queries/analytics/marketCap/marketCap.query"
+import { useVolumeQuery } from "@/queries/analytics/volumes/volumes.query"
+import { useDjedDexPricesQuery } from "@/queries/analytics/dexPrices/djedDexPrices.query"
+import { useShenAdaPriceQuery } from "@/queries/analytics/shenAdaPrice/shenAdaPrice.query"
+import {
+  useProjectedShenYieldQuery,
+  useShenYieldQuery,
+} from "@/queries/analytics/shenYield/shenYield.query"
+import { useReserveDetails } from "@/hooks/useReserveDetails"
+import { useProtocolData } from "@/hooks/useProtocolData"
+import { Rational, shenADARate, shenUSDRate } from "@open-djed/math"
+import { useTranslations } from "next-intl"
+import type { MarketCapResponse } from "@/queries/analytics/marketCap/marketCap.schema"
+import type { MarketCapValue } from "@open-djed/api"
 
 export type CurrencyValue = "ADA" | "USD"
 export const CURRENCY_OPTIONS: Array<{ label: string; value: CurrencyValue }> =
@@ -90,511 +28,301 @@ export const CURRENCY_OPTIONS: Array<{ label: string; value: CurrencyValue }> =
 export type Currency = (typeof CURRENCY_OPTIONS)[number]
 
 export type ChartPeriodValue = "W" | "M" | "Y" | "All"
-export const CHART_PERIOD_OPTIONS: Array<{
-  label: string
-  value: ChartPeriodValue
-}> = [
-  {
-    label: "This Week",
-    value: "W",
-  },
-  {
-    label: "This Month",
-    value: "M",
-  },
-  {
-    label: "This Year",
-    value: "Y",
-  },
-  {
-    label: "All Time",
-    value: "All",
-  },
-]
-export type ChartPeriod = (typeof CHART_PERIOD_OPTIONS)[number]
+export const CHART_PERIOD_OPTIONS = [
+  { labelKey: "common.period.week", value: "W" },
+  { labelKey: "common.period.month", value: "M" },
+  { labelKey: "common.period.year", value: "Y" },
+  { labelKey: "common.period.all", value: "All" },
+] as const
+export type ChartPeriod = (typeof CHART_PERIOD_OPTIONS)[number] & {
+  label?: string
+}
+
+function formatMarketCapData(
+  rawData: MarketCapResponse,
+  protocolMarketCap?: MarketCapValue,
+) {
+  if (!rawData) return []
+
+  const formatted = rawData.map((entry) => ({
+    ...entry,
+    usdValue: Number(entry.usdValue) / 1e6,
+    adaValue: Number(entry.adaValue) / 1e6,
+  }))
+
+  if (protocolMarketCap) {
+    formatted.push({
+      id: -1,
+      timestamp: new Date().toISOString(),
+      adaValue: Number(protocolMarketCap.ADA) / 1e6,
+      usdValue: Number(protocolMarketCap.USD) / 1e6,
+    })
+  }
+
+  return formatted
+}
 
 export function useAnalyticsData() {
-  const client = useApiClient()
-  const { reserveRatio } = useReserveDetails()
+  const t = useTranslations()
   const { showToast } = useToast()
-  const { data, isLoading } = useProtocolData()
   const { NETWORK } = env
+  const { reserveRatio } = useReserveDetails()
+  const { data, isLoading } = useProtocolData()
 
-  const [reserveRatioData, setReserveRatioData] = useState<
-    ReserveRatioChartEntry[]
-  >([])
+  const translatedPeriodOptions = useMemo(() => {
+    return CHART_PERIOD_OPTIONS.map((option) => ({
+      ...option,
+      label: t(option.labelKey),
+    }))
+  }, [t])
+
   const [reserveRatioPeriod, setReserveRatioPeriod] = useState<ChartPeriod>(
-    CHART_PERIOD_OPTIONS[0],
+    translatedPeriodOptions[0],
   )
-
-  const [djedMCHistoricalData, setDjedMCHistoricalData] = useState<
-    DjedMChartEntry[]
-  >([])
   const [djedMCPeriod, setDjedMCPeriod] = useState<ChartPeriod>(
-    CHART_PERIOD_OPTIONS[0],
+    translatedPeriodOptions[0],
   )
   const [djedMCCurrency, setDjedMCCurrency] = useState<Currency>(
     CURRENCY_OPTIONS[0],
   )
-
-  const [shenMCHistoricalData, setShenMCHistoricalData] = useState<
-    ShenMChartEntry[]
-  >([])
   const [shenMCPeriod, setShenMCPeriod] = useState<ChartPeriod>(
-    CHART_PERIOD_OPTIONS[0],
+    translatedPeriodOptions[0],
   )
   const [shenMCCurrency, setShenMCCurrency] = useState<Currency>(
     CURRENCY_OPTIONS[0],
   )
 
-  const [shenAdaHistoricalData, setShenAdaHistoricalData] =
-    useState<TokenPriceByToken>({
-      ADA: [],
-      SHEN: [],
-    })
   const [shenAdaPricePeriod, setShenAdaPricePeriod] = useState<ChartPeriod>(
-    CHART_PERIOD_OPTIONS[1],
+    translatedPeriodOptions[1],
   )
   const [shenAdaCurrency, setShenAdaCurrency] = useState<Currency>(
     CURRENCY_OPTIONS[0],
   )
 
-  const [volumesHistoricalData, setVolumesHistoricalData] = useState<
-    VolumeChartEntry[]
-  >([])
   const [volumesPeriod, setVolumesPeriod] = useState<ChartPeriod>(
-    CHART_PERIOD_OPTIONS[0],
+    translatedPeriodOptions[0],
   )
   const [volumesCurrency, setVolumesCurrency] = useState<Currency>(
     CURRENCY_OPTIONS[0],
   )
 
-  const [djedDexHistoricalData, setDjedDexHistoricalData] = useState<
-    DjedDexPrices[]
-  >([])
   const [djedDexPeriod, setDjedDexPeriod] = useState<ChartPeriod>(
-    CHART_PERIOD_OPTIONS[1],
+    translatedPeriodOptions[1],
   )
   const [djedDexCurrency, setDjedDexCurrency] = useState<Currency>(
     CURRENCY_OPTIONS[NETWORK === "Mainnet" ? 0 : 1],
   )
-
-  const [isLoadingReserve, setIsLoadingReserve] = useState(false)
-
-  const [shenYieldData, setShenYieldData] = useState<ShenYieldChartEntry[]>([])
   const [shenYieldPeriod, setShenYieldPeriod] = useState<ChartPeriod>(
-    CHART_PERIOD_OPTIONS[0],
-  )
-  const [projectedYield, setProjectedYield] = useState<ShenYieldChartEntry[]>(
-    [],
+    translatedPeriodOptions[1],
   )
 
-  const fetchReserveRatioHistoricalData = useCallback(
-    async (period: ChartPeriod) => {
-      setIsLoadingReserve(true)
-      try {
-        const res = await client.api["historical-reserve-ratio"].$get({
-          query: { period: period.value },
-        })
+  // Queries
+  const { data: reserveRatioData, error: reserveRatioError } =
+    useReserveRatioQuery({ period: reserveRatioPeriod.value })
 
-        if (res.ok) {
-          const historicalData = (await res.json()) as ReserveRatioChartEntry[]
-          if (period.value === "All") historicalData.shift()
+  const { data: djedMCData, error: djedMCError } = useMarketCapQuery({
+    period: djedMCPeriod.value,
+    token: "DJED",
+  })
 
-          const updatedHistoricalData = historicalData.map((entry) => ({
-            ...entry,
-            reserveRatio: Number(entry.reserveRatio) * 100,
-          }))
+  const { data: shenMCData, error: shenMCError } = useMarketCapQuery({
+    period: shenMCPeriod.value,
+    token: "SHEN",
+  })
 
-          if (reserveRatio !== undefined) {
-            const todayKey = new Date().toISOString()
-            updatedHistoricalData.push({
-              id: -1,
-              timestamp: todayKey,
-              reserveRatio: reserveRatio,
-            })
-          }
+  const { data: volumesData, error: volumesError } = useVolumeQuery({
+    period: volumesPeriod.value,
+  })
 
-          setReserveRatioData(updatedHistoricalData)
-        }
-      } catch (err) {
-        console.error("Action failed:", err)
-        if (err instanceof AppError) {
-          showToast({
-            message: `${err.message}`,
-            type: "error",
-          })
-          return
-        }
+  const { data: djedDexsData, error: djedDexsError } = useDjedDexPricesQuery({
+    period: djedDexPeriod.value,
+  })
 
-        showToast({
-          message: `Failed to get historical reserve ratio data.`,
-          type: "error",
-        })
-      } finally {
-        setIsLoadingReserve(false)
+  const { data: shenAdaData, error: shenAdaError } = useShenAdaPriceQuery({
+    period: shenAdaPricePeriod.value,
+  })
+  const { data: shenYieldData, error: shenYieldError } = useShenYieldQuery({
+    period: shenYieldPeriod.value,
+  })
+  const { data: projectedYield, error: projectedShenYieldError } =
+    useProjectedShenYieldQuery()
+
+  // Data formatting
+  const formattedReserveRatioData = useMemo(() => {
+    if (!reserveRatioData) return []
+
+    const updated = reserveRatioData.map((entry) => ({
+      ...entry,
+      reserveRatio: Number(entry.reserveRatio) * 100,
+    }))
+
+    if (reserveRatio !== undefined) {
+      updated.push({
+        id: -1,
+        timestamp: new Date().toISOString(),
+        reserveRatio,
+      })
+    }
+
+    return updated
+  }, [reserveRatioData, reserveRatio])
+
+  const formattedDjedMCData = useMemo(() => {
+    if (!djedMCData || !data) return []
+
+    return formatMarketCapData(djedMCData, data.protocolData.DJED.marketCap)
+  }, [djedMCData, isLoading, data])
+
+  const formattedShenMCData = useMemo(() => {
+    if (!shenMCData || !data) return []
+
+    return formatMarketCapData(shenMCData, data.protocolData.SHEN.marketCap)
+  }, [shenMCData, isLoading, data])
+
+  const formattedShenAdaData = useMemo(() => {
+    if (!shenAdaData) return { ADA: [], SHEN: [] }
+
+    const result = {
+      ADA: [...shenAdaData.ADA],
+      SHEN: [...shenAdaData.SHEN],
+    }
+
+    if (data && result.ADA.length && result.SHEN.length) {
+      const todayKey = new Date().toISOString()
+
+      result.ADA[result.ADA.length - 1] = {
+        ...result.ADA[result.ADA.length - 1],
+        timestamp: todayKey,
+        token: "ADA",
+        adaValue: 1,
+        usdValue: new Rational(
+          data.oracleDatum.oracleFields.adaUSDExchangeRate,
+        ).toNumber(),
       }
-    },
-    [reserveRatio],
-  )
 
-  const fetchMCHistoricalData = useCallback(
-    async (period: ChartPeriod, token: TokenMarketCap) => {
-      try {
-        const res = await client.api["historical-market-cap"].$get({
-          query: { period: period.value, token: token },
-        })
-
-        if (res.ok) {
-          const historicalData = (await res.json()) as ShenMChartEntry[]
-
-          if (period.value === "All") historicalData.shift()
-
-          const dataToSave = historicalData.map((entry) => ({
-            ...entry,
-            usdValue: (Number(entry.usdValue) / 1e6).toString(),
-            adaValue: (Number(entry.adaValue) / 1e6).toString(),
-          }))
-
-          if (!isLoading) {
-            const todayKey = new Date().toISOString()
-            dataToSave.push({
-              id: -1,
-              timestamp: todayKey,
-              adaValue: (
-                Number(
-                  token === "DJED"
-                    ? data?.protocolData.DJED.marketCap.ADA
-                    : data?.protocolData.SHEN.marketCap.ADA,
-                ) / 1e6
-              ).toString(),
-              usdValue: (
-                Number(
-                  token === "DJED"
-                    ? data?.protocolData.DJED.marketCap.USD
-                    : data?.protocolData.SHEN.marketCap.USD,
-                ) / 1e6
-              ).toString(),
-            })
-          }
-
-          if (token === "DJED") {
-            setDjedMCHistoricalData(dataToSave)
-          } else if (token === "SHEN") {
-            setShenMCHistoricalData(dataToSave)
-          }
-        }
-      } catch (err) {
-        console.error("Action failed:", err)
-        if (err instanceof AppError) {
-          showToast({
-            message: `${err.message}`,
-            type: "error",
-          })
-          return
-        }
-
-        showToast({
-          message: `Failed to get historical ${capitalize(token)} market cap data.`,
-          type: "error",
-        })
+      result.SHEN[result.SHEN.length - 1] = {
+        ...result.SHEN[result.SHEN.length - 1],
+        timestamp: todayKey,
+        token: "SHEN",
+        adaValue: shenADARate(data.poolDatum, data.oracleDatum).toNumber(),
+        usdValue: shenUSDRate(data.poolDatum, data.oracleDatum).toNumber(),
       }
-    },
-    [data],
-  )
+    }
 
-  const fetchShenAdaPriceHistoricalData = useCallback(
-    async (period: ChartPeriod) => {
-      try {
-        const res = await client.api["historical-shen-ada-price"].$get({
-          query: { period: period.value },
-        })
+    return result
+  }, [shenAdaData, data])
 
-        if (!res.ok) return
-
-        const historicalData = (await res.json()) as TokenPriceByToken
-        if (period.value === "All") {
-          historicalData.ADA.shift()
-          historicalData.SHEN.shift()
-        }
-
-        if (!isLoading && data) {
-          const todayKey = new Date().toISOString()
-          historicalData.ADA.push({
-            id: -1,
-            timestamp: todayKey,
-            token: "ADA",
-            adaValue: 1,
-            usdValue: new Rational(
-              data.oracleDatum.oracleFields.adaUSDExchangeRate,
-            ).toNumber(),
-          })
-          historicalData.SHEN.push({
-            id: -2,
-            timestamp: todayKey,
-            token: "SHEN",
-            adaValue: shenADARate(
-              data?.poolDatum,
-              data?.oracleDatum,
-            ).toNumber(),
-            usdValue: shenUSDRate(
-              data?.poolDatum,
-              data?.oracleDatum,
-            ).toNumber(),
-          })
-        }
-
-        historicalData.ADA = historicalData.ADA.map((entry) => ({
-          ...entry,
-          adaValue: Number(entry.adaValue),
-          usdValue: Number(entry.usdValue),
-        }))
-        historicalData.SHEN = historicalData.SHEN.map((entry) => ({
-          ...entry,
-          adaValue: Number(entry.adaValue),
-          usdValue: Number(entry.usdValue),
-        }))
-        setShenAdaHistoricalData(historicalData)
-      } catch (err) {
-        console.error("Action failed:", err)
-
-        if (err instanceof AppError) {
-          showToast({
-            message: err.message,
-            type: "error",
-          })
-          return
-        }
-
-        showToast({
-          message: `Failed to get historical token price data.`,
-          type: "error",
-        })
-      }
-    },
-    [data],
-  )
-
-  const fetchVolumesHistoricalData = useCallback(
-    async (period: ChartPeriod) => {
-      try {
-        const res = await client.api["historical-volumes"].$get({
-          query: { period: period.value },
-        })
-
-        if (res.ok) {
-          const historicalData = (await res.json()) as VolumeChartEntry[]
-          if (period.value === "All") historicalData.shift()
-
-          const updatedHistoricalData = historicalData.map((entry) => ({
-            ...entry,
-            djedMintedUSD: Number(entry.djedMintedUSD),
-            djedBurnedUSD: Number(entry.djedBurnedUSD),
-            shenMintedUSD: Number(entry.shenMintedUSD),
-            shenBurnedUSD: Number(entry.shenBurnedUSD),
-            djedMintedADA: Number(entry.djedMintedADA),
-            djedBurnedADA: Number(entry.djedBurnedADA),
-            shenMintedADA: Number(entry.shenMintedADA),
-            shenBurnedADA: Number(entry.shenBurnedADA),
-            totalDjedVolumeUSD: Number(entry.totalDjedVolumeUSD),
-            totalShenVolumeUSD: Number(entry.totalShenVolumeUSD),
-            totalDjedVolumeADA: Number(entry.totalDjedVolumeADA),
-            totalShenVolumeADA: Number(entry.totalShenVolumeADA),
-            totalVolumeUSD: Number(entry.totalVolumeUSD),
-            totalVolumeADA: Number(entry.totalVolumeADA),
-          }))
-
-          setVolumesHistoricalData(updatedHistoricalData)
-        }
-      } catch (err) {
-        console.error("Action failed:", err)
-        if (err instanceof AppError) {
-          showToast({
-            message: `${err.message}`,
-            type: "error",
-          })
-          return
-        }
-
-        showToast({
-          message: `Failed to get historical reserve ratio data.`,
-          type: "error",
-        })
-      } finally {
-        setIsLoadingReserve(false)
-      }
-    },
-    [volumesHistoricalData],
-  )
-
-  const fetchDjedDexHistoricalData = useCallback(
-    async (period: ChartPeriod) => {
-      try {
-        const res = await client.api["historical-djed-dex-price"].$get({
-          query: { period: period.value },
-        })
-
-        if (res.ok) {
-          const historicalData = (await res.json()) as DjedDexPrices[]
-
-          if (period.value === "All") historicalData.shift()
-          console.log("data: ", historicalData)
-          setDjedDexHistoricalData(historicalData)
-        }
-      } catch (err) {
-        console.error("Action failed:", err)
-        if (err instanceof AppError) {
-          showToast({
-            message: `${err.message}`,
-            type: "error",
-          })
-          return
-        }
-
-        showToast({
-          message: `Failed to get historical Djed - Dex prices.`,
-          type: "error",
-        })
-      }
-    },
-    [data],
-  )
-
-  const fetchShenYieldHistoricalData = useCallback(
-    async (period: ChartPeriod) => {
-      try {
-        const resHistorical = await client.api["historical-shen-yield"].$get({
-          query: { period: period.value },
-        })
-        if (!resHistorical.ok) return
-
-        const historicalData =
-          (await resHistorical.json()) as ShenYieldChartEntry[]
-        if (period.value === "All") historicalData.shift()
-
-        setShenYieldData(
-          historicalData.map((entry) => ({
-            ...entry,
-            yield: Number(entry.yield),
-            isProjected: false,
-          })),
-        )
-
-        const resProjected = await client.api["projected-shen-yield"].$get()
-        const rawData = await resProjected.json()
-
-        if (!resProjected.ok) {
-          const errorMessage =
-            rawData && typeof rawData === "object" && "message" in rawData
-              ? rawData.message
-              : "Failed to fetch yield data"
-
-          throw new AppError(errorMessage)
-        }
-
-        const dataForProjected = rawData as unknown as ShenYieldChartEntry[]
-        const projected = calculateProjectedYield(
-          dataForProjected.map((entry) => ({
-            ...entry,
-            yield: Number(entry.yield),
-          })),
-        )
-        setProjectedYield(projected)
-      } catch (err) {
-        console.error("Action failed:", err)
-
-        if (err instanceof AppError) {
-          showToast({
-            message: err.message,
-            type: "error",
-          })
-          return
-        }
-
-        showToast({
-          message: `Failed to get historical shen yield data.`,
-          type: "error",
-        })
-      }
-    },
-    [client],
-  )
+  // Error handling
+  useEffect(() => {
+    if (reserveRatioError) {
+      showToast({
+        message: t("analytics.errors.failedToFetch", {
+          analytic: t("analytics.reserveRatioOverTime"),
+        }),
+        type: "error",
+      })
+    }
+  }, [reserveRatioError, showToast])
 
   useEffect(() => {
-    fetchReserveRatioHistoricalData(reserveRatioPeriod).catch((err) => {
-      console.error("fetchReserveRatio error:", err)
-    })
-  }, [reserveRatioPeriod, data])
+    if (djedMCError) {
+      showToast({
+        message: t("analytics.errors.failedToFetch", {
+          analytic: t("analytics.djedMarketCap"),
+        }),
+        type: "error",
+      })
+    }
+  }, [djedMCError, showToast])
 
   useEffect(() => {
-    fetchMCHistoricalData(djedMCPeriod, "DJED").catch((err) => {
-      console.error("fetchDjedMC error:", err)
-    })
-  }, [djedMCPeriod, data])
+    if (shenMCError) {
+      showToast({
+        message: t("analytics.errors.failedToFetch", {
+          analytic: t("analytics.shenMarketCap"),
+        }),
+        type: "error",
+      })
+    }
+  }, [shenMCError, showToast])
 
   useEffect(() => {
-    fetchMCHistoricalData(shenMCPeriod, "SHEN").catch((err) => {
-      console.error("fetchShenMC error:", err)
-    })
-  }, [shenMCPeriod, data])
+    if (volumesError) {
+      showToast({
+        message: t("analytics.errors.failedToFetch", {
+          analytic: t("analytics.volumes"),
+        }),
+        type: "error",
+      })
+    }
+  }, [volumesError, showToast])
 
   useEffect(() => {
-    fetchShenAdaPriceHistoricalData(shenAdaPricePeriod).catch((err) => {
-      console.error("fetchShenAdaPrice error:", err)
-    })
-  }, [shenAdaPricePeriod, shenAdaCurrency, data])
+    if (djedDexsError) {
+      showToast({
+        message: t("analytics.errors.failedToFetch", {
+          analytic: t("analytics.djedDexPrice"),
+        }),
+        type: "error",
+      })
+    }
+  }, [djedDexsError, showToast])
 
   useEffect(() => {
-    fetchVolumesHistoricalData(volumesPeriod).catch((err) => {
-      console.error("fetchVolumesHistoricalData error:", err)
-    })
-  }, [volumesPeriod, data])
+    if (shenAdaError) {
+      showToast({
+        message: t("analytics.errors.failedToFetch", {
+          analytic: t("analytics.shenAdaPrice"),
+        }),
+        type: "error",
+      })
+    }
+  }, [shenAdaError, showToast])
 
   useEffect(() => {
-    fetchDjedDexHistoricalData(djedDexPeriod).catch((err) => {
-      console.error("fetchDjedDexHistoricalData error:", err)
-    })
-  }, [djedDexPeriod])
-
-  useEffect(() => {
-    fetchShenYieldHistoricalData(shenYieldPeriod).catch((err) => {
-      console.error("fetchShenYield error:", err)
-    })
-  }, [shenYieldPeriod, data])
+    if (shenYieldError || projectedShenYieldError) {
+      showToast({
+        message: t("analytics.errors.failedToFetch", {
+          analytic: "SHEN Yield",
+        }),
+        type: "error",
+      })
+    }
+  }, [projectedShenYieldError, shenYieldError, showToast, t])
 
   return {
-    reserveRatioData,
+    reserveRatioData: formattedReserveRatioData || [],
     reserveRatioPeriod,
     setReserveRatioPeriod,
-    djedMCHistoricalData,
+    djedMCHistoricalData: formattedDjedMCData || [],
     djedMCPeriod,
     setDjedMCPeriod,
     djedMCCurrency,
     setDjedMCCurrency,
-    shenMCHistoricalData,
+    shenMCHistoricalData: formattedShenMCData || [],
     shenMCPeriod,
     setShenMCPeriod,
     shenMCCurrency,
     setShenMCCurrency,
-    shenAdaHistoricalData,
+    shenAdaHistoricalData: formattedShenAdaData ?? { ADA: [], SHEN: [] },
     shenAdaPricePeriod,
     setShenAdaPricePeriod,
     shenAdaCurrency,
     setShenAdaCurrency,
-    volumesHistoricalData,
+    volumesHistoricalData: volumesData || [],
     volumesPeriod,
     setVolumesPeriod,
     volumesCurrency,
     setVolumesCurrency,
     djedDexCurrency,
-    djedDexHistoricalData,
+    djedDexHistoricalData: djedDexsData || [],
     djedDexPeriod,
     setDjedDexCurrency,
     setDjedDexPeriod,
-    isLoadingReserve,
-    shenYieldData,
-    projectedYield,
+    shenYieldData: shenYieldData || [],
+    projectedYield: projectedYield || [],
     shenYieldPeriod,
     setShenYieldPeriod,
+    translatedPeriodOptions,
   }
 }

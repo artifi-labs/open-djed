@@ -1,8 +1,8 @@
 "use client"
 
 import { FinancialAreaChart } from "@/components/charts/FinancialAreaChart"
+import type { ShenYieldChartEntry } from "@/queries/analytics/shenYield/shenYield.schema"
 import { useMemo } from "react"
-import { type ShenYieldChartEntry } from "../useAnalyticsData"
 import { ReferenceDot } from "recharts"
 
 type ShenYieldChartProps = {

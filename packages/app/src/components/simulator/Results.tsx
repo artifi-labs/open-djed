@@ -14,6 +14,7 @@ import Divider from "../Divider"
 import { useLocalStorage } from "usehooks-ts"
 import { aggregateByBucket } from "@/utils/timeseries"
 import type { AggregationConfig, DataRow } from "@/utils/timeseries"
+import { useTranslations } from "next-intl"
 
 export type ResultsProps = {
   inputs: ScenarioInputs
@@ -92,6 +93,7 @@ const ResultSummaryItem: React.FC<ResultItem> = ({
 }
 
 const Results: React.FC<ResultsProps> = ({ inputs }) => {
+  const t = useTranslations()
   const { totals, feeDetails, rewardDetails } = useResults(inputs)
   const { results: simulatorData, error } = useSimulatorResults(inputs)
   const { showToast } = useToast()
@@ -116,10 +118,10 @@ const Results: React.FC<ResultsProps> = ({ inputs }) => {
       isContentBlurred ? (
         <div className="flex h-full flex-col justify-center gap-6 text-center">
           <p className="text-md text-primary font-semibold">
-            Simulator Results
+            {t("simulator.results.title")}
           </p>
           <p className="text-secondary px-4 text-sm">
-            Start by entering an amount to see the results.
+            {t("simulator.results.description")}
           </p>
         </div>
       ) : null,
@@ -148,7 +150,7 @@ const Results: React.FC<ResultsProps> = ({ inputs }) => {
     const {
       initialAdaHoldings: initialHoldings = 0,
       finalAdaHoldings: finalHoldings = 0,
-      stakingCredits: stakingRewards = [],
+      stakingRewards = 0,
       feesEarned = 0,
     } = simulatorData || {}
 
@@ -216,23 +218,12 @@ const Results: React.FC<ResultsProps> = ({ inputs }) => {
 
     const data: DataRow[] = []
 
-    // create a record with staking rewards date and value for easy lookup
-    const rewardsMap = stakingRewards.reduce(
-      (acc, entry) => {
-        const date = new Date(entry.date).toISOString()
-        acc[date] = (acc[date] || 0) + entry.reward
-        return acc
-      },
-      {} as Record<string, number>,
-    )
+    const dailyStakingRewards = totalDays > 0 ? stakingRewards / totalDays : 0
 
     // Calculate daily protocol fees earned
     const dailyFeesEarned = totalDays > 0 ? feesEarned / totalDays : 0
 
-    const totalRewards = stakingRewards.reduce(
-      (acc, entry) => acc + entry.reward,
-      0,
-    )
+    const totalRewards = stakingRewards
     const holdingsEndBase = initialHoldings + totalRewards + feesEarned
     const shenValueFactor =
       holdingsEndBase > 0 ? finalHoldings / holdingsEndBase : 1
@@ -244,9 +235,8 @@ const Results: React.FC<ResultsProps> = ({ inputs }) => {
     for (let i = 0; i < totalDays; i++) {
       const d = new Date(startDate.getTime() + i * dayInMs).toISOString()
 
-      // Accumulate staking rewards for this day
-      const rewardToday = rewardsMap[d] || 0
-      currentHoldings += rewardToday
+      // Accumulate staking rewards for this day.
+      currentHoldings += dailyStakingRewards
 
       // Accumulate protocol fees earned (distributed daily)
       currentHoldings += dailyFeesEarned
@@ -302,10 +292,10 @@ const Results: React.FC<ResultsProps> = ({ inputs }) => {
         <div className="flex flex-col gap-10 rounded-lg">
           <div className="flex flex-col gap-6">
             <p className="min-w-auto text-sm font-medium">
-              Your Returns Comparison (SHEN vs ADA)
+              {t("simulator.results.comparison.title")}
             </p>
             <p className="text-secondary text-xs">
-              This chart shows alternative outcomes. Holding SHEN or ADA.
+              {t("simulator.results.comparison.description")}
             </p>
           </div>
           <div className="desktop:grid-cols-2 desktop:gap-24 grid grid-rows-1 gap-16">
@@ -321,12 +311,14 @@ const Results: React.FC<ResultsProps> = ({ inputs }) => {
           {/* Fees */}
           <div className="flex flex-col justify-start gap-8">
             <div className="flex flex-row items-center gap-8">
-              <p className="min-w-auto text-sm font-medium">Fees</p>
+              <p className="min-w-auto text-sm font-medium">
+                {t("common.fees")}
+              </p>
               <Tooltip
                 text={
                   detailedFees
-                    ? "See simplified fees"
-                    : "See detailed fees breakdown"
+                    ? t("simulator.results.fees.simplified.tooltip")
+                    : t("simulator.results.fees.detailed.tooltip")
                 }
                 tooltipDirection="top"
               >
@@ -356,12 +348,14 @@ const Results: React.FC<ResultsProps> = ({ inputs }) => {
           {/* Rewards */}
           <div className="flex flex-col justify-start gap-8">
             <div className="flex flex-row items-center gap-8">
-              <p className="min-w-auto text-sm font-medium">Rewards</p>
+              <p className="min-w-auto text-sm font-medium">
+                {t("common.rewards")}
+              </p>
               <Tooltip
                 text={
                   detailedRewards
-                    ? "See simplified rewards"
-                    : "See detailed rewards breakdown"
+                    ? t("simulator.results.rewards.simplified.tooltip")
+                    : t("simulator.results.rewards.detailed.tooltip")
                 }
                 tooltipDirection="top"
               >
@@ -391,7 +385,7 @@ const Results: React.FC<ResultsProps> = ({ inputs }) => {
 
         {/* Chart */}
         <FinancialAreaChart
-          title="Profit Over Time"
+          title={t("simulator.results.chart.profitOverTime.title")}
           data={results}
           xKey="date"
           lines={[
@@ -403,7 +397,7 @@ const Results: React.FC<ResultsProps> = ({ inputs }) => {
             {
               dataKey: "shenPnlUsd_avg",
               name: "SHEN PNL",
-              stroke: "var(--color-accent-1",
+              stroke: "var(--color-accent-1)",
             },
           ]}
           xTickFormatter={xAxisFormatter}

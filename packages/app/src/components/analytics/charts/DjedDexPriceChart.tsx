@@ -1,22 +1,11 @@
-"use client"
-
 import { FinancialAreaChart } from "@/components/charts/FinancialAreaChart"
-import { useMemo } from "react"
-import { type DjedDexPrices, type Currency } from "../useAnalyticsData"
-import { Legend } from "recharts"
-import { ChartLegend } from "@/components/charts/legend/ChartLegend"
+import { type Currency } from "../useAnalyticsData"
 import { env } from "@/lib/envLoader"
+import type { DjedDexPricesResponse } from "@/queries/analytics/dexPrices/djedDexPrices.schema"
 
 type DjedDexPriceChartProps = {
-  data: DjedDexPrices[]
+  data: DjedDexPricesResponse
   currency: Currency
-}
-
-type ChartRow = {
-  date: string
-  djedPrice: number
-  minswapPrice: number
-  wingridersPrice: number
 }
 
 export const DjedDexPriceChart: React.FC<DjedDexPriceChartProps> = ({
@@ -25,25 +14,6 @@ export const DjedDexPriceChart: React.FC<DjedDexPriceChartProps> = ({
 }) => {
   const { NETWORK } = env
   const isUsd = currency.value === "USD"
-
-  const { rows } = useMemo(() => {
-    if (!data?.length) {
-      return { rows: [] }
-    }
-
-    const mapped: ChartRow[] = data.map((entry) => ({
-      date: entry.timestamp,
-      djedPrice: Number(isUsd ? entry.usdValue : entry.adaValue),
-      minswapPrice: Number(
-        isUsd ? entry.minswapUsdValue : entry.minswapAdaValue,
-      ),
-      wingridersPrice: Number(
-        isUsd ? entry.wingridersUsdValue : entry.wingridersAdaValue,
-      ),
-    }))
-
-    return { rows: mapped }
-  }, [data, isUsd])
 
   const formatAxisValue = (val: number) => {
     const abs = Math.abs(val)
@@ -60,19 +30,19 @@ export const DjedDexPriceChart: React.FC<DjedDexPriceChartProps> = ({
 
   const lines = [
     {
-      dataKey: "djedPrice",
+      dataKey: isUsd ? "usdValue" : "adaValue",
       name: `Djed`,
       stroke: "var(--color-supportive-1-500)",
     },
     ...(NETWORK === "Mainnet"
       ? [
           {
-            dataKey: "minswapPrice",
+            dataKey: isUsd ? "minswapUsdValue" : "minswapAdaValue",
             name: `Minswap`,
             stroke: "var(--color-supportive-2-500)",
           },
           {
-            dataKey: "wingridersPrice",
+            dataKey: isUsd ? "wingridersUsdValue" : "wingridersAdaValue",
             name: `WingRiders`,
             stroke: "var(--color-supportive-4-400)",
           },
@@ -82,16 +52,10 @@ export const DjedDexPriceChart: React.FC<DjedDexPriceChartProps> = ({
 
   return (
     <FinancialAreaChart
-      data={rows}
-      xKey="date"
+      data={data}
+      xKey="timestamp"
       lines={lines}
       yTickFormatter={yTickFormatter}
-    >
-      <Legend
-        content={<ChartLegend />}
-        verticalAlign="top"
-        wrapperStyle={{ left: 0, width: "100%", top: 0 }}
-      />
-    </FinancialAreaChart>
+    />
   )
 }
