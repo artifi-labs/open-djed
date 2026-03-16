@@ -36,6 +36,7 @@ export type ChartPeriod = (typeof CHART_PERIOD_OPTIONS)[number] & {
 
 function formatMarketCapData(
   rawData: MarketCapResponse,
+  period: ChartPeriod,
   protocolMarketCap?: MarketCapValue,
 ) {
   if (!rawData) return []
@@ -54,6 +55,8 @@ function formatMarketCapData(
       usdValue: Number(protocolMarketCap.USD) / 1e6,
     })
   }
+
+  if (period.value === "All") formatted.shift()
 
   return formatted
 }
@@ -152,19 +155,29 @@ export function useAnalyticsData() {
       })
     }
 
+    if (reserveRatioPeriod.value === "All") updated.shift()
+
     return updated
   }, [reserveRatioData, reserveRatio])
 
   const formattedDjedMCData = useMemo(() => {
     if (!djedMCData || !data) return []
 
-    return formatMarketCapData(djedMCData, data.protocolData.DJED.marketCap)
+    return formatMarketCapData(
+      djedMCData,
+      djedMCPeriod,
+      data.protocolData.DJED.marketCap,
+    )
   }, [djedMCData, isLoading, data])
 
   const formattedShenMCData = useMemo(() => {
     if (!shenMCData || !data) return []
 
-    return formatMarketCapData(shenMCData, data.protocolData.SHEN.marketCap)
+    return formatMarketCapData(
+      shenMCData,
+      shenMCPeriod,
+      data.protocolData.SHEN.marketCap,
+    )
   }, [shenMCData, isLoading, data])
 
   const formattedShenAdaData = useMemo(() => {
@@ -199,6 +212,24 @@ export function useAnalyticsData() {
 
     return result
   }, [shenAdaData, data])
+
+  const formattedDjedDexData = useMemo(() => {
+    if (!djedDexsData) return []
+
+    const updated = djedDexsData.map((entry) => ({
+      ...entry,
+      adaValue: Number(entry.adaValue),
+      usdValue: Number(entry.usdValue),
+      minswapAdaValue: Number(entry.minswapAdaValue),
+      minswapUsdValue: Number(entry.minswapUsdValue),
+      wingridersAdaValue: Number(entry.wingridersAdaValue),
+      wingridersUsdValue: Number(entry.wingridersUsdValue),
+    }))
+
+    if (djedDexPeriod.value === "All") updated.shift()
+
+    return updated
+  }, [djedDexsData, data])
 
   // Error handling
   useEffect(() => {
@@ -292,7 +323,7 @@ export function useAnalyticsData() {
     volumesCurrency,
     setVolumesCurrency,
     djedDexCurrency,
-    djedDexHistoricalData: djedDexsData || [],
+    djedDexHistoricalData: formattedDjedDexData ?? [],
     djedDexPeriod,
     setDjedDexCurrency,
     setDjedDexPeriod,

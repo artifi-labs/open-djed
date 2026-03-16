@@ -8,12 +8,63 @@ type DjedDexPriceChartProps = {
   currency: Currency
 }
 
+const getMaxMin = (data: DjedDexPricesResponse, isUsd: boolean) => {
+  const result = data.reduce(
+    (acc, entry) => {
+      const valuesToCompare = isUsd
+        ? [entry.usdValue, entry.minswapUsdValue, entry.wingridersUsdValue]
+        : [entry.adaValue, entry.minswapAdaValue, entry.wingridersAdaValue]
+
+      const validValues = valuesToCompare.filter(
+        (v) => v !== null && v !== undefined && v > 0,
+      )
+
+      if (validValues.length === 0) return acc
+
+      const currentMax = Math.max(...validValues)
+      const currentMin = Math.min(...validValues)
+
+      return {
+        max: currentMax > acc.max ? currentMax : acc.max,
+        min: currentMin < acc.min ? currentMin : acc.min,
+      }
+    },
+    { max: -Infinity, min: Infinity },
+  )
+
+  return {
+    max: result.max === -Infinity ? 0 : result.max,
+    min: result.min === Infinity ? 0 : result.min,
+  }
+}
+
+const getDynamicYAxis = (min: number, max: number, isUsd: boolean) => {
+  // if the currency is USD, define the middle point as 1$
+  // if the currency is ADA, define the lowest point as 0₳
+  if (isUsd) {
+    const dist = Math.max(Math.abs(max - 1), Math.abs(min - 1))
+    const step = 0.05
+    const radius = Math.ceil(dist / step) * step
+    const points = [1 - radius, 1 - radius / 2, 1, 1 + radius / 2, 1 + radius]
+    return points
+  } else {
+    const step = max > 10 ? 10 : 5
+    const yAxisMax = Math.ceil(max / step) * step
+    const interval = yAxisMax / 4
+    const points = [0, interval, interval * 2, interval * 3, yAxisMax]
+    return points
+  }
+}
+
 export const DjedDexPriceChart: React.FC<DjedDexPriceChartProps> = ({
   data,
   currency,
 }) => {
   const { NETWORK } = env
   const isUsd = currency.value === "USD"
+
+  const { max, min } = getMaxMin(data, isUsd)
+  const ticks = getDynamicYAxis(min, max, isUsd)
 
   const formatAxisValue = (val: number) => {
     const abs = Math.abs(val)
@@ -56,6 +107,7 @@ export const DjedDexPriceChart: React.FC<DjedDexPriceChartProps> = ({
       xKey="timestamp"
       lines={lines}
       yTickFormatter={yTickFormatter}
+      yTicks={ticks}
     />
   )
 }
