@@ -197,7 +197,7 @@
     "paragraphs": {
       "dataCollection": "Não coletamos nem armazenamos dados pessoais. Todos os dados utilizados ou exibidos na aplicação vêm exclusivamente de informações públicas disponíveis na blockchain.",
       "wallet": "Quando os usuários interagem com o app usando carteiras da Cardano, interagimos apenas com a interface da carteira via padrão CIP-30. Não recebemos nem armazenamos suas chaves privadas. Reservamo-nos o direito de armazenar endereços e transações para fins analíticos, permitindo melhorar o app com base no uso.",
-      "analytics1": "Usamos PostHog para coletar analíticas e telemetrias da aplicação, ajudando-nos a entender o uso e identificar bugs ou problemas de performance.",
+      "analytics1": "Usamos PostHog para guardar analíticas e telemetrias da aplicação, ajudando-nos a entender o uso e identificar bugs ou problemas de performance.",
       "analytics2": "Os dados coletados pelo PostHog <strong>não</strong> incluem informações pessoais identificáveis. Não armazenamos endereços de carteira, nomes, emails ou credenciais de usuários.",
       "analytics3": "Todas as analíticas são usadas estritamente para melhorar a experiência da aplicação.",
       "openSource": "Esta aplicação é de código aberto e licenciado sob a",
