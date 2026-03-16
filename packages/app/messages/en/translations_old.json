@@ -1,6 +1,9 @@
 {
   "dashboard": {
-    "name": ""
+    "name": "",
+    "actionButton": {
+      "minAction": "{action} {minMessage}"
+    }
   },
   "orders": {
     "status": {
