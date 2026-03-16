@@ -56,7 +56,7 @@ export const getLast12EpochsStakingRewardsRate = async () => {
 
   // data is stored in the db as percentage rate per epoch
   // therefore we need to convert from percentage to decimal and
-  // from epoch(aprox. 5 days) to day
+  // from epoch(approx. 5 days) to day
   // divides by 500 because
   // 100 (percentage -> decimal) and 5 (epoch -> daily)
   return last12DaysRewardsRate.length > 0
