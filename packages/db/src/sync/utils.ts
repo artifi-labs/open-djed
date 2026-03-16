@@ -579,13 +579,17 @@ export const buildDailyStakingRates = (
   today = new Date(),
 ) => {
   const stakingByDay = new Map<string, number>()
+  const sortedRewards = [...stakingRewards].sort(
+    (a, b) => new Date(a.timestamp).valueOf() - new Date(b.timestamp).valueOf(),
+  )
 
-  for (const reward of stakingRewards) {
+  for (const [index, reward] of sortedRewards.entries()) {
     const rate = Number(reward.rate)
     if (!Number.isFinite(rate) || rate <= 0) continue
 
-    const start = new Date(reward.startTimestamp)
-    const end = new Date(reward.endTimestamp)
+    const start = new Date(reward.timestamp)
+    const nextReward = sortedRewards[index + 1]
+    const end = nextReward ? new Date(nextReward.timestamp) : new Date(today)
     if (end <= start) continue
 
     addRangeToMap(stakingByDay, rate, start, end)

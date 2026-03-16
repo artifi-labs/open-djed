@@ -36,8 +36,7 @@ export async function processShenYield(orderedTxOs: OrderedPoolOracleTxOs[]) {
 
   stakingRewards.sort(
     (a, b) =>
-      new Date(a.startTimestamp).valueOf() -
-      new Date(b.startTimestamp).valueOf(),
+      new Date(a.timestamp).valueOf() - new Date(b.timestamp).valueOf(),
   )
   fees.sort(
     (a, b) => new Date(a.timestamp).valueOf() - new Date(b.timestamp).valueOf(),
