@@ -1,7 +1,7 @@
 {
   "analytics": {
     "pageTitle": "Analytics",
-    "analyticsOverview": "<gradient>Analytics</gradient> Overview",
+    "analyticsOverview": "Analytics Overview",
     "description": "Real-time insights into protocol metrics and market dynamics",
     "reserveRatioOverTime": "Reserve Ratio Over Time",
     "djedMarketCap": "DJED Market Cap",
@@ -49,10 +49,10 @@
     "mintAndBurnNow": "Mint & Burn Now",
     "months": {
       "march": "March",
-      "may": "May",
       "january": "January",
       "february": "February",
       "april": "April",
+      "may": "May",
       "june": "June",
       "july": "July",
       "august": "August",
@@ -190,7 +190,7 @@
       "wallets": "2. Wallets",
       "analytics": "3. Analytics and Telemetry",
       "openSource": "4. Open Source",
-      "authentication": "5. No Authentication",
+      "authentication": "5. Authentication",
       "policy": "6. Updates to This Policy",
       "contact": "7. Contact"
     },

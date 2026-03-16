@@ -1,7 +1,7 @@
 {
   "analytics": {
     "pageTitle": "Analíticas",
-    "analyticsOverview": "Painel de <gradient>Analíticas</gradient>",
+    "analyticsOverview": "Painel de Analíticas",
     "description": "Informações em tempo real sobre métricas de protocolo e dinâmicas de mercado",
     "reserveRatioOverTime": "Evolução da Taxa de Reservas",
     "djedMarketCap": "Capitalização DJED",
@@ -49,10 +49,10 @@
     "mintAndBurnNow": "Cunhar & Queimar Agora",
     "months": {
       "march": "Março",
-      "may": "Maio",
       "january": "Janeiro",
       "february": "Fevereiro",
       "april": "Abril",
+      "may": "Maio",
       "june": "Junho",
       "july": "Julho",
       "august": "Agosto",
@@ -153,7 +153,7 @@
       "whyOpenDjed": {
         "items": {
           "protocolCompatible": "<strong>Confiável:</strong> Funciona mesmo que o app da COTI esteja indisponível.",
-          "openSource": "<strong>Comunidade em primeiro lugar:</strong> Construído para e por usuários da Cardano.",
+          "openSource": "<strong>Comunidade em primeiro lugar:</strong> Construído para e por utilizadores da Cardano.",
           "communityFirst": "<strong>Compatível com o protocolo:</strong> Mesma lógica sobrecolateralizada do DJED.",
           "reliable": "<strong>Acesso global:</strong> Sem restrições geográficas.",
           "globalAccess": "<strong>Código aberto:</strong> Totalmente auditável, forkável e de propriedade da comunidade.",
@@ -184,26 +184,26 @@
     "pageTitle": "Política de Privacidade",
     "title": "Política de Privacidade",
     "effectiveDate": "Data de Vigência: {date}",
-    "intro": "A Artifi Labs valoriza a privacidade e a transparência. Esta Política de Privacidade descreve quais dados coletamos e como eles são utilizados.",
+    "intro": "A Artifi Labs valoriza a privacidade e a transparência. Esta Política de Privacidade descreve os dados recolhidos e como eles são utilizados.",
     "sections": {
-      "dataCollection": "1. Coleta de Dados",
+      "dataCollection": "1. Recolha de Dados",
       "wallets": "2. Carteiras",
       "analytics": "3. Analíticas e Telemetria",
       "openSource": "4. Código Aberto",
-      "authentication": "5. Sem Autenticação",
+      "authentication": "5. Autenticação",
       "policy": "6. Atualizações desta Política",
       "contact": "7. Contato"
     },
     "paragraphs": {
-      "dataCollection": "Não coletamos nem armazenamos dados pessoais. Todos os dados utilizados ou exibidos na aplicação vêm exclusivamente de informações públicas disponíveis na blockchain.",
-      "wallet": "Quando os usuários interagem com o app usando carteiras da Cardano, interagimos apenas com a interface da carteira via padrão CIP-30. Não recebemos nem armazenamos suas chaves privadas. Reservamo-nos o direito de armazenar endereços e transações para fins analíticos, permitindo melhorar o app com base no uso.",
+      "dataCollection": "Não recolhemos nem armazenamos dados pessoais. Todos os dados utilizados ou exibidos na aplicação vêm exclusivamente de informações públicas disponíveis na blockchain.",
+      "wallet": "Quando os utilizadores interagem com o app usando carteiras da Cardano, interagimos apenas com a interface da carteira via padrão CIP-30. Não recebemos nem armazenamos chaves privadas. Reservamo-nos o direito de armazenar endereços e transações para fins analíticos, permitindo melhorar o app com base no uso.",
       "analytics1": "Usamos PostHog para guardar analíticas e telemetrias da aplicação, ajudando-nos a entender o uso e identificar bugs ou problemas de performance.",
-      "analytics2": "Os dados coletados pelo PostHog <strong>não</strong> incluem informações pessoais identificáveis. Não armazenamos endereços de carteira, nomes, emails ou credenciais de usuários.",
+      "analytics2": "Os dados recolhidos pelo PostHog <strong>não</strong> incluem informações pessoais identificáveis. Não armazenamos endereços de carteira, nomes, emails ou credenciais de utilizadores.",
       "analytics3": "Todas as analíticas são usadas estritamente para melhorar a experiência da aplicação.",
       "openSource": "Esta aplicação é de código aberto e licenciado sob a",
       "sourceCode": "Código-fonte:",
-      "authentication": "A aplicação não utiliza nem exige contas de usuário, logins ou registros por email. O acesso é anônimo.",
-      "policy": "Podemos revisar esta política ao longo do tempo. Atualizações serão postadas aqui com nova data de vigência.",
+      "authentication": "A aplicação não utiliza nem exige contas de utilizadores, logins ou registos por email. O acesso é anônimo.",
+      "policy": "Podemos revisar esta política ao longo do tempo. Atualizações serão atualizadas aqui com nova data de vigência.",
       "contact": "Se tiver dúvidas sobre esta Política de Privacidade, entre em contato:"
     }
   },
@@ -262,11 +262,11 @@
         },
         "earnedFee": {
           "label": "Taxas Recebidas",
-          "tooltip": "Total das taxas de compra e venda coletadas, distribuídas aos detentores de SHEN."
+          "tooltip": "Total das taxas de compra e venda recolhidas, distribuídas aos detentores de SHEN."
         },
         "totalRewards": {
           "label": "Recompensas Totais",
-          "tooltip": "Soma das recompensas do ADA em staking e das taxas coletadas distribuídas aos detentores de SHEN."
+          "tooltip": "Soma das recompensas do ADA em staking e das taxas recolhidas distribuídas aos detentores de SHEN."
         }
       },
       "rewards": {
@@ -318,7 +318,7 @@
       },
       "use": {
         "title": "2. Uso da Aplicação",
-        "content": "Você concorda em usar a aplicação conforme todas as leis e regulamentos aplicáveis. Não deve usá-la de forma a prejudicar, desabilitar ou interferir na experiência de outros usuários."
+        "content": "Você concorda em usar a aplicação conforme todas as leis e regulamentos aplicáveis. Não deve usá-la de forma a prejudicar, desabilitar ou interferir na experiência de outros utilizadores."
       },
       "license": {
         "title": "3. Licença Open Source",
@@ -329,13 +329,13 @@
       },
       "wallet": {
         "title": "4. Interação com Carteiras",
-        "content": "A aplicação usa o standard CIP-30 da Cardano para conectar carteiras compatíveis. Não controlamos, armazenamos ou transmitimos chaves privadas. Todas as interações ocorrem via provedor da carteira do usuário."
+        "content": "A aplicação usa o standard CIP-30 da Cardano para conectar carteiras compatíveis. Não controlamos, armazenamos ou transmitimos chaves privadas. Todas as interações ocorrem via carteira do utilizador."
       },
       "disclaimers": {
         "title": "5. Avisos",
         "item1": "Esta aplicação é fornecida “como está”, sem qualquer garantia.",
         "item2": "Não oferecemos garantias sobre disponibilidade, precisão ou adequação para qualquer propósito.",
-        "item3": "Usuários são responsáveis por quaisquer transações enviadas usando suas carteiras."
+        "item3": "Os utilizadores são responsáveis por todas as transações realizadas com a sua carteira."
       },
       "changes": {
         "title": "6. Alterações",

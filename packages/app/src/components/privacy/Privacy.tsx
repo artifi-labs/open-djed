@@ -7,8 +7,8 @@ const Privacy = () => {
   const t = useTranslations()
 
   const month = capitalize(t("common.months.march"))
-  const day = 11
-  const year = 2025
+  const day = 16
+  const year = 2026
   const effectiveDate = `${month} ${day}, ${year}`
 
   return (
