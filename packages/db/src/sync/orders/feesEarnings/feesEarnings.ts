@@ -154,7 +154,7 @@ export const calculateFeesEarnings = (
     }
 
     dailyFees.set(dayKey, {
-      timestamp: new Date(`${dayKey}T00:00:00.000Z`),
+      timestamp: new Date(dayKey),
       fee: feeAda,
       block: lastOrder.block_hash,
       slot: lastOrder.block_slot,
