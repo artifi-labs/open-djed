@@ -329,7 +329,7 @@
       },
       "wallet": {
         "title": "4. Interação com Carteiras",
-        "content": "A aplicação usa o padrão CIP-30 da Cardano para conectar carteiras compatíveis. Não controlamos, armazenamos ou transmitimos chaves privadas. Todas as interações ocorrem via provedor da carteira do usuário."
+        "content": "A aplicação usa o standard CIP-30 da Cardano para conectar carteiras compatíveis. Não controlamos, armazenamos ou transmitimos chaves privadas. Todas as interações ocorrem via provedor da carteira do usuário."
       },
       "disclaimers": {
         "title": "5. Avisos",
