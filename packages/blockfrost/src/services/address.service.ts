@@ -1,5 +1,6 @@
 import type { BlockfrostClient } from "../client/blockfrostClient"
-import { addressTransactionsResponseSchema, type AddressTransactionsParams, type AddressTransactionsResponse } from "../schemas/address/addresstransaction.schema"
+import { PaginatedRequest } from "../client/paginatedRequest"
+import { addressTransactionsResponseSchema, type AddressTransaction, type AddressTransactionsParams } from "../schemas/address/addresstransaction.schema"
 
 export class AddressService {
   private basePath: string = "/addresses"
@@ -9,8 +10,13 @@ export class AddressService {
   /**
    * GET /addresses/{address}/transactions
    */
-  async getAddressTransactions(address: string, query?: AddressTransactionsParams): Promise<AddressTransactionsResponse> {
-    const data = await this.client.request(`${this.basePath}/${address}/transactions`, addressTransactionsResponseSchema, query)
-    return data
+  getAddressTransactions(address: string, query?: AddressTransactionsParams): PaginatedRequest<AddressTransaction> {
+    return new PaginatedRequest((page, count) =>
+      this.client.request(
+        `${this.basePath}/${address}/transactions`,
+        addressTransactionsResponseSchema,
+        { ...query, page, count },
+      )
+    )
   }
 }

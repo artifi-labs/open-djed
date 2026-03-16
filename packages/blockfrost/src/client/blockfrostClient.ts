@@ -1,12 +1,15 @@
 import { Blockfrost } from "@lucid-evolution/lucid"
-import { BlockService } from "../services"
+import { AddressService, BlockService } from "../services"
 import { Network } from "../types/network.types"
 import type { ZodSchema } from "zod"
 import { BlockfrostError } from "../errors/blockfrost.error"
 import type { QueryParams } from "../types/http.types"
+import { TransactionsService } from "../services/transactions.service"
 
 export class BlockfrostClient extends Blockfrost {
   public blocks: BlockService
+  public addresses: AddressService
+  public transactions: TransactionsService
 
   constructor(
     public apiKey: string,
@@ -14,6 +17,8 @@ export class BlockfrostClient extends Blockfrost {
   ) {
     super(network, apiKey)
     this.blocks = new BlockService(this)
+    this.addresses = new AddressService(this)
+    this.transactions = new TransactionsService(this)
   }
 
   private get baseUrl() {

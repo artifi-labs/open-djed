@@ -14,8 +14,10 @@ export const addressTransactionsResponseSchema = z.array(
 
 export const addressTransactionsQuerySchema = PaginationSchema
 
-export const addressTransactionsParamsSchema = z.object({
-  address: z.string(),
+export const addressTransactionsParamsSchema = PaginationSchema.extend({
+  order: z.enum(["asc", "desc"]).optional(),
+  from: z.string().optional(),
+  to: z.string().optional(),
 })
 
 export type AddressTransaction = z.infer<typeof addressTransactionSchema>
