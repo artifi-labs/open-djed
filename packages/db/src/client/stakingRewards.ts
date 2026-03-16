@@ -41,24 +41,26 @@ export const getLatestStakingReward = () =>
 
 export const getAllStakingRewards = () => prisma.aDAStakingRewards.findMany()
 
-export const getLast12DaysStakingRewardsRate = async () => {
+export const getLast12EpochsStakingRewardsRate = async () => {
   const last12DaysRewardsRate = await prisma.aDAStakingRewards.findMany({
     take: 12,
-    orderBy: {
-      epoch: "desc",
-    },
-    select: {
-      rate: true,
-    },
+    orderBy: { epoch: "desc" },
+    select: { rate: true },
   })
+  if (last12DaysRewardsRate.length === 0) return 0
 
   const totalRate = last12DaysRewardsRate.reduce(
     (acc, reward) => acc + Number(reward.rate ?? 0),
     0,
   )
 
+  // data is stored in the db as percentage rate per epoch
+  // therefore we need to convert from percentage to decimal and
+  // from epoch(approx. 5 days) to day
+  // divides by 500 because
+  // 100 (percentage -> decimal) and 5 (epoch -> daily)
   return last12DaysRewardsRate.length > 0
-    ? totalRate / last12DaysRewardsRate.length
+    ? totalRate / last12DaysRewardsRate.length / 500
     : 0
 }
 
@@ -67,17 +69,20 @@ export const getSumStakingRewardsRate = async (
   endDate: Date,
 ) => {
   const dateRange = getValidDateRange(startDate, endDate)
-  if (!dateRange) return []
+  if (!dateRange) return 0
 
   const [rewards, last12DaysRewardsRate] = await Promise.all([
     getStakingRewardsByDateRange(startDate, endDate),
-    getLast12DaysStakingRewardsRate(),
+    getLast12EpochsStakingRewardsRate(),
   ])
 
-  const realizedRateSum = rewards.reduce(
-    (acc, reward) => acc + Number(reward.rate ?? 0),
-    0,
-  )
+  let totalGrowthFactor = 1
+
+  rewards.forEach((reward) => {
+    const dailyDecimal = Number(reward.rate ?? 0) / 500
+    totalGrowthFactor *= 1 + dailyDecimal
+  })
+
   const totalDaysInRange = Math.max(
     0,
     (dateRange.rangeEndExclusive.getTime() - dateRange.rangeStart.getTime()) /
@@ -89,10 +94,11 @@ export const getSumStakingRewardsRate = async (
     ),
   ).size
   const missingDays = Math.max(0, totalDaysInRange - daysWithData)
-  const projectedStakingRewardsRate = missingDays * last12DaysRewardsRate
-  const totalStakingRewardsRate = realizedRateSum + projectedStakingRewardsRate
 
-  return totalStakingRewardsRate
+  //(1 + dailyRate) ^ missingDays
+  const projectedGrowth = Math.pow(1 + last12DaysRewardsRate, missingDays)
+
+  return totalGrowthFactor * projectedGrowth - 1
 }
 
 export const deleteAllStakingRewards = () =>

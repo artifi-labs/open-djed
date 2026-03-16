@@ -149,8 +149,7 @@ function calculateSimulatorResults(
   )
 
   const initialAdaHoldings = buyActionData.baseCost.ADA ?? 0
-  const stakingRewardsAda =
-    initialAdaHoldings * (stakingRewardsRatePercent / 100)
+  const stakingRewardsAda = initialAdaHoldings * stakingRewardsRatePercent
 
   const feesEarnedAda = calculateFeesEarned(
     protocolData,
