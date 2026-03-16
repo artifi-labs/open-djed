@@ -1,10 +1,13 @@
 import { logger } from "../../utils/logger"
 import { config } from "../../../lib/env"
+import { Data } from "@lucid-evolution/lucid"
+import { OrderDatum } from "@open-djed/data"
 import { prisma } from "../../../lib/prisma"
-import type { UTxO, AddressDatum } from "../types"
+import type { UTxO, AddressDatum, OrderUTxOWithDatumAndBlock } from "../types"
 import {
   registry,
   processBatch,
+  blockfrost,
   blockfrostFetch,
   handleOrderStatus,
   getBurnReceivedValue,
@@ -16,7 +19,9 @@ import {
  * if the UTxO was consumed then the order was fulfilled and the order can be update to status 'Completed'
  * @returns
  */
-export async function updatePendingOrders() {
+export async function updatePendingOrders(): Promise<
+  OrderUTxOWithDatumAndBlock[]
+> {
   logger.info("=== Updating Pending Orders ===")
 
   const pendingOrders = await prisma.order.findMany({
@@ -25,7 +30,7 @@ export async function updatePendingOrders() {
 
   if (pendingOrders.length === 0) {
     logger.info("No orders to update")
-    return
+    return []
   }
   logger.info(`Found ${pendingOrders.length} pending orders to check.`)
 
@@ -45,6 +50,7 @@ export async function updatePendingOrders() {
         const isConsumed = typeof orderUTxOWithUnit?.consumed_by_tx === "string"
         let received = order.received
         let status = order.status
+        let completedOrder: OrderUTxOWithDatumAndBlock | null = null
 
         if (isConsumed) {
           status = await handleOrderStatus(
@@ -59,6 +65,24 @@ export async function updatePendingOrders() {
               orderUTxOWithUnit.consumed_by_tx,
             )
           }
+
+          if (orderUTxOWithUnit.data_hash) {
+            const rawDatum = await blockfrost.getDatum(
+              orderUTxOWithUnit.data_hash,
+            )
+            const orderDatum = Data.from(rawDatum, OrderDatum)
+
+            completedOrder = {
+              ...orderUTxOWithUnit,
+              tx_hash: order.tx_hash,
+              orderDatum,
+              timestamp: new Date(
+                Number(orderDatum.creationDate),
+              ).toISOString(),
+              block_hash: order.block,
+              block_slot: Number(order.slot),
+            }
+          }
         }
 
         return {
@@ -66,6 +90,7 @@ export async function updatePendingOrders() {
           isConsumed,
           status: status,
           received: received,
+          completedOrder,
         }
       } catch (error) {
         logger.error(error, `Error checking order ${order.tx_hash}:`)
@@ -74,6 +99,7 @@ export async function updatePendingOrders() {
           isConsumed: false,
           status: order.status,
           received: order.received,
+          completedOrder: null,
         }
       }
     },
@@ -97,4 +123,8 @@ export async function updatePendingOrders() {
   } else {
     logger.info("No pending orders were completed")
   }
+
+  return completedOrders.flatMap((order) =>
+    order.completedOrder ? [order.completedOrder] : [],
+  )
 }
