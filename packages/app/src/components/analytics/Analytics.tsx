@@ -48,7 +48,6 @@ const Analytics = () => {
     useReserveDetails()
   return (
     <div className="desktop:pt-32 desktop:pb-64 mx-auto flex w-full max-w-280 flex-1 flex-col">
-
       {/* Header */}
       <div className="desktop:flex-row flex flex-col justify-between gap-12">
         <div className="desktop:gap-6 flex flex-col gap-4">
@@ -60,7 +59,7 @@ const Analytics = () => {
       </div>
 
       {/* Content */}
-      <div className="desktop:gap-24 grid grid-cols-1 gap-16 desktop:pt-32 pt-16">
+      <div className="desktop:gap-24 desktop:pt-32 grid grid-cols-1 gap-16 pt-16">
         <ChartCard
           period={reserveRatioPeriod}
           periodItems={translatedPeriodOptions}

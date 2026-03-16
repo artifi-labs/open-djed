@@ -152,7 +152,7 @@
       "title": "O que é Open DJED?",
       "whyOpenDjed": {
         "items": {
-          "protocolCompatible": "<strong>Confiável:</strong> Funciona mesmo que o app da COTI esteja indisponível.",
+          "protocolCompatible": "<strong>Confiável:</strong> Funciona mesmo que a aplicação da COTI esteja indisponível.",
           "openSource": "<strong>Comunidade em primeiro lugar:</strong> Construído para e por utilizadores da Cardano.",
           "communityFirst": "<strong>Compatível com o protocolo:</strong> Mesma lógica sobrecolateralizada do DJED.",
           "reliable": "<strong>Acesso global:</strong> Sem restrições geográficas.",
@@ -161,7 +161,7 @@
         },
         "title": "Por que Open DJED?"
       },
-      "description": "Open DJED é um app web transparente e dirigido pela comunidade para interagir com a stablecoin algorítmica DJED na Cardano, totalmente open source, desenvolvido pela Artifi Labs. Ele recria a experiência original do DJED com total compatibilidade de protocolo — oferecendo uma alternativa mais confiável, acessível e auditável."
+      "description": "Open DJED é uma aplicação web orientada pela comunidade para interagir com a stablecoin algorítmica DJED na Cardano, totalmente open source, desenvolvida pela Artifi Labs. Recria a experiência original do DJED com total compatibilidade com o protocolo, oferecendo uma alternativa mais fiável, acessível e auditável."
     },
     "reserveDetails": {
       "currentRatio": "Rácio de Liquidez Corrente",
@@ -196,7 +196,7 @@
     },
     "paragraphs": {
       "dataCollection": "Não recolhemos nem armazenamos dados pessoais. Todos os dados utilizados ou exibidos na aplicação vêm exclusivamente de informações públicas disponíveis na blockchain.",
-      "wallet": "Quando os utilizadores interagem com o app usando carteiras da Cardano, interagimos apenas com a interface da carteira via padrão CIP-30. Não recebemos nem armazenamos chaves privadas. Reservamo-nos o direito de armazenar endereços e transações para fins analíticos, permitindo melhorar o app com base no uso.",
+      "wallet": "Quando os utilizadores interagem com a aplicação usando carteiras da Cardano, interagimos apenas com a interface da carteira via padrão CIP-30. Não recebemos nem armazenamos chaves privadas. Reservamo-nos o direito de armazenar endereços e transações para fins analíticos, permitindo melhorar a aplicação com base no uso.",
       "analytics1": "Usamos PostHog para guardar analíticas e telemetrias da aplicação, ajudando-nos a entender o uso e identificar bugs ou problemas de performance.",
       "analytics2": "Os dados recolhidos pelo PostHog <strong>não</strong> incluem informações pessoais identificáveis. Não armazenamos endereços de carteira, nomes, emails ou credenciais de utilizadores.",
       "analytics3": "Todas as analíticas são usadas estritamente para melhorar a experiência da aplicação.",

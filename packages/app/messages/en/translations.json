@@ -161,7 +161,7 @@
         },
         "title": "Why Open DJED?"
       },
-      "description": "Open DJED is a transparent, community-driven web app for interacting with the DJED algorithmic stablecoin on Cardano, built entirely open source by Artifi Labs. It recreates the original DJED experience with full protocol compatibility - offering a more reliable, accessible, and auditable alternative."
+      "description": "Open DJED is a community-driven web app for interacting with the DJED algorithmic stablecoin on Cardano, built entirely open source by Artifi Labs. It recreates the original DJED experience with full protocol compatibility - offering a more reliable, accessible, and auditable alternative."
     },
     "reserveDetails": {
       "currentRatio": "Current Ratio",
