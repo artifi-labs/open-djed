@@ -14,7 +14,7 @@ const getMaxMin = (data: DjedDexPricesResponse, isUsd: boolean) => {
     : (["adaValue", "minswapAdaValue", "wingridersAdaValue"] as const)
 
   const values = data.flatMap((entry) =>
-    keys.map((key) => entry[key]).filter((v): v is number => v != null)
+    keys.map((key) => entry[key]).filter((v): v is number => v != null),
   )
 
   if (values.length === 0) return { min: 0, max: 0 }
