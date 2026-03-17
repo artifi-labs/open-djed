@@ -5,6 +5,9 @@ import type { ZodSchema } from "zod"
 import { BlockfrostError } from "../errors/blockfrost.error"
 import type { QueryParams } from "../types/http.types"
 import { TransactionsService } from "../services/transactions.service"
+import type { RetryOptions } from "../types/retry.types"
+import { RequestBuilder } from "./requestBuilder"
+import { PaginatedRequest } from "./paginatedRequest"
 
 export class BlockfrostClient extends Blockfrost {
   public blocks: BlockService
@@ -14,6 +17,7 @@ export class BlockfrostClient extends Blockfrost {
   constructor(
     public apiKey: string,
     public network: Network = Network.MAINNET,
+    private readonly globalRetry: RetryOptions = {},
   ) {
     super(network, apiKey)
     this.blocks = new BlockService(this)
@@ -25,24 +29,36 @@ export class BlockfrostClient extends Blockfrost {
     return this.network
   }
 
-  async request<T>(
+  request<T>(
     path: string,
     schema: ZodSchema<T>,
     query?: QueryParams,
-  ): Promise<T> {
-    const url = this.buildUrl(path, query)
+  ): RequestBuilder<T> {
+    return new RequestBuilder(async (signal) => {
+      const url = this.buildUrl(path, query)
+      const res = await fetch(url, {
+        headers: { project_id: this.apiKey },
+        signal,
+      })
 
-    const res = await fetch(url, {
-      headers: { project_id: this.apiKey },
-    })
+      if (!res.ok) {
+        const body = await res.text()
+        throw new BlockfrostError(res.status, body, path)
+      }
 
-    if (!res.ok) {
-      const body = await res.text()
-      throw new BlockfrostError(res.status, body, path)
-    }
+      const json: unknown = await res.json()
+      return schema.parse(json)
+    }, this.globalRetry)
+  }
 
-    const json: unknown = await res.json()
-    return schema.parse(json)
+  paginate<T>(
+    path: string,
+    schema: ZodSchema<T[]>,
+    query?: QueryParams,
+  ): PaginatedRequest<T> {
+    return new PaginatedRequest((page, count) =>
+      this.request(path, schema, { ...query, page, count }),
+    this.globalRetry)
   }
 
   private buildUrl(path: string, query?: QueryParams): string {

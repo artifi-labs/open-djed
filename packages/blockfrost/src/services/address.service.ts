@@ -15,7 +15,7 @@ export class AddressService {
       this.client.request(
         `${this.basePath}/${address}/transactions`,
         addressTransactionsResponseSchema,
-        { ...query, page, count },
+        { ...query, page, count }
       )
     )
   }
