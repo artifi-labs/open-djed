@@ -16,7 +16,7 @@
     "errors": {
       "failedToFetch": "Não foi possível obter os dados para {analytic}."
     },
-    "currentRatio": "Rácio de Liquidez Corrente",
+    "currentRatio": "Rácio de Liquidez Atual",
     "reserve": {
       "warning": {
         "below": "Cunhagem de DJED / Queima de SHEN indisponível: taxa de reservas abaixo do mínimo.",
