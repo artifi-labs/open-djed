@@ -4,9 +4,9 @@ import { useTranslations } from "next-intl"
 const Term = () => {
   const t = useTranslations()
 
-  const month = t("common.months.may")
-  const day = 15
-  const year = 2025
+  const month = t("common.months.march")
+  const day = 16
+  const year = 2026
   const effectiveDate = `${month} ${day}, ${year}`
 
   return (
