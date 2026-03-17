@@ -314,7 +314,7 @@
     "sections": {
       "description": {
         "title": "1. Descrição",
-        "content": "Open Djed é uma aplicação web open-source que interage com a blockchain Cardano. Utilizadores podem conectar suas carteiras via padrão CIP-30."
+        "content": "Open Djed é uma aplicação web open-source que interage com a blockchain Cardano. os utilizadores podem conectar as suas carteiras via standard CIP-30."
       },
       "use": {
         "title": "2. Uso da Aplicação",
