@@ -400,7 +400,7 @@
     "incorrectNetwork": "Por favor, conecte uma carteira {network}",
     "connected": "Sua carteira foi conectada com sucesso",
     "connectionFailed": "Falha ao conectar a carteira",
-    "disconnected": "Sua carteira foi desconectada"
+    "disconnected": "A sua carteira foi desconectada"
   },
   "settings": {
     "title": "Configurações",
