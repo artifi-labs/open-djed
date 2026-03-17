@@ -14,5 +14,5 @@
     "customConditions": ["imports", "require", "default"],
     "composite": true
   },
-  "include": ["src", "__tests__", "*.ts"]
+  "include": ["src"]
 }
