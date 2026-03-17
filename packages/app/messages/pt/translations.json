@@ -242,7 +242,7 @@
           "tooltip": "Veja recompensas simplificadas."
         },
         "detailed": {
-          "tooltip": "Veja detalhamento completo das recompensas."
+          "tooltip": "Veja a descrição completa das recompensas."
         },
         "buyFee": {
           "label": "Taxa de Compra",
