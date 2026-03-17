@@ -26,11 +26,7 @@ import {
   updateStakingRewards,
 } from "./shenYield/stakingRewards/stakingRewards"
 import { rollbackStakingRewards } from "./shenYield/stakingRewards/rollbackStakingRewards"
-import { rollbackFeesEarnings } from "./shenYield/feesEarnings/rollbackFeesEarnings"
-import {
-  calculateFeesEarnings,
-  updateFeesEarnings,
-} from "./shenYield/feesEarnings/feesEarnings"
+import { rollbackFeesEarnings } from "../orders/feesEarnings/rollbackFeesEarnings"
 import { rollbackShenYield } from "./shenYield/rollbackShenYield"
 import { processShenYield, updateShenYield } from "./shenYield/shenYield"
 
@@ -151,7 +147,6 @@ export async function updateAnalytics() {
   const isPriceEmpty = (await prisma.tokenPrice.count()) === 0
   const isVolumesEmpty = (await prisma.volume.count()) === 0
   const isStakingRewardsEmpty = (await prisma.aDAStakingRewards.count()) === 0
-  const isFeesEarningsEmpty = (await prisma.aDAFeesEarnings.count()) === 0
   const isShenYieldEmpty = (await prisma.shenYield.count()) === 0
 
   const toUpdate: DbProcessor[] = [
@@ -174,11 +169,6 @@ export async function updateAnalytics() {
       isEmpty: isVolumesEmpty,
       populateDbProcessor: handleInitialVolumeDbPopulation,
       updateDbProcessor: updateVolumes,
-    },
-    {
-      isEmpty: isFeesEarningsEmpty,
-      populateDbProcessor: calculateFeesEarnings,
-      updateDbProcessor: updateFeesEarnings,
     },
     {
       isEmpty: isShenYieldEmpty,

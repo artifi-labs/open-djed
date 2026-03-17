@@ -8,7 +8,7 @@ import type {
   UTxO,
   TransactionData,
   OrderUTxO,
-  OrderUTxOWithDatum,
+  OrderUTxOWithDatumAndBlock,
   Order,
 } from "../types"
 import {
@@ -20,6 +20,12 @@ import {
   fetchTransactionsFromAddress,
 } from "../utils"
 import { populateDbWithHistoricOrders } from "./initialSync"
+
+export type SyncNewOrdersResult = {
+  completedOrders: OrderUTxOWithDatumAndBlock[]
+  newOrders: Order[]
+  latestSyncedBlock: { id: number } | null
+}
 
 /**
  * get the UTxOs of a set of transactions
@@ -73,6 +79,7 @@ async function enrichUTxOsWithData(orderUTxOs: OrderUTxO[]) {
         return {
           ...utxo,
           orderDatum: Data.from(rawDatum, OrderDatum),
+          timestamp: new Date(tx.block_time * 1000).toISOString(),
           block_hash: tx.block,
           block_slot: tx.slot,
         }
@@ -95,7 +102,7 @@ async function enrichUTxOsWithData(orderUTxOs: OrderUTxO[]) {
  * @param newOrders array of new orders
  * @returns latest synced block
  */
-async function updateLatestBlock(
+export async function updateLatestBlock(
   latestSyncedBlock: { id: number },
   newOrders: Order[],
 ) {
@@ -122,7 +129,7 @@ async function updateLatestBlock(
  * check the UTxOs of the new transactions to check if any new order was created
  * @returns
  */
-export async function syncNewOrders() {
+export async function syncNewOrders(): Promise<SyncNewOrdersResult> {
   logger.info("=== Syncing New Orders ===")
 
   let latestSyncedBlock = await prisma.block.findFirst()
@@ -134,7 +141,11 @@ export async function syncNewOrders() {
     latestSyncedBlock = await prisma.block.findFirst()
     if (!latestSyncedBlock) {
       logger.error("Initial sync failed to create a block record.")
-      return { id: 0, latestBlock: "", latestSlot: 0 }
+      return {
+        completedOrders: [],
+        newOrders: [],
+        latestSyncedBlock: null,
+      }
     }
   }
 
@@ -147,22 +158,34 @@ export async function syncNewOrders() {
   const transactions = await fetchTransactionsFromAddress(syncedBlock.height)
   if (transactions.length === 0) {
     logger.info("No new transactions since last sync")
-    return latestSyncedBlock
+    return {
+      completedOrders: [],
+      newOrders: [],
+      latestSyncedBlock,
+    }
   }
 
   const orderUTxOs = await fetchOrderUTxOs(transactions)
   if (orderUTxOs.length === 0) {
     logger.info("No order UTxOs in new blocks")
-    return latestSyncedBlock
+    return {
+      completedOrders: [],
+      newOrders: [],
+      latestSyncedBlock,
+    }
   }
 
-  const orderUTxOsWithData: OrderUTxOWithDatum[] =
+  const orderUTxOsWithData: OrderUTxOWithDatumAndBlock[] =
     await enrichUTxOsWithData(orderUTxOs)
   const ordersToInsert: Order[] =
     await processOrdersToInsert(orderUTxOsWithData)
   if (ordersToInsert.length === 0) {
     logger.info("No orders to insert")
-    return latestSyncedBlock
+    return {
+      completedOrders: [],
+      newOrders: [],
+      latestSyncedBlock,
+    }
   }
 
   await prisma.order.createMany({
@@ -171,6 +194,12 @@ export async function syncNewOrders() {
   })
 
   logger.info(`Successfully inserted ${ordersToInsert.length} new orders`)
-
-  return updateLatestBlock(latestSyncedBlock, ordersToInsert)
+  return {
+    completedOrders: orderUTxOsWithData.filter(
+      (utxo): utxo is OrderUTxOWithDatumAndBlock =>
+        typeof utxo.consumed_by_tx === "string",
+    ),
+    newOrders: ordersToInsert,
+    latestSyncedBlock,
+  }
 }

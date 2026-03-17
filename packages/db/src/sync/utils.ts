@@ -14,6 +14,7 @@ import {
   type Order,
   type OrderUTxOWithDatum,
   type OrderUTxOWithDatumAndBlock,
+  type OrderUTxOWithPoolDatum,
   type TransactionRedeemer,
   type UTxO,
   type Transaction,
@@ -187,7 +188,7 @@ export async function eachBatch<T, R>(
  * @param d a decoded Order datum
  * @returns
  */
-export async function parseOrderDatum(orderUTxO: OrderUTxOWithDatumAndBlock) {
+export async function parseOrderDatum(orderUTxO: OrderUTxOWithDatum) {
   const d = orderUTxO.orderDatum
   const entries = Object.entries(d.actionFields)
 
@@ -312,6 +313,82 @@ export async function processOrdersToInsert(utxos: OrderUTxOWithDatum[]) {
       } as unknown as Order
     }),
   )
+}
+
+export const hasPoolDatum = (
+  order: OrderUTxOWithDatumAndBlock,
+): order is OrderUTxOWithPoolDatum => order.poolDatum !== undefined
+
+export async function enrichOrdersWithPoolDatums(
+  orders: OrderUTxOWithDatumAndBlock[],
+): Promise<OrderUTxOWithDatumAndBlock[]> {
+  const completedOrders = orders.filter(
+    (order): order is OrderUTxOWithDatumAndBlock & { consumed_by_tx: string } =>
+      typeof order.consumed_by_tx === "string",
+  )
+
+  if (completedOrders.length === 0) {
+    return []
+  }
+
+  const uniqueConsumingTxs = [
+    ...new Set(completedOrders.map((o) => o.consumed_by_tx)),
+  ]
+
+  const poolDatumsByTxEntries = await processBatch(
+    uniqueConsumingTxs,
+    async (consumingTxHash) => {
+      try {
+        const consumingTx = (await blockfrostFetch(
+          `/txs/${consumingTxHash}/utxos`,
+        )) as UTxO
+
+        const poolOutput = consumingTx.outputs.find(
+          (output) =>
+            output.address === registry.poolAddress &&
+            typeof output.data_hash === "string",
+        )
+
+        if (!poolOutput?.data_hash) {
+          return null
+        }
+
+        const rawDatum = await blockfrost.getDatum(poolOutput.data_hash)
+
+        return [consumingTxHash, Data.from(rawDatum, PoolDatum)] as const
+      } catch (error) {
+        logger.error(
+          error,
+          `Error enriching consuming tx ${consumingTxHash} with pool datum:`,
+        )
+        return null
+      }
+    },
+    5,
+    300,
+  )
+
+  const poolDatumsByTx = new Map(
+    poolDatumsByTxEntries.filter(
+      (entry): entry is readonly [string, PoolDatum] => entry !== null,
+    ),
+  )
+
+  return orders.map((order) => {
+    if (typeof order.consumed_by_tx !== "string") {
+      return order
+    }
+
+    const poolDatum = poolDatumsByTx.get(order.consumed_by_tx)
+    if (!poolDatum) {
+      return order
+    }
+
+    return {
+      ...order,
+      poolDatum,
+    }
+  })
 }
 
 /**

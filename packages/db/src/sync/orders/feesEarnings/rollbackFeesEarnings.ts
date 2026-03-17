@@ -1,8 +1,8 @@
 import type { Block } from "typescript"
-import { prisma } from "../../../../../lib/prisma"
-import { getLatestFeesEarnings } from "../../../../client/feesEarnings"
-import { logger } from "../../../../utils/logger"
-import { blockfrostFetch } from "../../../utils"
+import { getLatestFeesEarnings } from "../../../client/feesEarnings"
+import { blockfrostFetch } from "../../utils"
+import { logger } from "../../../utils/logger"
+import { prisma } from "../../../../lib/prisma"
 
 /**
  * if a finalized block disappears from the blockchain, a rollback has occurred
