@@ -1,4 +1,4 @@
-import type { BlockfrostClient } from "../client/blockfrostClient"
+import type { Blockfrost } from "../client/blockfrostClient"
 import { PaginatedRequest } from "../client/paginatedRequest"
 import {
   addressTransactionsResponseSchema,
@@ -9,7 +9,7 @@ import {
 export class AddressService {
   private basePath: string = "/addresses"
 
-  constructor(private client: BlockfrostClient) {}
+  constructor(private client: Blockfrost) {}
 
   /**
    * GET /addresses/{address}/transactions

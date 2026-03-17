@@ -1,4 +1,4 @@
-import { Blockfrost } from "@lucid-evolution/lucid"
+import { Blockfrost as BaseBlockfrost } from "@lucid-evolution/lucid"
 import { AddressService, BlockService } from "../services"
 import { Network } from "../types/network.types"
 import type { ZodSchema } from "zod"
@@ -9,7 +9,7 @@ import type { RetryOptions } from "../types/retry.types"
 import { RequestBuilder } from "./requestBuilder"
 import { PaginatedRequest } from "./paginatedRequest"
 
-export class BlockfrostClient extends Blockfrost {
+export class Blockfrost extends BaseBlockfrost {
   public blocks: BlockService
   public addresses: AddressService
   public transactions: TransactionsService

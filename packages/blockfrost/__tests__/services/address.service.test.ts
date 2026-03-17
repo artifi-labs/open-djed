@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
 import { Network } from "../../src/types/network.types"
-import { BlockfrostClient } from "../../src/client/blockfrostClient"
+import { Blockfrost } from "../../src/client/blockfrostClient"
 import { BlockfrostError } from "../../src/errors/blockfrost.error"
 import { createAddressTransaction } from "../factories/address/addressTransaction.factory"
 
@@ -10,10 +10,10 @@ const apiKey = "test-api-key"
 const address = "addr1213"
 
 describe("AddressService", () => {
-  let client: BlockfrostClient
+  let client: Blockfrost
 
   beforeEach(() => {
-    client = new BlockfrostClient(apiKey, Network.MAINNET)
+    client = new Blockfrost(apiKey, Network.MAINNET)
 
     vi.spyOn(global, "fetch").mockResolvedValue(
       new Response(JSON.stringify(mockResponse), {

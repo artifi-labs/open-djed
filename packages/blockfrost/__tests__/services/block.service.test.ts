@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
 import { Network } from "../../src/types/network.types"
-import { BlockfrostClient } from "../../src/client/blockfrostClient"
+import { Blockfrost } from "../../src/client/blockfrostClient"
 import { createLatestBlock } from "../factories/block/latestBlock.factory"
 import { BlockfrostError } from "../../src/errors/blockfrost.error"
 
@@ -8,10 +8,10 @@ const mockBlock = createLatestBlock()
 const apiKey = "test-api-key"
 
 describe("BlockService", () => {
-  let client: BlockfrostClient
+  let client: Blockfrost
 
   beforeEach(() => {
-    client = new BlockfrostClient(apiKey, Network.MAINNET)
+    client = new Blockfrost(apiKey, Network.MAINNET)
 
     vi.spyOn(global, "fetch").mockResolvedValue(
       new Response(JSON.stringify(mockBlock), {
@@ -119,7 +119,7 @@ describe("BlockService", () => {
         ),
       )
 
-      const clientWithRetry = new BlockfrostClient(apiKey, Network.MAINNET, {
+      const clientWithRetry = new Blockfrost(apiKey, Network.MAINNET, {
         attempts: 3,
       })
 

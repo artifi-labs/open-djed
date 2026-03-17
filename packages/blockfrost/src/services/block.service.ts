@@ -1,4 +1,4 @@
-import type { BlockfrostClient } from "../client/blockfrostClient"
+import type { Blockfrost } from "../client/blockfrostClient"
 import {
   type LatestBlock,
   latestBlockSchema,
@@ -7,7 +7,7 @@ import {
 export class BlockService {
   private basePath: string = "/blocks"
 
-  constructor(private client: BlockfrostClient) {}
+  constructor(private client: Blockfrost) {}
 
   /**
    * GET /blocks/latest

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
 import { Network } from "../../src/types/network.types"
-import { BlockfrostClient } from "../../src/client/blockfrostClient"
+import { Blockfrost } from "../../src/client/blockfrostClient"
 import { BlockfrostError } from "../../src/errors/blockfrost.error"
 import { BlockService } from "../../src/services/block.service"
 import { AddressService } from "../../src/services/address.service"
@@ -27,11 +27,11 @@ const mockErrorResponse = (status: number, error: string, message: string) =>
     }),
   )
 
-describe("BlockfrostClient", () => {
-  let client: BlockfrostClient
+describe("Blockfrost", () => {
+  let client: Blockfrost
 
   beforeEach(() => {
-    client = new BlockfrostClient(apiKey, Network.MAINNET)
+    client = new Blockfrost(apiKey, Network.MAINNET)
     vi.spyOn(global, "fetch").mockImplementation(() =>
       mockJsonResponse(mockData),
     )
@@ -49,7 +49,7 @@ describe("BlockfrostClient", () => {
     })
 
     it("should use MAINNET as default network", () => {
-      const defaultClient = new BlockfrostClient(apiKey)
+      const defaultClient = new Blockfrost(apiKey)
       expect(defaultClient.network).toBe(Network.MAINNET)
     })
 
@@ -58,7 +58,7 @@ describe("BlockfrostClient", () => {
       { network: Network.PREVIEW },
       { network: Network.PREPROD },
     ])("should use the provided network", ({ network }) => {
-      const client = new BlockfrostClient(apiKey, network)
+      const client = new Blockfrost(apiKey, network)
       expect(client.network).toBe(network)
     })
   })
@@ -157,7 +157,7 @@ describe("BlockfrostClient", () => {
         .mockImplementationOnce(() => mockErrorResponse(400, "", ""))
         .mockImplementationOnce(() => mockJsonResponse(mockData))
 
-      const clientWithRetry = new BlockfrostClient(apiKey, Network.MAINNET, {
+      const clientWithRetry = new Blockfrost(apiKey, Network.MAINNET, {
         attempts: 1,
       })
 
@@ -180,7 +180,7 @@ describe("BlockfrostClient", () => {
         .mockImplementationOnce(() => mockErrorResponse(status, "", "message"))
         .mockImplementationOnce(() => mockJsonResponse(mockData))
 
-      const client = new BlockfrostClient(apiKey, Network.MAINNET, {
+      const client = new Blockfrost(apiKey, Network.MAINNET, {
         attempts: retriesAttempt,
       })
 
@@ -196,7 +196,7 @@ describe("BlockfrostClient", () => {
           .mockImplementationOnce(() => mockErrorResponse(status, "", ""))
           .mockImplementationOnce(() => mockJsonResponse(mockData))
 
-        const client = new BlockfrostClient(apiKey, Network.MAINNET, {
+        const client = new Blockfrost(apiKey, Network.MAINNET, {
           attempts: retriesAttempt,
         })
 

@@ -1,4 +1,4 @@
-import type { BlockfrostClient } from "../client/blockfrostClient"
+import type { Blockfrost } from "../client/blockfrostClient"
 import {
   transactionUtxoSchema,
   type TransactionUtxo,
@@ -7,7 +7,7 @@ import {
 export class TransactionsService {
   private basePath: string = "/txs"
 
-  constructor(private client: BlockfrostClient) {}
+  constructor(private client: Blockfrost) {}
 
   /**
    * GET /txs/{tx_hash}/utxos
