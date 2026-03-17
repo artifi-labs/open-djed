@@ -28,7 +28,7 @@ export class RequestBuilder<T> {
       } catch (error) {
         lastError = error
 
-        if (error instanceof BlockfrostError && error.status === 500) throw error
+        if (error instanceof BlockfrostError && [500].includes(error.status)) throw error
 
         if (attempt < attempts) {
           onRetry?.(error, attempt)

@@ -3,7 +3,7 @@ import assert from "node:assert/strict"
 import { Network } from "../../src/types/network.types"
 import { BlockfrostClient } from "../../src/client/blockfrostClient"
 import { BlockfrostError } from "../../src/errors/blockfrost.error"
-import { createTransactionUtxo, createTransactionUtxoInput, createTransactionUtxoOutput } from "../factories/transactions/transactionUtxo.factory"
+import { createTransactionUtxo, createTransactionUtxoInput, createTransactionUtxoOutput } from "../factories/transaction/transactionUtxo.factory"
 
 const mockUtxo = createTransactionUtxo()
 const apiKey = "test-api-key"

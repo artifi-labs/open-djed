@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
 import { Network } from "../../src/types/network.types"
 import { BlockfrostClient } from "../../src/client/blockfrostClient"
 import { BlockfrostError } from "../../src/errors/blockfrost.error"
-import { createAddressTransaction } from "../factories/addresses/addressTransaction.factory"
+import { createAddressTransaction } from "../factories/address/addressTransaction.factory"
 
 const mockAddressTransaction = createAddressTransaction()
 const mockResponse = [mockAddressTransaction]
