@@ -266,7 +266,7 @@
         },
         "totalRewards": {
           "label": "Recompensas Totais",
-          "tooltip": "Soma das recompensas do ADA em staking e das taxas recolhidas distribuídas aos detentores de SHEN."
+          "tooltip": "Soma das recompensas do staking de ADA e das taxas recolhidas distribuídas aos detentores de SHEN."
         }
       },
       "rewards": {
