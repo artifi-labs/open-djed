@@ -77,8 +77,7 @@ export const InfoBanner: React.FC<InfoBannerProps> = ({
           className={`text-xs ${type === "below" ? "text-error-text" : "text-success-text"}`}
         >
           {percentage}%{" "}
-          {type === "below" ? t("common.below") : t("common.above")}{" "}
-          {type === "below" ? t("common.minimum") : t("common.maximum")}
+          {type === "below" ? t("analytics.below") : t("analytics.above")}
         </p>
       </div>
     </div>

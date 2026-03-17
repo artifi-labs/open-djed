@@ -17,6 +17,8 @@
       "failedToFetch": "Failed to get {analytic} cap data."
     },
     "currentRatio": "Current Ratio",
+    "below": "Below Minimum",
+    "above": "Above Maximum",
     "reserve": {
       "warning": {
         "below": "DJED minting/SHEN burning unavailable: reserve ratio below minimum.",
@@ -39,10 +41,6 @@
   "common": {
     "illustration": "Illustration",
     "currencyValue": "{currency} Value",
-    "below": "Below",
-    "above": "Above",
-    "minimum": "Minimum",
-    "maximum": "Maximum",
     "available": "Available",
     "half": "Half",
     "max": "Max",

@@ -40,6 +40,10 @@
   },
   "common": {
     "burnedToken": "",
-    "mintedToken": ""
+    "mintedToken": "",
+    "below": "Abaixo",
+    "above": "Acima",
+    "minimum": "Mínimo",
+    "maximum": "Máximo"
   }
 }
