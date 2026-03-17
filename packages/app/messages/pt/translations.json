@@ -416,7 +416,7 @@
       "pageTitle": "Página Não Encontrada",
       "title": "Perdido no vazio da blockchain",
       "content": {
-        "content1": "Esta página se afastou da rede.",
+        "content1": "Esta página afastou-se da rede.",
         "content2": "Vamos reconectá-lo à cadeia principal"
       },
       "button": {
