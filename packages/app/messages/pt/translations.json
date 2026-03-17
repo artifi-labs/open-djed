@@ -98,7 +98,7 @@
     "noWalletDescription": "Assim que a carteira estiver conectada e houver atividade, as ordens aparecerão aqui",
     "cancel": "Cancelar",
     "confirmCancellation": "Confirmar Cancelamento",
-    "cancellationDescription": "Você está prestes a cancelar sua ordem. Após o cancelamento, a ordem será removida e não será mais processada.",
+    "cancellationDescription": "Você está prestes a cancelar a sua ordem. Após o cancelamento, a ordem será removida e não será mais processada.",
     "cancelOrder": "Cancelar Ordem",
     "dismiss": "Fechar",
     "orderCanceled": "Sua ordem foi cancelada.",
