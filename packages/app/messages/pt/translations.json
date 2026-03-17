@@ -398,7 +398,7 @@
     "title": "Carteira",
     "noWalletsDetected": "Nenhuma carteira detectada",
     "incorrectNetwork": "Por favor, conecte uma carteira {network}",
-    "connected": "Sua carteira foi conectada com sucesso",
+    "connected": "A sua carteira foi conectada com sucesso",
     "connectionFailed": "Falha ao conectar a carteira",
     "disconnected": "A sua carteira foi desconectada"
   },
