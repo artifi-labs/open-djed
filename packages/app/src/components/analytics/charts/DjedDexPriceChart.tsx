@@ -9,32 +9,19 @@ type DjedDexPriceChartProps = {
 }
 
 const getMaxMin = (data: DjedDexPricesResponse, isUsd: boolean) => {
-  const result = data.reduce(
-    (acc, entry) => {
-      const valuesToCompare = isUsd
-        ? [entry.usdValue, entry.minswapUsdValue, entry.wingridersUsdValue]
-        : [entry.adaValue, entry.minswapAdaValue, entry.wingridersAdaValue]
+  const keys = isUsd
+    ? (["usdValue", "minswapUsdValue", "wingridersUsdValue"] as const)
+    : (["adaValue", "minswapAdaValue", "wingridersAdaValue"] as const)
 
-      const validValues = valuesToCompare.filter(
-        (v) => v !== null && v !== undefined && v > 0,
-      )
-
-      if (validValues.length === 0) return acc
-
-      const currentMax = Math.max(...validValues)
-      const currentMin = Math.min(...validValues)
-
-      return {
-        max: currentMax > acc.max ? currentMax : acc.max,
-        min: currentMin < acc.min ? currentMin : acc.min,
-      }
-    },
-    { max: -Infinity, min: Infinity },
+  const values = data.flatMap((entry) =>
+    keys.map((key) => entry[key]).filter((v): v is number => v != null)
   )
 
+  if (values.length === 0) return { min: 0, max: 0 }
+
   return {
-    max: result.max === -Infinity ? 0 : result.max,
-    min: result.min === Infinity ? 0 : result.min,
+    min: Math.min(...values),
+    max: Math.max(...values),
   }
 }
 
