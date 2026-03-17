@@ -271,7 +271,7 @@
       },
       "rewards": {
         "simplified": {
-          "tooltip": "Veja taxas simplificadas."
+          "tooltip": "Veja as taxas simplificadas."
         },
         "detailed": {
           "tooltip": "Veja detalhamento completo das taxas."
