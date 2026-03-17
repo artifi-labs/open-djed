@@ -164,7 +164,7 @@
       "description": "Open DJED é uma aplicação web orientada pela comunidade para interagir com a stablecoin algorítmica DJED na Cardano, totalmente open source, desenvolvida pela Artifi Labs. Recria a experiência original do DJED com total compatibilidade com o protocolo, oferecendo uma alternativa mais fiável, acessível e auditável."
     },
     "reserveDetails": {
-      "currentRatio": "Rácio de Liquidez Corrente",
+      "currentRatio": "Rácio de Liquidez Atual",
       "minRatio": "Rácio Mínimo",
       "maxRatio": "Rácio Máximo",
       "reserveValue": "Valor da Reserva"
