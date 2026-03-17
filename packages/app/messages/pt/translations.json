@@ -258,7 +258,7 @@
         },
         "stakingRewards": {
           "label": "Recompensas de Staking ADA",
-          "tooltip": "Recompensas do ADA em staking que garante seu SHEN. O staking ajuda a proteger a rede Cardano e gera renda passiva."
+          "tooltip": "Recompensas do staking de ADA que suporta o seu SHEN. O staking ajuda a proteger a rede Cardano e gera renda passiva."
         },
         "earnedFee": {
           "label": "Taxas Recebidas",
