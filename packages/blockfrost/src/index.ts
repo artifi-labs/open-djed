@@ -1,3 +1,3 @@
-export { Blockfrost } from "./client/blockfrostClient"
-export { BlockfrostError } from "./errors/blockfrost.error"
 export * from "./services"
+export * from "./client"
+export * from "./errors"
