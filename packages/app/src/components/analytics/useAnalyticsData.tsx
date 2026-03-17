@@ -216,19 +216,9 @@ export function useAnalyticsData() {
   const formattedDjedDexData = useMemo(() => {
     if (!djedDexsData) return []
 
-    const updated = djedDexsData.map((entry) => ({
-      ...entry,
-      adaValue: Number(entry.adaValue),
-      usdValue: Number(entry.usdValue),
-      minswapAdaValue: Number(entry.minswapAdaValue),
-      minswapUsdValue: Number(entry.minswapUsdValue),
-      wingridersAdaValue: Number(entry.wingridersAdaValue),
-      wingridersUsdValue: Number(entry.wingridersUsdValue),
-    }))
+    if (djedDexPeriod.value === "All") djedDexsData.shift()
 
-    if (djedDexPeriod.value === "All") updated.shift()
-
-    return updated
+    return djedDexsData
   }, [djedDexsData, data])
 
   // Error handling
