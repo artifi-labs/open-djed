@@ -101,7 +101,7 @@
     "cancellationDescription": "Você está prestes a cancelar a sua ordem. Após o cancelamento, a ordem será removida e não será mais processada.",
     "cancelOrder": "Cancelar Ordem",
     "dismiss": "Fechar",
-    "orderCanceled": "Sua ordem foi cancelada.",
+    "orderCanceled": "A sua ordem foi cancelada.",
     "table": {
       "header": {
         "type": "Tipo",
