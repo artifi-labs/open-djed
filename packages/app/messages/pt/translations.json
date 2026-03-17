@@ -296,7 +296,7 @@
     "whatIsSimulator": {
       "title": "O que é o simulador de trade?",
       "description": "O simulador ajuda a entender a rentabilidade de investir em SHEN. Inserindo valor em USD, datas de compra e venda, e preços do ADA, a ferramenta estima",
-      "disclaimer": "Não é uma ferramenta de trade. É uma calculadora que mostra como seus retornos mudam com base nos valores inseridos, permitindo planejar sua estratégia com clareza. Não deve ser considerado conselho financeiro.",
+      "disclaimer": "Não é uma ferramenta de trade. É uma calculadora que mostra como os seus retornos mudam com base nos valores inseridos, o que permite planear a sua estratégia com clareza. Não deve ser considerado como conselho financeiro.",
       "items": {
         "fees": "Taxas pagas ao comprar e vender",
         "rewards": "Recompensas em ADA ao manter SHEN",
