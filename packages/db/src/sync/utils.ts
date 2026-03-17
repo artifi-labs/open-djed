@@ -37,10 +37,13 @@ import {
 } from "@open-djed/data"
 import JSONbig from "json-bigint"
 import fsPromises from "fs/promises"
+import { Network } from "@open-djed/blockfrost/src/types"
 
 const blockfrostUrl = env.BLOCKFROST_URL
 const blockfrostId = env.BLOCKFROST_PROJECT_ID
-export const blockfrost = new Blockfrost(blockfrostUrl, blockfrostId)
+const blockfrostNetwork =
+  env.NETWORK === "Mainnet" ? Network.MAINNET : Network.PREPROD
+export const blockfrost = new Blockfrost(blockfrostId, blockfrostNetwork)
 export const network = env.NETWORK
 export const registry = registryByNetwork[network]
 

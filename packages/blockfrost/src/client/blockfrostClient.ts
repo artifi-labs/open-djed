@@ -15,11 +15,11 @@ export class Blockfrost extends BaseBlockfrost {
   public transactions: TransactionsService
 
   constructor(
-    public apiKey: string,
+    public projectId: string,
     public network: Network = Network.MAINNET,
     private readonly globalRetry: RetryOptions = {},
   ) {
-    super(network, apiKey)
+    super(network, projectId)
     this.blocks = new BlockService(this)
     this.addresses = new AddressService(this)
     this.transactions = new TransactionsService(this)
@@ -37,7 +37,7 @@ export class Blockfrost extends BaseBlockfrost {
     return new RequestBuilder(async (signal) => {
       const url = this.buildUrl(path, query)
       const res = await fetch(url, {
-        headers: { project_id: this.apiKey },
+        headers: { project_id: this.projectId },
         signal,
       })
 

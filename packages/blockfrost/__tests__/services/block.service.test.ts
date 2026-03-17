@@ -61,59 +61,43 @@ describe("BlockService", () => {
   it.each([
     {
       status: 400,
-      error: "Bad Request",
-      message: "Invalid address.",
       expectedCalls: 3,
     },
     {
       status: 403,
-      error: "Forbidden",
-      message: "Invalid project token.",
       expectedCalls: 3,
     },
     {
       status: 404,
-      error: "Not Found",
-      message: "Component not found.",
       expectedCalls: 3,
     },
     {
       status: 418,
-      error: "Rate Limited",
-      message: "Usage over limit.",
       expectedCalls: 3,
     },
     {
       status: 429,
-      error: "Too Many Requests",
-      message: "Usage over limit.",
       expectedCalls: 3,
     },
     {
       status: 500,
-      error: "Internal Server Error",
-      message: "Unexpected response.",
       expectedCalls: 1,
     },
     {
       status: 502,
-      error: "Bad Gateway",
-      message: "Backend fetch failed.",
       expectedCalls: 3,
     },
     {
       status: 503,
-      error: "Service Unavailable",
-      message: "Service unavailable.",
       expectedCalls: 3,
     },
   ])(
     "should handle $status $error correctly",
-    async ({ status, error, message, expectedCalls }) => {
+    async ({ status, expectedCalls }) => {
       vi.spyOn(global, "fetch").mockImplementation(() =>
         Promise.resolve(
           new Response(
-            JSON.stringify({ error, message, status_code: status }),
+            JSON.stringify({ status_code: status, message: "", error: "" }),
             { status, headers: { "Content-Type": "application/json" } },
           ),
         ),

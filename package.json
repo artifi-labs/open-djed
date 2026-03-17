@@ -4,7 +4,6 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "bun run --filter '*' build",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint .",
