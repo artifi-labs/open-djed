@@ -171,7 +171,7 @@
     },
     "transactionSummary": {
       "title": "Resumo da Transação",
-      "description": "Comece inserindo um valor para ver o detalhe completo dos custos."
+      "description": "Comece por inserir um valor para ver a descrição completa dos custos."
     },
     "baseCost": "Custo Base",
     "mintFee": "Taxa de Criação",
