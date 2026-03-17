@@ -366,7 +366,7 @@
       "terms": {
         "text": "Terms & Conditions"
       },
-      "allRights": "{year} Artifi. All rights are reserved"
+      "allRights": "{year} {company}. All rights are reserved"
     }
   },
   "navbar": {
@@ -384,7 +384,7 @@
     },
     "wallet": {
       "connect": "Connect Wallet",
-      "loading": "Loading Address"
+      "loading": "Loading Wallet"
     }
   },
   "wallet": {

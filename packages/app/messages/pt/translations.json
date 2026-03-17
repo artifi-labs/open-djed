@@ -159,7 +159,7 @@
           "globalAccess": "<strong>Código aberto:</strong> Totalmente auditável, forkable e detido pela comunidade.",
           "transparentFees": "<strong>Taxas transparentes e baixas:</strong> Mesma estrutura de taxas da COTI, ~0,1 ADA mais barato."
         },
-        "title": "Porquê Open DJED?"
+        "title": "Porquê o Open DJED?"
       },
       "description": "Open DJED é uma aplicação web orientada pela comunidade para interagir com a stablecoin algorítmica DJED na Cardano, totalmente open source, desenvolvida pela Artifi Labs. Recria a experiência original do DJED com total compatibilidade com o protocolo, oferecendo uma alternativa mais fiável, acessível e auditável."
     },
@@ -196,15 +196,15 @@
     },
     "paragraphs": {
       "dataCollection": "Não recolhemos nem armazenamos dados pessoais. Todos os dados utilizados ou exibidos na aplicação vêm exclusivamente de informações públicas disponíveis na blockchain.",
-      "wallet": "Quando os utilizadores interagem com a aplicação usando carteiras da Cardano, interagimos apenas com a interface da carteira via padrão CIP-30. Não recebemos nem armazenamos chaves privadas. Reservamo-nos o direito de armazenar endereços e transações para fins analíticos, permitindo melhorar a aplicação com base no uso.",
+      "wallet": "Quando os utilizadores interagem com a aplicação através de carteiras da Cardano, interagimos apenas com a interface da carteira via standard CIP-30. Não recebemos nem armazenamos chaves privadas. Reservamos o direito de armazenar endereços e transações para fins analíticos, permitindo melhorar a aplicação com base na utilização.",
       "analytics1": "Usamos PostHog para guardar analíticas e telemetrias da aplicação, ajudando-nos a entender o uso e identificar bugs ou problemas de performance.",
       "analytics2": "Os dados recolhidos pelo PostHog <strong>não</strong> incluem informações pessoais identificáveis. Não armazenamos endereços de carteira, nomes, emails ou credenciais de utilizadores.",
       "analytics3": "Todas as analíticas são usadas estritamente para melhorar a experiência da aplicação.",
       "openSource": "Esta aplicação é de código aberto e licenciado sob a",
       "sourceCode": "Código-fonte:",
-      "authentication": "A aplicação não utiliza nem exige contas de utilizadores, logins ou registos por email. O acesso é anônimo.",
+      "authentication": "A aplicação não utiliza nem exige contas de utilizadores, logins ou registos por email. O acesso é anónimo.",
       "policy": "Podemos revisar esta política ao longo do tempo. Atualizações serão atualizadas aqui com nova data de vigência.",
-      "contact": "Se tiver dúvidas sobre esta Política de Privacidade, entre em contato:"
+      "contact": "Se tiver dúvidas sobre esta Política de Privacidade, entre em contacto:"
     }
   },
   "simulator": {
@@ -215,27 +215,27 @@
     },
     "buyDate": {
       "label": "Data de Compra",
-      "tooltip": "A data em que você pretende comprar SHEN."
+      "tooltip": "A data em que se pretende comprar SHEN."
     },
     "sellDate": {
       "label": "Data de Venda",
-      "tooltip": "A data em que você pretende vender SHEN."
+      "tooltip": "A data em que se pretende vender SHEN."
     },
     "buyAdaPrice": {
       "label": "Preço ADA na Compra",
-      "tooltip": "O preço do ADA quando você pretende comprar SHEN, usado para calcular lucro/prejuízo."
+      "tooltip": "O preço de ADA no momento em que se pretende comprar SHEN, usado para calcular lucro/prejuízo."
     },
     "sellAdaPrice": {
       "label": "Preço ADA na Venda",
-      "tooltip": "O preço do ADA quando você pretende vender SHEN, usado para calcular lucro/prejuízo."
+      "tooltip": "O preço de ADA no momento em que se pretende vender SHEN, usado para calcular lucro/prejuízo."
     },
     "scenario": "Cenário",
     "results": {
       "title": "Resultados do Simulador",
-      "description": "Comece inserindo um valor para ver os resultados.",
+      "description": "Comece por inserir um valor para ver os resultados.",
       "comparison": {
         "title": "Comparação de Retornos (SHEN vs ADA)",
-        "description": "Este gráfico mostra cenários alternativos de manter SHEN ou ADA."
+        "description": "Este gráfico mostra cenários alternativos entre manter SHEN ou ADA."
       },
       "fees": {
         "simplified": {
@@ -274,7 +274,7 @@
           "tooltip": "Veja as taxas simplificadas."
         },
         "detailed": {
-          "tooltip": "Veja detalhamento completo das taxas."
+          "tooltip": "Veja o detalhe completo das taxas."
         }
       },
       "chart": {
@@ -295,13 +295,13 @@
     "description": "Verifique rapidamente os resultados de investir em SHEN.",
     "whatIsSimulator": {
       "title": "O que é o simulador de trade?",
-      "description": "O simulador ajuda a entender a rentabilidade de investir em SHEN. Inserindo valor em USD, datas de compra e venda, e preços do ADA, a ferramenta estima",
+      "description": "O simulador ajuda a entender a rentabilidade de investir em SHEN. Inserindo valor em USD, datas de compra e venda, e preços de ADA",
       "disclaimer": "Não é uma ferramenta de trade. É uma calculadora que mostra como os seus retornos mudam com base nos valores inseridos, o que permite planear a sua estratégia com clareza. Não deve ser considerado como conselho financeiro.",
       "items": {
         "fees": "Taxas pagas ao comprar e vender",
         "rewards": "Recompensas em ADA ao manter SHEN",
-        "feesEarned": "Taxas obtidas com atividades de criação e queima no protocolo",
-        "profitOrLoss": "Lucro ou prejuízo pela variação do preço do ADA",
+        "feesEarned": "Taxas provenientes das atividades de cunhagem e queima no protocolo",
+        "profitOrLoss": "Lucro ou prejuízo pela variação do preço de ADA",
         "totalEstimatedPNL": "PNL total estimado"
       }
     }
@@ -366,7 +366,7 @@
       "terms": {
         "text": "Termos & Condições"
       },
-      "allRights": "© {year} Artifi. Todos os direitos reservados"
+      "allRights": "© {year} {company}. Todos os direitos reservados"
     }
   },
   "navbar": {
@@ -384,7 +384,7 @@
     },
     "wallet": {
       "connect": "Conectar Carteira",
-      "loading": "Carregando Endereço"
+      "loading": "Carregando a Carteira"
     }
   },
   "wallet": {
