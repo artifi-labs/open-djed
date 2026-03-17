@@ -6,7 +6,10 @@ export class PaginatedRequest<T> {
   private retryOptions: RetryOptions = {}
 
   constructor(
-    private readonly fetchPage: (page: number, count: number) => RequestBuilder<T[]>,
+    private readonly fetchPage: (
+      page: number,
+      count: number,
+    ) => RequestBuilder<T[]>,
     private readonly globalRetry: RetryOptions = {},
   ) {}
 
@@ -16,7 +19,13 @@ export class PaginatedRequest<T> {
   }
 
   async allPages(options: PaginationOptions<T> = {}): Promise<T[]> {
-    const { count = 100, maxPages = Infinity, filter, stopWhen, stopAfter } = options
+    const {
+      count = 100,
+      maxPages = Infinity,
+      filter,
+      stopWhen,
+      stopAfter,
+    } = options
     const results: T[] = []
     let page = 1
 

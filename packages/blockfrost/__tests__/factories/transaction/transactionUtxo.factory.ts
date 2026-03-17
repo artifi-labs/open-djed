@@ -1,8 +1,13 @@
-import type { TransactionUtxo, TransactionUtxoInput, TransactionUtxoOutput } from "../../../src/schemas/transaction/transactionUtxo.schema"
+import type {
+  TransactionUtxo,
+  TransactionUtxoInput,
+  TransactionUtxoOutput,
+} from "../../../src/schemas/transaction/transactionUtxo.schema"
 import { createFactory } from "../createFactory"
 
 const createTransactionUtxoInput = createFactory<TransactionUtxoInput>({
-  address: "addr1q9ld26v2lv8wvrxxmvg90pn8n8n5k6tdst06q2s856rwmvnueldzuuqmnsye359fqrk8hwvenjnqultn7djtrlft7jnq7dy7wv",
+  address:
+    "addr1q9ld26v2lv8wvrxxmvg90pn8n8n5k6tdst06q2s856rwmvnueldzuuqmnsye359fqrk8hwvenjnqultn7djtrlft7jnq7dy7wv",
   amount: [{ unit: "lovelace", quantity: "42000000" }],
   output_index: 0,
   data_hash: null,
@@ -14,7 +19,8 @@ const createTransactionUtxoInput = createFactory<TransactionUtxoInput>({
 })
 
 const createTransactionUtxoOutput = createFactory<TransactionUtxoOutput>({
-  address: "addr1q9ld26v2lv8wvrxxmvg90pn8n8n5k6tdst06q2s856rwmvnueldzuuqmnsye359fqrk8hwvenjnqultn7djtrlft7jnq7dy7wv",
+  address:
+    "addr1q9ld26v2lv8wvrxxmvg90pn8n8n5k6tdst06q2s856rwmvnueldzuuqmnsye359fqrk8hwvenjnqultn7djtrlft7jnq7dy7wv",
   amount: [{ unit: "lovelace", quantity: "42000000" }],
   output_index: 0,
   data_hash: null,

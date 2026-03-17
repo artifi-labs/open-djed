@@ -15,11 +15,15 @@ const defaults: LatestBlock = {
   block_vrf: "vrf_vk1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq",
   op_cert: "0000000000000000000000000000000000000000000000000000000000000000",
   op_cert_counter: 10,
-  previous_block: "0000000000000000000000000000000000000000000000000000000000000001",
-  next_block: "0000000000000000000000000000000000000000000000000000000000000002",
+  previous_block:
+    "0000000000000000000000000000000000000000000000000000000000000001",
+  next_block:
+    "0000000000000000000000000000000000000000000000000000000000000002",
   confirmations: 1,
 }
 
-export function createLatestBlock(overrides: Partial<LatestBlock> = {}): LatestBlock {
+export function createLatestBlock(
+  overrides: Partial<LatestBlock> = {},
+): LatestBlock {
   return { ...defaults, ...overrides }
 }

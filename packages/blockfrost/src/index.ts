@@ -3,6 +3,10 @@ import { type EvalRedeemer, type Transaction } from "@lucid-evolution/lucid"
 import packageJson from "../../cli/package.json" with { type: "json" }
 import { z } from "zod"
 
+export { BlockfrostClient } from "./client/blockfrostClient"
+export { BlockfrostError } from "./errors/blockfrost.error"
+export * from "./services"
+
 const BlockSchema = z.object({
   slot: z.number(),
 })

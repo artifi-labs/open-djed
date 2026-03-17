@@ -15,7 +15,11 @@ export class RequestBuilder<T> {
   }
 
   async fetch(): Promise<T> {
-    const { attempts = 1, timeout = 10_000, onRetry } = { ...this.globalRetry, ...this.retryOptions }
+    const {
+      attempts = 1,
+      timeout = 10_000,
+      onRetry,
+    } = { ...this.globalRetry, ...this.retryOptions }
 
     let lastError: unknown
 
@@ -28,7 +32,8 @@ export class RequestBuilder<T> {
       } catch (error) {
         lastError = error
 
-        if (error instanceof BlockfrostError && [500].includes(error.status)) throw error
+        if (error instanceof BlockfrostError && [500].includes(error.status))
+          throw error
 
         if (attempt < attempts) {
           onRetry?.(error, attempt)

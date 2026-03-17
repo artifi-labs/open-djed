@@ -1,11 +1,10 @@
-// __tests__/client/blockfrostClient.test.ts
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
 import { Network } from "../../src/types/network.types"
 import { BlockfrostClient } from "../../src/client/blockfrostClient"
 import { BlockfrostError } from "../../src/errors/blockfrost.error"
 import { BlockService } from "../../src/services/block.service"
 import { AddressService } from "../../src/services/address.service"
-import { TransactionsService } from "../../src/services/transactions.service"
+import { TransactionsService } from "../../src/services/transaction.service"
 import { z } from "zod"
 
 const apiKey = "test-api-key"
@@ -13,23 +12,29 @@ const mockSchema = z.object({ id: z.string() })
 const mockData = { id: "test" }
 
 const mockJsonResponse = (data: unknown, status = 200) =>
-  Promise.resolve(new Response(
-    JSON.stringify(data),
-    { status, headers: { "Content-Type": "application/json" } },
-  ))
+  Promise.resolve(
+    new Response(JSON.stringify(data), {
+      status,
+      headers: { "Content-Type": "application/json" },
+    }),
+  )
 
 const mockErrorResponse = (status: number, error: string, message: string) =>
-  Promise.resolve(new Response(
-    JSON.stringify({ error, message, status_code: status }),
-    { status, headers: { "Content-Type": "application/json" } },
-  ))
+  Promise.resolve(
+    new Response(JSON.stringify({ error, message, status_code: status }), {
+      status,
+      headers: { "Content-Type": "application/json" },
+    }),
+  )
 
 describe("BlockfrostClient", () => {
   let client: BlockfrostClient
 
   beforeEach(() => {
     client = new BlockfrostClient(apiKey, Network.MAINNET)
-    vi.spyOn(global, "fetch").mockImplementation(() => mockJsonResponse(mockData))
+    vi.spyOn(global, "fetch").mockImplementation(() =>
+      mockJsonResponse(mockData),
+    )
   })
 
   afterEach(() => {
@@ -108,15 +113,17 @@ describe("BlockfrostClient", () => {
 
     it("should throw BlockfrostError on non-ok response", async () => {
       vi.spyOn(global, "fetch").mockImplementation(() =>
-        mockErrorResponse(404, "", "")
+        mockErrorResponse(404, "", ""),
       )
 
-      await expect(client.request("/test", mockSchema)).rejects.toThrow(BlockfrostError)
+      await expect(client.request("/test", mockSchema)).rejects.toThrow(
+        BlockfrostError,
+      )
     })
 
     it("should throw if response does not match schema", async () => {
       vi.spyOn(global, "fetch").mockImplementation(() =>
-        mockJsonResponse({ invalid: true })
+        mockJsonResponse({ invalid: true }),
       )
 
       await expect(client.request("/test", mockSchema)).rejects.toThrow()
@@ -133,7 +140,9 @@ describe("BlockfrostClient", () => {
     it("should pass query params to each page request", async () => {
       vi.spyOn(global, "fetch").mockImplementation(() => mockJsonResponse([]))
 
-      await client.paginate("/test", z.array(mockSchema), { order: "desc" }).allPages()
+      await client
+        .paginate("/test", z.array(mockSchema), { order: "desc" })
+        .allPages()
 
       expect(global.fetch).toHaveBeenCalledWith(
         expect.stringContaining("order=desc"),
@@ -143,15 +152,18 @@ describe("BlockfrostClient", () => {
   })
 
   describe("Retry", () => {
-
     it("should override global retry with request retry", async () => {
       vi.spyOn(global, "fetch")
         .mockImplementationOnce(() => mockErrorResponse(400, "", ""))
         .mockImplementationOnce(() => mockJsonResponse(mockData))
 
-      const clientWithRetry = new BlockfrostClient(apiKey, Network.MAINNET, { attempts: 1 })
+      const clientWithRetry = new BlockfrostClient(apiKey, Network.MAINNET, {
+        attempts: 1,
+      })
 
-      const result = await clientWithRetry.request("/test", mockSchema).retry({ attempts: 2 })
+      const result = await clientWithRetry
+        .request("/test", mockSchema)
+        .retry({ attempts: 2 })
       expect(result).toEqual(mockData)
       expect(global.fetch).toHaveBeenCalledTimes(2)
     })
@@ -165,27 +177,34 @@ describe("BlockfrostClient", () => {
       { status: 429, retriesAttempt: 2, expectedCalls: 2 },
     ])("Should retry", async ({ status, retriesAttempt, expectedCalls }) => {
       vi.spyOn(global, "fetch")
-        .mockImplementationOnce(() =>  mockErrorResponse(status, "", "message"))
+        .mockImplementationOnce(() => mockErrorResponse(status, "", "message"))
         .mockImplementationOnce(() => mockJsonResponse(mockData))
 
-      const client = new BlockfrostClient(apiKey, Network.MAINNET, { attempts: retriesAttempt })
+      const client = new BlockfrostClient(apiKey, Network.MAINNET, {
+        attempts: retriesAttempt,
+      })
 
       const result = await client.request("/test", mockSchema)
       expect(result).toEqual(mockData)
       expect(global.fetch).toHaveBeenCalledTimes(expectedCalls)
     })
 
-    it.each([
-      { status: 500, retriesAttempt: 3, expectedCalls: 1 },
-    ])("Should not retry", async ({ status, retriesAttempt, expectedCalls }) => {
-      vi.spyOn(global, "fetch")
-        .mockImplementationOnce(() =>  mockErrorResponse(status, "", ""))
-        .mockImplementationOnce(() => mockJsonResponse(mockData))
+    it.each([{ status: 500, retriesAttempt: 3, expectedCalls: 1 }])(
+      "Should not retry",
+      async ({ status, retriesAttempt, expectedCalls }) => {
+        vi.spyOn(global, "fetch")
+          .mockImplementationOnce(() => mockErrorResponse(status, "", ""))
+          .mockImplementationOnce(() => mockJsonResponse(mockData))
 
-      const client = new BlockfrostClient(apiKey, Network.MAINNET, { attempts: retriesAttempt })
+        const client = new BlockfrostClient(apiKey, Network.MAINNET, {
+          attempts: retriesAttempt,
+        })
 
-      await expect(client.request("/test", mockSchema)).rejects.toThrow(BlockfrostError)
-      expect(global.fetch).toHaveBeenCalledTimes(expectedCalls)
-    })
+        await expect(client.request("/test", mockSchema)).rejects.toThrow(
+          BlockfrostError,
+        )
+        expect(global.fetch).toHaveBeenCalledTimes(expectedCalls)
+      },
+    )
   })
 })

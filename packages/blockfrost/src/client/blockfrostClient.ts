@@ -4,7 +4,7 @@ import { Network } from "../types/network.types"
 import type { ZodSchema } from "zod"
 import { BlockfrostError } from "../errors/blockfrost.error"
 import type { QueryParams } from "../types/http.types"
-import { TransactionsService } from "../services/transactions.service"
+import { TransactionsService } from "../services/transaction.service"
 import type { RetryOptions } from "../types/retry.types"
 import { RequestBuilder } from "./requestBuilder"
 import { PaginatedRequest } from "./paginatedRequest"
@@ -56,9 +56,10 @@ export class BlockfrostClient extends Blockfrost {
     schema: ZodSchema<T[]>,
     query?: QueryParams,
   ): PaginatedRequest<T> {
-    return new PaginatedRequest((page, count) =>
-      this.request(path, schema, { ...query, page, count }),
-    this.globalRetry)
+    return new PaginatedRequest(
+      (page, count) => this.request(path, schema, { ...query, page, count }),
+      this.globalRetry,
+    )
   }
 
   private buildUrl(path: string, query?: QueryParams): string {

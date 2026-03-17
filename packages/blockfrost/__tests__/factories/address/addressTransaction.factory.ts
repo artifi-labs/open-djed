@@ -1,5 +1,5 @@
-import type { AddressTransaction } from "../../../src/schemas/address/addresstransaction.schema";
-import { createFactory } from "../createFactory";
+import type { AddressTransaction } from "../../../src/schemas/address/addresstransaction.schema"
+import { createFactory } from "../createFactory"
 
 export const createAddressTransaction = createFactory<AddressTransaction>({
   tx_hash: "0000000000000000000000000000000000000000000000000000000000000000",

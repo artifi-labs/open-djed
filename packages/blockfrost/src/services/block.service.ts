@@ -6,14 +6,17 @@ import {
 
 export class BlockService {
   private basePath: string = "/blocks"
-  
+
   constructor(private client: BlockfrostClient) {}
-  
+
   /**
    * GET /blocks/latest
    */
   async getLatest(): Promise<LatestBlock> {
-    const data = await this.client.request(`${this.basePath}/latest`, latestBlockSchema)
+    const data = await this.client.request(
+      `${this.basePath}/latest`,
+      latestBlockSchema,
+    )
     return data
   }
 }
