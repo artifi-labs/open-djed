@@ -148,9 +148,8 @@ export const calculateFeesEarnings = (
 
     const dayKey = toDayString(new Date(Number(outputPool.lastOrder[0].time)))
     const feeAda = new Rational(feeLovelace).div(1_000_000n).toNumber()
-    const feeRate = new Rational(feeLovelace)
-      .div(outputPool.adaInReserve)
-      .toNumber() * 100
+    const feeRate =
+      new Rational(feeLovelace).div(outputPool.adaInReserve).toNumber() * 100
     const existing = dailyFees.get(dayKey)
 
     if (existing) {

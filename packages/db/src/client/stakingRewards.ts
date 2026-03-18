@@ -41,9 +41,9 @@ export const getLatestStakingReward = () =>
 
 export const getAllStakingRewards = async () => {
   const result = await prisma.aDAStakingRewards.findMany({
-    orderBy:{
-      timestamp: "asc"
-    }
+    orderBy: {
+      timestamp: "asc",
+    },
   })
   return result
 }

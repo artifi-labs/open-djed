@@ -11,7 +11,6 @@ import type {
 import { toDayString, buildDailyStakingRates } from "../../utils"
 import { handleAnalyticsUpdates } from "../updateAnalytics"
 
-
 export async function processShenYield(orderedTxOs: OrderedPoolOracleTxOs[]) {
   if (!orderedTxOs || orderedTxOs.length === 0) {
     logger.warn("No ordered TxOs provided for fees earnings calculation")
@@ -77,13 +76,11 @@ export async function processShenYield(orderedTxOs: OrderedPoolOracleTxOs[]) {
     const feeEntry = feesByDay.get(day)
 
     const feeDailyRateRaw = feeEntry?.rate ?? 0
-    const feeDailyRate = Number.isFinite(feeDailyRateRaw)
-      ? feeDailyRateRaw
-      : 0
+    const feeDailyRate = Number.isFinite(feeDailyRateRaw) ? feeDailyRateRaw : 0
     const stakingDailyRate = Number.isFinite(stakingByDay.get(day))
       ? (stakingByDay.get(day) ?? 0) / 5 //Epoch days
       : 0
-    
+
     const annualizedYield = (feeDailyRate + stakingDailyRate) * 365.25 //Leap Years
     const block = feeEntry?.block ?? dayBlockInfo?.block
     const slot = feeEntry?.slot ?? dayBlockInfo?.slot

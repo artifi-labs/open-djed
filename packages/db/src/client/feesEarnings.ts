@@ -36,9 +36,9 @@ export const deleteAllFeesEarnings = async () => {
 
 export const getAllFeesEarnings = async () => {
   const result = await prisma.aDAFeesEarnings.findMany({
-    orderBy:{
-      timestamp: "asc"
-    }
+    orderBy: {
+      timestamp: "asc",
+    },
   })
   return result
 }
