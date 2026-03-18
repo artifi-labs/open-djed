@@ -71,7 +71,7 @@ const Action: React.FC<ActionProps> = ({
   const t = useTranslations()
   const { reserveBounds } = useReserveDetails()
 
-  const actionText = capitalize(actionType)
+  const actionText = capitalize(t(`action.${actionType.toLowerCase()}`))
 
   const payEmpty = Object.values(payValues).every(isEmptyValue)
   const receiveEmpty = Object.values(receiveValues).every(isEmptyValue)

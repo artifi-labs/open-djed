@@ -41,9 +41,11 @@
   "common": {
     "illustration": "Illustration",
     "currencyValue": "{currency} Value",
+    "min": "Min",
+    "max": "Max",
+    "current": "Current",
     "available": "Available",
     "half": "Half",
-    "max": "Max",
     "mintAndBurnNow": "Mint & Burn Now",
     "months": {
       "march": "March",
@@ -148,7 +150,9 @@
     },
     "whatIsOpenDjed": {
       "title": "What is Open DJED?",
+      "description": "Open DJED is a community-driven web app for interacting with the DJED algorithmic stablecoin on Cardano, built entirely open source by Artifi Labs. It recreates the original DJED experience with full protocol compatibility - offering a more reliable, accessible, and auditable alternative.",
       "whyOpenDjed": {
+        "title": "Why Open DJED?",
         "items": {
           "protocolCompatible": "<strong>Reliable:</strong> Works even if the COTI app is down.",
           "openSource": "<strong>Community first:</strong> Built for and by Cardano users.",
@@ -156,10 +160,8 @@
           "reliable": "<strong>Global access:</strong> No geographic restrictions.",
           "globalAccess": "<strong>Open source:</strong> Fully auditable, forkable, and community-owned.",
           "transparentFees": "<strong>Transparent & low fees:</strong> Same COTI fee structure, ~0.1 ADA cheaper."
-        },
-        "title": "Why Open DJED?"
-      },
-      "description": "Open DJED is a community-driven web app for interacting with the DJED algorithmic stablecoin on Cardano, built entirely open source by Artifi Labs. It recreates the original DJED experience with full protocol compatibility - offering a more reliable, accessible, and auditable alternative."
+        }
+      }
     },
     "reserveDetails": {
       "currentRatio": "Current Ratio",
@@ -176,7 +178,8 @@
     "operatorFee": "Operator Fee",
     "totalCost": "Total Cost",
     "refundableDeposit": "Refundable Deposit",
-    "price": "Price"
+    "price": "Price",
+    "burnFee": "Burn Fee"
   },
   "privacyPolicy": {
     "pageTitle": "Privacy Policy",
@@ -240,7 +243,7 @@
           "tooltip": "See simplified rewards."
         },
         "detailed": {
-          "tooltip": "See detailed rewards breakdown."
+          "tooltip": "See detailed fees breakdown."
         },
         "buyFee": {
           "label": "Buy Fee",
@@ -272,7 +275,7 @@
           "tooltip": "See simplified fees."
         },
         "detailed": {
-          "tooltip": "See detailed fees breakdown."
+          "tooltip": "See detailed rewards breakdown."
         }
       },
       "chart": {

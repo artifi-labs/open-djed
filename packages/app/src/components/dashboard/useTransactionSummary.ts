@@ -228,6 +228,7 @@ const buildSummary = (
   const entries = isEmpty ? [] : Object.entries(actionData)
 
   const sections = createSectionConfigs(t)
+  sections[1].label = t(`dashboard.${action.actionType.toLowerCase()}Fee`)
 
   sections.forEach((section) => {
     const values = isEmpty

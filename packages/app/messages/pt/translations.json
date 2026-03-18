@@ -41,9 +41,11 @@
   "common": {
     "illustration": "Ilustração",
     "currencyValue": "Valor de {currency}",
+    "min": "Min",
+    "max": "Máx",
+    "current": "Atual",
     "available": "Disponível",
     "half": "Metade",
-    "max": "Máx",
     "mintAndBurnNow": "Cunhar & Queimar Agora",
     "months": {
       "march": "Março",
@@ -148,7 +150,9 @@
     },
     "whatIsOpenDjed": {
       "title": "O que é o Open DJED?",
+      "description": "Open DJED é uma aplicação web orientada pela comunidade para interagir com a stablecoin algorítmica DJED na Cardano, totalmente open source, desenvolvida pela Artifi Labs. Recria a experiência original do DJED com total compatibilidade com o protocolo, oferecendo uma alternativa mais fiável, acessível e auditável.",
       "whyOpenDjed": {
+        "title": "Porquê o Open DJED?",
         "items": {
           "protocolCompatible": "<strong>Confiável:</strong> Funciona mesmo que a aplicação da COTI esteja indisponível.",
           "openSource": "<strong>Comunidade em primeiro lugar:</strong> Construído para e por utilizadores da Cardano.",
@@ -156,10 +160,8 @@
           "reliable": "<strong>Acesso global:</strong> Sem restrições geográficas.",
           "globalAccess": "<strong>Código aberto:</strong> Totalmente auditável, forkable e detido pela comunidade.",
           "transparentFees": "<strong>Taxas transparentes e baixas:</strong> Mesma estrutura de taxas da COTI, ~0,1 ADA mais barato."
-        },
-        "title": "Porquê o Open DJED?"
-      },
-      "description": "Open DJED é uma aplicação web orientada pela comunidade para interagir com a stablecoin algorítmica DJED na Cardano, totalmente open source, desenvolvida pela Artifi Labs. Recria a experiência original do DJED com total compatibilidade com o protocolo, oferecendo uma alternativa mais fiável, acessível e auditável."
+        }
+      }
     },
     "reserveDetails": {
       "currentRatio": "Rácio de Liquidez Atual",
@@ -172,11 +174,12 @@
       "description": "Comece por inserir um valor para ver a descrição completa dos custos."
     },
     "baseCost": "Custo Base",
-    "mintFee": "Taxa de Criação",
+    "mintFee": "Taxa de Cunhagem",
     "operatorFee": "Taxa do Operador",
     "totalCost": "Custo Total",
     "refundableDeposit": "Depósito Reembolsável",
-    "price": "Preço"
+    "price": "Preço",
+    "burnFee": "Taxa de Queima"
   },
   "privacyPolicy": {
     "pageTitle": "Política de Privacidade",
@@ -213,19 +216,19 @@
     },
     "buyDate": {
       "label": "Data de Compra",
-      "tooltip": "A data em que se pretende comprar SHEN."
+      "tooltip": "A data que pretende comprar SHEN."
     },
     "sellDate": {
       "label": "Data de Venda",
-      "tooltip": "A data em que se pretende vender SHEN."
+      "tooltip": "A data que pretende vender SHEN."
     },
     "buyAdaPrice": {
       "label": "Preço ADA na Compra",
-      "tooltip": "O preço de ADA no momento em que se pretende comprar SHEN, usado para calcular lucro/prejuízo."
+      "tooltip": "O preço de ADA no momento que pretende comprar SHEN, usado para calcular lucro/prejuízo."
     },
     "sellAdaPrice": {
       "label": "Preço ADA na Venda",
-      "tooltip": "O preço de ADA no momento em que se pretende vender SHEN, usado para calcular lucro/prejuízo."
+      "tooltip": "O preço de ADA no momento que pretende vender SHEN, usado para calcular lucro/prejuízo."
     },
     "scenario": "Cenário",
     "results": {
@@ -240,7 +243,7 @@
           "tooltip": "Veja recompensas simplificadas."
         },
         "detailed": {
-          "tooltip": "Veja a descrição completa das recompensas."
+          "tooltip": "Veja o detalhe completo das taxas."
         },
         "buyFee": {
           "label": "Taxa de Compra",
@@ -272,7 +275,7 @@
           "tooltip": "Veja as taxas simplificadas."
         },
         "detailed": {
-          "tooltip": "Veja o detalhe completo das taxas."
+          "tooltip": "Veja o detalhe completo das recompensas."
         }
       },
       "chart": {

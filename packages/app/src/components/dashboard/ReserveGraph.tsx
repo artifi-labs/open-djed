@@ -1,5 +1,6 @@
 import { formatNumber } from "@/lib/utils"
 import Tooltip from "../tooltip/Tooltip"
+import { useTranslations } from "next-intl"
 
 interface ReserveGraphProps {
   currentRatio: number | undefined
@@ -12,6 +13,7 @@ export function ReserveGraph({
   minRatio,
   maxRatio,
 }: ReserveGraphProps) {
+  const { t } = useTranslations()
   const currentRatioValue =
     currentRatio !== undefined ? currentRatio / 100 : undefined
   const minRatioValue = minRatio !== undefined ? minRatio / 100 : undefined
@@ -19,19 +21,19 @@ export function ReserveGraph({
 
   const reserves = [
     {
-      label: "Min",
+      label: t("common.min"),
       value: minRatioValue,
       position: "top-full mt-1",
       style: "w-2 h-18 bg-primary rounded-full",
     },
     {
-      label: "Max",
+      label: t("common.max"),
       value: maxRatioValue,
       position: "top-full mt-1",
       style: "w-2 h-18 bg-primary rounded-full",
     },
     {
-      label: "Current",
+      label: t("common.current"),
       value: currentRatioValue,
       position: "bottom-full mb-1",
       style:

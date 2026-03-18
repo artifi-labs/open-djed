@@ -54,4 +54,13 @@ function seed() {
   t("errors.404.content.content1")
   t("errors.404.content.content2")
   t("errors.404.button.text")
+
+  t("dashboard.whatIsOpenDjed.whyOpenDjed.items.protocolCompatible")
+  t("dashboard.whatIsOpenDjed.whyOpenDjed.items.openSource")
+  t("dashboard.whatIsOpenDjed.whyOpenDjed.items.communityFirst")
+  t("dashboard.whatIsOpenDjed.whyOpenDjed.items.reliable")
+  t("dashboard.whatIsOpenDjed.whyOpenDjed.items.globalAccess")
+  t("dashboard.whatIsOpenDjed.whyOpenDjed.items.transparentFees")
+
+  t("dashboard.burnFee")
 }
