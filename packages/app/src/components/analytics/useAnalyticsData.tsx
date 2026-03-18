@@ -233,6 +233,13 @@ export function useAnalyticsData() {
     return djedDexsData
   }, [djedDexsData, data])
 
+  const formattedShenYieldData = useMemo(() => {
+    if (!shenYieldData) return []
+
+    if (shenYieldPeriod.value === "All") shenYieldData.shift()
+
+    return shenYieldData
+  }, [shenYieldData, data])
   // Error handling
   useEffect(() => {
     if (reserveRatioError) {
@@ -340,7 +347,7 @@ export function useAnalyticsData() {
     djedDexPeriod,
     setDjedDexCurrency,
     setDjedDexPeriod,
-    shenYieldData: shenYieldData || [],
+    shenYieldData: formattedShenYieldData ?? [],
     projectedYield: projectedYield || [],
     shenYieldPeriod,
     setShenYieldPeriod,

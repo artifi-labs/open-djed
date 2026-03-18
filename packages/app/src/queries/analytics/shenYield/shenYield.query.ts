@@ -33,10 +33,8 @@ export function useShenYieldQuery({ period }: Params) {
 
       const json = await res.json()
       const parsed = ShenYieldResponseSchema.parse(json)
-      const historicalData = [...parsed]
-      if (period === "All") historicalData.shift()
 
-      return historicalData.map((entry) => ({
+      return parsed.map((entry) => ({
         ...annualizedYield(entry),
         isProjected: false,
       }))
