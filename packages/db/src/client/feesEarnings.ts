@@ -13,6 +13,7 @@ export const getPeriodFeesEarnings = (period: Period) => {
       id: true,
       timestamp: true,
       fee: true,
+      rate: true,
     },
     orderBy: {
       timestamp: "asc",
@@ -34,7 +35,11 @@ export const deleteAllFeesEarnings = async () => {
 }
 
 export const getAllFeesEarnings = async () => {
-  const result = await prisma.aDAFeesEarnings.findMany()
+  const result = await prisma.aDAFeesEarnings.findMany({
+    orderBy: {
+      timestamp: "asc",
+    },
+  })
   return result
 }
 

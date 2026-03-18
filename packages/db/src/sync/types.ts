@@ -395,6 +395,7 @@ export type History = {
 export type ADAFeesEarnings = {
   timestamp: Date
   fee: number
+  rate: number
   block: string
   slot: number
 }
