@@ -603,7 +603,8 @@ export const formatDayEndIso = (day: string) => `${day}T23:59:59.999Z`
 export const MS_PER_DAY = 24 * 60 * 60 * 1000
 
 /**
- * Add 'rate' to every day in (start, end) so the map records the staking rate per calendar day.
+ * Assign one staking rate to each calendar day.
+ * The day when a new epoch starts belongs to the new epoch, not the previous one.
  */
 const addRangeToMap = (
   map: Map<string, number>,
@@ -611,13 +612,12 @@ const addRangeToMap = (
   start: Date,
   end: Date,
 ) => {
-  const cursor = new Date(start)
-  cursor.setUTCHours(0, 0, 0, 0)
+  const cursor = toUtcDayStart(start)
+  const endExclusive = toUtcDayStart(end)
 
-  while (cursor.getTime() < end.getTime()) {
+  while (cursor.getTime() < endExclusive.getTime()) {
     const day = toDayString(cursor)
-    const current = map.get(day) ?? 0
-    map.set(day, current + rate)
+    map.set(day, rate)
     cursor.setUTCDate(cursor.getUTCDate() + 1)
   }
 }
@@ -664,9 +664,11 @@ export const buildDailyStakingRates = (
     const rate = Number(reward.rate)
     if (!Number.isFinite(rate) || rate <= 0) continue
 
-    const start = new Date(reward.timestamp)
+    const start = toUtcDayStart(new Date(reward.timestamp))
     const nextReward = sortedRewards[index + 1]
-    const end = nextReward ? new Date(nextReward.timestamp) : new Date(today)
+    const end = nextReward
+      ? toUtcDayStart(new Date(nextReward.timestamp))
+      : new Date(start.getTime() + MS_PER_DAY)
     if (end <= start) continue
 
     addRangeToMap(stakingByDay, rate, start, end)

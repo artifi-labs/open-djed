@@ -403,18 +403,6 @@ export type ADAFeesEarnings = {
 export type ShenYield = {
   timestamp: Date
   yield: number
-  block: string
-  slot: number
-}
-
-export type ShenYieldEntry = {
-  timestamp: Date
-  fee: number
-  stakingRewards: number
-  yield: number
-  dailyFeeRate: number
-  dailyStakingRate: number
-  dailyRate: number
-  block: string
-  slot: bigint
+  block?: string
+  slot?: bigint
 }

@@ -28,7 +28,7 @@ export async function rollbackShenYield() {
   logger.warn(`Checking rollback from: ${latestShenYield.block}`)
 
   const storedBlocks = await prisma.shenYield.findMany({
-    where: { slot: { lte: latestShenYield.slot } },
+    where: { slot: { lte: Number(latestShenYield.slot) } },
     select: { block: true, slot: true },
     orderBy: { slot: "desc" },
     distinct: ["block"],
@@ -45,7 +45,7 @@ export async function rollbackShenYield() {
       logger.warn(`Rollback anchor found at block ${b.block} slot ${b.slot}`)
 
       await prisma.shenYield.deleteMany({
-        where: { slot: { gt: b.slot } },
+        where: { slot: { gt: Number(b.slot) } },
       })
 
       logger.info("Rollback completed")

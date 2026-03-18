@@ -6,14 +6,11 @@ import { logger } from "../../../utils/logger"
 import type {
   OrderedPoolOracleTxOs,
   PoolUTxoWithDatumAndTimestamp,
-  ShenYieldEntry,
+  ShenYield,
 } from "../../types"
-import {
-  toDayString,
-  // writeJsonToFile,
-  buildDailyStakingRates,
-} from "../../utils"
+import { toDayString, buildDailyStakingRates } from "../../utils"
 import { handleAnalyticsUpdates } from "../updateAnalytics"
+
 
 export async function processShenYield(orderedTxOs: OrderedPoolOracleTxOs[]) {
   if (!orderedTxOs || orderedTxOs.length === 0) {
@@ -34,22 +31,11 @@ export async function processShenYield(orderedTxOs: OrderedPoolOracleTxOs[]) {
     getAllFeesEarnings(),
   ])
 
-  stakingRewards.sort(
-    (a, b) => new Date(a.timestamp).valueOf() - new Date(b.timestamp).valueOf(),
-  )
-  fees.sort(
-    (a, b) => new Date(a.timestamp).valueOf() - new Date(b.timestamp).valueOf(),
-  )
-
-  if (fees.length === 0) {
-    logger.info("No fees available to compute Shen yield")
+  if (fees.length === 0 && stakingRewards.length === 0) {
+    logger.info("No fees or staking rewards available to compute Shen yield")
     return
   }
 
-  // await writeJsonToFile(stakingRewards, "AllStakingRewards.json")
-  // await writeJsonToFile(fees, "AllFees.json")
-
-  // Transform every epoch (start/end/rate) into a day -> rate
   const stakingByDay = buildDailyStakingRates(
     stakingRewards.map((reward) => ({
       ...reward,
@@ -57,47 +43,58 @@ export async function processShenYield(orderedTxOs: OrderedPoolOracleTxOs[]) {
     })),
   )
 
-  const reservePoolByDay = new Map<string, number>()
-  // Record the total ADA reserves reported by the pool datum on each day
+  const blockAndSlotByDay = new Map<string, { block: string; slot: bigint }>()
   for (const entry of poolEntries) {
     const day = toDayString(entry.value.timestamp)
-    const reservePoolAda =
-      Number(entry.value.poolDatum.adaInReserve) / 1_000_000
-    if (!Number.isFinite(reservePoolAda) || reservePoolAda <= 0) continue
-    reservePoolByDay.set(day, reservePoolAda)
-  }
-
-  const dailyYield: ShenYieldEntry[] = []
-  for (const fee of fees) {
-    const day = toDayString(fee.timestamp)
-    const reserve = reservePoolByDay.get(day)
-    if (!reserve || reserve <= 0) {
-      logger.warn(`Missing reserve for day ${day}, skipping fee ${fee.id}`)
-      continue
-    }
-
-    const feeAda = Number(fee.fee)
-    if (!Number.isFinite(feeAda)) {
-      logger.warn(`Invalid fee value for id ${fee.id}`)
-      continue
-    }
-
-    const feePercent = (feeAda / reserve) * 100
-    const stakingPercent = stakingByDay.get(day) ?? 0
-    const totalYield = stakingPercent + feePercent
-
-    dailyYield.push({
-      timestamp: new Date(`${day}T00:00:00.000Z`),
-      fee: feePercent,
-      stakingRewards: stakingPercent,
-      yield: totalYield,
-      shenEquity: reserve,
-      block: fee.block,
-      slot: BigInt(fee.slot),
+    blockAndSlotByDay.set(day, {
+      block: entry.value.block_hash,
+      slot: BigInt(entry.value.block_slot),
     })
   }
 
-  // await writeJsonToFile(dailyYield, "dailyYield.json")
+  const feesByDay = new Map(
+    fees.map((fee) => [
+      toDayString(fee.timestamp),
+      {
+        rate: Number(fee.rate ?? 0),
+        block: fee.block,
+        slot: BigInt(fee.slot),
+      },
+    ]),
+  )
+
+  const dayKeys = [
+    ...new Set([
+      ...blockAndSlotByDay.keys(),
+      ...feesByDay.keys(),
+      ...stakingByDay.keys(),
+    ]),
+  ].sort()
+
+  const dailyYield: ShenYield[] = []
+  for (const day of dayKeys) {
+    const dayBlockInfo = blockAndSlotByDay.get(day)
+    const feeEntry = feesByDay.get(day)
+
+    const feeDailyRateRaw = feeEntry?.rate ?? 0
+    const feeDailyRate = Number.isFinite(feeDailyRateRaw)
+      ? feeDailyRateRaw
+      : 0
+    const stakingDailyRate = Number.isFinite(stakingByDay.get(day))
+      ? (stakingByDay.get(day) ?? 0) / 5 //Epoch days
+      : 0
+    
+    const annualizedYield = (feeDailyRate + stakingDailyRate) * 365.25 //Leap Years
+    const block = feeEntry?.block ?? dayBlockInfo?.block
+    const slot = feeEntry?.slot ?? dayBlockInfo?.slot
+
+    dailyYield.push({
+      timestamp: new Date(`${day}T00:00:00.000Z`),
+      yield: annualizedYield,
+      block,
+      slot,
+    })
+  }
 
   if (dailyYield.length === 0) {
     logger.warn("No daily shen Yield computed")
@@ -109,12 +106,7 @@ export async function processShenYield(orderedTxOs: OrderedPoolOracleTxOs[]) {
     `Inserting ${dailyYield.length} shen yield entries into database...`,
   )
   await prisma.shenYield.createMany({
-    data: dailyYield.map((entry) => ({
-      timestamp: entry.timestamp,
-      yield: entry.yield,
-      block: entry.block,
-      slot: entry.slot,
-    })),
+    data: dailyYield,
     skipDuplicates: true,
   })
 
