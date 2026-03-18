@@ -395,6 +395,7 @@ export type History = {
 export type ADAFeesEarnings = {
   timestamp: Date
   fee: number
+  rate: number
   block: string
   slot: number
 }
@@ -411,7 +412,9 @@ export type ShenYieldEntry = {
   fee: number
   stakingRewards: number
   yield: number
-  shenEquity: number
+  dailyFeeRate: number
+  dailyStakingRate: number
+  dailyRate: number
   block: string
   slot: bigint
 }

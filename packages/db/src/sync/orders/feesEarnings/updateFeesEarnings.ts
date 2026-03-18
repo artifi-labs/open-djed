@@ -110,6 +110,7 @@ async function upsertDailyFees(
         create: entry,
         update: {
           fee: { increment: entry.fee },
+          rate: { increment: entry.rate },
           block: entry.block,
           slot: entry.slot,
         },

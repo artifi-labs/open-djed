@@ -3,6 +3,7 @@ CREATE TABLE "ADAFeesEarnings" (
     "id" SERIAL NOT NULL,
     "timestamp" DATE NOT NULL,
     "fee" DECIMAL(65,30) NOT NULL,
+    "rate" DECIMAL(65,30) NOT NULL,
     "block" TEXT NOT NULL,
     "slot" BIGINT NOT NULL,
 

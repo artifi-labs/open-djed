@@ -137,6 +137,10 @@ export const calculateFeesEarnings = (
       continue
     }
 
+    if (outputPool.adaInReserve <= 0n) {
+      continue
+    }
+
     const lastOrder = txOrders[txOrders.length - 1]
     if (!lastOrder) {
       continue
@@ -144,10 +148,14 @@ export const calculateFeesEarnings = (
 
     const dayKey = toDayString(new Date(Number(outputPool.lastOrder[0].time)))
     const feeAda = new Rational(feeLovelace).div(1_000_000n).toNumber()
+    const feeRate = new Rational(feeLovelace)
+      .div(outputPool.adaInReserve)
+      .toNumber() * 100
     const existing = dailyFees.get(dayKey)
 
     if (existing) {
       existing.fee += feeAda
+      existing.rate += feeRate
       existing.block = lastOrder.block_hash
       existing.slot = lastOrder.block_slot
       continue
@@ -156,6 +164,7 @@ export const calculateFeesEarnings = (
     dailyFees.set(dayKey, {
       timestamp: new Date(dayKey),
       fee: feeAda,
+      rate: feeRate,
       block: lastOrder.block_hash,
       slot: lastOrder.block_slot,
     })
