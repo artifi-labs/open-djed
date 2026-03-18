@@ -5,8 +5,11 @@ import OrderHistory from "@/components/order/OrderHistory"
 import Button from "@/components/Button"
 import { useWallet } from "@/context/WalletContext"
 import { useSidebar } from "@/context/SidebarContext"
-import type { Pagination, StatusFilters } from "@/hooks/useOrders"
-import { statusFiltersArray } from "@/hooks/useOrders"
+import {
+  OrderStatusEnum,
+  statusFilters,
+  type Pagination,
+} from "@/hooks/useOrders"
 import { useOrders } from "@/hooks/useOrders"
 import BaseCard from "@/components/card/BaseCard"
 import { useEffect, useState } from "react"
@@ -18,7 +21,9 @@ const Order = () => {
   const t = useTranslations()
   const { wallet } = useWallet()
   const { openWalletSidebar } = useSidebar()
-  const [selectedFilter, setSelectedFilter] = useState<StatusFilters>("All")
+  const [selectedFilter, setSelectedFilter] = useState<OrderStatusEnum>(
+    OrderStatusEnum.All,
+  )
   const [page, setPage] = useState(1)
   const [pagination, setPagination] = useState<Pagination>()
   const { orders, fetchOrders } = useOrders()
@@ -38,7 +43,7 @@ const Order = () => {
     setPage(newPage)
   }
 
-  const handleClearFilters = () => setSelectedFilter("All")
+  const handleClearFilters = () => setSelectedFilter(OrderStatusEnum.All)
 
   return (
     <div className="desktop:pt-32 desktop:pb-64 mx-auto flex w-full max-w-280 flex-1 flex-col">
@@ -64,7 +69,7 @@ const Order = () => {
         </BaseCard>
       ) : (
         <>
-          {(hasOrders || selectedFilter !== "All") && (
+          {(hasOrders || selectedFilter !== OrderStatusEnum.All) && (
             <div className="flex flex-row justify-start gap-8 py-18">
               {/* Search */}
               {/*<div className="flex items-center">
@@ -82,17 +87,17 @@ const Order = () => {
 
               {/* Filters */}
               <div className="flex w-full flex-row justify-start gap-8 sm:justify-end">
-                {statusFiltersArray.map((status) => (
+                {statusFilters.map((item) => (
                   <Chip
-                    key={status}
-                    text={status}
+                    key={item.key}
+                    text={t(item.i18nKey)}
                     size="small"
                     variant={"outlined"}
                     onClick={() => {
-                      setSelectedFilter(status)
+                      setSelectedFilter(item.key)
                       setPage(1)
                     }}
-                    active={selectedFilter === status}
+                    active={selectedFilter === item.key}
                   />
                 ))}
               </div>
@@ -103,7 +108,7 @@ const Order = () => {
           <OrderHistory
             totalPages={pagination?.totalPages}
             data={orders}
-            filters={selectedFilter !== "All" && hasOrders}
+            filters={selectedFilter !== OrderStatusEnum.All && hasOrders}
             totalCount={
               pagination && pagination.totalPages > 1
                 ? pagination.totalOrders
