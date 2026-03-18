@@ -9,6 +9,11 @@ type Params = {
   period: ChartPeriodValue
 }
 
+const annualizedYield = <T extends { yield: number }>(entry: T) => ({
+  ...entry,
+  yield: entry.yield * 365.25, //Because of leap years
+})
+
 export function useShenYieldQuery({ period }: Params) {
   const client = useApiClient()
 
@@ -32,7 +37,7 @@ export function useShenYieldQuery({ period }: Params) {
       if (period === "All") historicalData.shift()
 
       return historicalData.map((entry) => ({
-        ...entry,
+        ...annualizedYield(entry),
         isProjected: false,
       }))
     },
@@ -60,7 +65,7 @@ export function useProjectedShenYieldQuery() {
           ...entry,
           isProjected: false,
         })),
-      )
+      ).map(annualizedYield)
     },
   })
 }

@@ -81,13 +81,13 @@ export async function processShenYield(orderedTxOs: OrderedPoolOracleTxOs[]) {
       ? (stakingByDay.get(day) ?? 0) / 5 //Epoch days
       : 0
 
-    const annualizedYield = (feeDailyRate + stakingDailyRate) * 365.25 //Leap Years
+    const dailyRate = feeDailyRate + stakingDailyRate
     const block = feeEntry?.block ?? dayBlockInfo?.block
     const slot = feeEntry?.slot ?? dayBlockInfo?.slot
 
     dailyYield.push({
       timestamp: new Date(`${day}T00:00:00.000Z`),
-      yield: annualizedYield,
+      yield: dailyRate,
       block,
       slot,
     })
