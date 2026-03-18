@@ -39,15 +39,6 @@ export const getLatestStakingReward = () =>
     },
   })
 
-export const getAllStakingRewards = async () => {
-  const result = await prisma.aDAStakingRewards.findMany({
-    orderBy: {
-      timestamp: "asc",
-    },
-  })
-  return result
-}
-
 export const getLast12EpochsStakingRewardsRate = async () => {
   const last12DaysRewardsRate = await prisma.aDAStakingRewards.findMany({
     take: 12,

@@ -1,7 +1,7 @@
 import { prisma } from "../../../../lib/prisma"
-import { getAllFeesEarnings } from "../../../client/feesEarnings"
+import { getPeriodFeesEarnings } from "../../../client/feesEarnings"
 import { getLatestShenYield } from "../../../client/shenYield"
-import { getAllStakingRewards } from "../../../client/stakingRewards"
+import { getPeriodStakingRewards } from "../../../client/stakingRewards"
 import { logger } from "../../../utils/logger"
 import type {
   OrderedPoolOracleTxOs,
@@ -26,8 +26,8 @@ export async function processShenYield(orderedTxOs: OrderedPoolOracleTxOs[]) {
   )
 
   const [stakingRewards, fees] = await Promise.all([
-    getAllStakingRewards(),
-    getAllFeesEarnings(),
+    getPeriodStakingRewards("All"),
+    getPeriodFeesEarnings("All"),
   ])
 
   if (fees.length === 0 && stakingRewards.length === 0) {

@@ -9,12 +9,6 @@ export const getPeriodFeesEarnings = (period: Period) => {
     where: {
       ...(startIso && { timestamp: { gte: startIso } }),
     },
-    select: {
-      id: true,
-      timestamp: true,
-      fee: true,
-      rate: true,
-    },
     orderBy: {
       timestamp: "asc",
     },
@@ -31,15 +25,6 @@ export const getLatestFeesEarnings = async () => {
 
 export const deleteAllFeesEarnings = async () => {
   const result = await prisma.aDAFeesEarnings.deleteMany()
-  return result
-}
-
-export const getAllFeesEarnings = async () => {
-  const result = await prisma.aDAFeesEarnings.findMany({
-    orderBy: {
-      timestamp: "asc",
-    },
-  })
   return result
 }
 

@@ -19,6 +19,11 @@ export const getPeriodShenYield = async (period: Period) => {
 
 export const getLatestShenYield = () =>
   prisma.shenYield.findFirst({
+    select: {
+      id: true,
+      timestamp: true,
+      yield: true,
+    },
     orderBy: {
       timestamp: "desc",
     },
