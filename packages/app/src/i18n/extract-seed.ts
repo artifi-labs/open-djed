@@ -39,9 +39,15 @@ function seed() {
   t("common.period.year")
   t("common.period.all")
 
+  t("orders.status.all")
   t("orders.status.created")
   t("orders.status.completed")
-  t("orders.status.cancelled")
+  t("orders.status.canceled")
+
+  t("orders.filters.status.all")
+  t("orders.filters.status.created")
+  t("orders.filters.status.completed")
+  t("orders.filters.status.canceled")
 
   t("simulator.whatIsSimulator.items.fees")
   t("simulator.whatIsSimulator.items.rewards")

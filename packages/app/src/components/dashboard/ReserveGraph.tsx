@@ -13,7 +13,7 @@ export function ReserveGraph({
   minRatio,
   maxRatio,
 }: ReserveGraphProps) {
-  const { t } = useTranslations()
+  const t = useTranslations()
   const currentRatioValue =
     currentRatio !== undefined ? currentRatio / 100 : undefined
   const minRatioValue = minRatio !== undefined ? minRatio / 100 : undefined

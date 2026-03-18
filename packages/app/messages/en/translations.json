@@ -127,9 +127,18 @@
     "allOrders": "All orders",
     "noOrdersDescription": "Looks like this wallet hasn't made any trades",
     "status": {
+      "all": "All",
       "created": "Created",
       "completed": "Completed",
-      "cancelled": "Cancelled"
+      "canceled": "Canceled"
+    },
+    "filters": {
+      "status": {
+        "all": "All",
+        "created": "Created",
+        "completed": "Completed",
+        "canceled": "Canceled"
+      }
     }
   },
   "dashboard": {

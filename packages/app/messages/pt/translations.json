@@ -127,9 +127,18 @@
     "allOrders": "Todas as ordens",
     "noOrdersDescription": "Parece que esta carteira ainda não realizou nenhuma transação",
     "status": {
+      "all": "Todas",
       "created": "Criada",
       "completed": "Concluída",
-      "cancelled": "Cancelada"
+      "canceled": "Cancelada"
+    },
+    "filters": {
+      "status": {
+        "all": "Todas",
+        "created": "Criadas",
+        "completed": "Concluídas",
+        "canceled": "Canceladas"
+      }
     }
   },
   "dashboard": {

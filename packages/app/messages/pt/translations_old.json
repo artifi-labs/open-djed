@@ -5,11 +5,6 @@
       "minAction": "{action} {minMessage}"
     }
   },
-  "orders": {
-    "status": {
-      "canceled": ""
-    }
-  },
   "notFound": {
     "404": {
       "Title": "",
@@ -45,5 +40,10 @@
     "above": "Acima",
     "minimum": "Mínimo",
     "maximum": "Máximo"
+  },
+  "orders": {
+    "status": {
+      "cancelled": "Cancelada"
+    }
   }
 }
