@@ -12,6 +12,7 @@ import {
   GITHUB_URL,
   LINKEDIN_URL,
   STATUS_URL,
+  TEAM_NAME,
   TWITTER_URL,
   WEBSITE_URL,
 } from "@/lib/constants"
@@ -144,6 +145,7 @@ const Footer = () => {
           <p className="text-xs">
             {t("components.footer.allRights", {
               year: new Date().getFullYear(),
+              company: TEAM_NAME,
             })}
           </p>
         </div>
@@ -179,7 +181,7 @@ const Footer = () => {
             <p className="text-xs font-medium">
               {t("components.footer.allRights", {
                 year: new Date().getFullYear(),
-                company: "Artifi",
+                company: TEAM_NAME,
               })}
             </p>
           </div>

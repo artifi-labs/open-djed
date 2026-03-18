@@ -8,6 +8,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     title: buildTitle(t("privacyPolicy.pageTitle")),
+    description: t("privacyPolicy.intro"),
   }
 }
 

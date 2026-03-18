@@ -8,6 +8,7 @@ export async function generateMetadata() {
 
   return {
     title: buildTitle(t("dashboard.pageTitle")),
+    description: t("metadata.layout.description"),
   }
 }
 
