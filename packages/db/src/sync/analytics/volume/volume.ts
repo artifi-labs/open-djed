@@ -412,9 +412,9 @@ const processVolumeData = (volumeData: UnprocessedVolumeData[]) => {
   const minDate = new Date(
     Math.min(...allDates.map((d) => new Date(d).getTime())),
   )
-  const maxDate = new Date(
-    Math.max(...allDates.map((d) => new Date(d).getTime())),
-  )
+  const maxDate = new Date()
+  maxDate.setUTCHours(0, 0, 0, 0)
+
   const volumeMap = new Map(volumeByDay.map((d) => [d.timestamp, d]))
 
   const completeVolumes: Volume[] = []
@@ -460,7 +460,7 @@ const processVolumes = async (txs: Transaction[]) => {
 }
 
 export async function handleInitialVolumeDbPopulation() {
-  const everyOrderTx = await getEveryResultFromPaginatedEndpoint(
+  const everyOrderTx = await getEveryResultFromPaginatedEndpoint<Transaction>(
     `/addresses/${registry.orderAddress}/transactions`,
   )
   if (everyOrderTx.length === 0) {
