@@ -67,7 +67,7 @@ const TTL_DEFAULT = 30 * 1000 // caches for 30 seconds
 const requestCache = new TTLCache<string, { value: Response; expiry: number }>({
   ttl: TTL_HISTORICAL, // sets the longest period has the default and lets the middleware expiry property override this
 })
-const cacheMiddleware = (ttlMs: number) => {
+const cacheMiddleware = (ttlMs: number = TTL_DEFAULT) => {
   return createMiddleware(async (c, next) => {
     const cacheKey = `${c.req.url}:${JSON.stringify(await c.req.json().catch(() => null))}`
     const cachedResponse = requestCache.get(cacheKey)
@@ -415,7 +415,7 @@ const app = new Hono()
   )
   .post(
     "/:token/:action/:amount/tx",
-    cacheMiddleware(TTL_DEFAULT),
+    cacheMiddleware(),
     describeRoute({
       description: "Create a transaction to perform an action on a token.",
       tags: ["Action"],
@@ -621,7 +621,7 @@ const app = new Hono()
   )
   .post(
     "/historical-orders",
-    cacheMiddleware(TTL_DEFAULT),
+    cacheMiddleware(),
     describeRoute({
       description: "Get the users' historical orders",
       tags: ["Action"],
