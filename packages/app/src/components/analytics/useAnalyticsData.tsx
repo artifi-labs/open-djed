@@ -311,7 +311,7 @@ export function useAnalyticsData() {
     if (shenYieldError || projectedShenYieldError) {
       showToast({
         message: t("analytics.errors.failedToFetch", {
-          analytic: "SHEN Yield",
+          analytic: t("common.yield", { token: "SHEN" }),
         }),
         type: "error",
       })
