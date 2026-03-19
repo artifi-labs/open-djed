@@ -228,17 +228,19 @@ export function useAnalyticsData() {
   const formattedDjedDexData = useMemo(() => {
     if (!djedDexsData) return []
 
-    if (djedDexPeriod.value === "All") djedDexsData.shift()
+    const formatted = [...djedDexsData] // copy the data, otherwise we risk manipulating the data stored in cache
+    if (djedDexPeriod.value === "All") formatted.shift()
 
-    return djedDexsData
+    return formatted
   }, [djedDexsData, data])
 
   const formattedShenYieldData = useMemo(() => {
     if (!shenYieldData) return []
 
-    if (shenYieldPeriod.value === "All") shenYieldData.shift()
+    const formatted = [...shenYieldData] // copy the data, otherwise we risk manipulating the data stored in cache
+    if (shenYieldPeriod.value === "All") formatted.shift()
 
-    return shenYieldData
+    return formatted
   }, [shenYieldData, data])
   // Error handling
   useEffect(() => {

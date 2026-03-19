@@ -19,13 +19,14 @@ export function useShenYieldQuery({ period }: Params) {
 
   return useQuery({
     queryKey: analyticsKeys.shenYield(period),
-    staleTime: 1000 * 60 * 5, //5 minutes
-    gcTime: 1000 * 60 * 10, //10 minutes
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 10,
 
     queryFn: async () => {
       const res = await client.api["historical-shen-yield"].$get({
         query: {
           period: period,
+          projected: "false",
         },
       })
 
@@ -47,11 +48,16 @@ export function useProjectedShenYieldQuery() {
 
   return useQuery({
     queryKey: analyticsKeys.projectedShenYield(),
-    staleTime: 1000 * 60 * 5, //5 minutes
-    gcTime: 1000 * 60 * 10, //10 minutes
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 10,
 
     queryFn: async () => {
-      const res = await client.api["projected-shen-yield"].$get()
+      const res = await client.api["historical-shen-yield"].$get({
+        query: {
+          period: "M",
+          projected: "true",
+        },
+      })
 
       if (!res.ok) throw new Error("Error fetching projected shen yield source")
 
