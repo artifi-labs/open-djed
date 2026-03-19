@@ -60,38 +60,42 @@ import { type TokenMarketCap } from "@open-djed/db/generated/prisma/enums"
 import { type Order, type Period } from "@open-djed/db"
 export type { Order } from "@open-djed/db"
 
+const TTL_HISTORICAL = 4 * 60 * 60 * 1000 // caches for 4 hours
+const TTL_DEFAULT = 30 * 1000 // caches for 30 seconds
+
 //NOTE: We only need this cache for transactions, not for other requests. Using this for `protocol-data` sligltly increases the response time.
 const requestCache = new TTLCache<string, { value: Response; expiry: number }>({
-  ttl: 10_000,
+  ttl: TTL_HISTORICAL, // sets the longest period has the default and lets the middleware expiry property override this
 })
-const cacheMiddleware = createMiddleware(async (c, next) => {
-  const cacheKey = `${c.req.url}:${JSON.stringify(await c.req.json().catch(() => null))}`
-  const cachedResponse = requestCache.get(cacheKey)
+const cacheMiddleware = (ttlMs: number = TTL_DEFAULT) => {
+  return createMiddleware(async (c, next) => {
+    const cacheKey = `${c.req.url}:${JSON.stringify(await c.req.json().catch(() => null))}`
+    const cachedResponse = requestCache.get(cacheKey)
 
-  if (cachedResponse && cachedResponse.expiry > Date.now()) {
-    const { value } = cachedResponse
-    const clonedBody = await value.clone().text()
-    c.res = new Response(clonedBody, {
-      headers: value.headers,
-      status: value.status,
-      statusText: value.statusText,
-    })
-    return
-  }
+    if (cachedResponse && cachedResponse.expiry > Date.now()) {
+      const { value } = cachedResponse
+      return new Response(await value.clone().text(), {
+        headers: value.headers,
+        status: value.status,
+      })
+    }
 
-  await next()
+    await next()
 
-  const clonedResponse = c.res.clone()
-  const clonedBody = await clonedResponse.text()
-  requestCache.set(cacheKey, {
-    value: new Response(clonedBody, {
-      headers: clonedResponse.headers,
-      status: clonedResponse.status,
-      statusText: clonedResponse.statusText,
-    }),
-    expiry: Date.now() + 10_000,
+    if (c.res.status === 200) {
+      const clonedResponse = c.res.clone()
+      const clonedBody = await clonedResponse.text()
+
+      requestCache.set(cacheKey, {
+        value: new Response(clonedBody, {
+          headers: clonedResponse.headers,
+          status: 200,
+        }),
+        expiry: Date.now() + ttlMs,
+      })
+    }
   })
-})
+}
 
 const txRequestBodySchema = z.object({
   hexAddress: z.string(),
@@ -104,7 +108,7 @@ const blockfrost = new Blockfrost(env.BLOCKFROST_URL, env.BLOCKFROST_PROJECT_ID)
 
 const registry = registryByNetwork[network]
 
-const chainDataCache = new TTLCache({ ttl: 10_000, checkAgeOnGet: true })
+const chainDataCache = new TTLCache({ ttl: TTL_DEFAULT, checkAgeOnGet: true })
 
 const getDatum = async (datumHash: string, errorMessage: string) => {
   try {
@@ -411,7 +415,7 @@ const app = new Hono()
   )
   .post(
     "/:token/:action/:amount/tx",
-    cacheMiddleware,
+    cacheMiddleware(),
     describeRoute({
       description: "Create a transaction to perform an action on a token.",
       tags: ["Action"],
@@ -617,7 +621,7 @@ const app = new Hono()
   )
   .post(
     "/historical-orders",
-    cacheMiddleware,
+    cacheMiddleware(),
     describeRoute({
       description: "Get the users' historical orders",
       tags: ["Action"],
@@ -762,7 +766,7 @@ const app = new Hono()
   )
   .get(
     "/historical-reserve-ratio",
-    cacheMiddleware,
+    cacheMiddleware(TTL_HISTORICAL),
     describeRoute({
       description: "Get the historical reserve ratio",
       tags: ["Action"],
@@ -803,7 +807,7 @@ const app = new Hono()
   )
   .get(
     "/historical-market-cap",
-    cacheMiddleware,
+    cacheMiddleware(TTL_HISTORICAL),
     describeRoute({
       description: "Get the historical market cap for DJED or SHEN",
       tags: ["Action"],
@@ -850,7 +854,7 @@ const app = new Hono()
   )
   .get(
     "/historical-shen-ada-price",
-    cacheMiddleware,
+    cacheMiddleware(TTL_HISTORICAL),
     zValidator(
       "query",
       z.object({
@@ -863,7 +867,7 @@ const app = new Hono()
   )
   .get(
     "/historical-djed-dex-price",
-    cacheMiddleware,
+    cacheMiddleware(TTL_HISTORICAL),
     zValidator(
       "query",
       z.object({
@@ -876,7 +880,7 @@ const app = new Hono()
   )
   .get(
     "/historical-volumes",
-    cacheMiddleware,
+    cacheMiddleware(TTL_HISTORICAL),
     zValidator(
       "query",
       z.object({
@@ -887,7 +891,7 @@ const app = new Hono()
   )
   .get(
     "/historical-staking-rewards",
-    cacheMiddleware,
+    cacheMiddleware(TTL_HISTORICAL),
     describeRoute({
       description: "Get historical staking rewards rate sum for a date range",
       tags: ["Action"],
@@ -951,7 +955,7 @@ const app = new Hono()
   )
   .get(
     "/historical-shen-yield",
-    cacheMiddleware,
+    cacheMiddleware(TTL_HISTORICAL),
     describeRoute({
       description: "Get the historical SHEN yield data",
       tags: ["Action"],
@@ -986,62 +990,20 @@ const app = new Hono()
       "query",
       z.object({
         period: periodSchema,
+        projected: z
+          .preprocess((val) => val === "true", z.boolean())
+          .optional(),
       }),
     ),
-    historicalDataHandler((period) => getPeriodShenYield(period)),
-  )
-  .get(
-    "/projected-shen-yield",
-    cacheMiddleware,
-    describeRoute({
-      description: "Get the projected SHEN yield data",
-      tags: ["Action"],
-      responses: {
-        200: {
-          description: "Successfully got the projected SHEN yield",
-          content: {
-            "text/plain": {
-              example: "SHEN yield data",
-            },
-          },
-        },
-        400: {
-          description: "Bad Request",
-          content: {
-            "text/plain": {
-              example: "Bad Request",
-            },
-          },
-        },
-        500: {
-          description: "Internal Server Error",
-          content: {
-            "text/plain": {
-              example: "Internal Server Error",
-            },
-          },
-        },
-      },
-    }),
     async (c) => {
-      const cached = chainDataCache.get("projectedYield")
-      if (cached) return c.json(cached)
+      const params = c.req.valid("query")
 
-      try {
+      if (params.projected === true) {
         const data = await getLast60DaysShenYield()
-        chainDataCache.set("projectedYield", data)
         return c.json(data)
-      } catch (err) {
-        if (err instanceof AppError) {
-          console.error(`${err.name}: ${err.message}`)
-          return c.json({ error: err.name, message: err.message }, err.status)
-        }
-        console.error("Unhandled error:", err)
-        return c.json(
-          { error: "InternalServerError", message: "Something went wrong." },
-          500,
-        )
       }
+
+      return historicalDataHandler((p) => getPeriodShenYield(p))(c)
     },
   )
 
