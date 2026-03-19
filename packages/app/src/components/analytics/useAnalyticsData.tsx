@@ -3,6 +3,7 @@
 import { useToast } from "@/context/ToastContext"
 import { useEffect, useMemo, useState } from "react"
 import { env } from "@/lib/envLoader"
+import { calculateProjectedYield } from "@/lib/projectedYield"
 import { useReserveRatioQuery } from "@/queries/analytics/reserveRatio/reserveRatio.query"
 import { useMarketCapQuery } from "@/queries/analytics/marketCap/marketCap.query"
 import { useVolumeQuery } from "@/queries/analytics/volumes/volumes.query"
@@ -18,6 +19,7 @@ import { Rational, shenADARate, shenUSDRate } from "@open-djed/math"
 import { useTranslations } from "next-intl"
 import type { MarketCapResponse } from "@/queries/analytics/marketCap/marketCap.schema"
 import type { MarketCapValue } from "@open-djed/api"
+import type { ShenYieldEntry } from "@/queries/analytics/shenYield/shenYield.schema"
 
 export type CurrencyValue = "ADA" | "USD"
 export const CURRENCY_OPTIONS: Array<{ label: string; value: CurrencyValue }> =
@@ -64,6 +66,11 @@ function formatMarketCapData(
 
   return formatted
 }
+
+const annualizedYield = <T extends { yield: number }>(entry: T) => ({
+  ...entry,
+  yield: entry.yield * 365.25, // Because of leap years
+})
 
 export function useAnalyticsData() {
   const t = useTranslations()
@@ -237,11 +244,26 @@ export function useAnalyticsData() {
   const formattedShenYieldData = useMemo(() => {
     if (!shenYieldData) return []
 
-    const formatted = [...shenYieldData] // copy the data, otherwise we risk manipulating the data stored in cache
+    const formatted = shenYieldData.map((entry) => ({
+      ...annualizedYield(entry),
+      isProjected: false,
+    }))
+
     if (shenYieldPeriod.value === "All") formatted.shift()
 
     return formatted
-  }, [shenYieldData, data])
+  }, [shenYieldData, shenYieldPeriod.value])
+
+  const formattedProjectedYield = useMemo(() => {
+    if (!projectedYield) return []
+
+    return calculateProjectedYield(
+      projectedYield.map((entry: ShenYieldEntry) => ({
+        ...entry,
+        isProjected: false,
+      })),
+    ).map(annualizedYield)
+  }, [projectedYield])
   // Error handling
   useEffect(() => {
     if (reserveRatioError) {
@@ -350,7 +372,7 @@ export function useAnalyticsData() {
     setDjedDexCurrency,
     setDjedDexPeriod,
     shenYieldData: formattedShenYieldData ?? [],
-    projectedYield: projectedYield || [],
+    projectedYield: formattedProjectedYield ?? [],
     shenYieldPeriod,
     setShenYieldPeriod,
     translatedPeriodOptions,

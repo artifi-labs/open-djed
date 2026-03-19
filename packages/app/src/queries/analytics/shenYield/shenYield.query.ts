@@ -1,18 +1,12 @@
 import { useQuery } from "@tanstack/react-query"
 import { useApiClient } from "@/context/ApiClientContext"
 import type { ChartPeriodValue } from "@/components/analytics/useAnalyticsData"
-import { calculateProjectedYield } from "@/lib/projectedYield"
 import { analyticsKeys } from "../keys"
 import { ShenYieldResponseSchema } from "./shenYield.schema"
 
 type Params = {
   period: ChartPeriodValue
 }
-
-const annualizedYield = <T extends { yield: number }>(entry: T) => ({
-  ...entry,
-  yield: entry.yield * 365.25, //Because of leap years
-})
 
 export function useShenYieldQuery({ period }: Params) {
   const client = useApiClient()
@@ -33,12 +27,7 @@ export function useShenYieldQuery({ period }: Params) {
       if (!res.ok) throw new Error("Error fetching shen yield")
 
       const json = await res.json()
-      const parsed = ShenYieldResponseSchema.parse(json)
-
-      return parsed.map((entry) => ({
-        ...annualizedYield(entry),
-        isProjected: false,
-      }))
+      return ShenYieldResponseSchema.parse(json)
     },
   })
 }
@@ -62,14 +51,7 @@ export function useProjectedShenYieldQuery() {
       if (!res.ok) throw new Error("Error fetching projected shen yield source")
 
       const json = await res.json()
-      const parsed = ShenYieldResponseSchema.parse(json)
-
-      return calculateProjectedYield(
-        parsed.map((entry) => ({
-          ...entry,
-          isProjected: false,
-        })),
-      ).map(annualizedYield)
+      return ShenYieldResponseSchema.parse(json)
     },
   })
 }
