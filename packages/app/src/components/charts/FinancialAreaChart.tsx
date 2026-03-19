@@ -4,7 +4,7 @@ import { ChartLegend } from "@/components/charts/legend/ChartLegend"
 import { dateFormatter, UsdFormatter } from "@/components/charts/utils"
 import { ChartTooltip } from "@/components/charts/tooltips/ChartTooltip"
 import type { ChartData } from "recharts/types/state/chartDataSlice"
-import type { AxisTick } from "recharts/types/util/types"
+import type { AxisTick, DataKey } from "recharts/types/util/types"
 import { AreaChart } from "./area-chart/AreaChart"
 
 type FinancialAreaChartProps = {
@@ -12,7 +12,7 @@ type FinancialAreaChartProps = {
   data: ChartData | undefined
   xKey: string
   lines?: {
-    dataKey: string
+    dataKey: DataKey<unknown>
     name: string
     stroke: string
     hide?: boolean
@@ -106,12 +106,12 @@ export const FinancialAreaChart: React.FC<FinancialAreaChartProps> = ({
 
         {!hasLines &&
           lines?.map((line) => (
-            <React.Fragment key={line.dataKey}>
+            <React.Fragment key={line.dataKey.toString()}>
               <Line
-                key={line.dataKey}
+                key={line.dataKey.toString()}
                 strokeWidth={2}
                 dot={false}
-                hide={hiddenLines[line.dataKey]}
+                hide={hiddenLines[line.dataKey.toString()]}
                 activeDot={{ stroke: "transparent", r: 3.5 }}
                 {...line}
               />

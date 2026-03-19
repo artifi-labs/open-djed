@@ -3,17 +3,10 @@
 import { FinancialAreaChart } from "@/components/charts/FinancialAreaChart"
 import type { ShenYieldChartEntry } from "@/queries/analytics/shenYield/shenYield.schema"
 import { useMemo } from "react"
-import { ReferenceDot } from "recharts"
+import { type DotProps } from "recharts"
 
 type ShenYieldChartProps = {
-  title?: string
   data: ShenYieldChartEntry[]
-}
-
-type ChartRow = {
-  date: string | number
-  realized?: number
-  projected?: number
 }
 
 const formatPercentAxisValue = (val: number) => {
@@ -24,38 +17,54 @@ const formatPercentAxisValue = (val: number) => {
   return `${Math.round(percentValue)}%`
 }
 
-const yTickFormatter = (value: number | string) =>
-  formatPercentAxisValue(Number(value))
-
 export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({ data }) => {
-  const { rows, anchorPoint } = useMemo(() => {
-    if (!data?.length) return { rows: [], anchorPoint: null }
+  const lastRealizedIndex = data.findLastIndex((d) => !d.isProjected)
 
-    const lastRealizedIndex = data.findLastIndex((d) => !d.isProjected)
-    const anchor = data[lastRealizedIndex]
+  const { rows } = useMemo(() => {
+    if (!data?.length) return { rows: [] }
 
-    const mapped: ChartRow[] = data.map((entry, index) => {
+    const mapped = data.map((entry, index) => {
       const isProjected = entry.isProjected
       const val = entry.yield
 
       return {
-        date: entry.timestamp,
+        timestamp: entry.timestamp,
         realized: !isProjected ? val : undefined,
         projected: isProjected || index === lastRealizedIndex ? val : undefined,
       }
     })
 
-    return {
-      rows: mapped,
-      anchorPoint: anchor ? { x: anchor.timestamp, y: anchor.yield } : null,
-    }
+    return { rows: mapped }
   }, [data])
+
+  /**
+   * Custom dot renderer to highlight the last realized data point.
+   * It checks if the current index matches the last realized index and if the data point is not projected.
+   * If both conditions are met, it renders a circle with a specific style to make it stand out on the chart.
+   */
+  const renderLastDot = (
+    props: DotProps & { payload: ShenYieldChartEntry; index: number },
+  ) => {
+    const { cx, cy, index, payload } = props
+    if (index !== lastRealizedIndex || payload.isProjected) return null
+
+    return (
+      <circle
+        cx={cx}
+        cy={cy}
+        r={2}
+        fill="var(--color-supportive-1-500)"
+        stroke="var(--color-supportive-1-500)"
+      />
+    )
+  }
 
   const lines = [
     {
       dataKey: "realized",
       name: "Realized",
       stroke: "var(--color-supportive-1-500)",
+      dot: renderLastDot,
     },
     {
       dataKey: "projected",
@@ -67,20 +76,9 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({ data }) => {
   return (
     <FinancialAreaChart
       data={rows}
-      xKey="date"
+      xKey="timestamp"
       lines={lines}
-      yTickFormatter={yTickFormatter}
-    >
-      {anchorPoint && (
-        <ReferenceDot
-          x={anchorPoint.x}
-          y={anchorPoint.y}
-          r={3}
-          fill="var(--color-supportive-1-500)"
-          stroke="var(--color-supportive-1-500)"
-          strokeWidth={1}
-        />
-      )}
-    </FinancialAreaChart>
+      yTickFormatter={(value) => formatPercentAxisValue(Number(value))}
+    />
   )
 }
