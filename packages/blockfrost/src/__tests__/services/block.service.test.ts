@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
-import { Network } from "../../src/types/network.types"
-import { Blockfrost } from "../../src/client/blockfrostClient"
+import { Network } from "../../types/network.types"
+import { Blockfrost } from "../../client/blockfrostClient"
 import { createLatestBlock } from "../factories/block/latestBlock.factory"
-import { BlockfrostError } from "../../src/errors/blockfrost.error"
+import { BlockfrostError } from "../../errors/blockfrost.error"
 
 const mockBlock = createLatestBlock()
 const apiKey = "test-api-key"

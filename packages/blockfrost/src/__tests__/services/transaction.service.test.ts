@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
 import assert from "node:assert/strict"
-import { Network } from "../../src/types/network.types"
-import { Blockfrost } from "../../src/client/blockfrostClient"
-import { BlockfrostError } from "../../src/errors/blockfrost.error"
+import { Network } from "../../types"
+import { Blockfrost } from "../../client/blockfrostClient"
+import { BlockfrostError } from "../../errors/blockfrost.error"
 import {
   createTransactionUtxo,
   createTransactionUtxoInput,
