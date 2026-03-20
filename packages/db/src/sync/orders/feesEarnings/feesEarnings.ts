@@ -11,6 +11,11 @@ type PoolState = Pick<
   "adaInReserve" | "djedInCirculation" | "shenInCirculation"
 >
 
+type DailyFees = Omit<ADAFeesEarnings, "fee" | "rate"> & {
+  fee: Rational
+  rate: Rational
+}
+
 const applyOrderToPoolState = (
   state: PoolState,
   order: OrderUTxOWithPoolDatum,
@@ -87,7 +92,7 @@ export const calculateFeesEarnings = (
       ),
     )
 
-  const dailyFees = new Map<string, ADAFeesEarnings>()
+  const dailyFees = new Map<string, DailyFees>()
 
   for (let i = 1; i < orderedTxGroups.length; i++) {
     const previousGroup = orderedTxGroups[i - 1]
@@ -106,7 +111,7 @@ export const calculateFeesEarnings = (
       continue
     }
 
-    const expectedPool: PoolState = {
+    const expectedPoolWithoutFees: PoolState = {
       adaInReserve: inputPool.adaInReserve,
       djedInCirculation: inputPool.djedInCirculation,
       shenInCirculation: inputPool.shenInCirculation,
@@ -129,16 +134,21 @@ export const calculateFeesEarnings = (
     })
 
     for (const order of txOrders) {
-      applyOrderToPoolState(expectedPool, order)
+      applyOrderToPoolState(expectedPoolWithoutFees, order)
     }
 
-    const feeLovelace = outputPool.adaInReserve - expectedPool.adaInReserve
+    const feeLovelace =
+      outputPool.adaInReserve - expectedPoolWithoutFees.adaInReserve
     if (feeLovelace <= 0n) {
-      continue
+      throw new Error(
+        `Invalid fee calculation for tx ${currentGroup[0]}: feeLovelace=${feeLovelace}, expectedReserve=${expectedPoolWithoutFees.adaInReserve}, outputReserve=${outputPool.adaInReserve}`,
+      )
     }
 
     if (outputPool.adaInReserve <= 0n) {
-      continue
+      throw new Error(
+        `Invalid output pool reserve for tx ${currentGroup[0]}: outputReserve=${outputPool.adaInReserve}`,
+      )
     }
 
     const lastOrder = txOrders[txOrders.length - 1]
@@ -147,14 +157,15 @@ export const calculateFeesEarnings = (
     }
 
     const dayKey = toDayString(new Date(Number(outputPool.lastOrder[0].time)))
-    const feeAda = new Rational(feeLovelace).div(1_000_000n).toNumber()
-    const feeRate =
-      new Rational(feeLovelace).div(outputPool.adaInReserve).toNumber() * 100
+    const feeAda = new Rational(feeLovelace).div(1_000_000n)
+    const feeRate = new Rational(feeLovelace)
+      .mul(100n)
+      .div(outputPool.adaInReserve)
     const existing = dailyFees.get(dayKey)
 
     if (existing) {
-      existing.fee += feeAda
-      existing.rate += feeRate
+      existing.fee = existing.fee.add(feeAda)
+      existing.rate = existing.rate.add(feeRate)
       existing.block = lastOrder.block_hash
       existing.slot = lastOrder.block_slot
       continue
@@ -169,5 +180,9 @@ export const calculateFeesEarnings = (
     })
   }
 
-  return [...dailyFees.values()]
+  return [...dailyFees.values()].map((entry) => ({
+    ...entry,
+    fee: entry.fee.toNumber(),
+    rate: entry.rate.toNumber(),
+  }))
 }
