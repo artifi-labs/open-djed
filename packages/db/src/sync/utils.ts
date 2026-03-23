@@ -289,14 +289,18 @@ export const unlock = () => {
  * @returns array of Order objects to be inserted in the database
  */
 export async function processOrdersToInsert(utxos: OrderUTxOWithDatum[]) {
-  return Promise.all(
-    utxos.map(async (utxo) => {
+  return await processBatch<OrderUTxOWithDatum, Order>(
+    utxos,
+    async (utxo) => {
       const d = utxo.orderDatum as OrderDatum
       const { action, token, paid, received } = await parseOrderDatum(utxo)
+
       const totalAmountPaid = BigInt(
         utxo.amount.find((a) => a.unit === "lovelace")?.quantity ?? "0",
       )
+
       const fees = action === "Mint" ? totalAmountPaid - paid : totalAmountPaid
+
       const status = await handleOrderStatus(
         utxo.consumed_by_tx,
         utxo.tx_hash,
@@ -317,7 +321,9 @@ export async function processOrdersToInsert(utxos: OrderUTxOWithDatum[]) {
         orderDate: new Date(Number(d.creationDate)),
         status: status,
       } as unknown as Order
-    }),
+    },
+    10,
+    1000,
   )
 }
 
