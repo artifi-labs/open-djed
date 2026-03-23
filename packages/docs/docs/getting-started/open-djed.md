@@ -24,3 +24,43 @@ By offering an open, community-driven alternative, Open Djed aims to:
 - Foster innovation and collaboration within the Cardano and DeFi communities.
 
 Explore this documentation to learn how to use, contribute to, and extend Open Djed.
+
+
+## Open Djed History
+
+### The Beginning: Reverse DJED
+
+The journey started with **Reverse DJED**, a proof-of-concept interface that demonstrated the feasibility of creating an alternative way to interact with the Djed protocol. This early version:
+
+- Provided the core functionality for minting and burning DJED/SHEN
+- Validated the concept of reverse-engineering and communicating with on-chain smart contracts
+- Showcased that an independent UI/API layer could reliably access the protocol
+- Proved there was real community demand for a decentralized alternative to the official COTI app
+
+While functional, Reverse DJED was basic in design and user experience. It served as the foundation, but the community feedback made it clear we needed a more polished, accessible product.
+
+<iframe
+  src="https://platform.twitter.com/embed/Tweet.html?id=1924859785574326297"
+  width="550"
+  height="750"
+></iframe>
+
+
+### The Evolution: Reverse DJED → Open DJED
+
+As adoption grew and community feedback accumulated, we realized the importance of transforming this proof-of-concept into a professional, user-friendly platform. This led to a complete rebranding and redesign that became **Open DJED**.
+
+The evolution introduced major improvements:
+
+<iframe
+  src="https://platform.twitter.com/embed/Tweet.html?id=1932836031251845597"
+  width="550"
+  height="750"
+></iframe>
+
+Key improvements highlighted:
+- Clean themes and modern visual design
+- Fully responsive interface (desktop, tablet, mobile)
+- USD equivalents displayed by default
+- Better overall accessibility and usability
+

@@ -44,32 +44,8 @@ const sidebars: SidebarsConfig = {
       label: "Application User Guide",
       items: ["user-guide/index"],
     },
-    {
-      type: "category",
-      label: "Project Architecture",
-      items: [
-        "architecture/index",
-        {
-          type: "category",
-          label: "Packages",
-          items: [
-            "architecture/math",
-            "architecture/registry",
-            "architecture/txs",
-            "architecture/cli",
-            "architecture/db",
-            "architecture/app",
-            "architecture/api",
-          ],
-        },
-      ],
-    },
-    {
-      type: "category",
-      label: "Support and FAQ",
-      items: ["support/index", "faq/index"],
-    },
-    "contributing/index",
+    "architecture/index",
+  
     {
       type: "category",
       label: "Catalyst",
@@ -78,10 +54,17 @@ const sidebars: SidebarsConfig = {
         {
           type: "category",
           label: "Milestones",
-          items: ["catalyst/milestones/milestone1"],
+          items: [
+            "catalyst/milestones/milestone1",
+            "catalyst/milestones/milestone2",
+            "catalyst/milestones/milestone3",
+            "catalyst/milestones/milestone4"
+          ],
         },
       ],
     },
+    "support-faq/index",
+    "contributing/index",
     {
       type: "link",
       label: "OpenAPI Specification",

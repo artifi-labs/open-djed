@@ -14,4 +14,4 @@ Open Djed acts as a bridge between users and the official Djed protocol develope
 - **Open and auditable:** All code is open-source, enabling transparency, community review, and independent improvements.
 - **Enhanced features:** Open Djed offers additional functionalities not available in the original COTI app, such as translations, advanced analytics and a Shen yield simulator.
 
-For more technical details, see the [Architecture](./architecture/index.md) section.
+For more technical details, see the [Architecture](../architecture/index.md) section.

@@ -8,25 +8,30 @@ This guide will help you start using the Open Djed application to interact with 
 
 ## Accessing Open Djed
 
-- Visit: [https://djed.artifi.finance](https://djed.artifi.finance)
+- **Mainnet:** [Open Djed App](https://djed.artifi.finance)
+- **Preprod:** [Open Djed Preprod App](https://preprod.djed.artifi.finance)
 
-## Connecting your wallet
+## Connect Your Wallet
 
-- Click on “Connect Wallet” and choose your preferred Cardano wallet (e.g. Eternl, Lace).
-- Approve the connection in your wallet extension.
+1. Open the app on Mainnet or Preprod.
+2. Click **Connect Wallet**.
+3. Select your preferred Cardano wallet (for example, Eternl or Lace).
+4. Approve the connection in your wallet extension.
 
 ## Main Features
 
-- **Analytics:** View real-time and historical statistics and charts about Djed and Shen.
-- **Shen Yield Simulator:** Simulate potential returns for providing liquidity as a Shen holder.
-- **Mint/Burn:** Easily mint or burn Djed and Shen directly from the interface.
-- **Orders:** Track the status of your mint and burn orders. Open Djed provides a dedicated section where you can view all your pending, completed, or failed orders. It is also possible to **cancel orders** that are still pending, giving you more control and flexibility over your transactions.
+- **Analytics:** View real-time and historical charts for DJED and SHEN.
+- **Shen Yield Simulator:** Estimate potential returns as a SHEN holder.
+- **Mint/Burn:** Mint or burn DJED and SHEN directly from the interface.
+- **Orders:** Track pending, completed, or failed orders, and cancel eligible pending orders when needed.
 
-## Need more?
 
-- For advanced usage, see the [User Guide](./user-guide.md).
-- For developers and contributors, see [Development](./development.md).
+## Need More?
+
+- For advanced usage, see the [User Guide](../user-guide/index.md).
+- To better understand the architecture and flows, see [How It Works](./how-it-works.md).
+- If you need help, see [FAQ & Support](../support-faq/index.mdx).
 
 ---
 
-*If you encounter any issues, check the [FAQ](./faq/index.md) or reach out for support!*
+*If you encounter any issues, check the [FAQ](../faq/index.md).*

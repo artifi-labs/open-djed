@@ -3,7 +3,7 @@ import type { Config } from "@docusaurus/types"
 import type * as Preset from "@docusaurus/preset-classic"
 
 const config: Config = {
-  title: "Open DJED",
+  title: "Open DJED Docs",
   tagline: "",
   favicon: "icons/favicon.png",
 

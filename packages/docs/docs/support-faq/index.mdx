@@ -1,0 +1,93 @@
+---
+title: FAQ & Support
+sidebar_position: 1
+---
+import { ARTIFI_DISCORD_URL, DJED_GITHUB_URL, ARTIFI_WEBSITE_URL, ARTIFI_EMAIL, DJED_STATUS_PAGE_URL, DJED_ISSUES_URL } from "../constants";
+
+## FAQ
+
+### General
+
+**What is Open Djed?**  
+Open Djed is an open-source alternative interface layer that allows users to interact with the original Djed protocol developed by COTI and IOG.
+
+**Does Open Djed create a separate stablecoin protocol?**  
+No. Open Djed is an alternative way to access the existing Djed protocol.
+
+**Which networks are supported?**  
+Mainnet and Preprod.
+
+### Wallet & Connection
+
+**Which wallets are supported?**  
+We currently support the following wallets:
+- Eternl
+- Lace
+- Yoroi
+- Begin
+- Gerowallet
+- Vespr
+
+**My wallet does not connect. What should I do?**  
+Make sure your wallet extension is installed and unlocked, then refresh the page and reconnect.
+
+### Transactions & Orders
+
+**My transaction is pending for a long time.**  
+Transactions may appear pending because our system updates order states periodically. The script checks for new orders and updates their status at regular intervals, so please wait a short while and check again.
+
+**Can I cancel an order?**  
+Yes, if the order is still eligible for cancellation. Use the Orders section and follow the cancellation flow.
+
+### Analytics & Data
+
+**How often is analytics data updated?**  
+Most analytics use historical data that is updated once per day. This daily update cycle may cause values to appear outdated compared to the current on-chain state.
+
+**Are analytics values real-time?**  
+Analytics are generally based on daily updated historical data and may not be real-time. However, some metrics provide up-to-date values.
+
+## Support
+
+Use the appropriate channel depending on your problem:
+
+- **General user support:** <a target="_blank" rel="noopener noreferrer" href={ARTIFI_DISCORD_URL}>Discord</a>
+- **Bug reports:** <a target="_blank" rel="noopener noreferrer" href={DJED_GITHUB_URL}>GitHub</a>
+- **Security reports (private):** <a target="_blank" rel="noopener noreferrer" href={`mailto:${ARTIFI_EMAIL}`}>Email</a>
+
+## How to Report an Issue
+
+Include as much detail as possible so the team can reproduce quickly.
+
+Copy and fill this template:
+
+```md
+### Environment
+- Network: Mainnet / Preprod
+- Wallet: (Eternl, Lace, etc.)
+- Browser + version:
+- Device: Desktop / Mobile
+
+### What Happened
+- Action performed: (mint, burn, cancel order, etc.)
+- Expected result:
+- Actual result:
+- Error message (exact text):
+
+### Useful References
+- Transaction hash (if available):
+- Order ID (if available):
+- Screenshot/video:
+- Timestamp (UTC):
+```
+
+## Status & Known Issues
+
+- Live status page: <a target="_blank" rel="noopener noreferrer" href={DJED_STATUS_PAGE_URL}>Status Page</a>
+- Known issues tracker: <a target="_blank" rel="noopener noreferrer" href={DJED_ISSUES_URL}>GitHub Issues</a>
+
+## Related Pages
+
+- [Quickstart](../getting-started/quickstart.md)
+- [How It Works](../getting-started/how-it-works.md)
+- [User Guide](../user-guide/index.md)
