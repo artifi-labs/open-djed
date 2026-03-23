@@ -54,13 +54,13 @@ export function blockfrostFetch(path: string, init?: RequestInit) {
 
 function mapOrderStatus(tag: number): OrderStatus | null {
   switch (tag) {
-    case 4:
-    case 5:
+    case 4: // Successful DJED mint/burn
+    case 5: // Successful SHEN mint/burn
       return OrderStatus.Completed
-    case 11:
+    case 11: // Order cancelled by the user
       return OrderStatus.Cancelled
-    case 0:
-    case 12:
+    case 0: // Failed because reserve ratio constraints were not met
+    case 12: // Failed because the submitted price was stale (slippage)
       return OrderStatus.Rejected
     default:
       return null
