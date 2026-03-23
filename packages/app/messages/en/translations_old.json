@@ -1,10 +1,8 @@
 {
   "dashboard": {
-    "name": ""
-  },
-  "orders": {
-    "status": {
-      "canceled": "Canceled"
+    "name": "",
+    "actionButton": {
+      "minAction": "{action} {minMessage}"
     }
   },
   "notFound": {
@@ -36,6 +34,15 @@
   },
   "common": {
     "burnedToken": "{token} Burned",
-    "mintedToken": "{token} Minted"
+    "mintedToken": "{token} Minted",
+    "below": "Below",
+    "above": "Above",
+    "minimum": "Minimum",
+    "maximum": "Maximum"
+  },
+  "orders": {
+    "status": {
+      "cancelled": "Cancelled"
+    }
   }
 }

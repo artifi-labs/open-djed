@@ -1,7 +1,7 @@
 {
   "analytics": {
     "pageTitle": "Analytics",
-    "analyticsOverview": "<gradient>Analytics</gradient> Overview",
+    "analyticsOverview": "Analytics Overview",
     "description": "Real-time insights into protocol metrics and market dynamics",
     "reserveRatioOverTime": "Reserve Ratio Over Time",
     "djedMarketCap": "DJED Market Cap",
@@ -10,13 +10,15 @@
     "shenAdaPrice": "SHEN Price & ADA Price",
     "djedDexPrice": "DJED Price vs Secondary Markets",
     "total": "Total {analytic}",
-    "volume": "Volume",
     "mintedToken": "{token} Minted",
     "burnedToken": "{token} Burned",
+    "volume": "Volume",
     "errors": {
       "failedToFetch": "Failed to get {analytic} cap data."
     },
     "currentRatio": "Current Ratio",
+    "below": "Below Minimum",
+    "above": "Above Maximum",
     "reserve": {
       "warning": {
         "below": "DJED minting/SHEN burning unavailable: reserve ratio below minimum.",
@@ -39,20 +41,18 @@
   "common": {
     "illustration": "Illustration",
     "currencyValue": "{currency} Value",
-    "below": "Below",
-    "above": "Above",
-    "minimum": "Minimum",
-    "maximum": "Maximum",
+    "min": "Min",
+    "max": "Max",
+    "current": "Current",
     "available": "Available",
     "half": "Half",
-    "max": "Max",
     "mintAndBurnNow": "Mint & Burn Now",
     "months": {
       "march": "March",
-      "may": "May",
       "january": "January",
       "february": "February",
       "april": "April",
+      "may": "May",
       "june": "June",
       "july": "July",
       "august": "August",
@@ -127,17 +127,27 @@
     "allOrders": "All orders",
     "noOrdersDescription": "Looks like this wallet hasn't made any trades",
     "status": {
+      "all": "All",
       "created": "Created",
       "completed": "Completed",
-      "cancelled": "Cancelled"
+      "rejected": "Rejected",
+      "canceled": "Canceled"
+    },
+    "filters": {
+      "status": {
+        "all": "All",
+        "created": "Created",
+        "completed": "Completed",
+        "rejected": "Rejected",
+        "canceled": "Canceled"
+      }
     }
   },
   "dashboard": {
     "pageTitle": "Dashboard",
     "actionButton": {
       "wallet": "Connect Wallet to {action}",
-      "fillAmount": "Fill in the Amount to {action}",
-      "minAction": "{action} {minMessage}"
+      "fillAmount": "Fill in the Amount to {action}"
     },
     "youPay": "You pay",
     "youReceive": "You Receive",
@@ -151,7 +161,9 @@
     },
     "whatIsOpenDjed": {
       "title": "What is Open DJED?",
+      "description": "Open DJED is a community-driven web app for interacting with the DJED algorithmic stablecoin on Cardano, built entirely open source by Artifi Labs. It recreates the original DJED experience with full protocol compatibility - offering a more reliable, accessible, and auditable alternative.",
       "whyOpenDjed": {
+        "title": "Why Open DJED?",
         "items": {
           "protocolCompatible": "<strong>Reliable:</strong> Works even if the COTI app is down.",
           "openSource": "<strong>Community first:</strong> Built for and by Cardano users.",
@@ -159,10 +171,8 @@
           "reliable": "<strong>Global access:</strong> No geographic restrictions.",
           "globalAccess": "<strong>Open source:</strong> Fully auditable, forkable, and community-owned.",
           "transparentFees": "<strong>Transparent & low fees:</strong> Same COTI fee structure, ~0.1 ADA cheaper."
-        },
-        "title": "Why Open DJED?"
-      },
-      "description": "Open DJED is a transparent, community-driven web app for interacting with the DJED algorithmic stablecoin on Cardano, built entirely open source by Artifi Labs. It recreates the original DJED experience with full protocol compatibility - offering a more reliable, accessible, and auditable alternative."
+        }
+      }
     },
     "reserveDetails": {
       "currentRatio": "Current Ratio",
@@ -179,7 +189,8 @@
     "operatorFee": "Operator Fee",
     "totalCost": "Total Cost",
     "refundableDeposit": "Refundable Deposit",
-    "price": "Price"
+    "price": "Price",
+    "burnFee": "Burn Fee"
   },
   "privacyPolicy": {
     "pageTitle": "Privacy Policy",
@@ -191,7 +202,7 @@
       "wallets": "2. Wallets",
       "analytics": "3. Analytics and Telemetry",
       "openSource": "4. Open Source",
-      "authentication": "5. No Authentication",
+      "authentication": "5. Authentication",
       "policy": "6. Updates to This Policy",
       "contact": "7. Contact"
     },
@@ -243,7 +254,7 @@
           "tooltip": "See simplified rewards."
         },
         "detailed": {
-          "tooltip": "See detailed rewards breakdown."
+          "tooltip": "See detailed fees breakdown."
         },
         "buyFee": {
           "label": "Buy Fee",
@@ -275,7 +286,7 @@
           "tooltip": "See simplified fees."
         },
         "detailed": {
-          "tooltip": "See detailed fees breakdown."
+          "tooltip": "See detailed rewards breakdown."
         }
       },
       "chart": {
@@ -297,7 +308,7 @@
     "whatIsSimulator": {
       "title": "What is the trade simulator?",
       "description": "The Trade Simulator helps you understand how profitable a SHEN investment could be. By entering the amount of USD to invest, your buy and sell dates, and ADA prices, the tool estimates",
-      "disclaimer": "It's not a trading tool - it's a calculator that shows how your returns change based on the inputs you choose, so you can plan your strategy with clarity. It should not be considered financial advice.",
+      "disclaimer": "It's not a trading tool. it's a calculator that shows how your returns change based on the inputs you choose, so you can plan your strategy with clarity. It should not be considered financial advice.",
       "items": {
         "fees": "Fees you pay when buying and selling",
         "rewards": "ADA rewards you earn while holding SHEN",
@@ -367,7 +378,7 @@
       "terms": {
         "text": "Terms & Conditions"
       },
-      "allRights": "{year} Artifi. All rights are reserved"
+      "allRights": "{year} {company}. All rights are reserved"
     }
   },
   "navbar": {
@@ -385,7 +396,7 @@
     },
     "wallet": {
       "connect": "Connect Wallet",
-      "loading": "Loading Address"
+      "loading": "Loading Wallet"
     }
   },
   "wallet": {
@@ -398,7 +409,7 @@
     },
     "title": "Wallet",
     "noWalletsDetected": "No wallets detected",
-    "incorrectNetwork": "Please connect to a {network} wallet`",
+    "incorrectNetwork": "Please connect to a {network} wallet",
     "connected": "Your wallet has been successfully connected",
     "connectionFailed": "Failed to connect your wallet",
     "disconnected": "Your wallet has been disconnected"

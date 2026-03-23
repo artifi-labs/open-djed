@@ -71,7 +71,7 @@ const Action: React.FC<ActionProps> = ({
   const t = useTranslations()
   const { reserveBounds } = useReserveDetails()
 
-  const actionText = capitalize(actionType)
+  const actionText = capitalize(t(`action.${actionType.toLowerCase()}`))
 
   const payEmpty = Object.values(payValues).every(isEmptyValue)
   const receiveEmpty = Object.values(receiveValues).every(isEmptyValue)
@@ -95,10 +95,8 @@ const Action: React.FC<ActionProps> = ({
       ? t("dashboard.actionButton.wallet", { action: actionText })
       : payEmpty || receiveEmpty
         ? t("dashboard.actionButton.fillAmount", { action: actionText })
-        : t("dashboard.actionButton.minAction", {
-            action: actionText,
-            minMessage: minMessage ?? "",
-          })
+        : `${actionText} ${minMessage || ""}`
+
     return { isDisabled, text }
   }, [hasWalletConnected, actionType, payValues, receiveValues])
 

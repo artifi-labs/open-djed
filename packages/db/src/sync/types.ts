@@ -79,6 +79,28 @@ export type UTxO = {
   outputs: Output[]
 }
 
+export type OrderStatusOutputDatum = {
+  fields?: [
+    {
+      constructor?: number // tag
+    }?,
+    {
+      fields?: [
+        {
+          fields?: [
+            {
+              bytes?: string // tx hash
+            }?,
+          ]
+        }?,
+        {
+          int?: number // output index
+        }?,
+      ]
+    }?,
+  ]
+}
+
 export type TransactionData = {
   hash: string
   block: string
@@ -158,6 +180,7 @@ export type OrderUTxOWithPoolDatum = OrderUTxOWithDatumAndBlock & {
 export enum OrderStatus {
   Created = "Created",
   Completed = "Completed",
+  Rejected = "Rejected",
   Cancelled = "Canceled",
 }
 
