@@ -136,11 +136,22 @@ export const populateDbWithHistoricOrders = async () => {
     `Enriched ${orderUTxOWithDatumAndBlock.length} order UTxOs with datum and block data`,
   )
 
+  logger.info("Processing order data...")
+
+  const ordersToInsert: Order[] = await processOrdersToInsert(
+    orderUTxOWithDatumAndBlock,
+  )
+
   logger.info("Enriching completed orders with pool datums...")
   const enrichedOrders = await enrichOrdersWithPoolDatums(
     orderUTxOWithDatumAndBlock,
   )
-  const ordersUTxOWithPoolDatum = enrichedOrders.filter(hasPoolDatum)
+  const completedOrders = enrichedOrders.filter((_, index) => {
+    const status = ordersToInsert[index]?.status
+
+    return status === OrderStatus.Completed
+  })
+  const ordersUTxOWithPoolDatum = completedOrders.filter(hasPoolDatum)
 
   logger.info(
     `Enriched ${ordersUTxOWithPoolDatum.length} completed order UTxOs with pool datum`,
