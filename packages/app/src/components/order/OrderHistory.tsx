@@ -60,6 +60,11 @@ export const STATUS_CONFIG: Record<
     text: "Completed",
     i18nKey: "orders.status.completed",
   },
+  Rejected: {
+    type: "error",
+    text: "Rejected",
+    i18nKey: "orders.status.rejected",
+  },
   // Cancelling: { type: "warning", text: "Cancelling" },
   Canceled: {
     type: "surface",

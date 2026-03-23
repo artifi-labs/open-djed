@@ -130,6 +130,7 @@
       "all": "All",
       "created": "Created",
       "completed": "Completed",
+      "rejected": "Rejected",
       "canceled": "Canceled"
     },
     "filters": {
@@ -137,6 +138,7 @@
         "all": "All",
         "created": "Created",
         "completed": "Completed",
+        "rejected": "Rejected",
         "canceled": "Canceled"
       }
     }

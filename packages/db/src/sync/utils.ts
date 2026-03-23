@@ -9,12 +9,11 @@ import {
 } from "@lucid-evolution/lucid"
 import {
   OrderStatus,
-  RedeemerPurpose,
+  type OrderStatusOutputDatum,
   type AddressDatum,
   type Order,
   type OrderUTxOWithDatum,
   type OrderUTxOWithDatumAndBlock,
-  type TransactionRedeemer,
   type UTxO,
   type Transaction,
   type OracleUTxoWithDatumAndTimestamp,
@@ -28,13 +27,7 @@ import {
 import fs from "fs"
 import path from "path"
 import { logger } from "../utils/logger"
-import {
-  CancelOrderSpendRedeemerHash,
-  OracleDatum,
-  PoolDatum,
-  ProcessOrderSpendOrderRedeemerHash,
-  type OrderDatum,
-} from "@open-djed/data"
+import { OracleDatum, PoolDatum, type OrderDatum } from "@open-djed/data"
 import JSONbig from "json-bigint"
 import fsPromises from "fs/promises"
 
@@ -57,6 +50,21 @@ export function blockfrostFetch(path: string, init?: RequestInit) {
       ...init?.headers,
     },
   })
+}
+
+function mapOrderStatus(tag: number): OrderStatus | null {
+  switch (tag) {
+    case 4:
+    case 5:
+      return OrderStatus.Completed
+    case 11:
+      return OrderStatus.Cancelled
+    case 0:
+    case 12:
+      return OrderStatus.Rejected
+    default:
+      return null
+  }
 }
 
 /**
@@ -314,11 +322,10 @@ export async function processOrdersToInsert(utxos: OrderUTxOWithDatum[]) {
 }
 
 /**
- * Check the status of an order based on its consuming transaction.
- * Map the inputs of the consuming transaction, in search of the matching order UTxO coming from the script.
- * Get the index of the matching input and proceed to get the transaction redeemers (we only need those with purpose 'spend').
- * Match the input to the redeemer by the index and match the redeemer_data_hash to the known redeemers for 'ProcessOrderSpendOrderHash' and 'CancelOrderSpendHash'.
- * If found, return the corresponding status.
+ * Check the status of an order based on the order status output of its consuming transaction.
+ * A batch processing transaction may spend several orders with the process redeemer while only
+ * fulfilling some of them and rejecting others, so the spend redeemer alone is not enough to
+ * infer final order status.
  * @param consumedBy the tx hash of the consuming transaction
  * @param orderTxHash the tx hash of the order transaction
  * @param orderOutIndex the output_index of order UTxO
@@ -351,43 +358,64 @@ export async function handleOrderStatus(
   }
 
   // get the inputs that match the order UTxO
-  const matchingInputIndex = spendableInputs.findIndex((input) => {
+  const hasMatchingInput = spendableInputs.some((input) => {
+    return input.tx_hash === orderTxHash && input.output_index === orderOutIndex
+  })
+  if (!hasMatchingInput) {
+    return OrderStatus.Created
+  }
+
+  for (const output of consumingTx.outputs) {
     const isScriptAddress =
-      getAddressDetails(input.address).paymentCredential?.type === "Script"
-    return (
-      isScriptAddress &&
-      input.tx_hash === orderTxHash &&
-      input.output_index === orderOutIndex
-    )
-  })
-  if (matchingInputIndex === -1) {
-    return OrderStatus.Created
+      getAddressDetails(output.address).paymentCredential?.type === "Script"
+    if (isScriptAddress || typeof output.data_hash !== "string") {
+      continue
+    }
+
+    const datum = (await blockfrostFetch(
+      `/scripts/datum/${output.data_hash}`,
+    )) as { json_value?: unknown }
+    const OrderStatusOutputDatum =
+      datum.json_value as OrderStatusOutputDatum | null
+
+    const statusField = OrderStatusOutputDatum?.fields?.[0] // tag
+
+    const orderReference = OrderStatusOutputDatum?.fields?.[1]
+    const txHash = orderReference?.fields?.[0]?.fields?.[0]?.bytes
+    const outputIndexRaw = orderReference?.fields?.[1]?.int
+    const statusTagRaw = statusField?.constructor
+    const statusTag =
+      typeof statusTagRaw === "number"
+        ? statusTagRaw
+        : typeof statusTagRaw === "string" && statusTagRaw.trim() !== ""
+          ? Number(statusTagRaw)
+          : null
+    const outputIndex =
+      typeof outputIndexRaw === "number"
+        ? outputIndexRaw
+        : typeof outputIndexRaw === "string" && outputIndexRaw.trim() !== ""
+          ? Number(outputIndexRaw)
+          : null
+    const isMatch = txHash === orderTxHash && outputIndex === orderOutIndex
+
+    if (
+      statusTag === null ||
+      Number.isNaN(statusTag) ||
+      typeof txHash !== "string" ||
+      outputIndex === null ||
+      Number.isNaN(outputIndex)
+    ) {
+      continue
+    }
+
+    if (!isMatch) {
+      continue
+    }
+
+    return mapOrderStatus(statusTag) ?? OrderStatus.Created
   }
 
-  // get the redeemers of the consuming transaction
-  const redeemersData = (await blockfrostFetch(
-    `/txs/${consumedBy}/redeemers`,
-  )) as TransactionRedeemer[]
-  if (redeemersData.length === 0) {
-    return OrderStatus.Created
-  }
-
-  const spendRedeemers = redeemersData.filter(
-    (redeemer) => redeemer.purpose === RedeemerPurpose.Spend,
-  )
-  const matchingRedeemer = spendRedeemers.find((redeemer) => {
-    return redeemer.tx_index === matchingInputIndex
-  })
-
-  if (!matchingRedeemer) {
-    return OrderStatus.Created
-  }
-
-  return matchingRedeemer.redeemer_data_hash === CancelOrderSpendRedeemerHash
-    ? OrderStatus.Cancelled
-    : matchingRedeemer.redeemer_data_hash === ProcessOrderSpendOrderRedeemerHash
-      ? OrderStatus.Completed
-      : OrderStatus.Created
+  return OrderStatus.Created
 }
 
 /**

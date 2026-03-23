@@ -42,11 +42,13 @@ function seed() {
   t("orders.status.all")
   t("orders.status.created")
   t("orders.status.completed")
+  t("orders.status.rejected")
   t("orders.status.canceled")
 
   t("orders.filters.status.all")
   t("orders.filters.status.created")
   t("orders.filters.status.completed")
+  t("orders.filters.status.rejected")
   t("orders.filters.status.canceled")
 
   t("simulator.whatIsSimulator.items.fees")
