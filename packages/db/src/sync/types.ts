@@ -82,7 +82,7 @@ export type UTxO = {
 export type OrderStatusOutputDatum = {
   fields?: [
     {
-      constructor?: string // status tag
+      constructor?: number // tag
     }?,
     {
       fields?: [
@@ -94,7 +94,7 @@ export type OrderStatusOutputDatum = {
           ]
         }?,
         {
-          int?: string // output index
+          int?: number // output index
         }?,
       ]
     }?,

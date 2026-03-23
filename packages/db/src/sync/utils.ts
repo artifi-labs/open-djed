@@ -378,47 +378,33 @@ export async function handleOrderStatus(
       continue
     }
 
+    // get the decoded datum JSON attached to this output
     const datum = (await blockfrostFetch(
       `/scripts/datum/${output.data_hash}`,
     )) as { json_value?: unknown }
-    const OrderStatusOutputDatum =
+    const orderStatusOutputDatum =
       datum.json_value as OrderStatusOutputDatum | null
 
-    const statusField = OrderStatusOutputDatum?.fields?.[0] // tag
-
-    const orderReference = OrderStatusOutputDatum?.fields?.[1]
+    // each status output points back to the order it resolves: [tag, orderReference]
+    const tag = orderStatusOutputDatum?.fields?.[0]?.constructor
+    const orderReference = orderStatusOutputDatum?.fields?.[1]
     const txHash = orderReference?.fields?.[0]?.fields?.[0]?.bytes
-    const outputIndexRaw = orderReference?.fields?.[1]?.int
-    const statusTagRaw = statusField?.constructor
-    const statusTag =
-      typeof statusTagRaw === "number"
-        ? statusTagRaw
-        : typeof statusTagRaw === "string" && statusTagRaw.trim() !== ""
-          ? Number(statusTagRaw)
-          : null
-    const outputIndex =
-      typeof outputIndexRaw === "number"
-        ? outputIndexRaw
-        : typeof outputIndexRaw === "string" && outputIndexRaw.trim() !== ""
-          ? Number(outputIndexRaw)
-          : null
-    const isMatch = txHash === orderTxHash && outputIndex === orderOutIndex
+    const outputIndex = orderReference?.fields?.[1]?.int
 
     if (
-      statusTag === null ||
-      Number.isNaN(statusTag) ||
+      typeof tag !== "number" ||
       typeof txHash !== "string" ||
-      outputIndex === null ||
-      Number.isNaN(outputIndex)
+      typeof outputIndex !== "number"
     ) {
       continue
     }
 
-    if (!isMatch) {
+    // only use the status output that matches this order UTxO
+    if (txHash !== orderTxHash || outputIndex !== orderOutIndex) {
       continue
     }
 
-    return mapOrderStatus(statusTag) ?? OrderStatus.Created
+    return mapOrderStatus(tag) ?? OrderStatus.Created
   }
 
   return OrderStatus.Created
@@ -430,6 +416,7 @@ export async function handleOrderStatus(
  * @param consumingTx the tx hash of the consuming transaction
  * @returns the value received
  */
+
 export async function getBurnReceivedValue(
   address: AddressDatum,
   consumingTx: string | null,
@@ -915,7 +902,20 @@ export async function writeOrderedTxOsToFile(
 ): Promise<void> {
   const absolutePath = path.resolve(filePath)
 
-  const json = JSONbig.stringify(data)
+  const json = JSONbig.stringify(data, null, 2)
+
+  await fsPromises.writeFile(absolutePath, json, {
+    encoding: "utf-8",
+  })
+}
+
+export async function writeJsonToFile(
+  data: unknown,
+  filePath: string,
+): Promise<void> {
+  const absolutePath = path.resolve(filePath)
+
+  const json = JSONbig.stringify(data, null, 2)
 
   await fsPromises.writeFile(absolutePath, json, {
     encoding: "utf-8",
