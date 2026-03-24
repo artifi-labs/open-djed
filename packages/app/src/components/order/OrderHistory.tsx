@@ -45,30 +45,25 @@ export const STATUS_CONFIG: Record<
   OrderStatus,
   {
     type: "success" | "warning" | "error" | "surface"
-    text: string
     i18nKey: string
   }
 > = {
   // Processing: { type: "surface", text: "Processing" },
   Created: {
     type: "surface",
-    text: "Created",
     i18nKey: "orders.status.created",
   },
   Completed: {
     type: "success",
-    text: "Completed",
     i18nKey: "orders.status.completed",
   },
   Rejected: {
     type: "error",
-    text: "Rejected",
     i18nKey: "orders.status.rejected",
   },
   // Cancelling: { type: "warning", text: "Cancelling" },
   Canceled: {
     type: "surface",
-    text: "Canceled",
     i18nKey: "orders.status.canceled",
   },
   // Failed: { type: "error", text: "Failed" },
@@ -469,11 +464,7 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({
           ),
         },
         {
-          content: (
-            <StatusCell
-              status={t(`orders.status.${order.status?.toLowerCase()}`)}
-            />
-          ),
+          content: <StatusCell status={order.status} />,
         },
         {
           content: (
