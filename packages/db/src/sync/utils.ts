@@ -9,12 +9,11 @@ import {
 } from "@lucid-evolution/lucid"
 import {
   OrderStatus,
-  RedeemerPurpose,
+  type OrderStatusOutputDatum,
   type AddressDatum,
   type Order,
   type OrderUTxOWithDatum,
   type OrderUTxOWithDatumAndBlock,
-  type TransactionRedeemer,
   type UTxO,
   type Transaction,
   type OracleUTxoWithDatumAndTimestamp,
@@ -28,13 +27,7 @@ import {
 import fs from "fs"
 import path from "path"
 import { logger } from "../utils/logger"
-import {
-  CancelOrderSpendRedeemerHash,
-  OracleDatum,
-  PoolDatum,
-  ProcessOrderSpendOrderRedeemerHash,
-  type OrderDatum,
-} from "@open-djed/data"
+import { OracleDatum, PoolDatum, type OrderDatum } from "@open-djed/data"
 import JSONbig from "json-bigint"
 import fsPromises from "fs/promises"
 
@@ -57,6 +50,21 @@ export function blockfrostFetch(path: string, init?: RequestInit) {
       ...init?.headers,
     },
   })
+}
+
+function mapOrderStatus(tag: number): OrderStatus | null {
+  switch (tag) {
+    case 4: // Successful DJED mint/burn
+    case 5: // Successful SHEN mint/burn
+      return OrderStatus.Completed
+    case 11: // Order cancelled by the user
+      return OrderStatus.Cancelled
+    case 0: // Failed because reserve ratio constraints were not met
+    case 12: // Failed because the submitted price was stale (slippage)
+      return OrderStatus.Rejected
+    default:
+      return null
+  }
 }
 
 /**
@@ -281,14 +289,18 @@ export const unlock = () => {
  * @returns array of Order objects to be inserted in the database
  */
 export async function processOrdersToInsert(utxos: OrderUTxOWithDatum[]) {
-  return Promise.all(
-    utxos.map(async (utxo) => {
+  return await processBatch<OrderUTxOWithDatum, Order>(
+    utxos,
+    async (utxo) => {
       const d = utxo.orderDatum as OrderDatum
       const { action, token, paid, received } = await parseOrderDatum(utxo)
+
       const totalAmountPaid = BigInt(
         utxo.amount.find((a) => a.unit === "lovelace")?.quantity ?? "0",
       )
+
       const fees = action === "Mint" ? totalAmountPaid - paid : totalAmountPaid
+
       const status = await handleOrderStatus(
         utxo.consumed_by_tx,
         utxo.tx_hash,
@@ -309,16 +321,17 @@ export async function processOrdersToInsert(utxos: OrderUTxOWithDatum[]) {
         orderDate: new Date(Number(d.creationDate)),
         status: status,
       } as unknown as Order
-    }),
+    },
+    10,
+    1000,
   )
 }
 
 /**
- * Check the status of an order based on its consuming transaction.
- * Map the inputs of the consuming transaction, in search of the matching order UTxO coming from the script.
- * Get the index of the matching input and proceed to get the transaction redeemers (we only need those with purpose 'spend').
- * Match the input to the redeemer by the index and match the redeemer_data_hash to the known redeemers for 'ProcessOrderSpendOrderHash' and 'CancelOrderSpendHash'.
- * If found, return the corresponding status.
+ * Check the status of an order based on the order status output of its consuming transaction.
+ * A batch processing transaction may spend several orders with the process redeemer while only
+ * fulfilling some of them and rejecting others, so the spend redeemer alone is not enough to
+ * infer final order status.
  * @param consumedBy the tx hash of the consuming transaction
  * @param orderTxHash the tx hash of the order transaction
  * @param orderOutIndex the output_index of order UTxO
@@ -351,43 +364,50 @@ export async function handleOrderStatus(
   }
 
   // get the inputs that match the order UTxO
-  const matchingInputIndex = spendableInputs.findIndex((input) => {
+  const hasMatchingInput = spendableInputs.some((input) => {
+    return input.tx_hash === orderTxHash && input.output_index === orderOutIndex
+  })
+  if (!hasMatchingInput) {
+    return OrderStatus.Created
+  }
+
+  for (const output of consumingTx.outputs) {
     const isScriptAddress =
-      getAddressDetails(input.address).paymentCredential?.type === "Script"
-    return (
-      isScriptAddress &&
-      input.tx_hash === orderTxHash &&
-      input.output_index === orderOutIndex
-    )
-  })
-  if (matchingInputIndex === -1) {
-    return OrderStatus.Created
+      getAddressDetails(output.address).paymentCredential?.type === "Script"
+    if (isScriptAddress || typeof output.data_hash !== "string") {
+      continue
+    }
+
+    // get the decoded datum JSON attached to this output
+    const datum = (await blockfrostFetch(
+      `/scripts/datum/${output.data_hash}`,
+    )) as { json_value?: unknown }
+    const orderStatusOutputDatum =
+      datum.json_value as OrderStatusOutputDatum | null
+
+    // each status output points back to the order it resolves: [tag, orderReference]
+    const tag = orderStatusOutputDatum?.fields?.[0]?.constructor
+    const orderReference = orderStatusOutputDatum?.fields?.[1]
+    const txHash = orderReference?.fields?.[0]?.fields?.[0]?.bytes
+    const outputIndex = orderReference?.fields?.[1]?.int
+
+    if (
+      typeof tag !== "number" ||
+      typeof txHash !== "string" ||
+      typeof outputIndex !== "number"
+    ) {
+      continue
+    }
+
+    // only use the status output that matches this order UTxO
+    if (txHash !== orderTxHash || outputIndex !== orderOutIndex) {
+      continue
+    }
+
+    return mapOrderStatus(tag) ?? OrderStatus.Created
   }
 
-  // get the redeemers of the consuming transaction
-  const redeemersData = (await blockfrostFetch(
-    `/txs/${consumedBy}/redeemers`,
-  )) as TransactionRedeemer[]
-  if (redeemersData.length === 0) {
-    return OrderStatus.Created
-  }
-
-  const spendRedeemers = redeemersData.filter(
-    (redeemer) => redeemer.purpose === RedeemerPurpose.Spend,
-  )
-  const matchingRedeemer = spendRedeemers.find((redeemer) => {
-    return redeemer.tx_index === matchingInputIndex
-  })
-
-  if (!matchingRedeemer) {
-    return OrderStatus.Created
-  }
-
-  return matchingRedeemer.redeemer_data_hash === CancelOrderSpendRedeemerHash
-    ? OrderStatus.Cancelled
-    : matchingRedeemer.redeemer_data_hash === ProcessOrderSpendOrderRedeemerHash
-      ? OrderStatus.Completed
-      : OrderStatus.Created
+  return OrderStatus.Created
 }
 
 /**
@@ -396,6 +416,7 @@ export async function handleOrderStatus(
  * @param consumingTx the tx hash of the consuming transaction
  * @returns the value received
  */
+
 export async function getBurnReceivedValue(
   address: AddressDatum,
   consumingTx: string | null,
@@ -881,7 +902,20 @@ export async function writeOrderedTxOsToFile(
 ): Promise<void> {
   const absolutePath = path.resolve(filePath)
 
-  const json = JSONbig.stringify(data)
+  const json = JSONbig.stringify(data, null, 2)
+
+  await fsPromises.writeFile(absolutePath, json, {
+    encoding: "utf-8",
+  })
+}
+
+export async function writeJsonToFile(
+  data: unknown,
+  filePath: string,
+): Promise<void> {
+  const absolutePath = path.resolve(filePath)
+
+  const json = JSONbig.stringify(data, null, 2)
 
   await fsPromises.writeFile(absolutePath, json, {
     encoding: "utf-8",

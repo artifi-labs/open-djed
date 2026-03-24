@@ -25,7 +25,7 @@ export type OrderApi = {
   }
 }
 
-export type OrderStatus = "Created" | "Completed" | "Canceled"
+export type OrderStatus = "Created" | "Completed" | "Rejected" | "Canceled"
 
 export type StatusFilterItem = {
   key: string
@@ -36,6 +36,7 @@ export enum OrderStatusEnum {
   All = "all",
   Created = "created",
   Completed = "completed",
+  Rejected = "rejected",
   Canceled = "canceled",
 }
 
@@ -46,6 +47,7 @@ export const statusFilters = [
     key: OrderStatusEnum.Completed,
     i18nKey: "orders.filters.status.completed",
   },
+  { key: OrderStatusEnum.Rejected, i18nKey: "orders.filters.status.rejected" },
   { key: OrderStatusEnum.Canceled, i18nKey: "orders.filters.status.canceled" },
 ] as const
 
