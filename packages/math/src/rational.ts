@@ -71,7 +71,23 @@ export const simplify = (r: RationalFields): RationalFields => {
 
 export const toNumber = (r: RationalFields): number => {
   const simplifiedR = simplify(r)
-  return Number(simplifiedR.numerator) / Number(simplifiedR.denominator)
+  let num = simplifiedR.numerator
+  let den = simplifiedR.denominator
+
+  const absNum = absBigInt(num)
+  const absDen = absBigInt(den)
+
+  const numBits = absNum.toString(2).length
+  const denBits = absDen.toString(2).length
+  const maxBits = Math.max(numBits, denBits)
+
+  if (maxBits > 1000) {
+    const shift = BigInt(maxBits - 1000)
+    num = num >> shift
+    den = den >> shift
+  }
+
+  return Number(num) / Number(den)
 }
 
 export const invert = (r: RationalFields): RationalFields => ({
