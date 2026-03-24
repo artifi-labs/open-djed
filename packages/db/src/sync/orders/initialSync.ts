@@ -4,6 +4,7 @@ import { Data } from "@lucid-evolution/lucid"
 import { prisma } from "../../../lib/prisma"
 import { calculateFeesEarnings } from "./feesEarnings/feesEarnings"
 import {
+  OrderStatus,
   type Block,
   type Order,
   type OrderUTxOWithDatumAndBlock,
@@ -136,11 +137,19 @@ export const populateDbWithHistoricOrders = async () => {
     `Enriched ${orderUTxOWithDatumAndBlock.length} order UTxOs with datum and block data`,
   )
 
-  logger.info("Enriching completed orders with pool datums...")
-  const enrichedOrders = await enrichOrdersWithPoolDatums(
+  logger.info("Processing order data...")
+
+  const ordersToInsert: Order[] = await processOrdersToInsert(
     orderUTxOWithDatumAndBlock,
   )
-  const ordersUTxOWithPoolDatum = enrichedOrders.filter(hasPoolDatum)
+  const completedOrders = orderUTxOWithDatumAndBlock.filter((_, index) => {
+    return ordersToInsert[index]?.status === OrderStatus.Completed
+  })
+
+  logger.info("Enriching completed orders with pool datums...")
+  const enrichedCompletedOrders =
+    await enrichOrdersWithPoolDatums(completedOrders)
+  const ordersUTxOWithPoolDatum = enrichedCompletedOrders.filter(hasPoolDatum)
 
   logger.info(
     `Enriched ${ordersUTxOWithPoolDatum.length} completed order UTxOs with pool datum`,
@@ -158,12 +167,6 @@ export const populateDbWithHistoricOrders = async () => {
     data: dailyFees,
     skipDuplicates: true,
   })
-
-  logger.info("Processing order data...")
-
-  const ordersToInsert: Order[] = await processOrdersToInsert(
-    orderUTxOWithDatumAndBlock,
-  )
 
   logger.info(`Inserting ${ordersToInsert.length} orders into database...`)
   await prisma.order.createMany({

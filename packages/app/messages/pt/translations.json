@@ -131,6 +131,7 @@
       "all": "Todas",
       "created": "Criada",
       "completed": "Concluída",
+      "rejected": "Rejeitada",
       "canceled": "Cancelada"
     },
     "filters": {
@@ -138,6 +139,7 @@
         "all": "Todas",
         "created": "Criadas",
         "completed": "Concluídas",
+        "rejected": "Rejeitadas",
         "canceled": "Canceladas"
       }
     }
