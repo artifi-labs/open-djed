@@ -25,7 +25,6 @@ By offering an open, community-driven alternative, Open Djed aims to:
 
 Explore this documentation to learn how to use, contribute to, and extend Open Djed.
 
-
 ## Open Djed History
 
 ### The Beginning: Reverse DJED
@@ -45,7 +44,6 @@ While functional, Reverse DJED was basic in design and user experience. It serve
   height="750"
 ></iframe>
 
-
 ### The Evolution: Reverse DJED → Open DJED
 
 As adoption grew and community feedback accumulated, we realized the importance of transforming this proof-of-concept into a professional, user-friendly platform. This led to a complete rebranding and redesign that became **Open DJED**.
@@ -59,8 +57,8 @@ The evolution introduced major improvements:
 ></iframe>
 
 Key improvements highlighted:
+
 - Clean themes and modern visual design
 - Fully responsive interface (desktop, tablet, mobile)
 - USD equivalents displayed by default
 - Better overall accessibility and usability
-

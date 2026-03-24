@@ -2,7 +2,8 @@
 sidebar_position: 1
 ---
 
-# Catalyst Proposal: Building Open Djed
+# Catalyst Proposal
+
 - **Proposal Link:** [Project Catalyst Proposal](https://milestones.projectcatalyst.io/projects/1400095/)
 
 Open Djed submitted a **development and maintenance proposal to Project Catalyst** on **Nov 24, 2025**.
@@ -33,7 +34,7 @@ With Catalyst support, the team could:
 
 The proposal support translated into concrete product and engineering outcomes:
 
-- **Feature delivery:** analytics improvements, SHEN yield simulator anbd order management
+- **Feature delivery:** analytics improvements, SHEN yield simulator and order management
 - **Accessibility:** multilingual support (i18n) for broader community reach
 - **Infrastructure maturity:** stronger production readiness and monitoring
 - **Developer enablement:** documentation and tooling improvements for easier contributions and onboarding

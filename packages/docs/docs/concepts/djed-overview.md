@@ -18,16 +18,16 @@ Djed is an algorithmic stablecoin protocol developed for the Cardano blockchain 
 
 A key concept in Djed is the **reserve ratio**, which is the ratio of the total ADA in the reserve to the total value of DJED in circulation. This ratio determines the health and stability of the protocol and enforces the following rules:
 
-- **If the reserve ratio falls below 400%:**  
+- **If the reserve ratio falls below 400%:**
   - **DJED minting is disabled.**
   - **SHEN burning is disabled.**
   - This ensures that there is always enough collateral to back all DJED in circulation.
 
-- **If the reserve ratio rises above 800%:**  
+- **If the reserve ratio rises above 800%:**
   - **SHEN minting is disabled.**
   - This prevents excessive dilution of SHEN holders and keeps the reserve at a manageable level.
 
-- **Within the 400%–800% range:**  
+- **Within the 400%–800% range:**
   - All operations (DJED minting/burning, SHEN minting/burning) are allowed.
 
 These boundaries are enforced by the smart contracts, ensuring the protocol remains solvent and stable under all supported conditions.
@@ -35,9 +35,9 @@ These boundaries are enforced by the smart contracts, ensuring the protocol rema
 ### Protocol Fees
 
 Every operation on the Djed protocol (minting, burning, etc.) involves several types of fees. These fees are required to cover transaction costs, protocol maintenance, and operator incentives. The main fee types include:
- 
-- **Mint/Burn Fee:** A protocol fee applied when minting or burning DJED or SHEN.  
-- **Operator Fee:** A fee paid to the protocol operator for maintaining the system.  
+
+- **Mint/Burn Fee:** A protocol fee applied when minting or burning DJED or SHEN.
+- **Operator Fee:** A fee paid to the protocol operator for maintaining the system.
 - **Refundable Deposit:** An amount temporarily locked during the transaction, refunded after confirmation.
 
 > **Note:** Fee values are dynamic and may change based on network conditions and protocol parameters. Open Djed always displays the current fee breakdown before you confirm any operation. Check here [Open DJED Dashboard](https://djed.artifi.finance)

@@ -45,7 +45,7 @@ const sidebars: SidebarsConfig = {
       items: ["user-guide/index"],
     },
     "architecture/index",
-  
+
     {
       type: "category",
       label: "Catalyst",
@@ -58,17 +58,21 @@ const sidebars: SidebarsConfig = {
             "catalyst/milestones/milestone1",
             "catalyst/milestones/milestone2",
             "catalyst/milestones/milestone3",
-            "catalyst/milestones/milestone4"
+            "catalyst/milestones/milestone4",
           ],
         },
       ],
     },
-    "support-faq/index",
+    {
+      type: "category",
+      label: "Support & FAQ",
+      items: ["support-faq/support", "support-faq/faq"],
+    },
     "contributing/index",
     {
       type: "link",
       label: "OpenAPI Specification",
-      href: "https://djed.artifi.finance",
+      href: "https://api.djed.artifi.finance/api/scalar",
     },
   ],
 

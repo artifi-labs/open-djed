@@ -5,7 +5,7 @@ import type * as Preset from "@docusaurus/preset-classic"
 const config: Config = {
   title: "Open DJED Docs",
   tagline: "",
-  favicon: "icons/favicon.png",
+  favicon: "icons/opendjed-icon.svg",
 
   plugins: ["docusaurus-plugin-sass"],
 
@@ -21,7 +21,11 @@ const config: Config = {
   baseUrl: "/",
 
   onBrokenLinks: "throw",
-  onBrokenMarkdownLinks: "warn",
+  markdown: {
+    hooks: {
+      onBrokenMarkdownLinks: "warn",
+    },
+  },
 
   // Even if you don't use internationalization, you can use this field to set
   // useful metadata like html lang. For example, if your site is Chinese, you
@@ -65,7 +69,7 @@ const config: Config = {
       title: "Open DJED Docs",
       logo: {
         alt: "Artifi Labs Logo",
-        src: "icons/favicon.png",
+        src: "icons/opendjed-icon.svg",
         href: "/",
       },
       items: [

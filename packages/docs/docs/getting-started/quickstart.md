@@ -25,13 +25,10 @@ This guide will help you start using the Open Djed application to interact with 
 - **Mint/Burn:** Mint or burn DJED and SHEN directly from the interface.
 - **Orders:** Track pending, completed, or failed orders, and cancel eligible pending orders when needed.
 
-
 ## Need More?
 
 - For advanced usage, see the [User Guide](../user-guide/index.md).
 - To better understand the architecture and flows, see [How It Works](./how-it-works.md).
-- If you need help, see [FAQ & Support](../support-faq/index.mdx).
+- If you need help, see [Support](../support-faq/support.mdx) or [FAQ](../support-faq/faq.mdx).
 
 ---
-
-*If you encounter any issues, check the [FAQ](../faq/index.md).*

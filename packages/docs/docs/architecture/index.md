@@ -18,6 +18,7 @@ For local setup, all packages should follow their own `.env` and `.env.example` 
 **Purpose:** Main frontend application (Next.js/React) used by end users.
 
 **How to run:**
+
 ```sh
 cd packages/app
 bun install
@@ -25,6 +26,7 @@ bun dev
 ```
 
 **Main responsibilities:**
+
 - Connect Cardano wallets
 - Mint and burn DJED/SHEN
 - Support internationalization (i18n) with localized messages
@@ -37,6 +39,7 @@ bun dev
 **Purpose:** Backend API consumed by the frontend and other services.
 
 **How to run:**
+
 ```sh
 cd packages/api
 bun install
@@ -44,6 +47,7 @@ bun dev
 ```
 
 **Main responsibilities:**
+
 - Expose endpoints used by the app
 - Orchestrate business logic
 - Aggregate blockchain and database data
@@ -54,6 +58,7 @@ bun dev
 **Purpose:** Persistence and synchronization layer (Prisma + database) for protocol state, orders, and analytics.
 
 **How to run:**
+
 - Ensure the database is running (for local development, start services with Docker Compose)
 - Configure database environment variables
 - Apply migrations:
@@ -70,6 +75,7 @@ bun dev
   ```
 
 **Main responsibilities:**
+
 - Run a recurring sync job (cron-like) on a fixed interval to fetch fresh blockchain data
 - Continuously update DJED and SHEN order data in the database
 - Persist and refresh stablecoin-related analytics used by the app/API
@@ -80,6 +86,7 @@ bun dev
 **Purpose:** Command-line interface for operational and developer workflows.
 
 **How to run:**
+
 ```sh
 cd packages/cli
 bun install
@@ -87,6 +94,7 @@ bun start -- <command>
 ```
 
 **Main responsibilities:**
+
 - Query protocol/on-chain state
 - Build and submit transactions
 - Automate repetitive operations
@@ -96,6 +104,7 @@ bun start -- <command>
 **Purpose:** Shared types, decoders, and data utilities for on-chain structures.
 
 **How to use:**
+
 - Consumed as a dependency by other packages
 - Centralizes parsing/validation logic to keep behavior consistent
 
@@ -104,6 +113,7 @@ bun start -- <command>
 **Purpose:** Internal client wrapper for Blockfrost integration.
 
 **How to use:**
+
 - Imported by API/DB/CLI flows that need Cardano data
 - Encapsulates external API communication details
 
@@ -112,6 +122,7 @@ bun start -- <command>
 **Purpose:** Financial and protocol math utilities (rates, reserves, market-cap related calculations).
 
 **How to use:**
+
 - Imported by services that require deterministic numeric logic
 
 ### Registry (`packages/registry`)
@@ -119,6 +130,7 @@ bun start -- <command>
 **Purpose:** Token and asset registry helpers used across the stack.
 
 **How to use:**
+
 - Imported by packages that need consistent asset metadata/lookup behavior
 
 ### Txs (`packages/txs`)
@@ -126,6 +138,7 @@ bun start -- <command>
 **Purpose:** Transaction-building primitives and higher-level transaction helpers.
 
 **How to use:**
+
 - Imported where transaction assembly/signing flows are needed
 
 ### Docs (`packages/docs`)
@@ -133,6 +146,7 @@ bun start -- <command>
 **Purpose:** Project documentation site (Docusaurus).
 
 **How to run:**
+
 ```sh
 cd packages/docs
 bun install
@@ -140,19 +154,20 @@ bun start
 ```
 
 **Main responsibilities:**
+
 - Host architecture, user guides, and contributor docs
 - Keep technical knowledge discoverable and up to date
 
 ## Development Workflow
 
 1. Install dependencies at the root of the monorepo:
-    ```sh
-    bun install
-    ```
+   ```sh
+   bun install
+   ```
 2. Run the full test suite from the project root:
-    ```sh
-    bun run test
-    ```
+   ```sh
+   bun run test
+   ```
 3. Develop and test each package independently using local scripts.
 4. Use the `/app` package to run the frontend and interact with the Djed protocol.
 5. Refer to the `/docs` package for detailed documentation on architecture, APIs, and contributing.

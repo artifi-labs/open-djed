@@ -371,7 +371,11 @@ const app = new Hono()
   .use(logger())
   .get(
     "/protocol-data",
-    describeRoute({ summary: "Get protocol data", description: "Get on-chain protocol data", tags: ["Protocol"] }),
+    describeRoute({
+      summary: "Get protocol data",
+      description: "Get on-chain protocol data",
+      tags: ["Protocol"],
+    }),
     async (c) => {
       try {
         const [oracleFields, poolDatum] = await Promise.all([
@@ -984,7 +988,7 @@ app.get(
     },
   }),
 )
-  
+
 // Scalar API endpoint
 app.get("/scalar", (c) => {
   return c.html(`
