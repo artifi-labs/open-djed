@@ -158,7 +158,7 @@ export async function updateFeesEarnings(
     return
   }
 
-  const dailyFees = calculateFeesEarnings(ordersWithPoolDatum)
+  const dailyFees = await calculateFeesEarnings(ordersWithPoolDatum)
   if (dailyFees.length === 0) {
     logger.info("No fees earnings entries calculated")
     return

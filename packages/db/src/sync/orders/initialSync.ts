@@ -156,7 +156,7 @@ export const populateDbWithHistoricOrders = async () => {
   )
 
   logger.info("Calculating Shen fee earnings...")
-  const dailyFees = calculateFeesEarnings(ordersUTxOWithPoolDatum)
+  const dailyFees = await calculateFeesEarnings(ordersUTxOWithPoolDatum)
 
   logger.info(`Computed ${dailyFees.length} Shen fee earnings entries`)
 
