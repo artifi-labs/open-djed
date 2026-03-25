@@ -6,7 +6,7 @@ sidebar_position: 1
 
 - **Proposal Link:** [Project Catalyst Proposal](https://milestones.projectcatalyst.io/projects/1400095/)
 
-Open Djed submitted a **development and maintenance proposal to Project Catalyst** on **Nov 24, 2025**.
+Artifi Finance submitted a **development and maintenance proposal to Project Catalyst** on **Nov 24, 2025**.
 
 This proposal focused on one core objective: ensure that Open Djed remains a reliable, community-driven interface for interacting with the Djed protocol through continuous development, maintenance, and infrastructure support.
 
