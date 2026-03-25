@@ -29,20 +29,29 @@ const sidebars: SidebarsConfig = {
       label: "Core Concepts",
       items: [
         "concepts/djed-overview",
-        {
+        /*{
           type: "category",
           label: "Open DJED Reverse Engineering",
           items: [
             "concepts/reverse-engineering/datums",
             "concepts/reverse-engineering/transactions",
           ],
-        },
+        },*/
       ],
     },
     {
       type: "category",
-      label: "Application User Guide",
-      items: ["user-guide/index"],
+      label: "User Guide",
+      items: [
+        "user-guide/index",
+        "user-guide/settings",
+        "user-guide/connect-wallet",
+        "user-guide/mint",
+        "user-guide/burn",
+        "user-guide/orders",
+        "user-guide/analytics",
+        "user-guide/simulator",
+      ],
     },
     "architecture/index",
 

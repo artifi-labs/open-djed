@@ -35,8 +35,7 @@ Maintainers have the final decision on whether a change is accepted.
 For consistency:
 
 - Follow existing structure and naming patterns in each package
-- Keep docs concise and task-oriented
-- Prefer clear headings and short sections
+- Keep docs concise
 - Add cross-links to related pages when introducing new concepts
 
 ## Ways to Contribute
@@ -66,6 +65,7 @@ In your PR description, include:
 - Any follow-up work or known limitations
 
 ## Local Development
+
 ### Run a Specific Package
 
 Use the package scripts depending on the area you are working on.
