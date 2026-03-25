@@ -2,6 +2,7 @@ import { themes as prismThemes } from "prism-react-renderer"
 import type { Config } from "@docusaurus/types"
 import type * as Preset from "@docusaurus/preset-classic"
 import "dotenv/config"
+import { ARTIFI_WEBSITE_URL, DJED_MAINNET_URL } from "./constants"
 
 const gaTrackingId = process.env.GA_TRACKING_ID
 const gtmContainerId = process.env.GTM_CONTAINER_ID
@@ -67,6 +68,9 @@ const config: Config = {
         docs: {
           sidebarPath: "./sidebars.ts",
           routeBasePath: "/",
+        },
+        theme: {
+          customCss: "./css/index.scss",
         },
         sitemap: {
           lastmod: "date",
@@ -136,18 +140,12 @@ const config: Config = {
           position: "right",
           value: `
             <div class="navbar__social-icons">
-                <a href="https://github.com/artifi-labs" target="_blank" rel="noopener noreferrer"
-                  class="navbar__icon-link navbar__icon-link--mask navbar__icon-link--github" aria-label="Github">
-                </a>
-                <a href="https://discord.gg/MhYP7w8n8p" target="_blank" rel="noopener noreferrer"
-                  class="navbar__icon-link navbar__icon-link--mask navbar__icon-link--discord" aria-label="Discord">
-                </a>
-                <a href="https://x.com/artifi_labs" target="_blank" rel="noopener noreferrer"
-                  class="navbar__icon-link navbar__icon-link--mask navbar__icon-link--x" aria-label="X">
-                </a>
-                <a href="https://www.linkedin.com/company/artifi-finance" target="_blank" rel="noopener noreferrer"
-                  class="navbar__icon-link navbar__icon-link--mask navbar__icon-link--linkedin" aria-label="Linkedin">
-                </a>
+              <a href="${DJED_MAINNET_URL}" target="_blank" rel="noopener noreferrer"
+                class="navbar__icon-link navbar__icon-link--mask navbar__icon-link--open-djed" aria-label="Open DJED">
+              </a>
+              <a href="${ARTIFI_WEBSITE_URL}" target="_blank" rel="noopener noreferrer"
+                class="navbar__icon-link navbar__icon-link--mask navbar__icon-link--artifi" aria-label="Artifi Finance Website">
+              </a>
             </div>
           `,
         },

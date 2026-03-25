@@ -40,7 +40,7 @@ While functional, Reverse DJED was basic in design and user experience. It serve
 
 <iframe
   src="https://platform.twitter.com/embed/Tweet.html?id=1924859785574326297"
-  width="550"
+  width="100%"
   height="750"
 ></iframe>
 
@@ -52,7 +52,7 @@ The evolution introduced major improvements:
 
 <iframe
   src="https://platform.twitter.com/embed/Tweet.html?id=1932836031251845597"
-  width="550"
+  width="100%"
   height="750"
 ></iframe>
 
