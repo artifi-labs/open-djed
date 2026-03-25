@@ -30,6 +30,8 @@ const createZeroFeeDay = (timestamp: string): ADAFeesEarnings => ({
   timestamp: new Date(timestamp),
   fee: 0,
   rate: 0,
+  block: null,
+  slot: null,
 })
 
 export const fillMissingFeeDays = (
