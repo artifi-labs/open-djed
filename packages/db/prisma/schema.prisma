@@ -123,3 +123,12 @@ model ADAStakingRewards {
   timestamp DateTime //Start epoch's time 
   rate      Decimal // Staking rewards rate by epoch
 }
+
+model ADAFeesEarnings {
+  id        Int      @id @default(autoincrement())
+  timestamp DateTime @unique @db.Date
+  fee       Decimal
+  rate      Decimal // percentage
+  block     String? // block hash
+  slot      BigInt? // block slot
+}

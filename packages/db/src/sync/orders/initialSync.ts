@@ -2,7 +2,9 @@ import { logger } from "../../utils/logger"
 import { OrderDatum } from "@open-djed/data"
 import { Data } from "@lucid-evolution/lucid"
 import { prisma } from "../../../lib/prisma"
+import { calculateFeesEarnings } from "./feesEarnings/feesEarnings"
 import {
+  OrderStatus,
   type Block,
   type Order,
   type OrderUTxOWithDatumAndBlock,
@@ -15,6 +17,8 @@ import {
   registry,
   blockfrost,
   blockfrostFetch,
+  enrichOrdersWithPoolDatums,
+  hasPoolDatum,
   processOrdersToInsert,
 } from "../utils"
 
@@ -101,6 +105,7 @@ export const populateDbWithHistoricOrders = async () => {
         return {
           ...utxo,
           orderDatum: Data.from(rawDatum, OrderDatum),
+          timestamp: new Date(tx.block_time * 1000).toISOString(),
           block_hash: tx.block,
           block_slot: tx.slot,
         }
@@ -116,7 +121,12 @@ export const populateDbWithHistoricOrders = async () => {
     5,
     300,
   ).then((results) =>
-    results.filter((utxo): utxo is OrderUTxOWithDatumAndBlock => utxo !== null),
+    results
+      .filter((utxo): utxo is OrderUTxOWithDatumAndBlock => utxo !== null)
+      .sort(
+        (a, b) =>
+          new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
+      ),
   )
 
   if (orderUTxOWithDatumAndBlock.length === 0) {
@@ -132,6 +142,31 @@ export const populateDbWithHistoricOrders = async () => {
   const ordersToInsert: Order[] = await processOrdersToInsert(
     orderUTxOWithDatumAndBlock,
   )
+  const completedOrders = orderUTxOWithDatumAndBlock.filter((_, index) => {
+    return ordersToInsert[index]?.status === OrderStatus.Completed
+  })
+
+  logger.info("Enriching completed orders with pool datums...")
+  const enrichedCompletedOrders =
+    await enrichOrdersWithPoolDatums(completedOrders)
+  const ordersUTxOWithPoolDatum = enrichedCompletedOrders.filter(hasPoolDatum)
+
+  logger.info(
+    `Enriched ${ordersUTxOWithPoolDatum.length} completed order UTxOs with pool datum`,
+  )
+
+  logger.info("Calculating Shen fee earnings...")
+  const dailyFees = await calculateFeesEarnings(ordersUTxOWithPoolDatum)
+
+  logger.info(`Computed ${dailyFees.length} Shen fee earnings entries`)
+
+  logger.info(
+    `Inserting ${dailyFees.length} Shen fee earnings into database...`,
+  )
+  await prisma.aDAFeesEarnings.createMany({
+    data: dailyFees,
+    skipDuplicates: true,
+  })
 
   logger.info(`Inserting ${ordersToInsert.length} orders into database...`)
   await prisma.order.createMany({
