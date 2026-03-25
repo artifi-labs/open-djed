@@ -88,6 +88,7 @@
         "@types/react": "^19",
         "@types/react-dom": "^19",
         "daisyui": "^5.0.38",
+        "dotenv": "^17.3.1",
         "eslint": "^9",
         "eslint-config-next": "15.4.6",
         "prettier": "^3.7.4",
