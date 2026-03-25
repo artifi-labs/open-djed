@@ -1,6 +1,13 @@
 import { themes as prismThemes } from "prism-react-renderer"
 import type { Config } from "@docusaurus/types"
 import type * as Preset from "@docusaurus/preset-classic"
+import "dotenv/config"
+
+const gaTrackingId = process.env.GA_TRACKING_ID
+const gtmContainerId = process.env.GTM_CONTAINER_ID
+const algoliaAppId = process.env.ALGOLIA_APP_ID
+const algoliaSearchApiKey = process.env.ALGOLIA_SEARCH_API_KEY
+const algoliaIndexName = process.env.ALGOLIA_INDEX_NAME
 
 const config: Config = {
   title: "Open DJED Docs",
@@ -37,8 +44,26 @@ const config: Config = {
 
   presets: [
     [
-      "classic",
+      "@docusaurus/preset-classic",
+
       {
+        ...(gaTrackingId
+          ? {
+              // Google Analytics
+              gtag: {
+                trackingID: gaTrackingId,
+                anonymizeIP: true,
+              },
+            }
+          : {}),
+        ...(gtmContainerId
+          ? {
+              // Google Tag Manager
+              googleTagManager: {
+                containerId: gtmContainerId,
+              },
+            }
+          : {}),
         docs: {
           sidebarPath: "./sidebars.ts",
           routeBasePath: "/",
@@ -59,7 +84,31 @@ const config: Config = {
     ],
   ],
 
+  headTags: [
+    {
+      tagName: "script",
+      attributes: {
+        type: "application/ld+json",
+      },
+      innerHTML: JSON.stringify({
+        "@context": "https://schema.org/",
+        "@type": "Organization",
+        name: "Artifi Labs",
+        url: "https://docs.djed.artifi.finance",
+        logo: "https://docs.djed.artifi.finance/icons/opendjed-icon.svg",
+      }),
+    },
+  ],
+
   themeConfig: {
+    metadata: [
+      {
+        name: "keywords",
+        content:
+          "djed, open djed, documentation, user guide, architecture, catalyst",
+      },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
     docs: {
       sidebar: {
         hideable: true,
@@ -108,6 +157,17 @@ const config: Config = {
       theme: prismThemes.github,
       darkTheme: prismThemes.dracula,
     },
+    ...(algoliaAppId && algoliaSearchApiKey && algoliaIndexName
+      ? {
+          algolia: {
+            appId: algoliaAppId,
+            apiKey: algoliaSearchApiKey,
+            indexName: algoliaIndexName,
+            // Optional: see doc section below
+            contextualSearch: true,
+          },
+        }
+      : {}),
   } satisfies Preset.ThemeConfig,
 }
 

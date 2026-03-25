@@ -6,7 +6,7 @@ sidebar_position: 1
 
 Open Djed is an open-source project designed to provide a transparent, reliable, and community-driven way to interact with the Djed stablecoin ecosystem. It empowers users, developers, and organizations to access and integrate Djed functionalities with greater flexibility and independence.
 
-Rather than introducing a new stablecoin protocol, Open Djed serves as an alternative interface and interaction layer for the existing Djed protocol developed by COTI and IOG. Its purpose is to enable seamless interaction with Djed **without depending on the original COTI application and infrastructure**.
+Rather than introducing a new stablecoin protocol, Open Djed serves as an alternative interface and interaction layer for the existing Djed protocol developed by COTI and IOG. Its purpose is to enable seamless interaction with Djed **without depending on the original COTI application**.
 
 ## Why Open Djed?
 

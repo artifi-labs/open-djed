@@ -1,6 +1,6 @@
 # Robots.txt for Artifi Labs Documentation
 # https://docs.artifi.finance
-# Algolia-Crawler-Verif: CE2B9E521908981B
+# Algolia-Crawler-Verif: 3CA644D213626AD9
 
 User-agent: *
 Allow: /
