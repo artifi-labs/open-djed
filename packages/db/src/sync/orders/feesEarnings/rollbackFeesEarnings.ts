@@ -11,7 +11,11 @@ import { prisma } from "../../../../lib/prisma"
  */
 export async function rollbackFeesEarnings() {
   const latestFeesEarnings = await getLatestFeesEarnings(true)
-  if (!latestFeesEarnings || !latestFeesEarnings.block || !latestFeesEarnings.slot)
+  if (
+    !latestFeesEarnings ||
+    !latestFeesEarnings.block ||
+    !latestFeesEarnings.slot
+  )
     return
 
   const syncIsValid = await blockfrostFetch(

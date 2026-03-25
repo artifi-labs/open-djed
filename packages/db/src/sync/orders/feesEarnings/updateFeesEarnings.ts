@@ -137,7 +137,9 @@ async function ensureZeroFeeDays() {
     ...(entry.block && { block: entry.block }),
     ...(entry.slot != null && { slot: Number(entry.slot) }),
   }))
-  const existingDays = new Set(allFees.map((entry) => toDayString(entry.timestamp)))
+  const existingDays = new Set(
+    allFees.map((entry) => toDayString(entry.timestamp)),
+  )
   const missingZeroDays = fillMissingFeeDays(normalizedFees).filter(
     (entry) => !existingDays.has(toDayString(entry.timestamp)),
   )

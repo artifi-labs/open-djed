@@ -38,7 +38,9 @@ export const fillMissingFeeDays = (
 ) => {
   if (dailyFees.length === 0) return []
 
-  const feeMap = new Map(dailyFees.map((entry) => [toDayString(entry.timestamp), entry]))
+  const feeMap = new Map(
+    dailyFees.map((entry) => [toDayString(entry.timestamp), entry]),
+  )
   const allDates = dailyFees.map((entry) => entry.timestamp)
   const minDate = new Date(Math.min(...allDates.map((date) => date.getTime())))
   minDate.setUTCHours(0, 0, 0, 0)
