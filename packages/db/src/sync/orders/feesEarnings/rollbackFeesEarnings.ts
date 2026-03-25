@@ -10,8 +10,9 @@ import { prisma } from "../../../../lib/prisma"
  * @returns
  */
 export async function rollbackFeesEarnings() {
-  const latestFeesEarnings = await getLatestFeesEarnings()
-  if (!latestFeesEarnings) return
+  const latestFeesEarnings = await getLatestFeesEarnings(true)
+  if (!latestFeesEarnings || !latestFeesEarnings.block || !latestFeesEarnings.slot)
+    return
 
   const syncIsValid = await blockfrostFetch(
     `/blocks/${latestFeesEarnings.block}`,

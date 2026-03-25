@@ -419,6 +419,6 @@ export type ADAFeesEarnings = {
   timestamp: Date
   fee: number
   rate: number
-  block: string
-  slot: number
+  block?: string
+  slot?: number
 }

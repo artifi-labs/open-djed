@@ -1,7 +1,10 @@
 import { Data } from "@lucid-evolution/lucid"
 import { OrderDatum } from "@open-djed/data"
 import { prisma } from "../../../../lib/prisma"
-import { getLatestFeesEarnings } from "../../../client/feesEarnings"
+import {
+  getAllFeesEarnings,
+  getLatestFeesEarnings,
+} from "../../../client/feesEarnings"
 import { logger } from "../../../utils/logger"
 import type { OrderUTxOWithDatumAndBlock, UTxO } from "../../types"
 import {
@@ -11,16 +14,22 @@ import {
   hasPoolDatum,
   processBatch,
   registry,
+  toDayString,
 } from "../../utils"
-import { calculateFeesEarnings } from "./feesEarnings"
+import { calculateFeesEarnings, fillMissingFeeDays } from "./feesEarnings"
 
 const orderKey = (
   order: Pick<OrderUTxOWithDatumAndBlock, "tx_hash" | "output_index">,
 ) => `${order.tx_hash}:${order.output_index}`
 
 async function getAnchorOrders(
-  latestFees: NonNullable<Awaited<ReturnType<typeof getLatestFeesEarnings>>>,
+  latestFees: Awaited<ReturnType<typeof getLatestFeesEarnings>>,
 ) {
+  if (!latestFees?.block || latestFees.slot == null) {
+    logger.warn("Latest fees earnings row has no valid block or slot")
+    return []
+  }
+
   const anchorOrderRow = await prisma.order.findFirst({
     where: {
       block: latestFees.block,
@@ -119,18 +128,43 @@ async function upsertDailyFees(
   )
 }
 
+async function ensureZeroFeeDays() {
+  const allFees = await getAllFeesEarnings()
+  const normalizedFees = allFees.map((entry) => ({
+    timestamp: entry.timestamp,
+    fee: Number(entry.fee),
+    rate: Number(entry.rate),
+    ...(entry.block && { block: entry.block }),
+    ...(entry.slot != null && { slot: Number(entry.slot) }),
+  }))
+  const existingDays = new Set(allFees.map((entry) => toDayString(entry.timestamp)))
+  const missingZeroDays = fillMissingFeeDays(normalizedFees).filter(
+    (entry) => !existingDays.has(toDayString(entry.timestamp)),
+  )
+
+  if (missingZeroDays.length === 0) {
+    return
+  }
+
+  await prisma.aDAFeesEarnings.createMany({
+    data: missingZeroDays,
+    skipDuplicates: true,
+  })
+}
+
 export async function updateFeesEarnings(
   completedOrders: OrderUTxOWithDatumAndBlock[],
 ) {
   logger.info("=== Updating Fees Earnings ===")
 
-  const latestFees = await getLatestFeesEarnings()
+  const latestFees = await getLatestFeesEarnings(true)
   if (!latestFees) {
     logger.info("No latest fees earnings entry found, skipping update")
     return
   }
 
   if (completedOrders.length === 0) {
+    await ensureZeroFeeDays()
     logger.info("No completed orders to update fees earnings")
     return
   }
@@ -165,6 +199,7 @@ export async function updateFeesEarnings(
   }
 
   await upsertDailyFees(dailyFees)
+  await ensureZeroFeeDays()
 
   logger.info(`Updated ${dailyFees.length} fees earnings entries`)
 }

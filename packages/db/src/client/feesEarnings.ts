@@ -21,8 +21,11 @@ export const getPeriodFeesEarnings = (period: Period) => {
   })
 }
 
-export const getLatestFeesEarnings = async () => {
+export const getLatestFeesEarnings = async (validBlock = false) => {
   return await prisma.aDAFeesEarnings.findFirst({
+    where: validBlock
+      ? { block: { not: null }, slot: { not: null } }
+      : undefined,
     orderBy: {
       timestamp: "desc",
     },

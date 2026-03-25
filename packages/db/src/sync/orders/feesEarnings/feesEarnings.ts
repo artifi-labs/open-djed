@@ -26,6 +26,40 @@ type DailyFees = Omit<ADAFeesEarnings, "fee" | "rate"> & {
   rate: Rational
 }
 
+const createZeroFeeDay = (timestamp: string): ADAFeesEarnings => ({
+  timestamp: new Date(timestamp),
+  fee: 0,
+  rate: 0,
+})
+
+export const fillMissingFeeDays = (
+  dailyFees: ADAFeesEarnings[],
+  endDate: Date = new Date(),
+) => {
+  if (dailyFees.length === 0) return []
+
+  const feeMap = new Map(dailyFees.map((entry) => [toDayString(entry.timestamp), entry]))
+  const allDates = dailyFees.map((entry) => entry.timestamp)
+  const minDate = new Date(Math.min(...allDates.map((date) => date.getTime())))
+  minDate.setUTCHours(0, 0, 0, 0)
+
+  const maxDate = new Date(endDate)
+  maxDate.setUTCHours(0, 0, 0, 0)
+
+  const completeFees: ADAFeesEarnings[] = []
+  const currentDate = new Date(minDate)
+
+  while (currentDate <= maxDate) {
+    const dateStr = currentDate.toISOString().split("T")[0]
+    if (!dateStr) return []
+
+    completeFees.push(feeMap.get(dateStr) ?? createZeroFeeDay(dateStr))
+    currentDate.setUTCDate(currentDate.getUTCDate() + 1)
+  }
+
+  return completeFees
+}
+
 const applyOrderToPoolState = (
   state: PoolState,
   order: OrderUTxOWithPoolDatum,
@@ -234,9 +268,13 @@ export const calculateFeesEarnings = async (
     })
   }
 
-  return [...dailyFees.values()].map((entry) => ({
+  const calculatedFees = [...dailyFees.values()].map((entry) => ({
     ...entry,
     fee: entry.fee.toNumber(),
     rate: entry.rate.toNumber(),
   }))
+
+  const completeFees = fillMissingFeeDays(calculatedFees)
+
+  return completeFees
 }
