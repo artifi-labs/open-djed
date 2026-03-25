@@ -59,43 +59,40 @@ import {
 import { type TokenMarketCap } from "@open-djed/db/generated/prisma/enums"
 import { type Order, type Period } from "@open-djed/db"
 export type { Order } from "@open-djed/db"
-
-const TTL_HISTORICAL = 4 * 60 * 60 * 1000 // caches for 4 hours
-const TTL_DEFAULT = 30 * 1000 // caches for 30 seconds
+import { openAPISpecs } from "hono-openapi"
 
 //NOTE: We only need this cache for transactions, not for other requests. Using this for `protocol-data` sligltly increases the response time.
 const requestCache = new TTLCache<string, { value: Response; expiry: number }>({
-  ttl: TTL_HISTORICAL, // sets the longest period has the default and lets the middleware expiry property override this
+  ttl: 10_000,
 })
-const cacheMiddleware = (ttlMs: number = TTL_DEFAULT) => {
-  return createMiddleware(async (c, next) => {
-    const cacheKey = `${c.req.url}:${JSON.stringify(await c.req.json().catch(() => null))}`
-    const cachedResponse = requestCache.get(cacheKey)
+const cacheMiddleware = createMiddleware(async (c, next) => {
+  const cacheKey = `${c.req.url}:${JSON.stringify(await c.req.json().catch(() => null))}`
+  const cachedResponse = requestCache.get(cacheKey)
 
-    if (cachedResponse && cachedResponse.expiry > Date.now()) {
-      const { value } = cachedResponse
-      return new Response(await value.clone().text(), {
-        headers: value.headers,
-        status: value.status,
-      })
-    }
+  if (cachedResponse && cachedResponse.expiry > Date.now()) {
+    const { value } = cachedResponse
+    const clonedBody = await value.clone().text()
+    c.res = new Response(clonedBody, {
+      headers: value.headers,
+      status: value.status,
+      statusText: value.statusText,
+    })
+    return
+  }
 
-    await next()
+  await next()
 
-    if (c.res.status === 200) {
-      const clonedResponse = c.res.clone()
-      const clonedBody = await clonedResponse.text()
-
-      requestCache.set(cacheKey, {
-        value: new Response(clonedBody, {
-          headers: clonedResponse.headers,
-          status: 200,
-        }),
-        expiry: Date.now() + ttlMs,
-      })
-    }
+  const clonedResponse = c.res.clone()
+  const clonedBody = await clonedResponse.text()
+  requestCache.set(cacheKey, {
+    value: new Response(clonedBody, {
+      headers: clonedResponse.headers,
+      status: clonedResponse.status,
+      statusText: clonedResponse.statusText,
+    }),
+    expiry: Date.now() + 10_000,
   })
-}
+})
 
 const txRequestBodySchema = z.object({
   hexAddress: z.string(),
@@ -108,7 +105,7 @@ const blockfrost = new Blockfrost(env.BLOCKFROST_URL, env.BLOCKFROST_PROJECT_ID)
 
 const registry = registryByNetwork[network]
 
-const chainDataCache = new TTLCache({ ttl: TTL_DEFAULT, checkAgeOnGet: true })
+const chainDataCache = new TTLCache({ ttl: 10_000, checkAgeOnGet: true })
 
 const getDatum = async (datumHash: string, errorMessage: string) => {
   try {
@@ -376,7 +373,11 @@ const app = new Hono()
   .use(logger())
   .get(
     "/protocol-data",
-    describeRoute({ description: "Get on-chain protocol data" }),
+    describeRoute({
+      summary: "Get protocol data",
+      description: "Get on-chain protocol data",
+      tags: ["Protocol"],
+    }),
     async (c) => {
       try {
         const [oracleFields, poolDatum] = await Promise.all([
@@ -415,10 +416,11 @@ const app = new Hono()
   )
   .post(
     "/:token/:action/:amount/tx",
-    cacheMiddleware(),
+    cacheMiddleware,
     describeRoute({
+      summary: "Create a transaction",
       description: "Create a transaction to perform an action on a token.",
-      tags: ["Action"],
+      tags: ["Transactions"],
       responses: {
         200: {
           description: "Transaction CBOR ready to be signed",
@@ -524,8 +526,9 @@ const app = new Hono()
   .post(
     "/cancel-order",
     describeRoute({
+      summary: "Cancel an existing order",
       description: "Build a cancel-order transaction and return it as CBOR",
-      tags: ["Action"],
+      tags: ["Orders"],
       responses: {
         200: {
           description: "Successfully built the cancel order transaction",
@@ -621,10 +624,11 @@ const app = new Hono()
   )
   .post(
     "/historical-orders",
-    cacheMiddleware(),
+    cacheMiddleware,
     describeRoute({
-      description: "Get the users' historical orders",
-      tags: ["Action"],
+      summary: "Get user historical orders",
+      description: "Get the user historical orders",
+      tags: ["Orders"],
       responses: {
         200: {
           description: "Successfully got the historical orders",
@@ -766,10 +770,11 @@ const app = new Hono()
   )
   .get(
     "/historical-reserve-ratio",
-    cacheMiddleware(TTL_HISTORICAL),
+    cacheMiddleware,
     describeRoute({
+      summary: "Get historical reserve ratio",
       description: "Get the historical reserve ratio",
-      tags: ["Action"],
+      tags: ["Analytics"],
       responses: {
         200: {
           description: "Successfully got the historical reserve ratio",
@@ -807,10 +812,11 @@ const app = new Hono()
   )
   .get(
     "/historical-market-cap",
-    cacheMiddleware(TTL_HISTORICAL),
+    cacheMiddleware,
     describeRoute({
+      summary: "Get historical market cap",
       description: "Get the historical market cap for DJED or SHEN",
-      tags: ["Action"],
+      tags: ["Analytics"],
       responses: {
         200: {
           description: "Successfully got the historical market cap",
@@ -854,7 +860,12 @@ const app = new Hono()
   )
   .get(
     "/historical-shen-ada-price",
-    cacheMiddleware(TTL_HISTORICAL),
+    cacheMiddleware,
+    describeRoute({
+      summary: "Get historical SHEN/ADA price",
+      description: "Get the historical SHEN/ADA price",
+      tags: ["Analytics"],
+    }),
     zValidator(
       "query",
       z.object({
@@ -867,7 +878,13 @@ const app = new Hono()
   )
   .get(
     "/historical-djed-dex-price",
-    cacheMiddleware(TTL_HISTORICAL),
+    cacheMiddleware,
+    describeRoute({
+      summary: "Get historical DJED DEX Prices",
+      description:
+        "Retrieve historical DJED price data aggregated across multiple decentralized exchanges (DEXs) over a specified period.",
+      tags: ["Analytics"],
+    }),
     zValidator(
       "query",
       z.object({
@@ -880,7 +897,12 @@ const app = new Hono()
   )
   .get(
     "/historical-volumes",
-    cacheMiddleware(TTL_HISTORICAL),
+    cacheMiddleware,
+    describeRoute({
+      summary: "Get historical trading volumes",
+      description: "Get the historical trading volumes for DJED and SHEN",
+      tags: ["Analytics"],
+    }),
     zValidator(
       "query",
       z.object({
@@ -891,10 +913,11 @@ const app = new Hono()
   )
   .get(
     "/historical-staking-rewards",
-    cacheMiddleware(TTL_HISTORICAL),
+    cacheMiddleware,
     describeRoute({
+      summary: "Get historical staking rewards rate sum",
       description: "Get historical staking rewards rate sum for a date range",
-      tags: ["Action"],
+      tags: ["Analytics"],
       responses: {
         200: {
           description:
@@ -955,10 +978,11 @@ const app = new Hono()
   )
   .get(
     "/historical-shen-yield",
-    cacheMiddleware(TTL_HISTORICAL),
+    cacheMiddleware,
     describeRoute({
-      description: "Get the historical SHEN yield data",
-      tags: ["Action"],
+      summary: "Get historical SHEN yield",
+      description: "Get the historical SHEN yield",
+      tags: ["Analytics"],
       responses: {
         200: {
           description: "Successfully got the historical SHEN yield",
@@ -1006,6 +1030,53 @@ const app = new Hono()
       return historicalDataHandler((p) => getPeriodShenYield(p))(c)
     },
   )
+
+// OpenAPI documentation endpoint
+app.get(
+  "/doc",
+  openAPISpecs(app, {
+    documentation: {
+      info: {
+        title: "Open DJED API",
+        version: "1.0.0",
+        description: "API documentation",
+      },
+    },
+  }),
+)
+
+// Scalar API endpoint
+app.get("/scalar", (c) => {
+  return c.html(`
+    <!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <title>Open DJED API Documentation</title>
+
+        <!-- Favicon -->
+        <link rel="icon" type="image/png" href="https://djed.artifi.finance/logos/opendjed-icon.svg" />
+
+        <!-- Meta -->
+        <meta name="description" content="Open DJED API Documentation" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        <meta property="og:title" content="Open DJED API" />
+        <meta property="og:description" content="API documentation for Open DJED" />
+      </style>
+      </head>
+
+      <body>
+        <script
+          id="api-reference"
+          data-url="/api/doc"
+          data-theme="default"
+        ></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference"></script>
+      </body>
+    </html>
+  `)
+})
 
 serve(
   {

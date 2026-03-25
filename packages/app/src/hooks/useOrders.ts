@@ -36,7 +36,7 @@ export enum OrderStatusEnum {
   All = "all",
   Created = "created",
   Completed = "completed",
-  Rejected = "Rejected",
+  Rejected = "rejected",
   Canceled = "canceled",
 }
 

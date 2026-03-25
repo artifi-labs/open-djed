@@ -57,7 +57,7 @@ export async function processShenYield(orderedTxOs: OrderedPoolOracleTxOs[]) {
       {
         rate: Number(fee.rate ?? 0),
         block: fee.block,
-        slot: BigInt(fee.slot),
+        slot: fee.slot != null ? BigInt(fee.slot) : null,
       },
     ]),
   )

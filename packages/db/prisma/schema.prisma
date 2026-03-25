@@ -129,8 +129,8 @@ model ADAFeesEarnings {
   timestamp DateTime @unique @db.Date
   fee       Decimal
   rate      Decimal // percentage
-  block     String // block hash
-  slot      BigInt // block slot
+  block     String? // block hash
+  slot      BigInt? // block slot
 }
 
 model ShenYield {

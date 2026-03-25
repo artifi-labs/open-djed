@@ -419,13 +419,13 @@ export type ADAFeesEarnings = {
   timestamp: Date
   fee: number
   rate: number
-  block: string
-  slot: number
+  block?: string | null
+  slot?: number | null
 }
 
 export type ShenYield = {
   timestamp: Date
   yield: number
-  block?: string
-  slot?: bigint
+  block?: string | null
+  slot?: bigint | null
 }

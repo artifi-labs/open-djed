@@ -56,13 +56,13 @@ export function blockfrostFetch(path: string, init?: RequestInit) {
 
 function mapOrderStatus(tag: number): OrderStatus | null {
   switch (tag) {
-    case 4:
-    case 5:
+    case 4: // Successful DJED mint/burn
+    case 5: // Successful SHEN mint/burn
       return OrderStatus.Completed
-    case 11:
+    case 11: // Order cancelled by the user
       return OrderStatus.Cancelled
-    case 0:
-    case 12:
+    case 0: // Failed because reserve ratio constraints were not met
+    case 12: // Failed because the submitted price was stale (slippage)
       return OrderStatus.Rejected
     default:
       return null
@@ -1074,18 +1074,13 @@ export function processAnalyticsDataToInsert<
   return sorted
 }
 
-export async function writeJsonToFile<T>(
-  data: T,
+export async function writeJsonToFile(
+  data: unknown,
   filePath: string,
-  options?: {
-    replacer?: (key: string, value: unknown) => unknown
-    space?: string | number
-  },
 ): Promise<void> {
   const absolutePath = path.resolve(filePath)
 
-  const spacing = options?.space ?? 2
-  const json = JSONbig.stringify(data, options?.replacer, spacing)
+  const json = JSONbig.stringify(data, null, 2)
 
   await fsPromises.writeFile(absolutePath, json, {
     encoding: "utf-8",

@@ -1,7 +1,10 @@
 import { Data } from "@lucid-evolution/lucid"
 import { OrderDatum } from "@open-djed/data"
 import { prisma } from "../../../../lib/prisma"
-import { getLatestFeesEarnings } from "../../../client/feesEarnings"
+import {
+  getAllFeesEarnings,
+  getLatestFeesEarnings,
+} from "../../../client/feesEarnings"
 import { logger } from "../../../utils/logger"
 import type { OrderUTxOWithDatumAndBlock, UTxO } from "../../types"
 import {
@@ -11,16 +14,22 @@ import {
   hasPoolDatum,
   processBatch,
   registry,
+  toDayString,
 } from "../../utils"
-import { calculateFeesEarnings } from "./feesEarnings"
+import { calculateFeesEarnings, fillMissingFeeDays } from "./feesEarnings"
 
 const orderKey = (
   order: Pick<OrderUTxOWithDatumAndBlock, "tx_hash" | "output_index">,
 ) => `${order.tx_hash}:${order.output_index}`
 
 async function getAnchorOrders(
-  latestFees: NonNullable<Awaited<ReturnType<typeof getLatestFeesEarnings>>>,
+  latestFees: Awaited<ReturnType<typeof getLatestFeesEarnings>>,
 ) {
+  if (!latestFees?.block || latestFees.slot == null) {
+    logger.warn("Latest fees earnings row has no valid block or slot")
+    return []
+  }
+
   const anchorOrderRow = await prisma.order.findFirst({
     where: {
       block: latestFees.block,
@@ -102,21 +111,57 @@ async function getAnchorOrders(
 
 async function upsertDailyFees(
   dailyFees: Awaited<ReturnType<typeof calculateFeesEarnings>>,
+  anchorDailyFee?: Awaited<ReturnType<typeof calculateFeesEarnings>>[number],
 ) {
   await prisma.$transaction(
     dailyFees.map((entry) =>
       prisma.aDAFeesEarnings.upsert({
         where: { timestamp: entry.timestamp },
         create: entry,
-        update: {
-          fee: { increment: entry.fee },
-          rate: { increment: entry.rate },
-          block: entry.block,
-          slot: entry.slot,
-        },
+        update:
+          anchorDailyFee &&
+          entry.timestamp.getTime() === anchorDailyFee.timestamp.getTime()
+            ? {
+                fee: { increment: entry.fee - anchorDailyFee.fee },
+                rate: { increment: entry.rate - anchorDailyFee.rate },
+                block: entry.block,
+                slot: entry.slot,
+              }
+            : {
+                fee: { increment: entry.fee },
+                rate: { increment: entry.rate },
+                block: entry.block,
+                slot: entry.slot,
+              },
       }),
     ),
   )
+}
+
+async function ensureZeroFeeDays() {
+  const allFees = await getAllFeesEarnings()
+  const normalizedFees = allFees.map((entry) => ({
+    timestamp: entry.timestamp,
+    fee: Number(entry.fee),
+    rate: Number(entry.rate),
+    block: entry.block,
+    slot: entry.slot != null ? Number(entry.slot) : null,
+  }))
+  const existingDays = new Set(
+    normalizedFees.map((entry) => toDayString(entry.timestamp)),
+  )
+  const missingZeroDays = fillMissingFeeDays(normalizedFees).filter(
+    (entry) => !existingDays.has(toDayString(entry.timestamp)),
+  )
+
+  if (missingZeroDays.length === 0) {
+    return
+  }
+
+  await prisma.aDAFeesEarnings.createMany({
+    data: missingZeroDays,
+    skipDuplicates: true,
+  })
 }
 
 export async function updateFeesEarnings(
@@ -124,13 +169,14 @@ export async function updateFeesEarnings(
 ) {
   logger.info("=== Updating Fees Earnings ===")
 
-  const latestFees = await getLatestFeesEarnings()
+  const latestFees = await getLatestFeesEarnings(true)
   if (!latestFees) {
     logger.info("No latest fees earnings entry found, skipping update")
     return
   }
 
   if (completedOrders.length === 0) {
+    await ensureZeroFeeDays()
     logger.info("No completed orders to update fees earnings")
     return
   }
@@ -152,19 +198,35 @@ export async function updateFeesEarnings(
 
   const enrichedOrders = await enrichOrdersWithPoolDatums(uniqueOrders)
   const ordersWithPoolDatum = enrichedOrders.filter(hasPoolDatum)
+  const anchorOrderKeys = new Set(anchorOrders.map(orderKey))
+  const anchorOrdersWithPoolDatum = ordersWithPoolDatum.filter((order) =>
+    anchorOrderKeys.has(orderKey(order)),
+  )
 
   if (ordersWithPoolDatum.length < 2) {
     logger.info("No new fees earnings entries to update")
     return
   }
 
-  const dailyFees = calculateFeesEarnings(ordersWithPoolDatum)
+  const dailyFees = await calculateFeesEarnings(ordersWithPoolDatum)
   if (dailyFees.length === 0) {
     logger.info("No fees earnings entries calculated")
     return
   }
 
-  await upsertDailyFees(dailyFees)
+  const anchorDailyFee = (
+    await calculateFeesEarnings(anchorOrdersWithPoolDatum)
+  ).find(
+    (entry) => entry.timestamp.getTime() === latestFees.timestamp.getTime(),
+  )
+
+  if (!anchorDailyFee) {
+    logger.warn("Could not resolve anchor daily fee, skipping update")
+    return
+  }
+
+  await upsertDailyFees(dailyFees, anchorDailyFee)
+  await ensureZeroFeeDays()
 
   logger.info(`Updated ${dailyFees.length} fees earnings entries`)
 }
