@@ -57,6 +57,7 @@ import {
 import { type TokenMarketCap } from "@open-djed/db/generated/prisma/enums"
 import { type Order, type Period } from "@open-djed/db"
 export type { Order } from "@open-djed/db"
+import { openAPISpecs } from "hono-openapi"
 
 //NOTE: We only need this cache for transactions, not for other requests. Using this for `protocol-data` sligltly increases the response time.
 const requestCache = new TTLCache<string, { value: Response; expiry: number }>({
@@ -370,7 +371,11 @@ const app = new Hono()
   .use(logger())
   .get(
     "/protocol-data",
-    describeRoute({ description: "Get on-chain protocol data" }),
+    describeRoute({
+      summary: "Get protocol data",
+      description: "Get on-chain protocol data",
+      tags: ["Protocol"],
+    }),
     async (c) => {
       try {
         const [oracleFields, poolDatum] = await Promise.all([
@@ -411,8 +416,9 @@ const app = new Hono()
     "/:token/:action/:amount/tx",
     cacheMiddleware,
     describeRoute({
+      summary: "Create a transaction",
       description: "Create a transaction to perform an action on a token.",
-      tags: ["Action"],
+      tags: ["Transactions"],
       responses: {
         200: {
           description: "Transaction CBOR ready to be signed",
@@ -518,8 +524,9 @@ const app = new Hono()
   .post(
     "/cancel-order",
     describeRoute({
+      summary: "Cancel an existing order",
       description: "Build a cancel-order transaction and return it as CBOR",
-      tags: ["Action"],
+      tags: ["Orders"],
       responses: {
         200: {
           description: "Successfully built the cancel order transaction",
@@ -617,8 +624,9 @@ const app = new Hono()
     "/historical-orders",
     cacheMiddleware,
     describeRoute({
-      description: "Get the users' historical orders",
-      tags: ["Action"],
+      summary: "Get user historical orders",
+      description: "Get the user historical orders",
+      tags: ["Orders"],
       responses: {
         200: {
           description: "Successfully got the historical orders",
@@ -762,8 +770,9 @@ const app = new Hono()
     "/historical-reserve-ratio",
     cacheMiddleware,
     describeRoute({
+      summary: "Get historical reserve ratio",
       description: "Get the historical reserve ratio",
-      tags: ["Action"],
+      tags: ["Analytics"],
       responses: {
         200: {
           description: "Successfully got the historical reserve ratio",
@@ -803,8 +812,9 @@ const app = new Hono()
     "/historical-market-cap",
     cacheMiddleware,
     describeRoute({
+      summary: "Get historical market cap",
       description: "Get the historical market cap for DJED or SHEN",
-      tags: ["Action"],
+      tags: ["Analytics"],
       responses: {
         200: {
           description: "Successfully got the historical market cap",
@@ -849,6 +859,11 @@ const app = new Hono()
   .get(
     "/historical-shen-ada-price",
     cacheMiddleware,
+    describeRoute({
+      summary: "Get historical SHEN/ADA price",
+      description: "Get the historical SHEN/ADA price",
+      tags: ["Analytics"],
+    }),
     zValidator(
       "query",
       z.object({
@@ -862,6 +877,12 @@ const app = new Hono()
   .get(
     "/historical-djed-dex-price",
     cacheMiddleware,
+    describeRoute({
+      summary: "Get historical DJED DEX Prices",
+      description:
+        "Retrieve historical DJED price data aggregated across multiple decentralized exchanges (DEXs) over a specified period.",
+      tags: ["Analytics"],
+    }),
     zValidator(
       "query",
       z.object({
@@ -875,6 +896,11 @@ const app = new Hono()
   .get(
     "/historical-volumes",
     cacheMiddleware,
+    describeRoute({
+      summary: "Get historical trading volumes",
+      description: "Get the historical trading volumes for DJED and SHEN",
+      tags: ["Analytics"],
+    }),
     zValidator(
       "query",
       z.object({
@@ -887,8 +913,9 @@ const app = new Hono()
     "/historical-staking-rewards",
     cacheMiddleware,
     describeRoute({
+      summary: "Get historical staking rewards rate sum",
       description: "Get historical staking rewards rate sum for a date range",
-      tags: ["Action"],
+      tags: ["Analytics"],
       responses: {
         200: {
           description:
@@ -947,6 +974,53 @@ const app = new Hono()
       }
     },
   )
+
+// OpenAPI documentation endpoint
+app.get(
+  "/doc",
+  openAPISpecs(app, {
+    documentation: {
+      info: {
+        title: "Open DJED API",
+        version: "1.0.0",
+        description: "API documentation",
+      },
+    },
+  }),
+)
+
+// Scalar API endpoint
+app.get("/scalar", (c) => {
+  return c.html(`
+    <!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <title>Open DJED API Documentation</title>
+
+        <!-- Favicon -->
+        <link rel="icon" type="image/png" href="https://djed.artifi.finance/logos/opendjed-icon.svg" />
+
+        <!-- Meta -->
+        <meta name="description" content="Open DJED API Documentation" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        <meta property="og:title" content="Open DJED API" />
+        <meta property="og:description" content="API documentation for Open DJED" />
+      </style>
+      </head>
+
+      <body>
+        <script
+          id="api-reference"
+          data-url="/api/doc"
+          data-theme="default"
+        ></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference"></script>
+      </body>
+    </html>
+  `)
+})
 
 serve(
   {
