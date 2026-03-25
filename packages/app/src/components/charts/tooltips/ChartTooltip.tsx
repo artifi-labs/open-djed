@@ -21,7 +21,6 @@ export function ChartTooltip({
   const visiblePayload = payload?.filter((item) => {
     if (item.type === "none") return false
     if (item.hide) return false
-    if (item.inactive) return false
     return true
   })
 
@@ -40,11 +39,14 @@ export function ChartTooltip({
               />
             )}
             <p className="text-xxs text-primary">
-              {entry.name ?? entry.dataKey}
+              {entry.name || entry.dataKey?.toString() || ""}
             </p>
           </div>
           <p className="text-xxs text-primary font-medium">
-            {tickFormatter ? tickFormatter(entry.value) : entry.value}
+            {tickFormatter &&
+            (typeof entry.value === "number" || typeof entry.value === "string")
+              ? tickFormatter(entry.value)
+              : entry.value}
           </p>
         </div>
       ))}
