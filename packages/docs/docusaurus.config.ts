@@ -119,10 +119,10 @@ const config: Config = {
       },
     },
     navbar: {
-      title: "Open DJED Docs",
       logo: {
         alt: "Artifi Labs Logo",
-        src: "icons/opendjed-icon.svg",
+        src: "logos/opendjed-logo-white.svg",
+        srcDark: "logos/opendjed-logo.svg",
         href: "/",
       },
       items: [

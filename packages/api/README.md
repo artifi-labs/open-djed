@@ -63,6 +63,11 @@ After startup, the server runs on `http://localhost:<PORT>`.
 - OpenAPI JSON: `GET /api/doc`
 - Scalar UI: `GET /api/scalar`
 
+## External Dependencies
+
+- Blockfrost API.
+- PostgreSQL database.
+
 ## Notes
 
 - The service includes in-memory short-lived caching for selected endpoints.
