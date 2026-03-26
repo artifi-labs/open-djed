@@ -15,6 +15,7 @@ COPY packages/db/ ./packages/db/
 
 COPY packages/app/package.json ./packages/app/
 COPY packages/cli/package.json ./packages/cli/
+COPY packages/docs/package.json ./packages/docs/ 
 
 RUN bun i --frozen-lockfile
 
