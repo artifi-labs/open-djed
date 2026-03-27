@@ -5,45 +5,31 @@ import OrderHistory from "@/components/order/OrderHistory"
 import Button from "@/components/Button"
 import { useWallet } from "@/context/WalletContext"
 import { useSidebar } from "@/context/SidebarContext"
-import {
-  OrderStatusEnum,
-  statusFilters,
-  type Pagination,
-} from "@/hooks/useOrders"
-import { useOrders } from "@/hooks/useOrders"
+import { useOrders } from "@/hooks/orders/useOrders"
 import BaseCard from "@/components/card/BaseCard"
-import { useEffect, useState } from "react"
-import { ORDERS_PER_PAGE } from "@/lib/constants"
 import Chip from "@/components/Chip"
 import { useTranslations } from "next-intl"
+import { type OrderStatus } from "@open-djed/api"
+import { type Type } from "@/components/Tag"
+
+const statusFilters: Array<{ key: "All" | OrderStatus; i18nKey: string, type: Type }> = [
+  { key: "All", i18nKey: "orders.filters.all", type: "surface" },
+  { key: "Created", i18nKey: "orders.filters.created", type: "success", },
+  { key: "Completed", i18nKey: "orders.filters.completed", type: "error" },
+  { key: "Canceled", i18nKey: "orders.filters.canceled", type: "surface" },
+]
 
 const Order = () => {
   const t = useTranslations()
   const { wallet } = useWallet()
   const { openWalletSidebar } = useSidebar()
-  const [selectedFilter, setSelectedFilter] = useState<OrderStatusEnum>(
-    OrderStatusEnum.All,
-  )
-  const [page, setPage] = useState(1)
-  const [pagination, setPagination] = useState<Pagination>()
-  const { orders, fetchOrders } = useOrders()
-  const hasOrders = orders.length > 0
+  const orders = useOrders()
 
-  useEffect(() => {
-    fetchOrders(page, ORDERS_PER_PAGE, selectedFilter)
-      .then((paginationData) => {
-        if (paginationData) {
-          setPagination(paginationData)
-        }
-      })
-      .catch((e) => console.error(e))
-  }, [wallet, page, selectedFilter])
+  const toStatusFilter = (filter: "All" | OrderStatus): OrderStatus[] | undefined =>
+    filter === "All" ? undefined : [filter]
 
-  const handlePageChange = (newPage: number) => {
-    setPage(newPage)
-  }
-
-  const handleClearFilters = () => setSelectedFilter(OrderStatusEnum.All)
+  const hasOrders = orders.orders.length > 0
+  const hasActiveFilters = orders.status !== undefined
 
   return (
     <div className="desktop:pt-32 desktop:pb-64 mx-auto flex w-full max-w-280 flex-1 flex-col">
@@ -69,21 +55,8 @@ const Order = () => {
         </BaseCard>
       ) : (
         <>
-          {(hasOrders || selectedFilter !== OrderStatusEnum.All) && (
+          {(hasOrders || hasActiveFilters) && (
             <div className="flex flex-row justify-start gap-8 py-18">
-              {/* Search */}
-              {/*<div className="flex items-center">
-              <SearchInput
-                id="search-input"
-                placeholder="Search"
-                size="Small"
-              />
-            </div>*/}
-
-              {/* Calendar */}
-              {/*{<div className="flex w-fit items-center">
-              <ButtonIcon variant="secondary" size="small" icon="Calendar" />
-            </div>}*/}
 
               {/* Filters */}
               <div className="flex w-full flex-row justify-start gap-8 sm:justify-end">
@@ -92,12 +65,13 @@ const Order = () => {
                     key={item.key}
                     text={t(item.i18nKey)}
                     size="small"
-                    variant={"outlined"}
-                    onClick={() => {
-                      setSelectedFilter(item.key)
-                      setPage(1)
-                    }}
-                    active={selectedFilter === item.key}
+                    variant="outlined"
+                    active={
+                      item.key === "All"
+                        ? orders.status === undefined
+                        : orders.status?.includes(item.key as OrderStatus)
+                    }
+                    onClick={() => orders.setFilterStatus(toStatusFilter(item.key))}
                   />
                 ))}
               </div>
@@ -106,18 +80,18 @@ const Order = () => {
 
           {/* Table */}
           <OrderHistory
-            totalPages={pagination?.totalPages}
-            data={orders}
-            filters={selectedFilter !== OrderStatusEnum.All && hasOrders}
+            totalPages={orders.pagination?.totalPages}
+            data={orders.orders}
+            filters={hasActiveFilters && hasOrders}
             totalCount={
-              pagination && pagination.totalPages > 1
-                ? pagination.totalOrders
+              orders.pagination && orders.pagination.totalPages > 1
+                ? orders.pagination.totalOrders
                 : 0
             }
-            currentPage={page}
-            onPageChange={handlePageChange}
+            currentPage={orders.page}
+            onPageChange={orders.setPage}
             serverSidePagination={true}
-            handleClearFilters={handleClearFilters}
+            handleClearFilters={() => orders.setFilterStatus(undefined)}
           />
         </>
       )}

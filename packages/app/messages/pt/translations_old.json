@@ -43,7 +43,7 @@
   },
   "orders": {
     "status": {
-      "cancelled": "Cancelada"
+      "Canceled": "Cancelada"
     }
   }
 }

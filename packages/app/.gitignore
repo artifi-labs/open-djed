@@ -56,3 +56,6 @@ next-env.d.ts
 .vscode
 
 .next
+
+/project.inlang/cache
+/project.inlang/project_id

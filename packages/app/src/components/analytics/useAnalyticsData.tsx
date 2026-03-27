@@ -12,7 +12,7 @@ import { useReserveDetails } from "@/hooks/useReserveDetails"
 import { useProtocolData } from "@/hooks/useProtocolData"
 import { Rational, shenADARate, shenUSDRate } from "@open-djed/math"
 import { useTranslations } from "next-intl"
-import type { MarketCapResponse } from "@/queries/analytics/marketCap/marketCap.schema"
+import type { MarketCapResponse } from "@/schemas/api/analytics/marketCap.schema"
 import type { MarketCapValue } from "@open-djed/api"
 
 export type CurrencyValue = "ADA" | "USD"

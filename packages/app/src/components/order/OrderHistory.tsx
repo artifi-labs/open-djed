@@ -14,20 +14,20 @@ import Tag from "../Tag"
 import Dialog from "../Dialog"
 import Snackbar from "../Snackbar"
 import TransactionDetails from "../TransactionDetails"
-import { type OrderStatus, useOrders } from "@/hooks/useOrders"
+import { useOrders } from "@/hooks/orders/useOrders"
 
 import BaseCard from "../card/BaseCard"
 import { useViewport } from "@/hooks/useViewport"
 import Asset from "../Asset"
 import { CARDANOSCAN_BASE_URL, ORDERS_PER_PAGE } from "@/lib/constants"
-import type { Order } from "@open-djed/api"
 import { useTranslations } from "next-intl"
 import { capitalize } from "@/lib/utils"
+import type { Order, OrderStatus } from "@open-djed/api"
 
 interface RowItem {
   columns: { content: React.ReactNode }[]
   key: string
-  raw: Order
+  raw: Order // TODO: CHECK THIS
 }
 
 interface OrderHistoryProps {
@@ -41,6 +41,46 @@ interface OrderHistoryProps {
   totalPages?: number
 }
 
+// TODO: MOVE THIS FROM HERE
+function formatRelativeDate(timestampMs: bigint): string {
+  const date = new Date(Number(timestampMs))
+  const now = new Date()
+  const diffMs = now.getTime() - date.getTime()
+  const diffMinutes = Math.floor(diffMs / 60000)
+
+  // if date is less than 1 hour ago → "X min(s) ago"
+  if (diffMinutes < 60) {
+    if (diffMinutes <= 1) return "1 min ago"
+    return `${diffMinutes} mins ago`
+  }
+
+  const time = date.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  })
+
+  const nowDay = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+  const dateDay = new Date(date.getFullYear(), date.getMonth(), date.getDate())
+  const diffDays = Math.floor((nowDay.getTime() - dateDay.getTime()) / 86400000)
+
+  // if date is today → "Today, 14:30"
+  if (diffDays === 0) {
+    return `Today, ${time}`
+  }
+
+  // if date was yesterday → "Yesterday, 21:30"
+  if (diffDays === 1) {
+    return `Yesterday, ${time}`
+  }
+
+  // if date is more than 48h ago → "12/02/2020"
+  return date.toLocaleDateString([], {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  })
+}
+
 export const STATUS_CONFIG: Record<
   OrderStatus,
   {
@@ -48,7 +88,6 @@ export const STATUS_CONFIG: Record<
     i18nKey: string
   }
 > = {
-  // Processing: { type: "surface", text: "Processing" },
   Created: {
     type: "surface",
     i18nKey: "orders.status.created",
@@ -61,13 +100,10 @@ export const STATUS_CONFIG: Record<
     type: "error",
     i18nKey: "orders.status.rejected",
   },
-  // Cancelling: { type: "warning", text: "Cancelling" },
   Canceled: {
     type: "surface",
     i18nKey: "orders.status.canceled",
   },
-  // Failed: { type: "error", text: "Failed" },
-  // Expired: { type: "error", text: "Expired" },
 }
 
 const formatAda = (value?: bigint | null) => {
@@ -150,13 +186,12 @@ const TypeCell = ({ action }: { action: string }) => (
 )
 
 const DateCell = ({ date }: { date: string | Date }) => {
-  const { formatDate } = useOrders()
   const timestamp =
     typeof date === "string" ? new Date(date).getTime() : date.getTime()
 
   return (
     <div className="px-16 py-12 text-nowrap">
-      <span>{formatDate(BigInt(timestamp))}</span>
+      <span>{formatRelativeDate(BigInt(timestamp))}</span>
     </div>
   )
 }
@@ -295,7 +330,7 @@ const ExternalCell = ({
 
 const MobileCell = ({ order }: { order: Order }) => {
   const t = useTranslations()
-  const { handleCancelOrder, formatDate } = useOrders()
+  const { handleCancelOrder } = useOrders()
 
   const [isDialogOpen, setIsDialogOpen] = React.useState(false)
 
@@ -324,7 +359,7 @@ const MobileCell = ({ order }: { order: Order }) => {
               {capitalize(t("orders.table.header.date"))}
             </span>
             <span className="text-xs">
-              {formatDate(BigInt(new Date(order.orderDate).getTime()))}
+              {formatRelativeDate(BigInt(new Date(order.orderDate).getTime()))}
             </span>
           </div>
           <div className="flex w-full flex-row items-center justify-between">

@@ -42,7 +42,7 @@
   },
   "orders": {
     "status": {
-      "cancelled": "Cancelled"
+      "Canceled": "Canceled"
     }
   }
 }

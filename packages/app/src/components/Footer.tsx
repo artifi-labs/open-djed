@@ -150,6 +150,7 @@ const Footer = () => {
           <p className="text-xs">
             {t("components.footer.allRights", {
               year: new Date().getFullYear(),
+              company: "Artifi",
             })}
           </p>
         </div>

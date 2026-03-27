@@ -6,6 +6,6 @@
   "scripts": {},
   "dependencies": {
     "@lucid-evolution/lucid": "^0.4.27",
-    "zod": "^3.24.3"
+    "zod": "^4.1.12"
   }
 }

@@ -4,7 +4,7 @@ import { useMemo } from "react"
 import { FinancialAreaChart } from "@/components/charts/FinancialAreaChart"
 import { useViewport } from "@/hooks/useViewport"
 import type { Currency } from "../useAnalyticsData"
-import type { ShenAdaPriceResponse } from "@/queries/analytics/shenAdaPrice/shenAdaPrice.schema"
+import type { ShenAdaPriceResponse } from "@/schemas/api/analytics/shenAdaPrice.schema"
 
 type ShenAdaPriceChartProps = {
   data: ShenAdaPriceResponse

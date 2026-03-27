@@ -2,6 +2,9 @@
   "name": "@open-djed/api",
   "type": "module",
   "main": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
   "scripts": {
     "dev": "bun run src/index.ts",
     "start": "tsx src/index.ts"
@@ -24,7 +27,7 @@
     "hono-openapi": "^0.4.8",
     "json-bigint": "^1.0.0",
     "tsx": "^4.19.4",
-    "zod": "^3.25.28",
+    "zod": "^4.1.12",
     "zod-openapi": "^4.2.4"
   },
   "devDependencies": {}

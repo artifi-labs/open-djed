@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query"
-import { ReserveRatioResponseSchema } from "./reserveRatio.schema"
 import { useApiClient } from "@/context/ApiClientContext"
 import type { ChartPeriodValue } from "@/components/analytics/useAnalyticsData"
 import { analyticsKeys } from "../keys"
+import { ReserveRatioResponseSchema } from "@open-djed/api"
 
 type Params = {
   period: ChartPeriodValue

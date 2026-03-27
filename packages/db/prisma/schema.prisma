@@ -35,6 +35,13 @@ enum AllTokens {
   ADA
 }
 
+enum OrderStatus {
+  Created
+  Completed
+  Rejected
+  Canceled
+}
+
 model Order {
   id        Int      @id @default(autoincrement())
   address   Json // user address, stores paymentKeyHash and stakeKeyHash
@@ -48,7 +55,7 @@ model Order {
   paid      BigInt? // ADA value paid for this action
   fees      BigInt?
   received  BigInt? // token value received
-  status    String? // Created -> still to be consumed; Completed -> already consumed
+  status    OrderStatus
 
   @@index([slot], name: "idx_order_slot") // index makes lookups much faster
 }

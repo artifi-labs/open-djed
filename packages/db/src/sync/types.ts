@@ -56,6 +56,16 @@ export type AddressDatum = {
   stakeKeyHash: string[][][]
 }
 
+export const OrderStatus = {
+  Created: "Created",
+  Completed: "Completed",
+  Rejected: "Rejected",
+  Canceled: "Canceled",
+} as const
+
+export type OrderStatus =
+  (typeof OrderStatus)[keyof typeof OrderStatus]
+
 export type Order = {
   id?: number
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -70,7 +80,7 @@ export type Order = {
   fees: bigint | null
   received: bigint | undefined | null
   orderDate: Date
-  status: string | null
+  status: OrderStatus
 }
 
 export type UTxO = {
@@ -175,13 +185,6 @@ export type OrderUTxOWithDatumAndBlock = {
 // Use after filtering, so 'poolDatum' is guaranteed to exist.
 export type OrderUTxOWithPoolDatum = OrderUTxOWithDatumAndBlock & {
   poolDatum: PoolDatum
-}
-
-export enum OrderStatus {
-  Created = "Created",
-  Completed = "Completed",
-  Rejected = "Rejected",
-  Cancelled = "Canceled",
 }
 
 export enum RedeemerPurpose {

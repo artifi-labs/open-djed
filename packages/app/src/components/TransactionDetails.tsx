@@ -6,7 +6,7 @@ import clsx from "clsx"
 import ButtonIcon from "./ButtonIcon"
 import { type Order } from "@open-djed/api"
 import { useViewport } from "@/hooks/useViewport"
-import { type OrderStatus } from "@/hooks/useOrders"
+import { type OrderStatus } from "@/hooks/orders/useOrders"
 import { useTranslations } from "next-intl"
 
 interface TransactionDetailsProps {
