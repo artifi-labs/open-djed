@@ -14,7 +14,6 @@ import Tag from "../Tag"
 import Dialog from "../Dialog"
 import Snackbar from "../Snackbar"
 import TransactionDetails from "../TransactionDetails"
-import { useOrders } from "@/hooks/orders/useOrders"
 
 import BaseCard from "../card/BaseCard"
 import { useViewport } from "@/hooks/useViewport"
@@ -23,6 +22,7 @@ import { CARDANOSCAN_BASE_URL, ORDERS_PER_PAGE } from "@/lib/constants"
 import { useTranslations } from "next-intl"
 import { capitalize, formatRelativeDate } from "@/lib/utils"
 import type { Order, OrderStatus } from "@open-djed/api"
+import { useCancelOrder } from "@/hooks/orders/useCancelOrder"
 
 interface RowItem {
   columns: { content: React.ReactNode }[]
@@ -217,7 +217,7 @@ const ExternalCell = ({
   const t = useTranslations()
   const [isDialogOpen, setIsDialogOpen] = React.useState(false)
   const [showSnackbar, setShowSnackbar] = React.useState(false)
-  const { handleCancelOrder } = useOrders()
+  const { cancelOrder } = useCancelOrder()
 
   const showCancel = status === "Created"
 
@@ -258,7 +258,7 @@ const ExternalCell = ({
               hasSkrim={true}
               onSecondaryButtonClick={handleCloseDialog}
               onPrimaryButtonClick={() => {
-                handleCancelOrder(txHash, outIndex).catch(console.error)
+                cancelOrder(txHash, outIndex).catch(console.error)
                 setIsDialogOpen(false)
               }}
             />
@@ -290,7 +290,7 @@ const ExternalCell = ({
 
 const MobileCell = ({ order }: { order: Order }) => {
   const t = useTranslations()
-  const { handleCancelOrder } = useOrders()
+  const { cancelOrder } = useCancelOrder()
 
   const [isDialogOpen, setIsDialogOpen] = React.useState(false)
 
@@ -401,9 +401,7 @@ const MobileCell = ({ order }: { order: Order }) => {
           hasSkrim={true}
           onSecondaryButtonClick={() => setIsDialogOpen(false)}
           onPrimaryButtonClick={() => {
-            handleCancelOrder(order.tx_hash, order.out_index).catch(
-              console.error,
-            )
+            cancelOrder(order.tx_hash, order.out_index).catch(console.error)
             setIsDialogOpen(false)
           }}
         />

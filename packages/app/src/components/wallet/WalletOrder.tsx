@@ -4,12 +4,12 @@ import Tag from "../Tag"
 import ButtonIcon from "../ButtonIcon"
 import Coin, { type IconCoinName } from "../Coin"
 import Divider from "../Divider"
-import { useOrders } from "@/hooks/orders/useOrders"
 import { type Order } from "@open-djed/api"
 import { STATUS_CONFIG } from "../order/OrderHistory"
 import { CARDANOSCAN_BASE_URL } from "@/lib/constants"
 import { useTranslations } from "next-intl"
 import { capitalize, formatRelativeDate } from "@/lib/utils"
+import { useCancelOrder } from "@/hooks/orders/useCancelOrder"
 
 type WalletOrderProps = {
   order: Order
@@ -18,7 +18,7 @@ type WalletOrderProps = {
 
 const WalletOrder: React.FC<WalletOrderProps> = ({ order, divider }) => {
   const t = useTranslations()
-  const { handleCancelOrder } = useOrders()
+  const { cancelOrder } = useCancelOrder()
 
   const formatLovelace = (amount: number) =>
     (Number(amount) / 1_000_000).toLocaleString(undefined, {
@@ -44,9 +44,7 @@ const WalletOrder: React.FC<WalletOrderProps> = ({ order, divider }) => {
               variant="secondary"
               size="small"
               onClick={() => {
-                handleCancelOrder(order.tx_hash, order.out_index).catch(
-                  console.error,
-                )
+                cancelOrder(order.tx_hash, order.out_index).catch(console.error)
               }}
             />
           )}
