@@ -15,6 +15,7 @@ import {
   registry,
   toDayString,
 } from "../../utils"
+import { logger } from "../../../utils/logger"
 
 type PoolState = Pick<
   OrderUTxOWithPoolDatum["poolDatum"],
@@ -232,9 +233,10 @@ export const calculateFeesEarnings = async (
     const feeLovelace =
       outputPool.adaInReserve - expectedPoolWithoutFees.adaInReserve
     if (feeLovelace <= 0n) {
-      throw new Error(
+      logger.warn(
         `Invalid fee calculation for tx ${currentGroup[0]}: feeLovelace=${feeLovelace}, expectedReserve=${expectedPoolWithoutFees.adaInReserve}, outputReserve=${outputPool.adaInReserve}`,
       )
+      continue
     }
 
     if (outputPool.adaInReserve <= 0n) {

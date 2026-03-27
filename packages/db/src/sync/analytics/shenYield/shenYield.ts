@@ -3,27 +3,13 @@ import { getPeriodFeesEarnings } from "../../../client/feesEarnings"
 import { getLatestShenYield } from "../../../client/shenYield"
 import { getPeriodStakingRewards } from "../../../client/stakingRewards"
 import { logger } from "../../../utils/logger"
-import type {
-  OrderedPoolOracleTxOs,
-  PoolUTxoWithDatumAndTimestamp,
-  ShenYield,
-} from "../../types"
+import type { ShenYield } from "../../types"
 import { toDayString, buildDailyStakingRates } from "../../utils"
 import { handleAnalyticsUpdates } from "../updateAnalytics"
 
-export async function processShenYield(orderedTxOs: OrderedPoolOracleTxOs[]) {
-  if (!orderedTxOs || orderedTxOs.length === 0) {
-    logger.warn("No ordered TxOs provided for fees earnings calculation")
-    return
-  }
-
+export async function processShenYield() {
   const start = Date.now()
   logger.info("=== Processing Shen Yield ===")
-
-  const poolEntries = orderedTxOs.filter(
-    (entry): entry is { key: "pool"; value: PoolUTxoWithDatumAndTimestamp } =>
-      entry.key === "pool",
-  )
 
   const [stakingRewards, fees] = await Promise.all([
     getPeriodStakingRewards("All"),
@@ -42,15 +28,6 @@ export async function processShenYield(orderedTxOs: OrderedPoolOracleTxOs[]) {
     })),
   )
 
-  const blockAndSlotByDay = new Map<string, { block: string; slot: bigint }>()
-  for (const entry of poolEntries) {
-    const day = toDayString(entry.value.timestamp)
-    blockAndSlotByDay.set(day, {
-      block: entry.value.block_hash,
-      slot: BigInt(entry.value.block_slot),
-    })
-  }
-
   const feesByDay = new Map(
     fees.map((fee) => [
       toDayString(fee.timestamp),
@@ -62,17 +39,28 @@ export async function processShenYield(orderedTxOs: OrderedPoolOracleTxOs[]) {
     ]),
   )
 
+  const firstFeeDay = fees[0] ? toDayString(fees[0].timestamp) : null
+  const firstStakingDay = stakingRewards[0]
+    ? toDayString(stakingRewards[0].timestamp)
+    : null
+  const firstSharedDay =
+    firstFeeDay && firstStakingDay
+      ? firstFeeDay > firstStakingDay
+        ? firstFeeDay
+        : firstStakingDay
+      : null
+
   const dayKeys = [
     ...new Set([
-      ...blockAndSlotByDay.keys(),
       ...feesByDay.keys(),
       ...stakingByDay.keys(),
     ]),
-  ].sort()
+  ]
+    .sort()
+    .filter((day) => !firstSharedDay || day >= firstSharedDay)
 
   const dailyYield: ShenYield[] = []
   for (const day of dayKeys) {
-    const dayBlockInfo = blockAndSlotByDay.get(day)
     const feeEntry = feesByDay.get(day)
 
     const feeDailyRateRaw = feeEntry?.rate ?? 0
@@ -82,8 +70,8 @@ export async function processShenYield(orderedTxOs: OrderedPoolOracleTxOs[]) {
       : 0
 
     const dailyRate = feeDailyRate + stakingDailyRate
-    const block = feeEntry?.block ?? dayBlockInfo?.block
-    const slot = feeEntry?.slot ?? dayBlockInfo?.slot
+    const block = feeEntry?.block ?? null
+    const slot = feeEntry?.slot ?? null
 
     dailyYield.push({
       timestamp: new Date(`${day}T00:00:00.000Z`),
