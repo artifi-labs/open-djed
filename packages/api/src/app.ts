@@ -52,6 +52,8 @@ import {
   getSumStakingRewardsRate,
   getPeriodReserveRatio,
   getPeriodVolume,
+  getPeriodShenYield,
+  getLast60DaysShenYield,
 } from "@open-djed/db"
 import { type TokenMarketCap } from "@open-djed/db/generated/prisma/enums"
 import { type Order, type Period } from "@open-djed/db"
@@ -961,6 +963,60 @@ export const app = new Hono()
           500,
         )
       }
+    },
+  )
+  .get(
+    "/historical-shen-yield",
+    cacheMiddleware,
+    describeRoute({
+      summary: "Get historical SHEN yield",
+      description: "Get the historical SHEN yield",
+      tags: ["Analytics"],
+      responses: {
+        200: {
+          description: "Successfully got the historical SHEN yield",
+          content: {
+            "text/plain": {
+              example: "SHEN yield data",
+            },
+          },
+        },
+        400: {
+          description: "Bad Request",
+          content: {
+            "text/plain": {
+              example: "Bad Request",
+            },
+          },
+        },
+        500: {
+          description: "Internal Server Error",
+          content: {
+            "text/plain": {
+              example: "Internal Server Error",
+            },
+          },
+        },
+      },
+    }),
+    zValidator(
+      "query",
+      z.object({
+        period: periodSchema,
+        projected: z
+          .preprocess((val) => val === "true", z.boolean())
+          .optional(),
+      }),
+    ),
+    async (c) => {
+      const params = c.req.valid("query")
+
+      if (params.projected === true) {
+        const data = await getLast60DaysShenYield()
+        return c.json(data)
+      }
+
+      return historicalDataHandler((p) => getPeriodShenYield(p))(c)
     },
   )
 
