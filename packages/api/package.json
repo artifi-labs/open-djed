@@ -6,8 +6,8 @@
     ".": "./src/index.ts"
   },
   "scripts": {
-    "dev": "bun run src/index.ts",
-    "start": "tsx src/index.ts"
+    "dev": "bun run --watch src/server.ts",
+    "start": "tsx src/server.ts"
   },
   "dependencies": {
     "@hono/node-server": "^1.14.2",

@@ -34,7 +34,7 @@ export const useOrders = () => {
       status,
     },
   })
-  
+
   // TODO: REMOVE THIS from here
   const handleCancelOrder = async (orderTx: string, outIndex: number) => {
     const { Transaction, TransactionWitnessSet } =
@@ -98,7 +98,7 @@ export const useOrders = () => {
     status,
     //loading
     isLoading: ordersQuery.isLoading,
-    //filters 
+    //filters
     setFilterStatus,
     // pagination
     setPage,

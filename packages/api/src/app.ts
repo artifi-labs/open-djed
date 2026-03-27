@@ -59,7 +59,13 @@ import { type TokenMarketCap } from "@open-djed/db/generated/prisma/enums"
 import { type Order, type Period } from "@open-djed/db"
 export type { Order } from "@open-djed/db"
 import { openAPISpecs } from "hono-openapi"
-import { actionSchema, orderStatusSchema, periodSchema, tokenSchema, type PeriodType } from "./schemas"
+import {
+  actionSchema,
+  orderStatusSchema,
+  periodSchema,
+  tokenSchema,
+  type PeriodType,
+} from "./schemas"
 
 export * from "./schemas"
 
@@ -652,7 +658,11 @@ export const app = new Hono()
       "query",
       z.object({
         page: z.coerce.number().optional().default(1).openapi({ example: 1 }),
-        limit: z.coerce.number().optional().default(10).openapi({ example: 10 }),
+        limit: z.coerce
+          .number()
+          .optional()
+          .default(10)
+          .openapi({ example: 10 }),
         status: orderStatusSchema.optional().openapi({ example: "Created" }),
       }),
     ),

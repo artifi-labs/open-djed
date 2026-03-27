@@ -1,7 +1,11 @@
 import { useQuery } from "@tanstack/react-query"
 import { useApiClient } from "@/context/ApiClientContext"
 import { ordersKeys } from "@/queries/orders/keys"
-import { type OrdersBody, type OrdersQueryParams, ordersResponseSchema } from  "@open-djed/api"
+import {
+  type OrdersBody,
+  type OrdersQueryParams,
+  ordersResponseSchema,
+} from "@open-djed/api"
 
 type Params = {
   body: OrdersBody
@@ -20,8 +24,8 @@ export function useOrdersQuery({ body, queryParams }: Params) {
         query: {
           page: queryParams?.page?.toString(),
           limit: queryParams?.limit?.toString(),
-          ...(queryParams?.status && { status: queryParams.status.join(",") }),      
-        }
+          ...(queryParams?.status && { status: queryParams.status.join(",") }),
+        },
       })
 
       if (!res.ok) throw new Error("Error fetching Orders")

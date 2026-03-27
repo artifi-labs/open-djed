@@ -50,12 +50,7 @@ export async function processShenYield() {
         : firstStakingDay
       : null
 
-  const dayKeys = [
-    ...new Set([
-      ...feesByDay.keys(),
-      ...stakingByDay.keys(),
-    ]),
-  ]
+  const dayKeys = [...new Set([...feesByDay.keys(), ...stakingByDay.keys()])]
     .sort()
     .filter((day) => !firstSharedDay || day >= firstSharedDay)
 

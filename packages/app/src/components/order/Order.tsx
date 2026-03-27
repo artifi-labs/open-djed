@@ -12,11 +12,23 @@ import { useTranslations } from "next-intl"
 import { type OrderStatus } from "@open-djed/api"
 import { type Type } from "@/components/Tag"
 
-const statusFilters: Array<{ key: "All" | OrderStatus; i18nKey: string, type: Type }> = [
-  { key: "All", i18nKey: "orders.filters.all", type: "surface" },
-  { key: "Created", i18nKey: "orders.filters.created", type: "success", },
-  { key: "Completed", i18nKey: "orders.filters.completed", type: "error" },
-  { key: "Canceled", i18nKey: "orders.filters.canceled", type: "surface" },
+const statusFilters: Array<{
+  key: "All" | OrderStatus
+  i18nKey: string
+  type: Type
+}> = [
+  { key: "All", i18nKey: "orders.filters.status.all", type: "surface" },
+  { key: "Created", i18nKey: "orders.filters.status.created", type: "success" },
+  {
+    key: "Completed",
+    i18nKey: "orders.filters.status.completed",
+    type: "error",
+  },
+  {
+    key: "Canceled",
+    i18nKey: "orders.filters.status.canceled",
+    type: "surface",
+  },
 ]
 
 const Order = () => {
@@ -25,8 +37,9 @@ const Order = () => {
   const { openWalletSidebar } = useSidebar()
   const orders = useOrders()
 
-  const toStatusFilter = (filter: "All" | OrderStatus): OrderStatus[] | undefined =>
-    filter === "All" ? undefined : [filter]
+  const toStatusFilter = (
+    filter: "All" | OrderStatus,
+  ): OrderStatus[] | undefined => (filter === "All" ? undefined : [filter])
 
   const hasOrders = orders.orders.length > 0
   const hasActiveFilters = orders.status !== undefined
@@ -57,7 +70,6 @@ const Order = () => {
         <>
           {(hasOrders || hasActiveFilters) && (
             <div className="flex flex-row justify-start gap-8 py-18">
-
               {/* Filters */}
               <div className="flex w-full flex-row justify-start gap-8 sm:justify-end">
                 {statusFilters.map((item) => (
@@ -71,7 +83,9 @@ const Order = () => {
                         ? orders.status === undefined
                         : orders.status?.includes(item.key as OrderStatus)
                     }
-                    onClick={() => orders.setFilterStatus(toStatusFilter(item.key))}
+                    onClick={() =>
+                      orders.setFilterStatus(toStatusFilter(item.key))
+                    }
                   />
                 ))}
               </div>

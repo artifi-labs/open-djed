@@ -1,7 +1,15 @@
-import { paginatedResponseSchema, paginationQueryParamsSchema } from "../pagination.schemas"
+import {
+  paginatedResponseSchema,
+  paginationQueryParamsSchema,
+} from "../pagination.schemas"
 import { z } from "zod"
 
-export const orderStatusSchema = z.enum(["Created", "Completed", "Rejected", "Canceled"])
+export const orderStatusSchema = z.enum([
+  "Created",
+  "Completed",
+  "Rejected",
+  "Canceled",
+])
 
 export const orderSchema = z.object({
   id: z.number(),
@@ -12,10 +20,10 @@ export const orderSchema = z.object({
   slot: z.number(),
   action: z.enum(["Mint", "Burn"]), // TODO: change this
   token: z.enum(["DJED", "SHEN", "BOTH"]),
-  paid: z.bigint().nullable(),
-  fees: z.bigint().nullable(),
-  received: z.bigint().nullable(),
-  orderDate: z.date(),
+  paid: z.number().nullable(),
+  fees: z.number().nullable(),
+  received: z.number().nullable(),
+  orderDate: z.iso.datetime(),
   status: orderStatusSchema,
 })
 
@@ -24,7 +32,7 @@ export const ordersQueryParamsSchema = paginationQueryParamsSchema.extend({
 })
 
 export const ordersBodySchema = z.object({
-  usedAddresses: z.array(z.string())
+  usedAddresses: z.array(z.string()),
 })
 
 export const ordersResponseSchema = paginatedResponseSchema(orderSchema)

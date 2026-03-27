@@ -6,5 +6,16 @@ export type TokenType = z.infer<typeof tokenSchema>
 export const actionSchema = z.enum(["Mint", "Burn"])
 export type ActionType = z.infer<typeof actionSchema>
 
-export const periodSchema = z.enum(["D", "W", "M", "Y", "All", "d", "w", "m", "y", "all"])
+export const periodSchema = z.enum([
+  "D",
+  "W",
+  "M",
+  "Y",
+  "All",
+  "d",
+  "w",
+  "m",
+  "y",
+  "all",
+])
 export type PeriodType = z.infer<typeof periodSchema>

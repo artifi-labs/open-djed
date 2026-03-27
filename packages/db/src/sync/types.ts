@@ -63,8 +63,7 @@ export const OrderStatus = {
   Canceled: "Canceled",
 } as const
 
-export type OrderStatus =
-  (typeof OrderStatus)[keyof typeof OrderStatus]
+export type OrderStatus = (typeof OrderStatus)[keyof typeof OrderStatus]
 
 export type Order = {
   id?: number

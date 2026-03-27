@@ -322,7 +322,7 @@ export async function processOrdersToInsert(utxos: OrderUTxOWithDatum[]) {
         received,
         orderDate: new Date(Number(d.creationDate)),
         status: status,
-      } as unknown as Order
+      }
     },
     10,
     1000,
