@@ -27,6 +27,7 @@ import {
 } from "./shenYield/stakingRewards/stakingRewards"
 import { rollbackStakingRewards } from "./shenYield/stakingRewards/rollbackStakingRewards"
 import { rollbackFeesEarnings } from "../orders/feesEarnings/rollbackFeesEarnings"
+import { rollbackShenYield } from "./shenYield/rollbackShenYield"
 
 type DbProcessor = {
   isEmpty: boolean
@@ -42,6 +43,7 @@ async function handleRollbacks() {
     rollbackVolumes(),
     rollbackStakingRewards(),
     rollbackFeesEarnings(),
+    rollbackShenYield(),
   ])
 }
 

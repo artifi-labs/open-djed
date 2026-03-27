@@ -7,9 +7,10 @@ import { ReserveRatioOverTimeChart } from "./charts/ReserveRatioOverTimeChart"
 import { ShenAdaPriceChart } from "./charts/ShenAdaPriceChart"
 import { useAnalyticsData, CURRENCY_OPTIONS } from "./useAnalyticsData"
 import { ShenMarketCapChart } from "./charts/ShenMarketCapChart"
-import VolumeChart from "./charts/VolumesChart"
+import { ShenYieldChart } from "./charts/ShenYieldChart"
 import { DjedDexPriceChart } from "./charts/DjedDexPriceChart"
 import { useTranslations } from "next-intl"
+import VolumeChart from "./charts/VolumesChart"
 
 const Analytics = () => {
   const t = useTranslations()
@@ -43,6 +44,10 @@ const Analytics = () => {
     djedDexPeriod,
     setDjedDexCurrency,
     setDjedDexPeriod,
+    shenYieldData,
+    projectedYield,
+    shenYieldPeriod,
+    setShenYieldPeriod,
   } = useAnalyticsData()
   const { reserveRatio, reserveBounds, percentage, reserveChartWarning } =
     useReserveDetails()
@@ -134,7 +139,7 @@ const Analytics = () => {
         </ChartCard>
       </div>
 
-      <div className="desktop:gap-24 grid grid-cols-1 gap-16 py-24">
+      <div className="desktop:grid-cols-2 desktop:gap-24 grid grid-cols-1 gap-16 py-24">
         <ChartCard
           period={shenAdaPricePeriod}
           periodItems={translatedPeriodOptions}
@@ -150,7 +155,14 @@ const Analytics = () => {
           />
         </ChartCard>
 
-        {/* <ChartCard title="SHEN Yield"></ChartCard> */}
+        <ChartCard
+          title={t("common.yield", { token: "SHEN" })}
+          period={shenYieldPeriod}
+          periodItems={translatedPeriodOptions}
+          onPeriodChange={setShenYieldPeriod}
+        >
+          <ShenYieldChart data={[...shenYieldData, ...projectedYield]} />
+        </ChartCard>
       </div>
 
       <div className="desktop:gap-24 grid grid-cols-1 gap-16">

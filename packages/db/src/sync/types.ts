@@ -422,3 +422,10 @@ export type ADAFeesEarnings = {
   block?: string | null
   slot?: number | null
 }
+
+export type ShenYield = {
+  timestamp: Date
+  yield: number
+  block?: string | null
+  slot?: bigint | null
+}
