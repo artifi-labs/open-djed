@@ -21,7 +21,7 @@ import { useViewport } from "@/hooks/useViewport"
 import Asset from "../Asset"
 import { CARDANOSCAN_BASE_URL, ORDERS_PER_PAGE } from "@/lib/constants"
 import { useTranslations } from "next-intl"
-import { capitalize } from "@/lib/utils"
+import { capitalize, formatRelativeDate } from "@/lib/utils"
 import type { Order, OrderStatus } from "@open-djed/api"
 
 interface RowItem {
@@ -39,46 +39,6 @@ interface OrderHistoryProps {
   serverSidePagination?: boolean
   handleClearFilters?: () => void
   totalPages?: number
-}
-
-// TODO: MOVE THIS FROM HERE
-function formatRelativeDate(timestampMs: bigint): string {
-  const date = new Date(Number(timestampMs))
-  const now = new Date()
-  const diffMs = now.getTime() - date.getTime()
-  const diffMinutes = Math.floor(diffMs / 60000)
-
-  // if date is less than 1 hour ago → "X min(s) ago"
-  if (diffMinutes < 60) {
-    if (diffMinutes <= 1) return "1 min ago"
-    return `${diffMinutes} mins ago`
-  }
-
-  const time = date.toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-  })
-
-  const nowDay = new Date(now.getFullYear(), now.getMonth(), now.getDate())
-  const dateDay = new Date(date.getFullYear(), date.getMonth(), date.getDate())
-  const diffDays = Math.floor((nowDay.getTime() - dateDay.getTime()) / 86400000)
-
-  // if date is today → "Today, 14:30"
-  if (diffDays === 0) {
-    return `Today, ${time}`
-  }
-
-  // if date was yesterday → "Yesterday, 21:30"
-  if (diffDays === 1) {
-    return `Yesterday, ${time}`
-  }
-
-  // if date is more than 48h ago → "12/02/2020"
-  return date.toLocaleDateString([], {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  })
 }
 
 export const STATUS_CONFIG: Record<
@@ -106,7 +66,7 @@ export const STATUS_CONFIG: Record<
   },
 }
 
-const formatAda = (value?: bigint | null) => {
+const formatAda = (value?: number | null) => {
   if (!value) return "-"
   return (Number(value) / 1e6).toLocaleString()
 }
@@ -122,7 +82,7 @@ const shouldShowAda = (
 }
 
 const renderValueDisplay = (
-  value: bigint | null | undefined,
+  value: number | null | undefined,
   showAda: boolean,
 ) => {
   const adaValue = formatAda(value)
@@ -202,7 +162,7 @@ const ValueCell = ({
   action,
   type,
 }: {
-  value?: bigint | null
+  value?: number | null
   token?: "DJED" | "SHEN" | "BOTH"
   action?: "Mint" | "Burn"
   type: "paid" | "received"

@@ -1,5 +1,10 @@
 import { z } from "zod"
 
+export type MarketCapValue = {
+  ADA: bigint
+  USD: bigint
+}
+
 /**
  * Schemas for MarketCap API response.
  */

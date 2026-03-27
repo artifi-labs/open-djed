@@ -3,7 +3,7 @@ import { FinancialAreaChart } from "@/components/charts/FinancialAreaChart"
 import type { Currency } from "../useAnalyticsData"
 import { formatAxisValue } from "@/lib/utils"
 import { useTranslations } from "next-intl"
-import type { VolumesResponse } from "@/schemas/api/analytics/volumes.schema"
+import type { VolumesResponse } from "@open-djed/api"
 
 type VolumeChartProps = {
   title?: string

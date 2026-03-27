@@ -4,7 +4,7 @@ import { Legend } from "recharts"
 import { ChartLegend } from "@/components/charts/legend/ChartLegend"
 import { formatAxisValue } from "@/lib/utils"
 import { useTranslations } from "next-intl"
-import type { MarketCapResponse } from "@/schemas/api/analytics/marketCap.schema"
+import { type MarketCapResponse } from "@open-djed/api"
 
 type DjedMarketCapChartProps = {
   title?: string

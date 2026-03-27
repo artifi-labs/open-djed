@@ -1,7 +1,4 @@
-import {
-  type OrdersBody,
-  type OrdersQueryParams,
-} from "@/schemas/api/orders/orders.schema"
+import { type OrdersBody, type OrdersQueryParams } from "@open-djed/api"
 
 export const ordersKeys = {
   all: ["order"] as const,

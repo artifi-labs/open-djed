@@ -354,11 +354,6 @@ const historicalDataHandler = <T>(
   }
 }
 
-export type MarketCapValue = {
-  ADA: bigint
-  USD: bigint
-}
-
 const StakingRewardsSchema = z.object({
   startDate: z.date(),
   endDate: z.date(),

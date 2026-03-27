@@ -2,11 +2,9 @@
 
 import * as React from "react"
 import clsx from "clsx"
-//import Link from "next/link"
 import ButtonIcon from "./ButtonIcon"
 import { type Order } from "@open-djed/api"
 import { useViewport } from "@/hooks/useViewport"
-import { type OrderStatus } from "@/hooks/orders/useOrders"
 import { useTranslations } from "next-intl"
 
 interface TransactionDetailsProps {
@@ -27,7 +25,7 @@ const TransactionDetails: React.FC<TransactionDetailsProps> = ({
   const [isOpen, setIsOpen] = React.useState(false)
 
   const { raw } = row
-  const hasStatus = (raw.status as OrderStatus) !== undefined
+  const hasStatus = raw.status !== undefined
   const isCanceled = hasStatus && raw.status === "Canceled"
   const isCreated = hasStatus && raw.status === "Created"
   const isCompleted = hasStatus && raw.status === "Completed"
