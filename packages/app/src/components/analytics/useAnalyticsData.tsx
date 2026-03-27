@@ -3,17 +3,23 @@
 import { useToast } from "@/context/ToastContext"
 import { useEffect, useMemo, useState } from "react"
 import { env } from "@/lib/envLoader"
+import { calculateProjectedYield } from "@/lib/projectedYield"
 import { useReserveRatioQuery } from "@/queries/analytics/reserveRatio/reserveRatio.query"
 import { useMarketCapQuery } from "@/queries/analytics/marketCap/marketCap.query"
 import { useVolumeQuery } from "@/queries/analytics/volumes/volumes.query"
 import { useDjedDexPricesQuery } from "@/queries/analytics/dexPrices/djedDexPrices.query"
 import { useShenAdaPriceQuery } from "@/queries/analytics/shenAdaPrice/shenAdaPrice.query"
+import {
+  useProjectedShenYieldQuery,
+  useShenYieldQuery,
+} from "@/queries/analytics/shenYield/shenYield.query"
 import { useReserveDetails } from "@/hooks/useReserveDetails"
 import { useProtocolData } from "@/hooks/useProtocolData"
 import { Rational, shenADARate, shenUSDRate } from "@open-djed/math"
 import { useTranslations } from "next-intl"
 import type { MarketCapResponse } from "@/schemas/api/analytics/marketCap.schema"
 import type { MarketCapValue } from "@open-djed/api"
+import type { ShenYieldEntry } from "@/queries/analytics/shenYield/shenYield.schema"
 
 export type CurrencyValue = "ADA" | "USD"
 export const CURRENCY_OPTIONS: Array<{ label: string; value: CurrencyValue }> =
@@ -60,6 +66,11 @@ function formatMarketCapData(
 
   return formatted
 }
+
+const annualizedYield = <T extends { yield: number }>(entry: T) => ({
+  ...entry,
+  yield: entry.yield * 365.25, // Because of leap years
+})
 
 export function useAnalyticsData() {
   const t = useTranslations()
@@ -111,6 +122,9 @@ export function useAnalyticsData() {
   const [djedDexCurrency, setDjedDexCurrency] = useState<Currency>(
     CURRENCY_OPTIONS[NETWORK === "Mainnet" ? 0 : 1],
   )
+  const [shenYieldPeriod, setShenYieldPeriod] = useState<ChartPeriod>(
+    translatedPeriodOptions[1],
+  )
 
   // Queries
   const { data: reserveRatioData, error: reserveRatioError } =
@@ -137,6 +151,11 @@ export function useAnalyticsData() {
   const { data: shenAdaData, error: shenAdaError } = useShenAdaPriceQuery({
     period: shenAdaPricePeriod.value,
   })
+  const { data: shenYieldData, error: shenYieldError } = useShenYieldQuery({
+    period: shenYieldPeriod.value,
+  })
+  const { data: projectedYield, error: projectedShenYieldError } =
+    useProjectedShenYieldQuery()
 
   // Data formatting
   const formattedReserveRatioData = useMemo(() => {
@@ -216,11 +235,35 @@ export function useAnalyticsData() {
   const formattedDjedDexData = useMemo(() => {
     if (!djedDexsData) return []
 
-    if (djedDexPeriod.value === "All") djedDexsData.shift()
+    const formatted = [...djedDexsData] // copy the data, otherwise we risk manipulating the data stored in cache
+    if (djedDexPeriod.value === "All") formatted.shift()
 
-    return djedDexsData
+    return formatted
   }, [djedDexsData, data])
 
+  const formattedShenYieldData = useMemo(() => {
+    if (!shenYieldData) return []
+
+    const formatted = shenYieldData.map((entry) => ({
+      ...annualizedYield(entry),
+      isProjected: false,
+    }))
+
+    if (shenYieldPeriod.value === "All") formatted.shift()
+
+    return formatted
+  }, [shenYieldData, shenYieldPeriod.value])
+
+  const formattedProjectedYield = useMemo(() => {
+    if (!projectedYield) return []
+
+    return calculateProjectedYield(
+      projectedYield.map((entry: ShenYieldEntry) => ({
+        ...entry,
+        isProjected: false,
+      })),
+    ).map(annualizedYield)
+  }, [projectedYield])
   // Error handling
   useEffect(() => {
     if (reserveRatioError) {
@@ -288,6 +331,17 @@ export function useAnalyticsData() {
     }
   }, [shenAdaError, showToast])
 
+  useEffect(() => {
+    if (shenYieldError || projectedShenYieldError) {
+      showToast({
+        message: t("analytics.errors.failedToFetch", {
+          analytic: t("common.yield", { token: "SHEN" }),
+        }),
+        type: "error",
+      })
+    }
+  }, [projectedShenYieldError, shenYieldError, showToast, t])
+
   return {
     reserveRatioData: formattedReserveRatioData || [],
     reserveRatioPeriod,
@@ -317,6 +371,10 @@ export function useAnalyticsData() {
     djedDexPeriod,
     setDjedDexCurrency,
     setDjedDexPeriod,
+    shenYieldData: formattedShenYieldData ?? [],
+    projectedYield: formattedProjectedYield ?? [],
+    shenYieldPeriod,
+    setShenYieldPeriod,
     translatedPeriodOptions,
   }
 }

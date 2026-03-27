@@ -14,6 +14,8 @@ export const getPeriodFeesEarnings = (period: Period) => {
       timestamp: true,
       fee: true,
       rate: true,
+      block: true,
+      slot: true,
     },
     orderBy: {
       timestamp: "asc",

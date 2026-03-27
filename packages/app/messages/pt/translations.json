@@ -63,6 +63,7 @@
     },
     "select": "Selecionar",
     "fees": "Taxas",
+    "yield": "Rendimento de {token}",
     "rewards": "Recompensas",
     "copiedAddress": "Endereço copiado",
     "copyAddress": "Copiar endereço",

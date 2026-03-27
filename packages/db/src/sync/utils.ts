@@ -23,6 +23,7 @@ import {
   type OrderedPoolOracleTxOs,
   type TransactionData,
   type Period,
+  type ADAStakingRewards,
 } from "./types"
 
 import fs from "fs"
@@ -623,7 +624,84 @@ export const formatDayEndIso = (day: string) => `${day}T23:59:59.999Z`
 export const MS_PER_DAY = 24 * 60 * 60 * 1000
 
 /**
- * Aggregates entries by their timestamp, sorts each bucket, and
+ * Assign one staking rate to each calendar day.
+ * The day when a new epoch starts belongs to the new epoch, not the previous one.
+ */
+const addRangeToMap = (
+  map: Map<string, number>,
+  rate: number,
+  start: Date,
+  end: Date,
+) => {
+  const cursor = toUtcDayStart(start)
+  const endExclusive = toUtcDayStart(end)
+
+  while (cursor.getTime() < endExclusive.getTime()) {
+    const day = toDayString(cursor)
+    map.set(day, rate)
+    cursor.setUTCDate(cursor.getUTCDate() + 1)
+  }
+}
+
+/**
+ * Keep broadcasting the last observed rate forward until today.
+ */
+const extendLastRateToToday = (map: Map<string, number>, today: Date) => {
+  if (map.size === 0) {
+    return
+  }
+
+  const lastDayKey = [...map.keys()].sort().pop() as string
+  const lastRate = map.get(lastDayKey) ?? 0
+  const cursor = new Date(lastDayKey)
+  cursor.setUTCHours(0, 0, 0, 0)
+  cursor.setUTCDate(cursor.getUTCDate() + 1)
+
+  const goal = new Date(today)
+  goal.setUTCHours(0, 0, 0, 0)
+
+  while (cursor.getTime() <= goal.getTime()) {
+    const day = toDayString(cursor)
+    if (!map.has(day)) {
+      map.set(day, lastRate)
+    }
+    cursor.setUTCDate(cursor.getUTCDate() + 1)
+  }
+}
+
+/**
+ * Build a map of day → staking rate by expanding each epoch interval and filling days up to today.
+ */
+export const buildDailyStakingRates = (
+  stakingRewards: ADAStakingRewards[],
+  today = new Date(),
+) => {
+  const stakingByDay = new Map<string, number>()
+  const sortedRewards = [...stakingRewards].sort(
+    (a, b) => new Date(a.timestamp).valueOf() - new Date(b.timestamp).valueOf(),
+  )
+
+  for (const [index, reward] of sortedRewards.entries()) {
+    const rate = Number(reward.rate)
+    if (!Number.isFinite(rate) || rate <= 0) continue
+
+    const start = toUtcDayStart(new Date(reward.timestamp))
+    const nextReward = sortedRewards[index + 1]
+    const end = nextReward
+      ? toUtcDayStart(new Date(nextReward.timestamp))
+      : new Date(start.getTime() + MS_PER_DAY)
+    if (end <= start) continue
+
+    addRangeToMap(stakingByDay, rate, start, end)
+  }
+
+  extendLastRateToToday(stakingByDay, today)
+
+  return stakingByDay
+}
+
+/**
+ * Aggregates reserve entries by their timestamp, sorts each bucket, and
  * annotates each day with ISO start/end bounds so the subsequent weighting
  * logic can reason about time spans.
  * In case there is a time gap in the data, it is necessary to create mock day entries,

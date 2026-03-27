@@ -63,6 +63,7 @@
     },
     "select": "Select",
     "fees": "Fees",
+    "yield": "{token} Yield",
     "rewards": "Rewards",
     "copiedAddress": "Copied address",
     "copyAddress": "Copy address",
