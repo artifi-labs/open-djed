@@ -9,7 +9,7 @@ import { useTranslations } from "next-intl"
 function OrdersWalletSection() {
   const t = useTranslations()
   const { closeSidebar } = useSidebar()
-  const orders = useOrders({ queryParams: { limit: 5 } }) // TODO: CHECK THIS
+  const orders = useOrders({ queryParams: { limit: 5 } })
 
   return (
     <>

@@ -1,3 +1,4 @@
+import { actionSchema } from "../common.schema"
 import {
   paginatedResponseSchema,
   paginationQueryParamsSchema,
@@ -18,7 +19,7 @@ export const orderSchema = z.object({
   out_index: z.number(),
   block: z.string(),
   slot: z.number(),
-  action: z.enum(["Mint", "Burn"]), // TODO: change this
+  action: actionSchema,
   token: z.enum(["DJED", "SHEN", "BOTH"]),
   paid: z.number().nullable(),
   fees: z.number().nullable(),

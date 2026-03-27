@@ -40,12 +40,16 @@
   },
   "common": {
     "illustration": "Ilustração",
+    "yield": "Rendimento de {token}",
     "currencyValue": "Valor de {currency}",
     "min": "Min",
     "max": "Máx",
     "current": "Atual",
     "available": "Disponível",
     "half": "Metade",
+    "cancel": {
+      "text": "Cancelar"
+    },
     "mintAndBurnNow": "Cunhar & Queimar Agora",
     "months": {
       "march": "Março",
@@ -63,7 +67,6 @@
     },
     "select": "Selecionar",
     "fees": "Taxas",
-    "yield": "Rendimento de {token}",
     "rewards": "Recompensas",
     "copiedAddress": "Endereço copiado",
     "copyAddress": "Copiar endereço",
@@ -97,7 +100,6 @@
     "pageTitle": "Ordens",
     "noOrders": "Ainda não há ordens",
     "noWalletDescription": "Assim que a carteira estiver conectada e houver atividade, as ordens aparecerão aqui",
-    "cancel": "Cancelar",
     "confirmCancellation": "Confirmar Cancelamento",
     "cancellationDescription": "Você está prestes a cancelar a sua ordem. Após o cancelamento, a ordem será removida e não será mais processada.",
     "cancelOrder": "Cancelar Ordem",
@@ -127,6 +129,10 @@
     "title": "Ordens",
     "allOrders": "Todas as ordens",
     "noOrdersDescription": "Parece que esta carteira ainda não realizou nenhuma transação",
+    "cancel": {
+      "success": "A sua ordem foi cancelada.",
+      "error": "Ocorreu um erro ao cancelar a sua ordem."
+    },
     "status": {
       "all": "Todas",
       "created": "Criada",
@@ -404,7 +410,6 @@
     "connectWallet": "Conectar Carteira",
     "connectWalletDisclaimer": "Ao conectar, você concorda com nossos <terms>Termos & Serviço</terms> e <privacy>Política de Privacidade</privacy>",
     "orders": {
-      "cancel": "Cancelar",
       "paid": "Pago",
       "received": "Recebido"
     },

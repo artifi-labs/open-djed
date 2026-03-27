@@ -40,7 +40,7 @@ const WalletOrder: React.FC<WalletOrderProps> = ({ order, divider }) => {
         <div className="flex flex-row items-center gap-8">
           {order.status === "Created" && (
             <Button
-              text={t("wallet.orders.cancel")}
+              text={t("common.cancel.text")}
               variant="secondary"
               size="small"
               onClick={() => {

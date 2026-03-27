@@ -44,6 +44,16 @@
   "orders": {
     "status": {
       "Canceled": "Cancelada"
+    },
+    "cancel": {
+      "text": "Cancelar"
+    }
+  },
+  "wallet": {
+    "orders": {
+      "cancel": {
+        "text": "Cancelar"
+      }
     }
   }
 }

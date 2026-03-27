@@ -237,7 +237,7 @@ const ExternalCell = ({
       {showCancel && (
         <>
           <Button
-            text={t("orders.cancel")}
+            text={t("common.cancel.text")}
             variant="secondary"
             size="small"
             onClick={() => setIsDialogOpen(true)}
@@ -354,7 +354,7 @@ const MobileCell = ({ order }: { order: Order }) => {
           {showCancel ? (
             <div className="grid grid-cols-2 gap-8">
               <Button
-                text={t("orders.cancel")}
+                text={t("common.cancel.text")}
                 variant="secondary"
                 size="small"
                 onClick={() => setIsDialogOpen(true)}
