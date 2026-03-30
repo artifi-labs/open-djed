@@ -1,4 +1,4 @@
-import { formatNumber } from "@/lib/utils"
+import { formatNumber } from "@/utils"
 import Tooltip from "../tooltip/Tooltip"
 import { useTranslations } from "next-intl"
 

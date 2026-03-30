@@ -8,7 +8,7 @@ import InputField from "../input-fields/InputField"
 import { useState, useCallback } from "react"
 import DropdownButton from "../DropdownButton"
 import type { ContextualMenuItem } from "../ContextualMenu"
-import { capitalize, capitalizeLower } from "@/lib/utils"
+import { capitalize, capitalizeLower } from "@/utils"
 import type {
   CalendarProps,
   DateRange,

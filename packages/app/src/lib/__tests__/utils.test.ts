@@ -3,7 +3,7 @@ import {
   formatLiveStringToNumber,
   formatNumber,
   sanitizeNumberInput,
-} from "../utils"
+} from "../../utils/utils"
 
 describe("formatNumber", () => {
   it("formats integers with default fraction digits", () => {

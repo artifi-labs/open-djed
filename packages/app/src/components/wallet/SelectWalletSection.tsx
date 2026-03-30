@@ -4,7 +4,7 @@ import Divider from "../Divider"
 import ListItem from "../ListItem"
 import Link from "next/link"
 import type { WalletName } from "../Wallet"
-import { capitalizeLower } from "@/lib/utils"
+import { capitalizeLower } from "@/utils"
 import { useTranslations } from "next-intl"
 
 export type WalletMetadata = {

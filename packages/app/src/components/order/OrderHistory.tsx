@@ -20,14 +20,14 @@ import { useViewport } from "@/hooks/useViewport"
 import Asset from "../Asset"
 import { CARDANOSCAN_BASE_URL, ORDERS_PER_PAGE } from "@/lib/constants"
 import { useTranslations } from "next-intl"
-import { capitalize, formatRelativeDate } from "@/lib/utils"
+import { capitalize, formatRelativeDate } from "@/utils"
 import type { Order, OrderStatus } from "@open-djed/api"
 import { useCancelOrder } from "@/hooks/orders/useCancelOrder"
 
 interface RowItem {
   columns: { content: React.ReactNode }[]
   key: string
-  raw: Order // TODO: CHECK THIS
+  raw: Order
 }
 
 interface OrderHistoryProps {

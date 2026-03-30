@@ -2,7 +2,7 @@ import { FinancialAreaChart } from "@/components/charts/FinancialAreaChart"
 import { type Currency } from "../useAnalyticsData"
 import { Legend } from "recharts"
 import { ChartLegend } from "@/components/charts/legend/ChartLegend"
-import { formatAxisValue } from "@/lib/utils"
+import { formatAxisValue } from "@/utils"
 import { useTranslations } from "next-intl"
 import { type MarketCapResponse } from "@open-djed/api"
 

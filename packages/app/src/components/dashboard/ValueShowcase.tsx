@@ -3,7 +3,7 @@ import Asset, { type AssetProps } from "../Asset"
 import { type IconName } from "../icons/Icon"
 import Tag from "../Tag"
 import Divider from "../Divider"
-import { capitalize, formatNumber } from "@/lib/utils"
+import { capitalize, formatNumber } from "@/utils"
 import { useTranslations } from "next-intl"
 
 type ValueShowcaseProps = {

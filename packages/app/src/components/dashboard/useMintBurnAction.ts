@@ -13,7 +13,7 @@ import { signAndSubmitTx } from "@/lib/signAndSubmitTx"
 import { useToast } from "@/context/ToastContext"
 import { registryByNetwork } from "@open-djed/registry"
 import { type InputStatus } from "../input-fields/TransactionInput"
-import { roundToDecimals } from "@/lib/utils"
+import { roundToDecimals } from "@/utils"
 import { env } from "@/lib/envLoader"
 
 type ProtocolData = NonNullable<ReturnType<typeof useProtocolData>["data"]>

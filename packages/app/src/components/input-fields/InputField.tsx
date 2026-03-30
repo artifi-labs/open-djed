@@ -9,7 +9,7 @@ import {
 import clsx from "clsx"
 import type { IconName } from "../icons/Icon"
 import Icon from "../icons/Icon"
-import { sanitizeNumberInput } from "@/lib/utils"
+import { sanitizeNumberInput } from "@/utils"
 
 type Size = "Small" | "Medium" | "Large"
 

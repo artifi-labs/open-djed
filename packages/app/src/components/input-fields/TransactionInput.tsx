@@ -12,7 +12,7 @@ import {
   capitalize,
   formatLiveStringToNumber,
   sanitizeNumberInput,
-} from "@/lib/utils"
+} from "@/utils"
 import { useTranslations } from "next-intl"
 
 export type InputStatus = "default" | "warning" | "error" | "success"

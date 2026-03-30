@@ -22,21 +22,19 @@ export const useOrders = ({ queryParams }: UseOrdersParams = {}) => {
     enabled: !!wallet,
   })
 
-  const ordersQuery = useOrdersQuery({
+  const { data, isLoading, isError, error, refetch } = useOrdersQuery({
     body: {
       usedAddresses,
     },
     queryParams: params,
   })
-  // TODO: ADD ERROR MESSAGES WITH T
 
   const setFilterStatus = (value: OrderStatus[] | undefined) => {
-    setParams((prev) => ({ ...prev, status: value }))
-    setParams((prev) => ({ ...prev, page: 1 }))
+    setParams((prev) => ({ ...prev, status: value, page: 1 }))
   }
 
   const nextPage = () => {
-    if (ordersQuery.data?.pagination?.hasNextPage) {
+    if (data?.pagination?.hasNextPage) {
       setParams((prev) => ({ ...prev, page: (prev.page ?? 1) + 1 }))
     }
   }
@@ -51,21 +49,30 @@ export const useOrders = ({ queryParams }: UseOrdersParams = {}) => {
 
   return {
     // data
-    orders: ordersQuery.data?.data ?? [],
-    pagination: ordersQuery.data?.pagination,
+    orders: data?.data ?? [],
+    pagination: data?.pagination,
+
     //state
     page: params.page,
     limit: params.limit,
     status: params.status,
+
     //loading
-    isLoading: ordersQuery.isLoading,
+    isLoading: isLoading,
+
+    // error
+    isError,
+    errorMessage: error?.message,
+
     //filters
     setFilterStatus,
+
     // pagination
     setPage,
     nextPage,
     prevPage,
+
     // react-query
-    refetch: ordersQuery.refetch,
+    refetch: refetch,
   }
 }
