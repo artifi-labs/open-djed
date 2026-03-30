@@ -27,13 +27,12 @@ import {
 } from "@open-djed/db"
 import { chainDataCache } from "../../core"
 
+// TODO: Move this to a separate schema file
 const StakingRewardsSchema = z.object({
-  // TODO: CHANGE THIS
   startDate: z.string(),
   endDate: z.string(),
 })
 
-// TODO: CHANGE THIS
 const historicalDataHandler = <T, S extends z.ZodType | undefined = undefined>(
   dataFetcher: (period: Period) => Promise<T>,
   responseSchema?: S,
