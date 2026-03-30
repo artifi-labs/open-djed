@@ -1,5 +1,5 @@
 import { OracleDatum, PoolDatum } from "@open-djed/data"
-import { DatumDecodeError, UTxOMissingError } from "../errors"
+import { DatumDecodeError, UTxOMissingError } from "../shared/errors"
 import { blockfrost, chainDataCache, network, registry } from "."
 import { Data, slotToUnixTime } from "@lucid-evolution/lucid"
 import type { OracleUTxO, PoolUTxO } from "@open-djed/txs"

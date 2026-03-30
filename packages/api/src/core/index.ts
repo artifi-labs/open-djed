@@ -1,6 +1,6 @@
 import TTLCache from "@isaacs/ttlcache"
 import { Blockfrost } from "@open-djed/blockfrost"
-import { env } from "../env"
+import { env } from "../lib/env"
 import { registryByNetwork } from "@open-djed/registry"
 import { Lucid, type LucidEvolution } from "@lucid-evolution/lucid"
 

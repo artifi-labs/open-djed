@@ -1,15 +1,19 @@
 import { Hono, type Context, type Env, type Input } from "hono"
-import { cacheMiddleware } from "../middleware"
+import { cacheMiddleware } from "../../shared/middleware"
 import { describeRoute } from "hono-openapi"
 import { resolver, validator } from "hono-openapi/zod"
 import { ReserveRatioResponseApiSchema } from "./reserveRatio.schema"
 import z from "zod"
-import { periodSchema, tokenSchema, type PeriodType } from "../common"
+import { periodSchema, tokenSchema, type PeriodType } from "../../shared"
 import { MarketCapResponseApiSchema } from "./marketCap.schema"
 import { ShenAdaPriceResponseApiSchema } from "./shenAdaPrice.schema"
 import { DjedDexPricesResponseApiSchema } from "./djedDexPrices.schema"
 import { VolumesResponseApiSchema } from "./volumes.schema"
-import { AppError, InternalServerError, ValidationError } from "../errors"
+import {
+  AppError,
+  InternalServerError,
+  ValidationError,
+} from "../../shared/errors"
 import {
   getLast60DaysShenYield,
   getPeriodAdaShenPrices,
@@ -21,7 +25,7 @@ import {
   getSumStakingRewardsRate,
   type Period,
 } from "@open-djed/db"
-import { chainDataCache } from "../core"
+import { chainDataCache } from "../../core"
 
 const StakingRewardsSchema = z.object({
   // TODO: CHANGE THIS

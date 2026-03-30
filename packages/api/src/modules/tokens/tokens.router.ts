@@ -1,8 +1,8 @@
 import { Hono } from "hono"
-import { cacheMiddleware } from "../middleware"
+import { cacheMiddleware } from "../../shared/middleware"
 import { describeRoute } from "hono-openapi"
 import { validator } from "hono-openapi/zod"
-import { actionSchema, tokenSchema } from "../common"
+import { actionSchema, tokenSchema } from "../../shared/schemas"
 import z from "zod"
 import {
   AppError,
@@ -11,7 +11,7 @@ import {
   ScriptExecutionError,
   UTxOContentionError,
   ValidationError,
-} from "../errors"
+} from "../../shared/errors"
 import { CML, coreToUtxo, type TxBuilder } from "@lucid-evolution/lucid"
 import {
   createBurnDjedOrder,
@@ -25,7 +25,7 @@ import {
   getOracleUTxO,
   getPoolUTxO,
   registry,
-} from "../core"
+} from "../../core"
 
 const txRequestBodySchema = z.object({
   hexAddress: z.string(),

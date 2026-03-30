@@ -3,10 +3,10 @@ import { cors } from "hono/cors"
 import { logger } from "hono/logger"
 export type { Order } from "@open-djed/db"
 import { openAPISpecs } from "hono-openapi"
-import { ordersRouter } from "./orders/orders.router"
-import { AnalyticsRouter } from "./analytics/analytics.routers"
-import { protocolRouter } from "./protocol/protocol.router"
-import { tokensRouter } from "./tokens/tokens.router"
+import { ordersRouter } from "./modules/orders/orders.router"
+import { protocolRouter } from "./modules/protocol/protocol.router"
+import { tokensRouter } from "./modules/tokens/tokens.router"
+import { AnalyticsRouter } from "./modules/analytics/analytics.routers"
 
 export const app = new Hono()
   .basePath("/api")

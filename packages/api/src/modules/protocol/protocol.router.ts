@@ -1,7 +1,7 @@
 import { Hono } from "hono"
 import { describeRoute } from "hono-openapi"
-import { AppError } from "../errors"
-import { getOracleUTxO, getPoolUTxO } from "../core"
+import { AppError } from "../../shared/errors"
+import { getOracleUTxO, getPoolUTxO } from "../../core"
 
 export const protocolRouter = new Hono().get(
   "/protocol-data",

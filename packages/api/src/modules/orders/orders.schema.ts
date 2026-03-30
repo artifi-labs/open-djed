@@ -3,7 +3,7 @@ import {
   actionSchema,
   paginatedResponseSchema,
   paginationQueryParamsSchema,
-} from "../common"
+} from "../../shared"
 
 export const orderStatusSchema = z.enum([
   "Created",

@@ -1,9 +1,9 @@
-import { DatumDecodeError } from "../errors"
 import { Data } from "@lucid-evolution/lucid"
 import { type Order } from "@open-djed/db"
 import { type OrderUTxO } from "@open-djed/txs"
 import { OrderDatum } from "@open-djed/data"
-import { blockfrost, chainDataCache, registry } from "../core"
+import { blockfrost, chainDataCache, registry } from "../../core"
+import { DatumDecodeError } from "../../shared"
 
 type ActionFields =
   | { MintDJED: { djedAmount: bigint; adaAmount: bigint } }
