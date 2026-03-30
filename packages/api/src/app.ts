@@ -27,7 +27,7 @@ import { env } from "./env"
 import { z } from "zod"
 import "zod-openapi/extend"
 import { describeRoute } from "hono-openapi"
-import { validator as zValidator } from "hono-openapi/zod"
+import { resolver, validator as zValidator } from "hono-openapi/zod"
 import { Blockfrost } from "@open-djed/blockfrost"
 import { OracleDatum, OrderDatum, PoolDatum } from "@open-djed/data"
 import TTLCache from "@isaacs/ttlcache"
@@ -43,7 +43,6 @@ import {
   UTxOMissingError,
   ValidationError,
 } from "./errors"
-import JSONbig from "json-bigint"
 import {
   getOrdersByAddressKeys,
   getPeriodAdaShenPrices,
@@ -60,14 +59,24 @@ import { type Order, type Period } from "@open-djed/db"
 export type { Order } from "@open-djed/db"
 import { openAPISpecs } from "hono-openapi"
 import {
-  actionSchema,
+  ordersBodySchema,
+  ordersResponseApiSchema,
   orderStatusSchema,
+} from "./orders"
+import {
+  actionSchema,
   periodSchema,
   tokenSchema,
   type PeriodType,
-} from "./schemas"
-
-export * from "./schemas"
+} from "./common"
+import { serializeOrder } from "./orders/orders.serializer"
+import {
+  DjedDexPricesResponseApiSchema,
+  MarketCapResponseApiSchema,
+  ReserveRatioResponseApiSchema,
+  ShenAdaPriceResponseApiSchema,
+  VolumesResponseApiSchema,
+} from "./analytics"
 
 //NOTE: We only need this cache for transactions, not for other requests. Using this for `protocol-data` sligltly increases the response time.
 const requestCache = new TTLCache<string, { value: Response; expiry: number }>({
@@ -317,8 +326,9 @@ async function completeTransaction(createOrderFn: () => TxBuilder) {
   }
 }
 
-const historicalDataHandler = <T>(
+const historicalDataHandler = <T, S extends z.ZodType | undefined = undefined>(
   dataFetcher: (period: Period) => Promise<T>,
+  responseSchema?: S,
 ) => {
   return async (
     c: Context<
@@ -332,8 +342,10 @@ const historicalDataHandler = <T>(
     >,
   ) => {
     let param
+
     try {
       param = c.req.valid("query")
+
       if (!param?.period) {
         throw new ValidationError("Missing period in request.")
       }
@@ -341,13 +353,18 @@ const historicalDataHandler = <T>(
       console.error("Invalid or missing request payload.", e)
       throw new ValidationError("Invalid or missing request payload.")
     }
+
     try {
-      const data = await dataFetcher(param.period.toUpperCase() as Period)
+      const rawData = await dataFetcher(param.period.toUpperCase() as Period)
+
+      const data = responseSchema ? responseSchema.parse(rawData) : rawData
+
       return c.json(data)
     } catch (err) {
       if (err instanceof AppError) {
         throw err
       }
+
       console.error("Unhandled error in historical data endpoint:", err)
       throw new InternalServerError()
     }
@@ -625,8 +642,8 @@ export const app = new Hono()
         200: {
           description: "Successfully got the historical orders",
           content: {
-            "text/plain": {
-              example: "Order",
+            "application/json": {
+              schema: resolver(ordersResponseApiSchema),
             },
           },
         },
@@ -648,7 +665,7 @@ export const app = new Hono()
         },
       },
     }),
-    zValidator("json", z.object({ usedAddresses: z.array(z.string()) })),
+    zValidator("json", ordersBodySchema),
     zValidator(
       "query",
       z.object({
@@ -735,24 +752,26 @@ export const app = new Hono()
         const endIndex = startIndex + limit
         const paginatedOrders = orders.slice(startIndex, endIndex)
 
-        const ordersToSend = [...paginatedOrders]
+        const ordersToSend = paginatedOrders.map(serializeOrder)
 
-        return new Response(
-          JSONbig.stringify({
-            data: ordersToSend,
-            pagination: {
-              currentPage: page,
-              totalPages: totalPages,
-              totalOrders: totalOrders,
-              ordersPerPage: limit,
-              hasNextPage: page < totalPages,
-              hasPreviousPage: page > 1,
-            },
-          }),
-          {
-            headers: { "Content-Type": "application/json" },
+        const response = {
+          data: ordersToSend,
+          pagination: {
+            currentPage: page,
+            totalPages: totalPages,
+            totalOrders: totalOrders,
+            ordersPerPage: limit,
+            hasNextPage: page < totalPages,
+            hasPreviousPage: page > 1,
           },
-        )
+        }
+
+        try {
+          const parsedResponse = ordersResponseApiSchema.parse(response)
+          return c.json(parsedResponse)
+        } catch (e) {
+          console.error("Response validation error:", e)
+        }
       } catch (err) {
         if (err instanceof AppError) {
           throw err
@@ -773,8 +792,8 @@ export const app = new Hono()
         200: {
           description: "Successfully got the historical reserve ratio",
           content: {
-            "text/plain": {
-              example: "reserve ratio",
+            "application/json": {
+              schema: resolver(ReserveRatioResponseApiSchema),
             },
           },
         },
@@ -802,7 +821,7 @@ export const app = new Hono()
         period: periodSchema,
       }),
     ),
-    historicalDataHandler(getPeriodReserveRatio),
+    historicalDataHandler(getPeriodReserveRatio, ReserveRatioResponseApiSchema),
   )
   .get(
     "/historical-market-cap",
@@ -815,8 +834,8 @@ export const app = new Hono()
         200: {
           description: "Successfully got the historical market cap",
           content: {
-            "text/plain": {
-              example: "DJED market cap",
+            "application/json": {
+              schema: resolver(MarketCapResponseApiSchema),
             },
           },
         },
@@ -847,8 +866,9 @@ export const app = new Hono()
     ),
     (c) => {
       const params = c.req.valid("query")
-      return historicalDataHandler((period) =>
-        getPeriodMarketCap(period, params.token as TokenMarketCap),
+      return historicalDataHandler(
+        (period) => getPeriodMarketCap(period, params.token as TokenMarketCap),
+        MarketCapResponseApiSchema,
       )(c)
     },
   )
@@ -859,6 +879,16 @@ export const app = new Hono()
       summary: "Get historical SHEN/ADA price",
       description: "Get the historical SHEN/ADA price",
       tags: ["Analytics"],
+      responses: {
+        200: {
+          description: "Successfully got the historical SHEN/ADA price",
+          content: {
+            "application/json": {
+              schema: resolver(ShenAdaPriceResponseApiSchema),
+            },
+          },
+        },
+      },
     }),
     zValidator(
       "query",
@@ -866,8 +896,9 @@ export const app = new Hono()
         period: periodSchema,
       }),
     ),
-    historicalDataHandler((period) =>
-      getPeriodAdaShenPrices({ period, grouped: true }),
+    historicalDataHandler(
+      (period) => getPeriodAdaShenPrices({ period, grouped: true }),
+      ShenAdaPriceResponseApiSchema,
     ),
   )
   .get(
@@ -878,6 +909,16 @@ export const app = new Hono()
       description:
         "Retrieve historical DJED price data aggregated across multiple decentralized exchanges (DEXs) over a specified period.",
       tags: ["Analytics"],
+      responses: {
+        200: {
+          description: "Successfully got the historical DJED DEX prices",
+          content: {
+            "application/json": {
+              schema: resolver(DjedDexPricesResponseApiSchema),
+            },
+          },
+        },
+      },
     }),
     zValidator(
       "query",
@@ -885,8 +926,9 @@ export const app = new Hono()
         period: periodSchema,
       }),
     ),
-    historicalDataHandler((period) =>
-      getPeriodPricesForAllTokens(period, "DJED"),
+    historicalDataHandler(
+      (period) => getPeriodPricesForAllTokens(period, "DJED"),
+      DjedDexPricesResponseApiSchema,
     ),
   )
   .get(
@@ -896,6 +938,16 @@ export const app = new Hono()
       summary: "Get historical trading volumes",
       description: "Get the historical trading volumes for DJED and SHEN",
       tags: ["Analytics"],
+      responses: {
+        200: {
+          description: "Successfully got the historical trading volumes",
+          content: {
+            "application/json": {
+              schema: resolver(VolumesResponseApiSchema),
+            },
+          },
+        },
+      },
     }),
     zValidator(
       "query",
@@ -903,7 +955,7 @@ export const app = new Hono()
         period: periodSchema,
       }),
     ),
-    historicalDataHandler(getPeriodVolume),
+    historicalDataHandler(getPeriodVolume, VolumesResponseApiSchema),
   )
   .get(
     "/historical-staking-rewards",
@@ -1056,7 +1108,6 @@ app.get("/scalar", (c) => {
 
         <meta property="og:title" content="Open DJED API" />
         <meta property="og:description" content="API documentation for Open DJED" />
-      </style>
       </head>
 
       <body>
