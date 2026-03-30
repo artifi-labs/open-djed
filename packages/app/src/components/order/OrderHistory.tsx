@@ -66,7 +66,7 @@ export const STATUS_CONFIG: Record<
   },
 }
 
-const formatAda = (value?: number | null) => {
+const formatAda = (value?: bigint | null) => {
   if (!value) return "-"
   return (Number(value) / 1e6).toLocaleString()
 }
@@ -82,7 +82,7 @@ const shouldShowAda = (
 }
 
 const renderValueDisplay = (
-  value: number | null | undefined,
+  value: bigint | null | undefined,
   showAda: boolean,
 ) => {
   const adaValue = formatAda(value)
@@ -162,7 +162,7 @@ const ValueCell = ({
   action,
   type,
 }: {
-  value?: number | null
+  value?: bigint | null
   token?: "DJED" | "SHEN" | "BOTH"
   action?: "Mint" | "Burn"
   type: "paid" | "received"

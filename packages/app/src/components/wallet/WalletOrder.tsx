@@ -20,7 +20,7 @@ const WalletOrder: React.FC<WalletOrderProps> = ({ order, divider }) => {
   const t = useTranslations()
   const { cancelOrder } = useCancelOrder()
 
-  const formatLovelace = (amount: number) =>
+  const formatLovelace = (amount: bigint | null) =>
     (Number(amount) / 1_000_000).toLocaleString(undefined, {
       minimumFractionDigits: 2,
       maximumFractionDigits: 6,
@@ -77,11 +77,11 @@ const WalletOrder: React.FC<WalletOrderProps> = ({ order, divider }) => {
         </div>
         <div className="flex flex-row items-center gap-4">
           <span className="text-xs">
-            {t("wallet.orders.paid")}: {formatLovelace(order.paid ?? 0)}
+            {t("wallet.orders.paid")}: {formatLovelace(order.paid)}
           </span>
           <span className="bg-secondary h-0.75 w-0.75 rounded-full"></span>
           <span className="text-xs">
-            {t("wallet.orders.received")}: {formatLovelace(order.received ?? 0)}
+            {t("wallet.orders.received")}: {formatLovelace(order.received)}
           </span>
         </div>
       </div>
