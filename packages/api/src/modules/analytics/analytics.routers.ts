@@ -1,7 +1,7 @@
 import { Hono, type Context, type Env, type Input } from "hono"
 import { cacheMiddleware } from "../../shared/middleware"
 import { describeRoute } from "hono-openapi"
-import { resolver, validator } from "hono-openapi/zod"
+import { resolver, validator } from "hono-openapi"
 import { ReserveRatioResponseApiSchema } from "./reserveRatio.schema"
 import z from "zod"
 import { periodSchema, tokenSchema, type PeriodType } from "../../shared"

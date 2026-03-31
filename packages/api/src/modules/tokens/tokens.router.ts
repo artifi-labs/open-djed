@@ -1,7 +1,7 @@
 import { Hono } from "hono"
 import { cacheMiddleware } from "../../shared/middleware"
 import { describeRoute } from "hono-openapi"
-import { validator } from "hono-openapi/zod"
+import { validator } from "hono-openapi"
 import { actionSchema, tokenSchema } from "../../shared/schemas"
 import z from "zod"
 import {

@@ -1,6 +1,5 @@
 import { Hono } from "hono"
-import { describeRoute } from "hono-openapi"
-import { resolver, validator } from "hono-openapi/zod"
+import { describeRoute, resolver, validator } from "hono-openapi"
 import {
   ordersBodySchema,
   ordersResponseApiSchema,

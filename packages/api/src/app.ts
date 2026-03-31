@@ -2,11 +2,11 @@ import { Hono } from "hono"
 import { cors } from "hono/cors"
 import { logger } from "hono/logger"
 export type { Order } from "@open-djed/db"
-import { openAPISpecs } from "hono-openapi"
 import { ordersRouter } from "./modules/orders/orders.router"
 import { protocolRouter } from "./modules/protocol/protocol.router"
 import { tokensRouter } from "./modules/tokens/tokens.router"
 import { AnalyticsRouter } from "./modules/analytics/analytics.routers"
+import { openAPIRouteHandler } from "hono-openapi"
 
 export const app = new Hono()
   .basePath("/api")
@@ -19,8 +19,8 @@ export const app = new Hono()
 
 // OpenAPI documentation endpoint
 app.get(
-  "/doc",
-  openAPISpecs(app, {
+  "/openapi.json",
+  openAPIRouteHandler(app, {
     documentation: {
       info: {
         title: "Open DJED API",
@@ -53,7 +53,7 @@ app.get("/scalar", (c) => {
       <body>
         <script
           id="api-reference"
-          data-url="/api/doc"
+          data-url="/api/openapi.json"
           data-theme="default"
         ></script>
 
