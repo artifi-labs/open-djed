@@ -1,0 +1,234 @@
+{
+  "analytics": {
+    "pageTitle": "分析",
+    "analyticsOverview": "分析概览",
+    "description": "协议指标与市场动态的实时洞察",
+    "reserveRatioOverTime": "储备率变化趋势",
+    "djedMarketCap": "DJED 市值",
+    "shenMarketCap": "SHEN 市值",
+    "volumes": "交易量分析",
+    "shenAdaPrice": "SHEN 价格与 ADA 价格",
+    "djedDexPrice": "DJED 价格 vs 二级市场",
+    "total": "总{analytic}",
+    "mintedToken": "{token} 铸造量",
+    "burnedToken": "{token} 销毁量",
+    "volume": "交易量",
+    "errors": {
+      "failedToFetch": "无法获取{analytic}市值数据。"
+    },
+    "currentRatio": "当前比率",
+    "below": "低于最低值",
+    "above": "高于最高值",
+    "reserve": {
+      "warning": {
+        "below": "DJED 铸造/SHEN 销毁不可用：储备率低于最低值。",
+        "above": "SHEN 铸造不可用：储备率高于最高值。"
+      }
+    }
+  },
+  "keywords": {
+    "opensource": "开源",
+    "software": "软件",
+    "development": "开发",
+    "defi_full": "去中心化金融",
+    "software_dev": "软件开发"
+  },
+  "metadata": {
+    "layout": {
+      "description": "铸造与销毁 DJED（Cardano 的超额抵押稳定币），使用我们的开源平台。透明替代 DJED.xyz —— 随时随地 24/7 可访问。"
+    }
+  },
+  "common": {
+    "illustration": "插图",
+    "currencyValue": "{currency} 价值",
+    "min": "最小",
+    "max": "最大",
+    "current": "当前",
+    "available": "可用",
+    "half": "一半",
+    "mintAndBurnNow": "立即铸造与销毁",
+    "months": {
+      "march": "三月",
+      "january": "一月",
+      "february": "二月",
+      "april": "四月",
+      "may": "五月",
+      "june": "六月",
+      "july": "七月",
+      "august": "八月",
+      "september": "九月",
+      "october": "十月",
+      "november": "十一月",
+      "december": "十二月"
+    },
+    "select": "选择",
+    "fees": "费用",
+    "yield": "{token} 收益",
+    "rewards": "奖励",
+    "copiedAddress": "地址已复制",
+    "copyAddress": "复制地址",
+    "weekDays": {
+      "monday": "星期一",
+      "tuesday": "星期二",
+      "wednesday": "星期三",
+      "thursday": "星期四",
+      "friday": "星期五",
+      "saturday": "星期六",
+      "sunday": "星期日"
+    },
+    "periodItems": {
+      "today": "今天",
+      "thisWeek": "本周",
+      "lastWeek": "上周",
+      "thisMonth": "本月",
+      "lastMonth": "上月",
+      "thisQuarter": "本季度",
+      "thisYear": "今年"
+    },
+    "period": {
+      "day": "今天",
+      "week": "本周",
+      "month": "本月",
+      "year": "今年",
+      "all": "全部时间"
+    }
+  },
+  "orders": {
+    "pageTitle": "订单",
+    "noOrders": "暂无订单",
+    "noWalletDescription": "连接钱包并开始活动后，订单将显示在此处",
+    "cancel": "取消",
+    "confirmCancellation": "确认取消",
+    "cancellationDescription": "你即将取消订单。取消后订单将被移除且不再处理。",
+    "cancelOrder": "取消订单",
+    "dismiss": "关闭",
+    "orderCanceled": "你的订单已被取消。",
+    "table": {
+      "header": {
+        "type": "类型",
+        "date": "日期",
+        "paid": "支付",
+        "received": "收到",
+        "status": "状态",
+        "token": "代币",
+        "orders": "订单"
+      },
+      "filters": {
+        "clearAll": "清除所有筛选"
+      }
+    },
+    "viewTransaction": "查看交易",
+    "noOrdersMatchFilters": "没有订单符合筛选条件",
+    "noOrdersToDisplay": "暂无可显示订单",
+    "tryAdjustingFilters": "尝试调整或清除筛选条件",
+    "ordersWillAppear": "首次交易后订单将显示在此处",
+    "estimatedExecutionFee": "预计执行费用",
+    "executedFee": "实际费用",
+    "title": "订单",
+    "allOrders": "全部订单",
+    "noOrdersDescription": "该钱包尚未进行任何交易",
+    "status": {
+      "all": "全部",
+      "created": "已创建",
+      "completed": "已完成",
+      "rejected": "已拒绝",
+      "canceled": "已取消"
+    },
+    "filters": {
+      "status": {
+        "all": "全部",
+        "created": "已创建",
+        "completed": "已完成",
+        "rejected": "已拒绝",
+        "canceled": "已取消"
+      }
+    }
+  },
+  "dashboard": {
+    "pageTitle": "仪表盘",
+    "actionButton": {
+      "wallet": "连接钱包以{action}",
+      "fillAmount": "输入金额以{action}"
+    },
+    "youPay": "你支付",
+    "youReceive": "你收到",
+    "action": {
+      "Mint": {
+        "description": "通过向协议存入 ADA 来铸造 DJED 与 SHEN。"
+      },
+      "Burn": {
+        "description": "销毁 DJED 与 SHEN 以提取你的 ADA。"
+      }
+    },
+    "whatIsOpenDjed": {
+      "title": "什么是 Open DJED？",
+      "description": "Open DJED 是一个社区驱动的 Web 应用，用于在 Cardano 上与 DJED 算法稳定币交互，由 Artifi Labs 完全开源构建。",
+      "whyOpenDjed": {
+        "title": "为什么选择 Open DJED？",
+        "items": {
+          "protocolCompatible": "<strong>可靠：</strong>即使 COTI 应用不可用也能运行。",
+          "openSource": "<strong>社区优先：</strong>为 Cardano 用户构建。",
+          "communityFirst": "<strong>协议兼容：</strong>与 DJED 相同的超额抵押逻辑。",
+          "reliable": "<strong>全球访问：</strong>无地域限制。",
+          "globalAccess": "<strong>开源：</strong>完全可审计、可分叉、社区所有。",
+          "transparentFees": "<strong>透明低费用：</strong>与 COTI 相同费用结构，约便宜 0.1 ADA。"
+        }
+      }
+    },
+    "reserveDetails": {
+      "currentRatio": "当前比率",
+      "minRatio": "最低比率",
+      "maxRatio": "最高比率",
+      "reserveValue": "储备价值"
+    },
+    "transactionSummary": {
+      "title": "交易摘要",
+      "description": "请输入金额以查看完整费用明细。"
+    },
+    "baseCost": "基础成本",
+    "mintFee": "铸造费用",
+    "operatorFee": "运营费用",
+    "totalCost": "总成本",
+    "refundableDeposit": "可退还押金",
+    "price": "价格",
+    "burnFee": "销毁费用"
+  },
+  "action": {
+    "mint": "铸造",
+    "burn": "销毁"
+  },
+  "navbar": {
+    "dashboard": { "title": "仪表盘" },
+    "analytics": { "title": "分析" },
+    "simulator": { "title": "模拟器" },
+    "orders": { "title": "订单" },
+    "wallet": {
+      "connect": "连接钱包",
+      "loading": "正在加载钱包"
+    }
+  },
+  "wallet": {
+    "connectWallet": "连接钱包",
+    "title": "钱包",
+    "noWalletsDetected": "未检测到钱包",
+    "connected": "钱包连接成功",
+    "connectionFailed": "钱包连接失败",
+    "disconnected": "钱包已断开"
+  },
+  "settings": {
+    "title": "设置",
+    "language": { "title": "语言" },
+    "network": { "title": "网络" }
+  },
+  "errors": {
+    "404": {
+      "pageTitle": "页面未找到",
+      "title": "迷失在区块链虚空中",
+      "content": {
+        "content1": "此页面已脱离网络。",
+        "content2": "让我们将你重新连接到主链"
+      },
+      "button": { "text": "返回首页" }
+    }
+  }
+}
