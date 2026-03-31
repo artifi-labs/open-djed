@@ -21,8 +21,9 @@ import Asset from "../Asset"
 import { CARDANOSCAN_BASE_URL, ORDERS_PER_PAGE } from "@/lib/constants"
 import { useTranslations } from "next-intl"
 import { capitalize, formatRelativeDate } from "@/utils"
-import type { Order, OrderStatus } from "@open-djed/api"
+import type { OrderStatus } from "@open-djed/api"
 import { useCancelOrder } from "@/hooks/orders/useCancelOrder"
+import type { Order } from "@/queries/orders/orders/orders.schema"
 
 interface RowItem {
   columns: { content: React.ReactNode }[]

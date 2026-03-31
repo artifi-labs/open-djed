@@ -4,12 +4,12 @@ import Tag from "../Tag"
 import ButtonIcon from "../ButtonIcon"
 import Coin, { type IconCoinName } from "../Coin"
 import Divider from "../Divider"
-import { type Order } from "@open-djed/api"
 import { STATUS_CONFIG } from "../order/OrderHistory"
 import { CARDANOSCAN_BASE_URL } from "@/lib/constants"
 import { useTranslations } from "next-intl"
 import { capitalize, formatRelativeDate } from "@/utils"
 import { useCancelOrder } from "@/hooks/orders/useCancelOrder"
+import type { Order } from "@/queries/orders/orders/orders.schema"
 
 type WalletOrderProps = {
   order: Order

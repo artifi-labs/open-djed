@@ -8,7 +8,7 @@ import {
 } from "recharts"
 import React from "react"
 import { useTranslations } from "next-intl"
-import type { ReserveRatioResponse } from "@open-djed/api"
+import type { ReserveRatioResponse } from "@/queries/analytics/reserveRatio/reserveRatio.schema"
 
 type ReserveRatioOverTimeChartProps = {
   data: ReserveRatioResponse

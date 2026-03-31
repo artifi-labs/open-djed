@@ -3,9 +3,9 @@
 import * as React from "react"
 import clsx from "clsx"
 import ButtonIcon from "./ButtonIcon"
-import { type Order } from "@open-djed/api"
 import { useViewport } from "@/hooks/useViewport"
 import { useTranslations } from "next-intl"
+import type { Order } from "@/queries/orders/orders/orders.schema"
 
 interface TransactionDetailsProps {
   row: {

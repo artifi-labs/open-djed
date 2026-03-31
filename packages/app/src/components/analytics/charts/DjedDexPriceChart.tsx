@@ -1,7 +1,7 @@
 import { FinancialAreaChart } from "@/components/charts/FinancialAreaChart"
 import { type Currency } from "../useAnalyticsData"
 import { env } from "@/lib/envLoader"
-import { type DjedDexPricesResponse } from "@open-djed/api"
+import { type DjedDexPricesResponse } from "@/queries/analytics/dexPrices/dexPrices.schema"
 
 type DjedDexPriceChartProps = {
   data: DjedDexPricesResponse
