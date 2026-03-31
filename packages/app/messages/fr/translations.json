@@ -7,7 +7,7 @@
     "djedMarketCap": "Capitalisation DJED",
     "shenMarketCap": "Capitalisation SHEN",
     "volumes": "Analyse des Volumes",
-    "shenAdaPrice": "Prix de SHEN & Prix de ADA",
+    "shenAdaPrice": "Prix de SHEN & Prix d'ADA",
     "djedDexPrice": "Prix de DJED vs Marchés Secondaires",
     "total": "Total {analytic}",
     "mintedToken": "{token} Frappé",
@@ -21,8 +21,8 @@
     "above": "Au-dessus du maximum",
     "reserve": {
       "warning": {
-        "below": "Frappe de DJED / Destruction de SHEN indisponible : ratio de réserves en dessous du minimum.",
-        "above": "Frappe de SHEN indisponible : ratio de réserves au-dessus du maximum."
+        "below": "Frappe de DJED / Destruction de SHEN indisponibles: ratio de réserves en dessous du minimum.",
+        "above": "Frappe de SHEN indisponible: ratio de réserves au-dessus du maximum."
       }
     }
   },
@@ -170,7 +170,7 @@
           "openSource": "<strong>La communauté d'abord :</strong> Conçu pour et par les utilisateurs de Cardano.",
           "communityFirst": "<strong>Compatible avec le protocole :</strong> Même logique surcollatéralisée que DJED.",
           "reliable": "<strong>Accès mondial :</strong> Sans restrictions géographiques.",
-          "globalAccess": "<strong>Open source :</strong> Entièrement auditable, forçable et détenu par la communauté.",
+          "globalAccess": "<strong>Open source :</strong> Entièrement auditable, forkable et détenu par la communauté.",
           "transparentFees": "<strong>Frais transparents et réduits :</strong> Même structure de frais que COTI, ~0,1 ADA moins cher."
         }
       }
@@ -211,7 +211,7 @@
       "dataCollection": "Nous ne collectons ni ne stockons aucune donnée personnelle. Toutes les données utilisées ou affichées par l'application proviennent exclusivement d'informations publiques disponibles sur la blockchain.",
       "wallet": "Lorsque les utilisateurs interagissent avec l'application via leur portefeuille Cardano, nous interagissons uniquement avec l'interface du portefeuille via le standard CIP-30. Nous ne recevons ni ne stockons vos clés privées. Nous nous réservons le droit de stocker vos adresses et transactions à des fins analytiques afin d'améliorer l'application en fonction de son utilisation.",
       "analytics1": "Nous utilisons PostHog pour collecter des analytiques limitées et de la télémétrie applicative. Cela nous aide à comprendre comment l'application est utilisée et à identifier les bugs ou problèmes de performance.",
-      "analytics2": "Les données collectées par PostHog ne <strong>comprennent pas</strong> d'informations personnellement identifiables. Nous ne <strong>stockons pas</strong> d'adresses de portefeuille, de noms, d'e-mails ni de credentials utilisateur.",
+      "analytics2": "Les données collectées par PostHog ne <strong>comprennent pas</strong> d'informations personnellement identifiables. Nous ne <strong>stockons pas</strong> d'adresses de portefeuille, de noms, d'e-mails ni d'identifiants utilisateur.",
       "analytics3": "Toutes les analytiques sont utilisées strictement dans le but d'améliorer l'expérience de l'application.",
       "openSource": "Cette application est open source et sous licence",
       "sourceCode": "Code source :",
@@ -292,7 +292,7 @@
       },
       "chart": {
         "profitOverTime": {
-          "title": "Profit dans le Temps"
+          "title": "Profit au fil du temps"
         }
       },
       "shen": {
@@ -308,7 +308,7 @@
     "description": "Vérifiez rapidement et clairement les résultats d'un investissement dans SHEN.",
     "whatIsSimulator": {
       "title": "Qu'est-ce que le simulateur de trading ?",
-      "description": "Le simulateur vous aide à comprendre la rentabilité d'un investissement dans SHEN. En saisissant le montant en USD, les dates d'achat et de vente, et les prix de l'ADA,",
+      "description": "Le simulateur de trading vous aide à comprendre la rentabilité d'un investissement dans SHEN. En saisissant le montant en USD, vos dates d'achat et de vente, et les prix de l'ADA, l'outil estime votre profit ou votre perte potentiel.",
       "disclaimer": "Ce n'est pas un outil de trading. C'est une calculatrice qui montre comment vos rendements évoluent en fonction des valeurs saisies, afin que vous puissiez planifier votre stratégie avec clarté. Cela ne doit pas être considéré comme un conseil financier.",
       "items": {
         "fees": "Frais payés lors de l'achat et de la vente",
@@ -377,9 +377,9 @@
         "text": "Politique de Confidentialité"
       },
       "terms": {
-        "text": "Termes & Conditions"
+        "text": "Conditions d'Utilisation"
       },
-      "allRights": "© {year} {company}. Tous droits réservés"
+      "allRights": "{year} {company}. Tous droits réservés"
     }
   },
   "navbar": {
@@ -410,7 +410,7 @@
     },
     "title": "Portefeuille",
     "noWalletsDetected": "Aucun portefeuille détecté",
-    "incorrectNetwork": "Veuillez connecter un portefeuille {network}",
+    "incorrectNetwork": "Veuillez connecter un portefeuille compatible avec {network}",
     "connected": "Votre portefeuille a été connecté avec succès",
     "connectionFailed": "Échec de la connexion du portefeuille",
     "disconnected": "Votre portefeuille a été déconnecté"
