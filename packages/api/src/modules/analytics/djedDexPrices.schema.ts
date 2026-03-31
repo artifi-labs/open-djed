@@ -5,20 +5,20 @@ import { z } from "zod"
  */
 export const DjedDexPricesEntryApiSchema = z.object({
   id: z.number(),
-  timestamp: z.string(),
+  timestamp: z.coerce.string(),
   token: z.literal("DJED"),
-  usdValue: z.string(),
-  adaValue: z.string(),
-  minswapUsdValue: z.string().nullable(),
-  minswapAdaValue: z.string().nullable(),
-  wingridersAdaValue: z.string().nullable(),
-  wingridersUsdValue: z.string().nullable(),
+  usdValue: z.coerce.string(),
+  adaValue: z.coerce.string(),
+  minswapUsdValue: z.coerce.string().nullable(),
+  minswapAdaValue: z.coerce.string().nullable(),
+  wingridersAdaValue: z.coerce.string().nullable(),
+  wingridersUsdValue: z.coerce.string().nullable(),
 })
 
 export const DjedDexPricesResponseApiSchema = z.array(
   DjedDexPricesEntryApiSchema,
 )
-export type DjedDexPricesEntryApi = z.infer<typeof DjedDexPricesEntryApiSchema>
+export type DjedDexPricesApi = z.infer<typeof DjedDexPricesEntryApiSchema>
 export type DjedDexPricesResponseApi = z.infer<
   typeof DjedDexPricesResponseApiSchema
 >
@@ -39,5 +39,5 @@ export const DjedDexPricesEntrySchema = DjedDexPricesEntryApiSchema.transform(
 )
 
 export const DjedDexPricesResponseSchema = z.array(DjedDexPricesEntrySchema)
-export type DjedDexPricesEntry = z.infer<typeof DjedDexPricesEntrySchema>
+export type DjedDexPrices = z.infer<typeof DjedDexPricesEntrySchema>
 export type DjedDexPricesResponse = z.infer<typeof DjedDexPricesResponseSchema>

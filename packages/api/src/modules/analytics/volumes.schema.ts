@@ -4,21 +4,21 @@ import { z } from "zod"
  * Schemas for Volumes API response.
  */
 export const VolumesEntryApiSchema = z.object({
-  timestamp: z.string(),
-  djedMintedUSD: z.string(),
-  shenMintedUSD: z.string(),
-  djedBurnedUSD: z.string(),
-  shenBurnedUSD: z.string(),
-  djedMintedADA: z.string(),
-  djedBurnedADA: z.string(),
-  shenMintedADA: z.string(),
-  shenBurnedADA: z.string(),
-  totalDjedVolumeUSD: z.string(),
-  totalShenVolumeUSD: z.string(),
-  totalDjedVolumeADA: z.string(),
-  totalShenVolumeADA: z.string(),
-  totalVolumeUSD: z.string(),
-  totalVolumeADA: z.string(),
+  timestamp: z.coerce.string(),
+  djedMintedUSD: z.coerce.string(),
+  shenMintedUSD: z.coerce.string(),
+  djedBurnedUSD: z.coerce.string(),
+  shenBurnedUSD: z.coerce.string(),
+  djedMintedADA: z.coerce.string(),
+  djedBurnedADA: z.coerce.string(),
+  shenMintedADA: z.coerce.string(),
+  shenBurnedADA: z.coerce.string(),
+  totalDjedVolumeUSD: z.coerce.string(),
+  totalShenVolumeUSD: z.coerce.string(),
+  totalDjedVolumeADA: z.coerce.string(),
+  totalShenVolumeADA: z.coerce.string(),
+  totalVolumeUSD: z.coerce.string(),
+  totalVolumeADA: z.coerce.string(),
 })
 
 export const VolumesResponseApiSchema = z.array(VolumesEntryApiSchema)

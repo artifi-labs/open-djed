@@ -10,9 +10,9 @@ export type MarketCapValue = {
  */
 export const MarketCapEntryApiSchema = z.object({
   id: z.number(),
-  timestamp: z.string(),
-  adaValue: z.string(),
-  usdValue: z.string(),
+  timestamp: z.coerce.string(),
+  adaValue: z.coerce.string(),
+  usdValue: z.coerce.string(),
 })
 
 export const MarketCapResponseApiSchema = z.array(MarketCapEntryApiSchema)

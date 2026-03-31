@@ -5,8 +5,8 @@ import { z } from "zod"
  */
 export const ReserveRatioEntryApiSchema = z.object({
   id: z.number(),
-  timestamp: z.string(),
-  reserveRatio: z.string(),
+  timestamp: z.coerce.string(),
+  reserveRatio: z.coerce.string(),
 })
 
 export const ReserveRatioResponseApiSchema = z.array(ReserveRatioEntryApiSchema)

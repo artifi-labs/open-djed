@@ -14,6 +14,9 @@ export const orderStatusSchema = z.enum([
 
 export type OrderStatus = z.infer<typeof orderStatusSchema>
 
+/**
+ * Schemas for Orders API response.
+ */
 export const orderApiSchema = z.object({
   id: z.number(),
   address: z.any(),

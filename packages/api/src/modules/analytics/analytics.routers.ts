@@ -7,7 +7,7 @@ import z from "zod"
 import { periodSchema, tokenSchema, type PeriodType } from "../../shared"
 import { MarketCapResponseApiSchema } from "./marketCap.schema"
 import { ShenAdaPriceResponseApiSchema } from "./shenAdaPrice.schema"
-import { DjedDexPricesResponseApiSchema } from "./djedDexPrices.schema"
+import { DjedDexPricesResponseApiSchema, DjedDexPricesResponseSchema } from "./djedDexPrices.schema"
 import { VolumesResponseApiSchema } from "./volumes.schema"
 import {
   AppError,
@@ -26,6 +26,7 @@ import {
   type Period,
 } from "@open-djed/db"
 import { chainDataCache } from "../../core"
+import { serializeDjedDexPricesEntry } from "./djedDexPrices.serializer"
 
 // TODO: Move this to a separate schema file
 const StakingRewardsSchema = z.object({
@@ -68,6 +69,7 @@ const historicalDataHandler = <T, S extends z.ZodType | undefined = undefined>(
 
       return c.json(data)
     } catch (err) {
+      console.log("Error fetching historical data:", err)
       if (err instanceof AppError) {
         throw err
       }
@@ -227,7 +229,7 @@ export const AnalyticsRouter = new Hono()
     historicalDataHandler(
       (period) => getPeriodPricesForAllTokens(period, "DJED"),
       DjedDexPricesResponseApiSchema,
-    ),
+    )
   )
   .get(
     "/historical-volumes",
