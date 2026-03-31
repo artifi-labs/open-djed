@@ -40,6 +40,7 @@
   },
   "common": {
     "illustration": "Ilustração",
+    "yield": "Rendimento de {token}",
     "currencyValue": "Valor de {currency}",
     "min": "Min",
     "max": "Máx",
@@ -63,7 +64,6 @@
     },
     "select": "Selecionar",
     "fees": "Taxas",
-    "yield": "Rendimento de {token}",
     "rewards": "Recompensas",
     "copiedAddress": "Endereço copiado",
     "copyAddress": "Copiar endereço",
