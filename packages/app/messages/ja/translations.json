@@ -1,54 +1,55 @@
 {
   "analytics": {
-    "pageTitle": "分析",
-    "analyticsOverview": "分析概要",
-    "description": "プロトコル指標と市場動向に関するリアルタイムの洞察",
-    "reserveRatioOverTime": "準備金比率の推移",
-    "djedMarketCap": "DJEDの時価総額",
-    "shenMarketCap": "SHENの時価総額",
+    "pageTitle": "アナリティクス",
+    "analyticsOverview": "アナリティクス概要",
+    "description": "プロトコル指標と市場動向のリアルタイムインサイト",
+    "reserveRatioOverTime": "準備率の推移",
+    "djedMarketCap": "DJED 時価総額",
+    "shenMarketCap": "SHEN 時価総額",
     "volumes": "ボリューム分析",
-    "shenAdaPrice": "SHEN価格とADA価格",
-    "djedDexPrice": "DJED価格と二次市場の比較",
-    "total": "合計{analytic}",
-    "mintedToken": "{token}ミント済み",
-    "burnedToken": "{token}焼却済み",
-    "volume": "音量",
+    "shenAdaPrice": "SHEN价格 & ADA価格",
+    "djedDexPrice": "DJED価格 vs セカンダリー市場",
+    "total": "{analytic} 合計",
+    "mintedToken": "{token} 発行済み",
+    "burnedToken": "{token} バーン済み",
+    "volume": "ボリューム",
     "errors": {
-      "failedToFetch": "{analytic}キャップデータの取得に失敗しました。"
+      "failedToFetch": "{analytic} のデータを取得できませんでした。"
     },
-    "currentRatio": "流動比率",
-    "below": "最低基準を下回る",
-    "above": "最大値を超える",
+    "currentRatio": "現在の比率",
+    "below": "最低値以下",
+    "above": "最高値以上",
     "reserve": {
       "warning": {
-        "below": "DJED鋳造/SHEN焼却不可：準備金比率が最低基準を下回っているため。",
-        "above": "SHENの鋳造はできません：準備金比率が最大を超えています。"
+        "below": "DJED発行／SHENバーン不可：準備率が最低値を下回っています。",
+        "above": "SHEN発行不可：準備率が最高値を上回っています。"
       }
     }
   },
   "keywords": {
     "opensource": "オープンソース",
     "software": "ソフトウェア",
-    "development": "発達",
+    "development": "開発",
     "defi_full": "分散型金融",
     "software_dev": "ソフトウェア開発"
   },
   "metadata": {
     "layout": {
-      "description": "オープンソースプラットフォームで、カルダノの過剰担保型ステーブルコインであるDJEDをミント（発行）およびバーン（焼却）できます。DJED.xyzに代わる透明性の高いプラットフォームで、24時間365日いつでもどこからでもアクセス可能です。"
+      "description": "オープンソースプラットフォームで、CardanoのDJED（過剰担保型ステーブルコイン）を発行・バーン。DJED.xyzの透明な代替として、世界中で24時間365日アクセス可能。"
     }
   },
   "common": {
-    "illustration": "図",
-    "currencyValue": "{currency}値",
-    "min": "ミン",
-    "max": "マックス",
+    "illustration": "イラスト",
+    "yield": "{token} 利回り",
+    "currencyValue": "{currency} 価値",
+    "min": "最小",
+    "max": "最大",
     "current": "現在",
     "available": "利用可能",
     "half": "半分",
-    "mintAndBurnNow": "ミント＆バーン・ナウ",
+    "mintAndBurnNow": "今すぐ発行・バーン",
     "months": {
-      "march": "行進",
+      "march": "3月",
       "january": "1月",
       "february": "2月",
       "april": "4月",
@@ -62,11 +63,10 @@
       "december": "12月"
     },
     "select": "選択",
-    "fees": "料金",
-    "yield": "{token}生成",
+    "fees": "手数料",
     "rewards": "報酬",
-    "copiedAddress": "コピーした住所",
-    "copyAddress": "住所をコピーする",
+    "copiedAddress": "アドレスをコピーしました",
+    "copyAddress": "アドレスをコピー",
     "weekDays": {
       "monday": "月曜日",
       "tuesday": "火曜日",
@@ -90,56 +90,56 @@
       "week": "今週",
       "month": "今月",
       "year": "今年",
-      "all": "歴代"
+      "all": "全期間"
     }
   },
   "orders": {
     "pageTitle": "注文",
     "noOrders": "まだ注文はありません",
-    "noWalletDescription": "ウォレットが接続され、アクティビティが開始されると、注文がここに表示されます。",
+    "noWalletDescription": "ウォレットが接続され、取引が開始されると、注文がここに表示されます",
     "cancel": "キャンセル",
-    "confirmCancellation": "キャンセル確認",
-    "cancellationDescription": "ご注文をキャンセルしようとしています。キャンセルが完了すると、ご注文は削除され、処理は行われなくなります。",
-    "cancelOrder": "注文をキャンセルする",
-    "dismiss": "却下する",
-    "orderCanceled": "ご注文はキャンセルされました。",
+    "confirmCancellation": "キャンセルの確認",
+    "cancellationDescription": "注文をキャンセルしようとしています。キャンセル後、注文は削除され、処理されなくなります。",
+    "cancelOrder": "注文をキャンセル",
+    "dismiss": "閉じる",
+    "orderCanceled": "注文がキャンセルされました。",
     "table": {
       "header": {
-        "type": "タイプ",
+        "type": "種類",
         "date": "日付",
-        "paid": "有料",
-        "received": "受け取った",
-        "status": "状態",
+        "paid": "支払済み",
+        "received": "受取済み",
+        "status": "ステータス",
         "token": "トークン",
         "orders": "注文"
       },
       "filters": {
-        "clearAll": "すべてのフィルターをクリアする"
+        "clearAll": "フィルターをすべてクリア"
       }
     },
     "viewTransaction": "取引を表示",
-    "noOrdersMatchFilters": "フィルターに一致する注文はありません",
-    "noOrdersToDisplay": "表示する注文はまだありません",
-    "tryAdjustingFilters": "フィルターを調整またはクリアして、より多くの結果を表示してみてください。",
-    "ordersWillAppear": "初回取引後、注文がここに表示されます。",
-    "estimatedExecutionFee": "推定執行手数料",
-    "executedFee": "執行手数料",
+    "noOrdersMatchFilters": "フィルターに一致する注文がありません",
+    "noOrdersToDisplay": "表示する注文がありません",
+    "tryAdjustingFilters": "フィルターを調整またはクリアして、より多くの結果を表示してください",
+    "ordersWillAppear": "最初の取引後、注文がここに表示されます",
+    "estimatedExecutionFee": "推定実行手数料",
+    "executedFee": "実行済み手数料",
     "title": "注文",
     "allOrders": "すべての注文",
-    "noOrdersDescription": "このウォレットは取引を行っていないようです。",
+    "noOrdersDescription": "このウォレットはまだ取引を行っていないようです",
     "status": {
-      "all": "全て",
+      "all": "すべて",
       "created": "作成済み",
       "completed": "完了",
-      "rejected": "拒否されました",
+      "rejected": "拒否",
       "canceled": "キャンセル"
     },
     "filters": {
       "status": {
-        "all": "全て",
+        "all": "すべて",
         "created": "作成済み",
         "completed": "完了",
-        "rejected": "拒否されました",
+        "rejected": "拒否",
         "canceled": "キャンセル"
       }
     }
@@ -147,229 +147,229 @@
   "dashboard": {
     "pageTitle": "ダッシュボード",
     "actionButton": {
-      "wallet": "ウォレットを{action}に接続します。",
-      "fillAmount": "金額を{action}に入力してください。"
+      "wallet": "{action} するにはウォレットを接続してください",
+      "fillAmount": "{action} するには金額を入力してください"
     },
     "youPay": "お支払い",
-    "youReceive": "受け取る",
+    "youReceive": "受取額",
     "action": {
       "Mint": {
-        "description": "プロトコルにADAを預け入れることで、DJED、SHENをミントします。"
+        "description": "ADAをプロトコルに預けてDJEDおよびSHENを発行します。"
       },
       "Burn": {
-        "description": "DJEDとSHENを燃焼させて、プロトコルからADAを撤回してください。"
+        "description": "DJEDおよびSHENをバーンして、プロトコルからADAを引き出します。"
       }
     },
     "whatIsOpenDjed": {
-      "title": "Open DJEDとは何ですか？",
-      "description": "Open DJEDは、Artifi Labsが完全にオープンソースで開発した、Cardano上のアルゴリズム型ステーブルコインDJEDとやり取りするためのコミュニティ主導型ウェブアプリです。オリジナルのDJEDの体験を完全なプロトコル互換性で再現し、より信頼性が高く、アクセスしやすく、監査可能な代替手段を提供します。",
+      "title": "Open DJEDとは？",
+      "description": "Open DJEDは、Artifi Labsが完全オープンソースで開発した、Cardano上のDJEDアルゴリズム型ステーブルコインと連携するためのコミュニティ主導のWebアプリです。プロトコルとの完全な互換性を維持しつつ、元のDJEDの体験を再現し、より信頼性が高く、アクセスしやすく、監査可能な代替手段を提供します。",
       "whyOpenDjed": {
-        "title": "なぜDJEDを開設するのか？",
+        "title": "なぜOpen DJEDなのか？",
         "items": {
-          "protocolCompatible": "<strong>信頼性：</strong> COTIアプリがダウンしている場合でも動作します。",
-          "openSource": "<strong>コミュニティ第一：</strong>カルダノユーザーのために、そしてカルダノユーザーによって作られました。",
-          "communityFirst": "<strong>プロトコル互換性：</strong> DJEDと同じ過剰担保ロジック。",
-          "reliable": "<strong>グローバルアクセス：</strong>地理的な制限はありません。",
-          "globalAccess": "<strong>オープンソース：</strong>完全な監査可能性、フォーク可能性、そしてコミュニティ所有。",
-          "transparentFees": "<strong>透明性が高く低料金：</strong> COTIと同じ料金体系で、ADAが約0.1安くなります。"
+          "protocolCompatible": "<strong>信頼性：</strong>COTIアプリがダウンしていても動作します。",
+          "openSource": "<strong>コミュニティ優先：</strong>Cardanoユーザーのために、ユーザーによって構築されています。",
+          "communityFirst": "<strong>プロトコル互換：</strong>DJEDと同じ過剰担保ロジックを使用。",
+          "reliable": "<strong>グローバルアクセス：</strong>地理的制限なし。",
+          "globalAccess": "<strong>オープンソース：</strong>完全に監査可能、フォーク可能、コミュニティ所有。",
+          "transparentFees": "<strong>透明かつ低手数料：</strong>COTIと同じ手数料体系で、約0.1 ADA安い。"
         }
       }
     },
     "reserveDetails": {
-      "currentRatio": "流動比率",
-      "minRatio": "最小比率",
-      "maxRatio": "最大比率",
-      "reserveValue": "最低価格"
+      "currentRatio": "現在の比率",
+      "minRatio": "最低比率",
+      "maxRatio": "最高比率",
+      "reserveValue": "準備金額"
     },
     "transactionSummary": {
-      "title": "取引概要",
-      "description": "まず金額を入力して、費用の内訳全体を確認してください。"
+      "title": "取引サマリー",
+      "description": "金額を入力すると、費用の詳細が表示されます。"
     },
     "baseCost": "基本コスト",
-    "mintFee": "造幣局手数料",
+    "mintFee": "発行手数料",
     "operatorFee": "オペレーター手数料",
-    "totalCost": "総費用",
-    "refundableDeposit": "返金可能な保証金",
+    "totalCost": "合計コスト",
+    "refundableDeposit": "返金可能なデポジット",
     "price": "価格",
-    "burnFee": "バーンフィー"
+    "burnFee": "バーン手数料"
   },
   "privacyPolicy": {
     "pageTitle": "プライバシーポリシー",
     "title": "プライバシーポリシー",
-    "effectiveDate": "有効日: {date}",
-    "intro": "Artifi Labsは、プライバシーと透明性を重視しています。このプライバシーポリシーでは、当社が収集するデータとその利用方法について説明します。",
+    "effectiveDate": "発効日：{date}",
+    "intro": "Artifi Labsはプライバシーと透明性を重視しています。このプライバシーポリシーでは、収集するデータとその使用方法について説明します。",
     "sections": {
       "dataCollection": "1. データ収集",
-      "wallets": "2. 財布",
-      "analytics": "3. 分析とテレメトリ",
+      "wallets": "2. ウォレット",
+      "analytics": "3. アナリティクスとテレメトリー",
       "openSource": "4. オープンソース",
       "authentication": "5. 認証",
-      "policy": "6. 本ポリシーの更新",
-      "contact": "7. 連絡先"
+      "policy": "6. ポリシーの更新",
+      "contact": "7. お問い合わせ"
     },
     "paragraphs": {
-      "dataCollection": "当社は個人データを一切収集または保存しません。アプリケーションがアクセスまたは表示するデータはすべて、ブロックチェーン上で公開されているデータのみに基づいています。",
-      "wallet": "ユーザーがCardanoウォレットを使用してアプリを操作する場合、当社はCIP-30規格を介してウォレットインターフェースとのみやり取りします。お客様の秘密鍵を当社が受信または保存することはありません。当社は、お客様のアプリ利用状況を分析し、その情報に基づいてアプリを改善するために、お客様のアドレスとトランザクションを保存する権利を留保します。",
-      "analytics1": "当社では、PostHogを使用して限定的な分析データとアプリケーションテレメトリを収集しています。これにより、アプリの利用状況を把握し、バグやパフォーマンスの問題を特定することができます。",
-      "analytics2": "PostHogが収集するデータには、個人を特定できる情報は含まれて<strong>いません</strong>。ウォレットアドレス、氏名、メールアドレス、ユーザー認証情報などは<strong>一切保存しません</strong>。",
-      "analytics3": "すべての分析データは、アプリケーションの利用体験を向上させる目的のみに使用されます。",
-      "openSource": "このアプリケーションはオープンソースであり、以下のライセンスに基づいて提供されています。",
+      "dataCollection": "個人データの収集・保存は行っていません。アプリが利用または表示するデータは、ブロックチェーン上の公開情報のみです。",
+      "wallet": "ユーザーがCardanoウォレットでアプリを利用する際、CIP-30標準を通じてウォレットインターフェースとのみやり取りします。秘密鍵の受信・保存は行いません。アプリの改善を目的として、アドレスや取引履歴を分析用に保存する場合があります。",
+      "analytics1": "アプリの利用状況を把握し、バグやパフォーマンスの問題を特定するために、PostHogを使用して限定的なアナリティクスとテレメトリーデータを収集しています。",
+      "analytics2": "PostHogが収集するデータには、個人を特定できる情報は<strong>含まれません</strong>。ウォレットアドレス、氏名、メールアドレス、ユーザー認証情報は<strong>保存しません</strong>。",
+      "analytics3": "すべての分析データは、アプリの利用体験向上のためだけに使用されます。",
+      "openSource": "このアプリケーションはオープンソースであり、以下のライセンスの下で提供されています：",
       "sourceCode": "ソースコード：",
-      "authentication": "このアプリケーションは、ユーザーアカウント、ログイン、メールアドレスの登録を一切必要としません。アクセスは匿名で行えます。",
-      "policy": "本ポリシーは今後改訂される場合があります。改訂内容は、新しい発効日とともにこちらに掲載いたします。",
-      "contact": "このプライバシーポリシーについてご質問がある場合は、下記までお問い合わせください。"
+      "authentication": "このアプリケーションはユーザーアカウント、ログイン、またはメール登録を必要としません。アクセスは匿名です。",
+      "policy": "このポリシーは随時改定される場合があります。更新内容は新しい発効日とともにこちらに掲載されます。",
+      "contact": "このプライバシーポリシーについてご質問がある場合は、こちらまでお問い合わせください："
     }
   },
   "simulator": {
     "pageTitle": "シミュレーター",
     "usdAmount": {
-      "label": "米ドル金額",
-      "tooltip": "SHENに投資したい米ドルの金額。"
+      "label": "USD金額",
+      "tooltip": "SHENに投資したいUSD金額。"
     },
     "buyDate": {
       "label": "購入日",
       "tooltip": "SHENを購入した日付。"
     },
     "sellDate": {
-      "label": "販売日",
-      "tooltip": "SHENを売却した日付。"
+      "label": "売却日",
+      "tooltip": "SHENを売却する予定の日付。"
     },
     "buyAdaPrice": {
-      "label": "ADA価格を購入する",
-      "tooltip": "SHENを購入する際のADA価格は、損益計算に使用されます。"
+      "label": "ADA購入価格",
+      "tooltip": "SHEN購入時のADA価格。損益計算に使用されます。"
     },
     "sellAdaPrice": {
-      "label": "ADA価格を売却",
-      "tooltip": "SHENを売却した際のADA価格は、損益計算に使用されます。"
+      "label": "ADA売却価格",
+      "tooltip": "SHEN売却時のADA価格。損益計算に使用されます。"
     },
     "scenario": "シナリオ",
     "results": {
-      "title": "シミュレーターの結果",
-      "description": "まず金額を入力して結果を確認してください。",
+      "title": "シミュレーション結果",
+      "description": "金額を入力すると結果が表示されます。",
       "comparison": {
-        "title": "投資収益率比較（SHEN vs ADA）",
-        "description": "このグラフは、SHENまたはADAを保有した場合の代替結果を示しています。"
+        "title": "リターン比較（SHEN vs ADA）",
+        "description": "このチャートは、SHENまたはADAを保有した場合の代替シナリオを示しています。"
       },
       "fees": {
         "simplified": {
-          "tooltip": "簡略化された報酬制度をご覧ください。"
+          "tooltip": "簡略化された報酬を表示。"
         },
         "detailed": {
-          "tooltip": "詳細な料金内訳をご覧ください。"
+          "tooltip": "詳細な手数料の内訳を表示。"
         },
         "buyFee": {
           "label": "購入手数料",
-          "tooltip": "Djed/Shenを購入する際に手数料が発生します。この手数料はプロトコルの維持に役立てられ、SHEN保有者と共有されます。"
+          "tooltip": "DJED/SHEN購入時に適用される手数料。プロトコルの維持に役立ち、SHENホルダーに分配されます。"
         },
         "sellFee": {
-          "label": "販売手数料",
-          "tooltip": "Djed/Shenを売却する際には手数料が発生します。この手数料はプロトコルの維持に役立てられ、SHEN保有者と共有されます。"
+          "label": "売却手数料",
+          "tooltip": "DJED/SHEN売却時に適用される手数料。プロトコルの維持に役立ち、SHENホルダーに分配されます。"
         },
         "totalFee": {
-          "label": "合計料金",
-          "tooltip": "Djed/Shenの売買時に適用される手数料総額。これはプロトコルの維持に役立ち、SHEN保有者と共有されます。"
+          "label": "合計手数料",
+          "tooltip": "DJED/SHENの購入・売却時に適用される合計手数料。プロトコルの維持に役立ち、SHENホルダーに分配されます。"
         },
         "stakingRewards": {
           "label": "ADAステーキング報酬",
-          "tooltip": "SHENを裏付けているステーキングされたADAから得られる報酬。ステーキングされたADAは、カルダノネットワークのセキュリティ強化に貢献し、不労所得を生み出します。"
+          "tooltip": "SHENを裏付けるステーキングADAから得られる報酬。ステーキングはCardanoネットワークの安全確保に役立ち、パッシブインカムを生み出します。"
         },
         "earnedFee": {
-          "label": "売買手数料収入",
-          "tooltip": "売買取引から徴収された手数料の総額。これはSHEN保有者に分配されます。これは、特定の期間における売買手数料の合計、または将来の一定期間における売買手数料の予測値です。"
+          "label": "獲得した売買手数料",
+          "tooltip": "購入・売却取引から収集された合計手数料。SHENホルダーに分配されます。"
         },
         "totalRewards": {
-          "label": "トータルリワード",
-          "tooltip": "SHENを裏付けているステーキングされたADAから得られる報酬の合計と、売買取引から徴収される手数料の合計が、SHEN保有者に分配されます。"
+          "label": "合計報酬",
+          "tooltip": "SHENを裏付けるステーキングADAから得られる報酬と、SHENホルダーに分配される売買手数料の合計。"
         }
       },
       "rewards": {
         "simplified": {
-          "tooltip": "簡略化された料金表をご覧ください。"
+          "tooltip": "簡略化された手数料を表示。"
         },
         "detailed": {
-          "tooltip": "報酬の詳細な内訳をご覧ください。"
+          "tooltip": "詳細な報酬の内訳を表示。"
         }
       },
       "chart": {
         "profitOverTime": {
-          "title": "長期的に利益を上げる"
+          "title": "時間経過による損益"
         }
       },
       "shen": {
         "label": "SHEN PNL",
-        "tooltip": "これは、手数料と報酬を含めて、SHENに投資した場合に得られる利益または損失を示しています。"
+        "tooltip": "手数料と報酬を含む、SHENに投資した場合の損益を表示します。"
       },
       "ada": {
         "label": "ADA PNL",
-        "tooltip": "これは、SHENを購入せずにADAを保有するだけで得られる利益または損失を示しています。"
+        "tooltip": "SHENを購入せずADAを保有し続けた場合の損益を表示します。"
       }
     },
-    "title": "SHENトレードシミュレーター",
-    "description": "SHENへの投資結果を迅速かつ明確に確認する",
+    "title": "SHEN トレードシミュレーター",
+    "description": "SHEN投資の結果を素早く明確に確認できます",
     "whatIsSimulator": {
-      "title": "トレードシミュレーターとは何ですか？",
-      "description": "トレードシミュレーターは、SHEN投資がどれほど収益性があるかを理解するのに役立ちます。投資する米ドルの金額、購入日と売却日、ADA価格を入力すると、このツールは推定値を表示します。",
-      "disclaimer": "これは取引ツールではありません。入力値に基づいて収益がどのように変化するかを示す計算ツールであり、戦略を明確に立てるのに役立ちます。金融アドバイスとして解釈されるべきではありません。",
+      "title": "トレードシミュレーターとは？",
+      "description": "トレードシミュレーターは、SHEN投資の収益性を理解するためのツールです。投資USD金額、購入・売却日、ADA価格を入力すると、以下を試算します：",
+      "disclaimer": "これはトレードツールではありません。入力値に基づいてリターンがどのように変化するかを示す計算ツールであり、戦略を明確に計画するためのものです。投資アドバイスとして使用しないでください。",
       "items": {
-        "fees": "売買時に支払う手数料",
-        "rewards": "SHENを保有している間に獲得できるADA報酬",
-        "feesEarned": "プロトコルにおける造幣および焼却活動から得られる手数料",
+        "fees": "購入・売却時に支払う手数料",
+        "rewards": "SHEN保有中に得られるADA報酬",
+        "feesEarned": "プロトコルの発行・バーン活動から得られる手数料",
         "profitOrLoss": "ADA価格変動による損益",
-        "totalEstimatedPNL": "あなたの推定総損益"
+        "totalEstimatedPNL": "推定合計PNL"
       }
     }
   },
   "termsOfService": {
     "pageTitle": "利用規約",
     "title": "利用規約",
-    "effectiveDate": "有効日: {date}",
-    "welcome": "Open Djedへようこそ！本アプリケーションにアクセスまたは使用することにより、お客様は本利用規約（以下「本規約」といいます）に拘束されることに同意したものとみなされます。本規約のいずれかの条項に同意できない場合は、本アプリケーションを使用することはできません。",
+    "effectiveDate": "発効日：{date}",
+    "welcome": "Open Djedへようこそ！本アプリケーションにアクセスまたは使用することで、この利用規約（「規約」）に同意したものとみなされます。規約の一部に同意できない場合は、本アプリケーションをご利用いただけません。",
     "sections": {
       "description": {
         "title": "1. 説明",
-        "content": "Open Djedは、Cardanoブロックチェーンと連携するオープンソースのWebアプリケーションです。ユーザーはCIP-30規格を介してCardanoウォレットを接続し、アプリと連携させることができます。"
+        "content": "Open Djedは、Cardanoブロックチェーンと連携するオープンソースのWebアプリケーションです。ユーザーはCIP-30標準を通じてCardanoウォレットを接続し、アプリを利用できます。"
       },
       "use": {
         "title": "2. アプリケーションの使用",
-        "content": " お客様は、適用されるすべての法令および規制を遵守してアプリケーションを使用することに同意するものとします。お客様は、アプリケーションを損傷、無効化、または損なう可能性のある方法、あるいは他者によるアプリケーションの使用を妨害する可能性のある方法でアプリケーションを使用することはできません。"
+        "content": "適用されるすべての法律および規制を遵守してアプリケーションを使用することに同意します。アプリケーションを損傷、無効化、または他のユーザーの利用を妨げる方法で使用することはできません。"
       },
       "license": {
         "title": "3. オープンソースライセンス",
-        "part1": "このアプリケーションはオープンソースであり、以下のライセンスに基づいて提供されています。",
-        "linkText": "GNU一般公衆利用許諾契約書バージョン3.0（GPL-3.0）",
-        "part2": "本ソフトウェアは、使用、改変、再配布が自由に行えます。ただし、改変または派生作品もGPL-3.0ライセンスに基づいてライセンスされる必要があります。再配布の際には、GPLライセンスのコピーを必ず同梱してください。",
-        "part3": "ソースコードはGitHubでご覧いただけます。"
+        "part1": "このアプリケーションはオープンソースであり、以下のライセンスの下で提供されています：",
+        "linkText": "GNU General Public License v3.0 (GPL-3.0)",
+        "part2": "改変または派生物もGPL-3.0ライセンスの下でライセンスされる限り、ソフトウェアを自由に使用、改変、再配布できます。再配布時にはライセンスのコピーを含める必要があります。",
+        "part3": "GitHubでソースコードを見る："
       },
       "wallet": {
-        "title": "4. ウォレットとの連携",
-        "content": "本アプリケーションは、Cardano CIP-30ウォレット統合標準を使用して、ユーザーが対応するウォレットに接続できるようにします。当社はウォレットの秘密鍵を管理、保存、または送信しません。ブロックチェーンとのすべてのやり取りは、ユーザーのウォレットプロバイダーを介して行われます。"
+        "title": "4. ウォレットの操作",
+        "content": "本アプリケーションは、Cardano CIP-30ウォレット統合標準を使用して、対応ウォレットの接続を可能にしています。ウォレットの秘密鍵の管理、保存、送信は行いません。ブロックチェーンとのすべての操作はユーザーのウォレットプロバイダーを通じて行われます。"
       },
       "disclaimers": {
         "title": "5. 免責事項",
-        "item1": "本アプリケーションは、いかなる保証もなしに「現状のまま」提供されます。",
-        "item2": "当社は、稼働時間、正確性、またはあらゆる目的への適合性に関して一切保証いたしません。",
-        "item3": "ユーザーは、自身のウォレットを使用して行ったすべての取引について責任を負います。"
+        "item1": "本アプリケーションは「現状のまま」提供され、いかなる保証もありません。",
+        "item2": "稼働時間、正確性、または特定目的への適合性について一切保証しません。",
+        "item3": "ユーザーはウォレットを使用して送信するすべての取引に責任を負います。"
       },
       "changes": {
-        "title": "6. 変更点",
-        "content": "当社は、本規約を随時改訂する場合があります。変更があった場合は、このページに更新された発効日とともに反映されます。"
+        "title": "6. 変更",
+        "content": "本規約は随時改定される場合があります。変更内容は更新された発効日とともにこのページに反映されます。"
       },
       "contact": {
-        "title": "7. 連絡先",
-        "content": "本規約に関するご質問は、下記までお問い合わせください。"
+        "title": "7. お問い合わせ",
+        "content": "本規約についてのご質問は、こちらまでお問い合わせください："
       }
     }
   },
   "reserve": {
     "reserveRatio": "準備率",
     "warning": {
-      "below": "準備金比率{percentage} 。",
-      "above": "準備金比率{percentage} %を超えると、SHENの鋳造は許可されません。"
+      "below": "準備率が{percentage}%を下回ると、DJEDの発行およびSHENのバーンは許可されません。",
+      "above": "準備率が{percentage}%を上回ると、SHENの発行は許可されません。"
     }
   },
   "action": {
-    "mint": "ミント",
-    "burn": "やけど"
+    "mint": "発行",
+    "burn": "バーン"
   },
   "components": {
     "footer": {
@@ -379,7 +379,7 @@
       "terms": {
         "text": "利用規約"
       },
-      "allRights": "{year} {company} 。すべての権利は留保されています。"
+      "allRights": "© {year} {company}. All rights reserved"
     }
   },
   "navbar": {
@@ -387,7 +387,7 @@
       "title": "ダッシュボード"
     },
     "analytics": {
-      "title": "分析"
+      "title": "アナリティクス"
     },
     "simulator": {
       "title": "シミュレーター"
@@ -396,24 +396,24 @@
       "title": "注文"
     },
     "wallet": {
-      "connect": "ウォレットを接続する",
-      "loading": "ウォレットへの読み込み"
+      "connect": "ウォレットを接続",
+      "loading": "ウォレットを読み込み中"
     }
   },
   "wallet": {
-    "connectWallet": "ウォレットを接続する",
-    "connectWalletDisclaimer": "接続することで、当社の<terms>利用規約</terms>そして<privacy>プライバシーポリシー</privacy>",
+    "connectWallet": "ウォレットを接続",
+    "connectWalletDisclaimer": "接続することで、<terms>利用規約</terms>および<privacy>プライバシーポリシー</privacy>に同意したことになります",
     "orders": {
       "cancel": "キャンセル",
-      "paid": "有料",
-      "received": "受け取った"
+      "paid": "支払済み",
+      "received": "受取済み"
     },
-    "title": "財布",
-    "noWalletsDetected": "ウォレットは検出されませんでした",
-    "incorrectNetwork": "{network}ウォレットに接続してください",
+    "title": "ウォレット",
+    "noWalletsDetected": "ウォレットが検出されません",
+    "incorrectNetwork": "{network} ウォレットを接続してください",
     "connected": "ウォレットが正常に接続されました",
     "connectionFailed": "ウォレットの接続に失敗しました",
-    "disconnected": "ウォレットの接続が切断されました"
+    "disconnected": "ウォレットが切断されました"
   },
   "settings": {
     "title": "設定",
@@ -427,9 +427,9 @@
   "errors": {
     "404": {
       "pageTitle": "ページが見つかりません",
-      "title": "ブロックチェーンの虚無に迷い込んだ",
+      "title": "ブロックチェーンの空白に迷い込んでしまいました",
       "content": {
-        "content1": "このページはネットワークから切断されました。",
+        "content1": "このページはネットワークから切り離されてしまいました。",
         "content2": "メインチェーンに再接続しましょう"
       },
       "button": {
