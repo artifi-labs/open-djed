@@ -379,7 +379,7 @@
       "terms": {
         "text": "Términos y Condiciones"
       },
-      "allRights": "© {year} {company}. Todos los derechos reservados"
+      "allRights": "{year} {company}. Todos los derechos reservados"
     }
   },
   "navbar": {
@@ -402,7 +402,7 @@
   },
   "wallet": {
     "connectWallet": "Conectar Cartera",
-    "connectWalletDisclaimer": "Al conectar, aceptas nuestros <terms>Términos y Servicio</terms> y <privacy>Política de Privacidad</privacy>",
+    "connectWalletDisclaimer": "Al conectar, aceptas nuestros <terms>Términos y Condiciones</terms> y <privacy>Política de Privacidad</privacy>",
     "orders": {
       "cancel": "Cancelar",
       "paid": "Pagado",
@@ -410,7 +410,7 @@
     },
     "title": "Cartera",
     "noWalletsDetected": "No se detectaron carteras",
-    "incorrectNetwork": "Por favor, conecta una cartera {network}",
+    "incorrectNetwork": "Por favor, conecta una cartera de {network}",
     "connected": "Tu cartera se ha conectado correctamente",
     "connectionFailed": "Error al conectar la cartera",
     "disconnected": "Tu cartera ha sido desconectada"
