@@ -1,11 +1,8 @@
 import { useQuery } from "@tanstack/react-query"
 import { useApiClient } from "@/context/ApiClientContext"
 import { ordersKeys } from "@/queries/orders/keys"
-import {
-  type OrdersBody,
-  type OrdersQueryParams,
-  ordersResponseSchema,
-} from "@open-djed/api"
+import { type OrdersBody, type OrdersQueryParams } from "@open-djed/api"
+import { ordersResponseSchema } from "@/queries/orders/orders/orders.schema"
 
 type Params = {
   body: OrdersBody

@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query"
 import { useApiClient } from "@/context/ApiClientContext"
 import type { ChartPeriodValue } from "@/components/analytics/useAnalyticsData"
 import { analyticsKeys } from "../keys"
-import { VolumesResponseSchema } from "@open-djed/api"
+import { VolumesResponseSchema } from "@/queries/analytics/volumes/volumes.schema"
 
 type Params = {
   period: ChartPeriodValue

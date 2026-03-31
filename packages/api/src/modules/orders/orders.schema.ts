@@ -34,7 +34,7 @@ export const orderApiSchema = z.object({
 })
 
 export const ordersResponseApiSchema = paginatedResponseSchema(orderApiSchema)
-export type OrdersApiResponse = z.infer<typeof ordersResponseSchema>
+export type OrdersApiResponse = z.infer<typeof ordersResponseApiSchema>
 export type OrderApi = z.infer<typeof orderApiSchema>
 
 // Query Params
@@ -48,18 +48,3 @@ export const ordersBodySchema = z.object({
   usedAddresses: z.array(z.string()),
 })
 export type OrdersBody = z.infer<typeof ordersBodySchema>
-
-/**
- * Transform the API schema to convert string fields to their appropriate types (e.g., BigInt, Date)
- */
-export const orderSchema = orderApiSchema.transform((entry) => ({
-  ...entry,
-  slot: BigInt(entry.slot),
-  paid: entry.paid !== null ? BigInt(entry.paid) : null,
-  fees: entry.fees !== null ? BigInt(entry.fees) : null,
-  received: entry.received !== null ? BigInt(entry.received) : null,
-  orderDate: new Date(entry.orderDate),
-}))
-
-export const ordersResponseSchema = paginatedResponseSchema(orderSchema)
-export type Order = z.infer<typeof orderSchema>

@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query"
 import { useApiClient } from "@/context/ApiClientContext"
 import type { ChartPeriodValue } from "@/components/analytics/useAnalyticsData"
 import { analyticsKeys } from "../keys"
-import { DjedDexPricesResponseSchema } from "@open-djed/api"
+import { DjedDexPricesResponseSchema } from "@/queries/analytics/dexPrices/dexPrices.schema"
 
 type Params = {
   period: ChartPeriodValue
