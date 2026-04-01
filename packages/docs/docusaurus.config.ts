@@ -46,7 +46,6 @@ const config: Config = {
   presets: [
     [
       "@docusaurus/preset-classic",
-
       {
         ...(gaTrackingId
           ? {
