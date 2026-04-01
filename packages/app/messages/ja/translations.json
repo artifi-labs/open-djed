@@ -379,7 +379,7 @@
       "terms": {
         "text": "利用規約"
       },
-      "allRights": "© {year} {company}. All rights reserved"
+      "allRights": "{year} {company}. 無断転載を禁じます"
     }
   },
   "navbar": {
