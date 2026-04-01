@@ -17,8 +17,9 @@ export const CARDANOSCAN_BASE_URL = `https://${env.NETWORK === "Preprod" ? env.N
 
 export const SUPPORTED_LANGUAGES = [
   { code: "en", label: "English" },
-  { code: "pt", label: "Português" },
-  { code: "es", label: "Español" },
+  { code: "pt", label: "Português (Portuguese)" },
+  { code: "es", label: "Español (Spanish)" },
+  { code: "fr", label: "Français (French)" },
 ]
 
 export const ORDERS_PER_PAGE = 10
