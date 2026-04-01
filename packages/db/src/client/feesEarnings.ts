@@ -54,8 +54,6 @@ export const getLatestFeesEarnings = async (validBlock = false) => {
   })
 }
 
-
-
 export const getLast60DaysFeesEarningsRate = async () => {
   const last60DaysFeesEarnings = await prisma.aDAFeesEarnings.findMany({
     take: 60,
