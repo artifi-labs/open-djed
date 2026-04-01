@@ -18,8 +18,12 @@ const sidebars: SidebarsConfig = {
     {
       type: "category",
       label: "Getting Started",
+      link: {
+        type: "doc",
+        id: "getting-started/getting-started",
+      },
       items: [
-        "getting-started/open-djed",
+        "getting-started/getting-started",
         "getting-started/how-it-works",
         "getting-started/quickstart",
       ],
