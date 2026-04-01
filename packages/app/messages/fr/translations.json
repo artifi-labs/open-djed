@@ -308,7 +308,7 @@
     "description": "Vérifiez rapidement et clairement les résultats d'un investissement dans SHEN.",
     "whatIsSimulator": {
       "title": "Qu'est-ce que le simulateur de trading ?",
-      "description": "Le simulateur de trading vous aide à comprendre la rentabilité potentielle d'un investissement dans SHEN. En saisissant le montant en USD à investir, vos dates d'achat et de vente, ainsi que le prix de l'ADA, l'outil estime .",
+      "description": "Le simulateur de trading vous aide à comprendre la rentabilité potentielle d'un investissement dans SHEN. En saisissant le montant en USD à investir, vos dates d'achat et de vente, ainsi que le prix de l'ADA, l'outil estime.",
       "disclaimer": "Ce n'est pas un outil de trading. C'est une calculatrice qui montre comment vos rendements évoluent en fonction des valeurs saisies, afin que vous puissiez planifier votre stratégie avec clarté. Cela ne doit pas être considéré comme un conseil financier.",
       "items": {
         "fees": "Frais payés lors de l'achat et de la vente",
