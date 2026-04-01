@@ -25,28 +25,33 @@ export type OrderApi = {
   }
 }
 
-export type OrderStatus =
-  // | "Processing"
-  | "Created"
-  | "Completed"
-  // | "Cancelling"
-  | "Canceled"
-// | "Failed"
-// | "Expired"
+export type OrderStatus = "Created" | "Completed" | "Rejected" | "Canceled"
 
-export const statusFiltersArray = [
-  "All",
-  // "Processing",
-  "Created",
-  "Completed",
-  // "Cancelling",
-  "Canceled",
-  // "Failed",
-  // "Expired",
+export type StatusFilterItem = {
+  key: string
+  i18nKey: string
+}
+
+export enum OrderStatusEnum {
+  All = "all",
+  Created = "created",
+  Completed = "completed",
+  Rejected = "rejected",
+  Canceled = "canceled",
+}
+
+export const statusFilters = [
+  { key: OrderStatusEnum.All, i18nKey: "orders.filters.status.all" },
+  { key: OrderStatusEnum.Created, i18nKey: "orders.filters.status.created" },
+  {
+    key: OrderStatusEnum.Completed,
+    i18nKey: "orders.filters.status.completed",
+  },
+  { key: OrderStatusEnum.Rejected, i18nKey: "orders.filters.status.rejected" },
+  { key: OrderStatusEnum.Canceled, i18nKey: "orders.filters.status.canceled" },
 ] as const
 
-// derive the type from the filters array
-export type StatusFilters = (typeof statusFiltersArray)[number]
+export type StatusFilterKey = (typeof statusFilters)[number]["key"]
 
 export type Pagination = {
   currentPage: number
@@ -103,7 +108,11 @@ export const useOrders = () => {
   const [orders, setOrders] = useState<Order[]>([])
 
   const fetchOrders = useCallback(
-    async (page = 1, limit = 10, status: StatusFilters = "All") => {
+    async (
+      page = 1,
+      limit = 10,
+      status: OrderStatusEnum = OrderStatusEnum.All,
+    ) => {
       if (!wallet) return
 
       const usedAddress = await wallet.getUsedAddresses()
@@ -115,7 +124,7 @@ export const useOrders = () => {
           query: {
             page: page.toString(),
             limit: limit.toString(),
-            ...(status !== "All" && { status }),
+            ...(status !== OrderStatusEnum.All && { status }),
           },
         })
 

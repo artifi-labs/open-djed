@@ -26,9 +26,9 @@ import {
   updateStakingRewards,
 } from "./shenYield/stakingRewards/stakingRewards"
 import { rollbackStakingRewards } from "./shenYield/stakingRewards/rollbackStakingRewards"
+import { processShenYield, updateShenYield } from "./shenYield/shenYield"
 import { rollbackFeesEarnings } from "../orders/feesEarnings/rollbackFeesEarnings"
 import { rollbackShenYield } from "./shenYield/rollbackShenYield"
-import { processShenYield, updateShenYield } from "./shenYield/shenYield"
 
 type DbProcessor = {
   isEmpty: boolean

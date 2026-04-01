@@ -9,10 +9,10 @@ export const DjedDexPricesEntryApiSchema = z.object({
   token: z.literal("DJED"),
   usdValue: z.string(),
   adaValue: z.string(),
-  minswapUsdValue: z.string(),
-  minswapAdaValue: z.string(),
-  wingridersAdaValue: z.string(),
-  wingridersUsdValue: z.string(),
+  minswapUsdValue: z.string().nullable(),
+  minswapAdaValue: z.string().nullable(),
+  wingridersAdaValue: z.string().nullable(),
+  wingridersUsdValue: z.string().nullable(),
 })
 
 export const DjedDexPricesResponseApiSchema = z.array(
@@ -31,10 +31,10 @@ export const DjedDexPricesEntrySchema = DjedDexPricesEntryApiSchema.transform(
     ...entry,
     usdValue: Number(entry.usdValue),
     adaValue: Number(entry.adaValue),
-    minswapUsdValue: Number(entry.minswapUsdValue),
-    minswapAdaValue: Number(entry.minswapAdaValue),
-    wingridersAdaValue: Number(entry.wingridersAdaValue),
-    wingridersUsdValue: Number(entry.wingridersUsdValue),
+    minswapUsdValue: Number(entry.minswapUsdValue) || null,
+    minswapAdaValue: Number(entry.minswapAdaValue) || null,
+    wingridersAdaValue: Number(entry.wingridersAdaValue) || null,
+    wingridersUsdValue: Number(entry.wingridersUsdValue) || null,
   }),
 )
 

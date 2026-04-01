@@ -1,0 +1,12 @@
+export const ARTIFI_DISCORD_URL = "https://discord.gg/MhYP7w8n8p"
+export const ARTIFI_GITHUB_URL = "https://github.com/artifi-labs/"
+export const DJED_GITHUB_URL = "https://github.com/artifi-labs/open-djed"
+export const DJED_ISSUES_URL = "https://github.com/artifi-labs/open-djed/issues"
+export const ARTIFI_X_URL = "https://x.com/artifi_labs"
+export const ARTIFI_LINKEDIN_URL =
+  "https://www.linkedin.com/company/artifi-finance"
+export const ARTIFI_WEBSITE_URL = "https://artifi.finance"
+export const ARTIFI_EMAIL = "info@artifi.finance"
+export const DJED_STATUS_PAGE_URL = "https://status.artifi.finance"
+export const DJED_SCALAR_API_URL = "https://api.djed.artifi.finance/api/scalar"
+export const DJED_MAINNET_URL = "https://djed.artifi.finance"

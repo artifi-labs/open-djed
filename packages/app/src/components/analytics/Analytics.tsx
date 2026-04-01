@@ -156,7 +156,7 @@ const Analytics = () => {
         </ChartCard>
 
         <ChartCard
-          title="SHEN Yield"
+          title={t("common.yield", { token: "SHEN" })}
           period={shenYieldPeriod}
           periodItems={translatedPeriodOptions}
           onPeriodChange={setShenYieldPeriod}

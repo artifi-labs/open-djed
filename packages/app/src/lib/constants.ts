@@ -10,6 +10,7 @@ export const LINKEDIN_URL = "https://www.linkedin.com/company/artifi-finance/"
 export const TWITTER_URL = "https://x.com/artifi_labs"
 export const TWITTER_HANDLE = "@artifi_labs"
 export const DJED_URL = "https://djed.xyz"
+export const OPEN_DJED_DOCS_URL = "https://docs.djed.artifi.finance"
 export const APP_NAME = "Open Djed"
 export const TEAM_NAME = "Artifi Labs"
 export const CARDANOSCAN_BASE_URL = `https://${env.NETWORK === "Preprod" ? env.NETWORK.toLowerCase() + "." : ""}cardanoscan.io`
@@ -17,6 +18,7 @@ export const CARDANOSCAN_BASE_URL = `https://${env.NETWORK === "Preprod" ? env.N
 export const SUPPORTED_LANGUAGES = [
   { code: "en", label: "English" },
   { code: "pt", label: "Português" },
+  { code: "es", label: "Español" },
 ]
 
 export const ORDERS_PER_PAGE = 10

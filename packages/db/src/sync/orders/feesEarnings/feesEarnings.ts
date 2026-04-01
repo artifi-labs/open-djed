@@ -1,15 +1,69 @@
 import { djedADARate, Rational, shenADARate } from "@open-djed/math"
+import { PoolDatum } from "@open-djed/data"
+import { Data } from "@lucid-evolution/lucid"
 import type {
   ADAFeesEarnings,
   OrderUTxOWithDatumAndBlock,
   OrderUTxOWithPoolDatum,
+  UTxO,
 } from "../../types"
-import { hasPoolDatum, toDayString } from "../../utils"
+import {
+  blockfrost,
+  blockfrostFetch,
+  hasPoolDatum,
+  processBatch,
+  registry,
+  toDayString,
+} from "../../utils"
+import { logger } from "../../../utils/logger"
 
 type PoolState = Pick<
   OrderUTxOWithPoolDatum["poolDatum"],
   "adaInReserve" | "djedInCirculation" | "shenInCirculation"
 >
+
+type DailyFees = Omit<ADAFeesEarnings, "fee" | "rate"> & {
+  fee: Rational
+  rate: Rational
+}
+
+const createZeroFeeDay = (timestamp: string): ADAFeesEarnings => ({
+  timestamp: new Date(timestamp),
+  fee: 0,
+  rate: 0,
+  block: null,
+  slot: null,
+})
+
+export const fillMissingFeeDays = (
+  dailyFees: ADAFeesEarnings[],
+  endDate: Date = new Date(),
+) => {
+  if (dailyFees.length === 0) return []
+
+  const feeMap = new Map(
+    dailyFees.map((entry) => [toDayString(entry.timestamp), entry]),
+  )
+  const allDates = dailyFees.map((entry) => entry.timestamp)
+  const minDate = new Date(Math.min(...allDates.map((date) => date.getTime())))
+  minDate.setUTCHours(0, 0, 0, 0)
+
+  const maxDate = new Date(endDate)
+  maxDate.setUTCHours(0, 0, 0, 0)
+
+  const completeFees: ADAFeesEarnings[] = []
+  const currentDate = new Date(minDate)
+
+  while (currentDate <= maxDate) {
+    const dateStr = currentDate.toISOString().split("T")[0]
+    if (!dateStr) return []
+
+    completeFees.push(feeMap.get(dateStr) ?? createZeroFeeDay(dateStr))
+    currentDate.setUTCDate(currentDate.getUTCDate() + 1)
+  }
+
+  return completeFees
+}
 
 const applyOrderToPoolState = (
   state: PoolState,
@@ -63,9 +117,9 @@ const applyOrderToPoolState = (
   }
 }
 
-export const calculateFeesEarnings = (
+export const calculateFeesEarnings = async (
   orders: OrderUTxOWithDatumAndBlock[],
-): ADAFeesEarnings[] => {
+): Promise<ADAFeesEarnings[]> => {
   const ordersByConsumingTx = new Map<string, OrderUTxOWithPoolDatum[]>()
 
   // Fees are computed per consuming transaction, so orders are grouped by the tx that consumed them.
@@ -79,6 +133,52 @@ export const calculateFeesEarnings = (
     ordersByConsumingTx.set(order.consumed_by_tx, txOrders)
   }
 
+  const consumingTxHashes = [...ordersByConsumingTx.keys()]
+
+  // Fetch the pool datum from the pool input of each consuming tx so the
+  // fee calculation starts from the pool state consumed by that tx.
+  const inputPoolByTx = new Map(
+    (
+      await processBatch(
+        consumingTxHashes,
+        async (consumingTxHash) => {
+          try {
+            const consumingTx = (await blockfrostFetch(
+              `/txs/${consumingTxHash}/utxos`,
+            )) as UTxO
+
+            const poolInputDataHash = consumingTx.inputs.find(
+              (input) =>
+                input.address === registry.poolAddress &&
+                typeof input.data_hash === "string",
+            )?.data_hash
+
+            if (!poolInputDataHash) {
+              return null
+            }
+
+            return [
+              consumingTxHash,
+              Data.from(
+                await blockfrost.getDatum(poolInputDataHash),
+                PoolDatum,
+              ),
+            ] as const
+          } catch {
+            return null
+          }
+        },
+        5,
+        300,
+      )
+    ).filter(
+      (
+        entry,
+      ): entry is readonly [string, OrderUTxOWithPoolDatum["poolDatum"]] =>
+        entry !== null,
+    ),
+  )
+
   const orderedTxGroups = [...ordersByConsumingTx.entries()]
     .filter(([, txOrders]) => txOrders.length > 0)
     .sort(([, a], [, b]) =>
@@ -87,26 +187,24 @@ export const calculateFeesEarnings = (
       ),
     )
 
-  const dailyFees = new Map<string, ADAFeesEarnings>()
+  const dailyFees = new Map<string, DailyFees>()
 
-  for (let i = 1; i < orderedTxGroups.length; i++) {
-    const previousGroup = orderedTxGroups[i - 1]
+  for (let i = 0; i < orderedTxGroups.length; i++) {
     const currentGroup = orderedTxGroups[i]
 
-    if (!previousGroup || !currentGroup) {
+    if (!currentGroup) {
       continue
     }
 
-    const previousOrders = previousGroup[1]
     const currentOrders = currentGroup[1]
-    const inputPool = previousOrders[0]?.poolDatum
+    const inputPool = inputPoolByTx.get(currentGroup[0])
     const outputPool = currentOrders[0]?.poolDatum
 
     if (!inputPool || !outputPool) {
       continue
     }
 
-    const expectedPool: PoolState = {
+    const expectedPoolWithoutFees: PoolState = {
       adaInReserve: inputPool.adaInReserve,
       djedInCirculation: inputPool.djedInCirculation,
       shenInCirculation: inputPool.shenInCirculation,
@@ -129,16 +227,22 @@ export const calculateFeesEarnings = (
     })
 
     for (const order of txOrders) {
-      applyOrderToPoolState(expectedPool, order)
+      applyOrderToPoolState(expectedPoolWithoutFees, order)
     }
 
-    const feeLovelace = outputPool.adaInReserve - expectedPool.adaInReserve
+    const feeLovelace =
+      outputPool.adaInReserve - expectedPoolWithoutFees.adaInReserve
     if (feeLovelace <= 0n) {
+      logger.warn(
+        `Invalid fee calculation for tx ${currentGroup[0]}: feeLovelace=${feeLovelace}, expectedReserve=${expectedPoolWithoutFees.adaInReserve}, outputReserve=${outputPool.adaInReserve}`,
+      )
       continue
     }
 
     if (outputPool.adaInReserve <= 0n) {
-      continue
+      throw new Error(
+        `Invalid output pool reserve for tx ${currentGroup[0]}: outputReserve=${outputPool.adaInReserve}`,
+      )
     }
 
     const lastOrder = txOrders[txOrders.length - 1]
@@ -147,14 +251,15 @@ export const calculateFeesEarnings = (
     }
 
     const dayKey = toDayString(new Date(Number(outputPool.lastOrder[0].time)))
-    const feeAda = new Rational(feeLovelace).div(1_000_000n).toNumber()
-    const feeRate =
-      new Rational(feeLovelace).div(outputPool.adaInReserve).toNumber() * 100
+    const feeAda = new Rational(feeLovelace).div(1_000_000n)
+    const feeRate = new Rational(feeLovelace)
+      .mul(100n)
+      .div(outputPool.adaInReserve)
     const existing = dailyFees.get(dayKey)
 
     if (existing) {
-      existing.fee += feeAda
-      existing.rate += feeRate
+      existing.fee = existing.fee.add(feeAda)
+      existing.rate = existing.rate.add(feeRate)
       existing.block = lastOrder.block_hash
       existing.slot = lastOrder.block_slot
       continue
@@ -169,5 +274,13 @@ export const calculateFeesEarnings = (
     })
   }
 
-  return [...dailyFees.values()]
+  const calculatedFees = [...dailyFees.values()].map((entry) => ({
+    ...entry,
+    fee: entry.fee.toNumber(),
+    rate: entry.rate.toNumber(),
+  }))
+
+  const completeFees = fillMissingFeeDays(calculatedFees)
+
+  return completeFees
 }

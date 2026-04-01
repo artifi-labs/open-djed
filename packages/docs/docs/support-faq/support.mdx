@@ -1,0 +1,59 @@
+---
+sidebar_position: 1
+---
+
+import {
+  ARTIFI_DISCORD_URL,
+  DJED_GITHUB_URL,
+  ARTIFI_EMAIL,
+  DJED_STATUS_PAGE_URL,
+  DJED_ISSUES_URL,
+} from "../../constants"
+
+# Support
+
+Use the appropriate channel depending on your problem:
+
+- **General user support:** <a target="_blank" rel="noopener noreferrer" href={ARTIFI_DISCORD_URL}>Discord</a>
+- **Bug reports:** <a target="_blank" rel="noopener noreferrer" href={DJED_GITHUB_URL}>GitHub</a>
+- **Security reports (private):** <a target="\_blank" rel="noopener noreferrer" href={`mailto:${ARTIFI_EMAIL}`}>Email</a>
+
+## How to Report an Issue
+
+Include as much detail as possible so the team can reproduce quickly.
+
+Copy and fill this template:
+
+```md
+### Environment
+
+- Network: Mainnet / Preprod
+- Wallet: (Eternl, Lace, etc.)
+- Browser + version:
+- Device: Desktop / Mobile
+
+### What Happened
+
+- Action performed: (mint, burn, cancel order, etc.)
+- Expected result:
+- Actual result:
+- Error message (exact text):
+
+### Useful References
+
+- Transaction hash (if available):
+- Order ID (if available):
+- Screenshot/video:
+- Timestamp (UTC):
+```
+
+## Status & Known Issues
+
+- Live status page: <a target="_blank" rel="noopener noreferrer" href={DJED_STATUS_PAGE_URL}>Status Page</a>
+- Known issues tracker: <a target="_blank" rel="noopener noreferrer" href={DJED_ISSUES_URL}>GitHub Issues</a>
+
+## Related Pages
+
+- [Quickstart](../getting-started/quickstart.md)
+- [How It Works](../getting-started/how-it-works.md)
+- [User Guide](../user-guide/index.md)

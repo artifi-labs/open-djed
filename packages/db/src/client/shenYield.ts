@@ -23,6 +23,8 @@ export const getLatestShenYield = () =>
       id: true,
       timestamp: true,
       yield: true,
+      block: true,
+      slot: true,
     },
     orderBy: {
       timestamp: "desc",

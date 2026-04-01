@@ -29,19 +29,32 @@ export const getPeriodFeesEarnings = (period: Period) => {
     where: {
       ...(startIso && { timestamp: { gte: startIso } }),
     },
+    select: {
+      id: true,
+      timestamp: true,
+      fee: true,
+      rate: true,
+      block: true,
+      slot: true,
+    },
     orderBy: {
       timestamp: "asc",
     },
   })
 }
 
-export const getLatestFeesEarnings = async () => {
+export const getLatestFeesEarnings = async (validBlock = false) => {
   return await prisma.aDAFeesEarnings.findFirst({
+    where: validBlock
+      ? { block: { not: null }, slot: { not: null } }
+      : undefined,
     orderBy: {
       timestamp: "desc",
     },
   })
 }
+
+
 
 export const getLast60DaysFeesEarningsRate = async () => {
   const last60DaysFeesEarnings = await prisma.aDAFeesEarnings.findMany({
@@ -99,6 +112,15 @@ export const getSumFeesEarningsRate = async (
 
 export const deleteAllFeesEarnings = async () => {
   const result = await prisma.aDAFeesEarnings.deleteMany()
+  return result
+}
+
+export const getAllFeesEarnings = async () => {
+  const result = await prisma.aDAFeesEarnings.findMany({
+    orderBy: {
+      timestamp: "asc",
+    },
+  })
   return result
 }
 

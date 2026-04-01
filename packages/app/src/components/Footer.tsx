@@ -11,6 +11,7 @@ import {
   DJED_URL,
   GITHUB_URL,
   LINKEDIN_URL,
+  OPEN_DJED_DOCS_URL,
   STATUS_URL,
   TWITTER_URL,
   WEBSITE_URL,
@@ -83,6 +84,11 @@ const Footer = () => {
       href: "/terms",
     },
     {
+      label: "Docs",
+      href: OPEN_DJED_DOCS_URL,
+      icon: "External",
+    },
+    {
       label: "DJED",
       href: DJED_URL,
       icon: "External",
@@ -144,6 +150,7 @@ const Footer = () => {
           <p className="text-xs">
             {t("components.footer.allRights", {
               year: new Date().getFullYear(),
+              company: "Artifi",
             })}
           </p>
         </div>
