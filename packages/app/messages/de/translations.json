@@ -379,7 +379,7 @@
       "terms": {
         "text": "AGB"
       },
-      "allRights": "© {year} {company}. Alle Rechte vorbehalten"
+      "allRights": "{year} {company}. Alle Rechte vorbehalten"
     }
   },
   "navbar": {
