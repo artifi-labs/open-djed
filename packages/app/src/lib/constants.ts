@@ -19,6 +19,9 @@ export const SUPPORTED_LANGUAGES = [
   { code: "en", label: "English" },
   { code: "pt", label: "Português (Portuguese)" },
   { code: "es", label: "Español (Spanish)" },
+  { code: "fr", label: "Français (French)" },
+  { code: "de", label: "Deutsch (German)" },
+  { code: "ja", label: "日本語 (Japanese)" },
   { code: "cn", label: "中文 (Chinese)" },
 ]
 
