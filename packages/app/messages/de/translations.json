@@ -381,6 +381,9 @@
       "terms": {
         "text": "AGB"
       },
+      "docs": {
+        "text": "Docs"
+      },
       "allRights": "{year} {company}. Alle Rechte vorbehalten"
     }
   },

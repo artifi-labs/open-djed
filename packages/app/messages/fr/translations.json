@@ -381,6 +381,9 @@
       "terms": {
         "text": "Conditions d'Utilisation"
       },
+      "docs": {
+        "text": "Docs"
+      },
       "allRights": "{year} {company}. Tous droits réservés"
     }
   },

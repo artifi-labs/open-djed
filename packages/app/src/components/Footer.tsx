@@ -84,7 +84,7 @@ const Footer = () => {
       href: "/terms",
     },
     {
-      label: "Docs",
+      label: t("components.footer.docs.text"),
       href: OPEN_DJED_DOCS_URL,
       icon: "External",
     },

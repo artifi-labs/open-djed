@@ -381,6 +381,9 @@
       "terms": {
         "text": "Términos y Condiciones"
       },
+      "docs": {
+        "text": "Docs"
+      },
       "allRights": "{year} {company}. Todos los derechos reservados"
     }
   },

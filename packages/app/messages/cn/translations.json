@@ -381,6 +381,9 @@
       "terms": {
         "text": "条款与条件"
       },
+      "docs": {
+        "text": "Docs"
+      },
       "allRights": "{year} {company}。保留所有权利"
     }
   },
