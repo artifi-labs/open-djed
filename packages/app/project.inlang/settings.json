@@ -1,7 +1,7 @@
 {
   "$schema": "https://inlang.com/schema/project-settings",
   "baseLocale": "en",
-  "locales": ["en", "pt", "es", "fr", "de"],
+  "locales": ["en", "pt", "ja", "es", "fr", "de"],
   "modules": [
     "https://cdn.jsdelivr.net/npm/@inlang/plugin-next-intl@latest/dist/index.js"
   ],

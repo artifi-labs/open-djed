@@ -21,6 +21,7 @@ export const SUPPORTED_LANGUAGES = [
   { code: "es", label: "Español (Spanish)" },
   { code: "fr", label: "Français (French)" },
   { code: "de", label: "Deutsch (German)" },
+  { code: "ja", label: "日本語 (Japanese)" },
 ]
 
 export const ORDERS_PER_PAGE = 10
