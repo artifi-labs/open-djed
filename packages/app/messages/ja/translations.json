@@ -9,6 +9,8 @@
     "volumes": "ボリューム分析",
     "shenAdaPrice": "SHEN价格 & ADA価格",
     "djedDexPrice": "DJED価格 vs セカンダリー市場",
+    "realized": "実現",
+    "projected": "見込み",
     "total": "{analytic} 合計",
     "mintedToken": "{token} 発行済み",
     "burnedToken": "{token} バーン済み",

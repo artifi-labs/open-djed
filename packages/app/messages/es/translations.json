@@ -9,6 +9,8 @@
     "volumes": "Análisis de Volumen",
     "shenAdaPrice": "Precio de SHEN & Precio de ADA",
     "djedDexPrice": "Precio de DJED vs Mercados Secundarios",
+    "realized": "Realizado",
+    "projected": "Proyectado",
     "total": "Total {analytic}",
     "mintedToken": "{token} Acuñado",
     "burnedToken": "{token} Quemado",
