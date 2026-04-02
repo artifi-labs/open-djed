@@ -9,6 +9,8 @@
     "volumes": "交易量分析",
     "shenAdaPrice": "SHEN 价格 & ADA 价格",
     "djedDexPrice": "DJED 价格 vs 二级市场",
+    "realized": "实现",
+    "projected": "预计",
     "total": "{analytic} 总计",
     "mintedToken": "{token} 已铸造",
     "burnedToken": "{token} 已销毁",
@@ -378,6 +380,9 @@
       },
       "terms": {
         "text": "条款与条件"
+      },
+      "docs": {
+        "text": "Docs"
       },
       "allRights": "{year} {company}。保留所有权利"
     }
