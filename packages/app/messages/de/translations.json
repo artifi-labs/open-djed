@@ -10,8 +10,8 @@
     "shenAdaPrice": "SHEN-Preis & ADA-Preis",
     "djedDexPrice": "DJED-Preis vs. Sekundärmärkte",
     "total": "{analytic} Gesamt",
-    "mintedToken": "{token} Geprägt",
-    "burnedToken": "{token} Verbrannt",
+    "mintedToken": "{token} geprägt",
+    "burnedToken": "{token} verbrannt",
     "volume": "Volumen",
     "errors": {
       "failedToFetch": "Fehler beim Abrufen der Daten für {analytic}."
@@ -35,7 +35,7 @@
   },
   "metadata": {
     "layout": {
-      "description": "Prägen und verbrennen Sie DJED, Cardanos überbesichertes Stablecoin, mit unserer Open-Source-Plattform. Transparente Alternative zu DJED.xyz – rund um die Uhr weltweit zugänglich."
+      "description": "Prägen und brennen Sie DJED, den überbesicherten Stablecoin von Cardano, mit unserer Open-Source-Plattform. Transparente Alternative zu DJED.xyz - rund um die Uhr weltweit zugänglich."
     }
   },
   "common": {
@@ -147,8 +147,8 @@
   "dashboard": {
     "pageTitle": "Dashboard",
     "actionButton": {
-      "wallet": "Wallet verbinden, um {action}",
-      "fillAmount": "Betrag eingeben, um {action}"
+      "wallet": "Wallet zum {action} verbinden",
+      "fillAmount": "Betrag zum {action} eingeben"
     },
     "youPay": "Sie zahlen",
     "youReceive": "Sie erhalten",
@@ -157,20 +157,20 @@
         "description": "Prägen Sie DJED und SHEN, indem Sie ADA in das Protokoll einzahlen."
       },
       "Burn": {
-        "description": "Verbrennen Sie DJED und SHEN, um Ihr ADA aus dem Protokoll abzuheben."
+        "description": "Verbrennen Sie DJED und SHEN, um Ihre ADA aus dem Protokoll abzuheben."
       }
     },
     "whatIsOpenDjed": {
       "title": "Was ist Open DJED?",
-      "description": "Open DJED ist eine community-gesteuerte Web-App für die Interaktion mit dem algorithmischen DJED-Stablecoin auf Cardano, vollständig Open Source entwickelt von Artifi Labs. Es recreiert die originale DJED-Erfahrung mit voller Protokollkompatibilität – als zuverlässigere, zugänglichere und überprüfbare Alternative.",
+      "description": "Open DJED ist eine community-gesteuerte Web-App für die Interaktion mit dem algorithmischen DJED-Stablecoin auf Cardano, vollständig Open Source entwickelt von Artifi Labs. Sie bildet das ursprüngliche DJED-Erlebnis mit voller Protokollkompatibilität nach und bietet eine zuverlässigere, zugänglichere und überprüfbare Alternative.",
       "whyOpenDjed": {
         "title": "Warum Open DJED?",
         "items": {
-          "protocolCompatible": "<strong>Zuverlässig:</strong> Funktioniert auch wenn die COTI-App nicht verfügbar ist.",
+          "protocolCompatible": "<strong>Zuverlässig:</strong> Funktioniert auch, wenn die COTI-App nicht verfügbar ist.",
           "openSource": "<strong>Community zuerst:</strong> Gebaut für und von Cardano-Nutzern.",
           "communityFirst": "<strong>Protokollkompatibel:</strong> Dieselbe überbesicherte Logik wie DJED.",
           "reliable": "<strong>Globaler Zugang:</strong> Keine geografischen Einschränkungen.",
-          "globalAccess": "<strong>Open Source:</strong> Vollständig prüfbar, forkbar und community-owned.",
+          "globalAccess": "<strong>Open Source:</strong> Vollständig prüfbar, forkbar und im Besitz der Community.",
           "transparentFees": "<strong>Transparente & niedrige Gebühren:</strong> Dieselbe COTI-Gebührenstruktur, ~0,1 ADA günstiger."
         }
       }
@@ -346,7 +346,7 @@
       },
       "disclaimers": {
         "title": "5. Haftungsausschlüsse",
-        "item1": "Diese Anwendung wird „wie besehen ohne jegliche Gewährleistung bereitgestellt.",
+        "item1": "Diese Anwendung wird \"wie sie ist\" ohne jegliche Gewährleistung bereitgestellt.",
         "item2": "Wir übernehmen keine Garantie für Verfügbarkeit, Richtigkeit oder Eignung für einen bestimmten Zweck.",
         "item3": "Nutzer sind für alle Transaktionen verantwortlich, die sie mit ihrer Wallet durchführen."
       },
@@ -410,7 +410,7 @@
     },
     "title": "Wallet",
     "noWalletsDetected": "Keine Wallets erkannt",
-    "incorrectNetwork": "Bitte verbinden Sie eine {network} Wallet",
+    "incorrectNetwork": "Bitte verbinden Sie eine {network}-Wallet",
     "connected": "Ihre Wallet wurde erfolgreich verbunden",
     "connectionFailed": "Verbindung zur Wallet fehlgeschlagen",
     "disconnected": "Ihre Wallet wurde getrennt"
