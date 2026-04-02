@@ -20,6 +20,7 @@ export const SUPPORTED_LANGUAGES = [
   { code: "pt", label: "Português (Portuguese)" },
   { code: "es", label: "Español (Spanish)" },
   { code: "fr", label: "Français (French)" },
+  { code: "de", label: "Deutsch (German)" },
 ]
 
 export const ORDERS_PER_PAGE = 10
