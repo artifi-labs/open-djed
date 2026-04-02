@@ -1,0 +1,440 @@
+{
+  "analytics": {
+    "pageTitle": "数据分析",
+    "analyticsOverview": "分析概览",
+    "description": "协议指标与市场动态的实时洞察",
+    "reserveRatioOverTime": "储备率变化趋势",
+    "djedMarketCap": "DJED 市值",
+    "shenMarketCap": "SHEN 市值",
+    "volumes": "交易量分析",
+    "shenAdaPrice": "SHEN 价格 & ADA 价格",
+    "djedDexPrice": "DJED 价格 vs 二级市场",
+    "total": "{analytic} 总计",
+    "mintedToken": "{token} 已铸造",
+    "burnedToken": "{token} 已销毁",
+    "volume": "交易量",
+    "errors": {
+      "failedToFetch": "无法获取 {analytic} 数据。"
+    },
+    "currentRatio": "当前比率",
+    "below": "低于最小值",
+    "above": "高于最大值",
+    "reserve": {
+      "warning": {
+        "below": "DJED 铸造 / SHEN 销毁不可用：储备率低于最小值。",
+        "above": "SHEN 铸造不可用：储备率高于最大值。"
+      }
+    }
+  },
+  "keywords": {
+    "opensource": "开源",
+    "software": "软件",
+    "development": "开发",
+    "defi_full": "去中心化金融",
+    "software_dev": "软件开发"
+  },
+  "metadata": {
+    "layout": {
+      "description": "在我们的开源平台上铸造和销毁 DJED-Cardano 的超额抵押稳定币。DJED.xyz 的透明替代方案，随时随地全天候可用。"
+    }
+  },
+  "common": {
+    "illustration": "插图",
+    "yield": "{token} 收益",
+    "currencyValue": "{currency} 价值",
+    "min": "最小",
+    "max": "最大",
+    "current": "当前",
+    "available": "可用",
+    "half": "一半",
+    "mintAndBurnNow": "立即铸造 & 销毁",
+    "months": {
+      "march": "三月",
+      "january": "一月",
+      "february": "二月",
+      "april": "四月",
+      "may": "五月",
+      "june": "六月",
+      "july": "七月",
+      "august": "八月",
+      "september": "九月",
+      "october": "十月",
+      "november": "十一月",
+      "december": "十二月"
+    },
+    "select": "选择",
+    "fees": "手续费",
+    "rewards": "奖励",
+    "copiedAddress": "地址已复制",
+    "copyAddress": "复制地址",
+    "weekDays": {
+      "monday": "星期一",
+      "tuesday": "星期二",
+      "wednesday": "星期三",
+      "thursday": "星期四",
+      "friday": "星期五",
+      "saturday": "星期六",
+      "sunday": "星期日"
+    },
+    "periodItems": {
+      "today": "今天",
+      "thisWeek": "本周",
+      "lastWeek": "上周",
+      "thisMonth": "本月",
+      "lastMonth": "上月",
+      "thisQuarter": "本季度",
+      "thisYear": "今年"
+    },
+    "period": {
+      "day": "今天",
+      "week": "本周",
+      "month": "本月",
+      "year": "今年",
+      "all": "全部时间"
+    }
+  },
+  "orders": {
+    "pageTitle": "订单",
+    "noOrders": "暂无订单",
+    "noWalletDescription": "连接钱包并开始交易后，订单将显示在此处",
+    "cancel": "取消",
+    "confirmCancellation": "确认取消",
+    "cancellationDescription": "您即将取消此订单。取消后，订单将被移除且不再处理。",
+    "cancelOrder": "取消订单",
+    "dismiss": "关闭",
+    "orderCanceled": "您的订单已取消。",
+    "table": {
+      "header": {
+        "type": "类型",
+        "date": "日期",
+        "paid": "已付",
+        "received": "已收",
+        "status": "状态",
+        "token": "代币",
+        "orders": "订单"
+      },
+      "filters": {
+        "clearAll": "清除所有筛选"
+      }
+    },
+    "viewTransaction": "查看交易",
+    "noOrdersMatchFilters": "没有符合筛选条件的订单",
+    "noOrdersToDisplay": "暂无订单显示",
+    "tryAdjustingFilters": "请尝试调整或清除筛选条件以查看更多结果",
+    "ordersWillAppear": "首次交易后，订单将显示在此处",
+    "estimatedExecutionFee": "预计执行手续费",
+    "executedFee": "已执行手续费",
+    "title": "订单",
+    "allOrders": "全部订单",
+    "noOrdersDescription": "此钱包尚未进行任何交易",
+    "status": {
+      "all": "全部",
+      "created": "已创建",
+      "completed": "已完成",
+      "rejected": "已拒绝",
+      "canceled": "已取消"
+    },
+    "filters": {
+      "status": {
+        "all": "全部",
+        "created": "已创建",
+        "completed": "已完成",
+        "rejected": "已拒绝",
+        "canceled": "已取消"
+      }
+    }
+  },
+  "dashboard": {
+    "pageTitle": "仪表板",
+    "actionButton": {
+      "wallet": "连接钱包以{action}",
+      "fillAmount": "输入金额以{action}"
+    },
+    "youPay": "您支付",
+    "youReceive": "您收到",
+    "action": {
+      "Mint": {
+        "description": "存入 ADA 到协议，铸造 DJED 和 SHEN。"
+      },
+      "Burn": {
+        "description": "销毁 DJED 和 SHEN，从协议中提取您的 ADA。"
+      }
+    },
+    "whatIsOpenDjed": {
+      "title": "什么是 Open DJED?",
+      "description": "Open DJED 是由 Artifi Labs 开发的社区驱动网页应用，用于与 Cardano 上的算法稳定币 DJED 进行交互，完全开源。它以完整的协议兼容性重现了原始 DJED 体验，提供更可靠、更易访问且可审计的替代方案。",
+      "whyOpenDjed": {
+        "title": "为什么选择 Open DJED?",
+        "items": {
+          "protocolCompatible": "<strong>可靠：</strong>即使 COTI 应用不可用，也能正常运行。",
+          "openSource": "<strong>社区优先：</strong>为 Cardano 用户而建，由 Cardano 用户共建。",
+          "communityFirst": "<strong>协议兼容：</strong>与 DJED 相同的超额抵押逻辑。",
+          "reliable": "<strong>全球访问：</strong>无地理限制。",
+          "globalAccess": "<strong>开源：</strong>完全可审计、可分叉，由社区所有。",
+          "transparentFees": "<strong>透明低费：</strong>与 COTI 相同的费率结构，约便宜 0.1 ADA。"
+        }
+      }
+    },
+    "reserveDetails": {
+      "currentRatio": "当前比率",
+      "minRatio": "最小比率",
+      "maxRatio": "最大比率",
+      "reserveValue": "储备价值"
+    },
+    "transactionSummary": {
+      "title": "交易摘要",
+      "description": "请输入金额以查看完整费用明细。"
+    },
+    "baseCost": "基础费用",
+    "mintFee": "铸造手续费",
+    "operatorFee": "运营商手续费",
+    "totalCost": "总费用",
+    "refundableDeposit": "可退还押金",
+    "price": "价格",
+    "burnFee": "销毁手续费"
+  },
+  "privacyPolicy": {
+    "pageTitle": "隐私政策",
+    "title": "隐私政策",
+    "effectiveDate": "生效日期：{date}",
+    "intro": "Artifi Labs 致力于保护隐私与透明度。本隐私政策说明我们收集哪些数据以及如何使用。",
+    "sections": {
+      "dataCollection": "1. 数据收集",
+      "wallets": "2. 钱包",
+      "analytics": "3. 分析与遥测",
+      "openSource": "4. 开源",
+      "authentication": "5. 身份验证",
+      "policy": "6. 政策更新",
+      "contact": "7. 联系方式"
+    },
+    "paragraphs": {
+      "dataCollection": "我们不收集或存储任何个人数据。应用程序访问或显示的所有数据均来自区块链上的公开信息。",
+      "wallet": "当用户通过 Cardano 钱包与应用交互时，我们仅通过 CIP-30 标准与钱包界面交互。我们不接收或存储您的私钥。我们保留出于分析目的存储您的地址和交易记录的权利，以便根据使用情况改进应用。",
+      "analytics1": "我们使用 PostHog 收集有限的分析数据和应用遥测信息，以了解应用的使用方式并识别错误或性能问题。",
+      "analytics2": "PostHog 收集的数据<strong>不包含</strong>个人身份信息。我们<strong>不存储</strong>钱包地址、姓名、电子邮件或任何用户凭证。",
+      "analytics3": "所有分析数据仅用于改善应用体验。",
+      "openSource": "本应用为开源软件，基于以下许可证授权：",
+      "sourceCode": "源代码：",
+      "authentication": "本应用不使用或要求用户账户、登录或电子邮件注册。访问完全匿名。",
+      "policy": "我们可能会不时修订本政策。更新内容将在此处发布，并注明新的生效日期。",
+      "contact": "如有关于本隐私政策的疑问，请通过以下方式联系我们："
+    }
+  },
+  "simulator": {
+    "pageTitle": "模拟器",
+    "usdAmount": {
+      "label": "美元金额",
+      "tooltip": "您希望投资 SHEN 的美元金额。"
+    },
+    "buyDate": {
+      "label": "买入日期",
+      "tooltip": "您计划买入 SHEN 的日期。"
+    },
+    "sellDate": {
+      "label": "卖出日期",
+      "tooltip": "您计划卖出 SHEN 的日期。"
+    },
+    "buyAdaPrice": {
+      "label": "买入时 ADA 价格",
+      "tooltip": "买入 SHEN 时的 ADA 价格，用于计算盈亏。"
+    },
+    "sellAdaPrice": {
+      "label": "卖出时 ADA 价格",
+      "tooltip": "卖出 SHEN 时的 ADA 价格，用于计算盈亏。"
+    },
+    "scenario": "场景",
+    "results": {
+      "title": "模拟结果",
+      "description": "请输入金额以查看结果。",
+      "comparison": {
+        "title": "收益对比（SHEN vs ADA）",
+        "description": "此图表展示持有 SHEN 或 ADA 的不同收益场景。"
+      },
+      "fees": {
+        "simplified": {
+          "tooltip": "查看简化奖励。"
+        },
+        "detailed": {
+          "tooltip": "查看详细手续费明细。"
+        },
+        "buyFee": {
+          "label": "买入手续费",
+          "tooltip": "购买 DJED/SHEN 时收取的手续费，用于维护协议并分配给 SHEN 持有者。"
+        },
+        "sellFee": {
+          "label": "卖出手续费",
+          "tooltip": "出售 DJED/SHEN 时收取的手续费，用于维护协议并分配给 SHEN 持有者。"
+        },
+        "totalFee": {
+          "label": "总手续费",
+          "tooltip": "买入和卖出手续费之和，分配给 SHEN 持有者。"
+        },
+        "stakingRewards": {
+          "label": "ADA 质押奖励",
+          "tooltip": "支撑您 SHEN 的质押 ADA 所获得的奖励。质押 ADA 有助于保护 Cardano 网络并产生被动收入。"
+        },
+        "earnedFee": {
+          "label": "已获手续费",
+          "tooltip": "从买卖交易中收取的手续费总额，分配给 SHEN 持有者。"
+        },
+        "totalRewards": {
+          "label": "总奖励",
+          "tooltip": "质押 ADA 奖励与分配给 SHEN 持有者的手续费之和。"
+        }
+      },
+      "rewards": {
+        "simplified": {
+          "tooltip": "查看简化手续费。"
+        },
+        "detailed": {
+          "tooltip": "查看详细奖励明细。"
+        }
+      },
+      "chart": {
+        "profitOverTime": {
+          "title": "收益走势"
+        }
+      },
+      "shen": {
+        "label": "SHEN 盈亏",
+        "tooltip": "显示投资 SHEN 的预计盈亏，包含手续费和奖励。"
+      },
+      "ada": {
+        "label": "ADA 盈亏",
+        "tooltip": "显示仅持有 ADA 而不购买 SHEN 的预计盈亏。"
+      }
+    },
+    "title": "SHEN 交易模拟器",
+    "description": "快速清晰地查看投资 SHEN 的预期收益。",
+    "whatIsSimulator": {
+      "title": "什么是交易模拟器？",
+      "description": "交易模拟器帮助您了解投资 SHEN 的潜在收益。通过输入美元金额、买卖日期和 ADA 价格，该工具将估算",
+      "disclaimer": "这不是交易工具，而是一个计算器，展示您的收益如何随输入值变化，帮助您清晰规划策略。本工具不构成任何投资建议。",
+      "items": {
+        "fees": "买卖时支付的手续费",
+        "rewards": "持有 SHEN 期间获得的 ADA 奖励",
+        "feesEarned": "协议铸造和销毁活动产生的手续费收益",
+        "profitOrLoss": "ADA 价格波动带来的盈亏",
+        "totalEstimatedPNL": "预计总盈亏"
+      }
+    }
+  },
+  "termsOfService": {
+    "pageTitle": "服务条款",
+    "title": "服务条款",
+    "effectiveDate": "生效日期：{date}",
+    "welcome": "欢迎使用 Open Djed! 访问或使用本应用即表示您同意受本服务条款 (\"条款\")约束。如果您不同意其中任何部分，请勿使用本应用。",
+    "sections": {
+      "description": {
+        "title": "1. 描述",
+        "content": "Open Djed 是一个与 Cardano 区块链交互的开源网页应用。用户可通过 CIP-30 标准连接其 Cardano 钱包与应用交互。"
+      },
+      "use": {
+        "title": "2. 使用规范",
+        "content": "您同意遵守所有适用法律法规使用本应用。您不得以任何可能损害、禁用本应用或干扰其他用户使用的方式使用本应用。"
+      },
+      "license": {
+        "title": "3. 开源许可证",
+        "part1": "本应用为开源软件，基于以下许可证授权：",
+        "linkText": "GNU 通用公共许可证 v3.0 (GPL-3.0)",
+        "part2": "您可以自由使用、修改和重新分发本软件，但任何修改或衍生作品也必须遵循 GPL-3.0 许可证。重新分发时必须附带许可证副本。",
+        "part3": "在 GitHub 上查看源代码："
+      },
+      "wallet": {
+        "title": "4. 钱包交互",
+        "content": "本应用使用 Cardano CIP-30 钱包集成标准连接支持的钱包。我们不控制、存储或传输钱包私钥。所有区块链交互均通过用户的钱包提供商进行。"
+      },
+      "disclaimers": {
+        "title": "5. 免责声明",
+        "item1": "本应用按\"现状\"提供，不提供任何形式的保证。",
+        "item2": "我们不对正常运行时间、准确性或适用于任何特定目的作出任何保证。",
+        "item3": "用户对使用其钱包提交的任何交易承担全部责任。"
+      },
+      "changes": {
+        "title": "6. 变更",
+        "content": "我们可能会不时修订本条款。任何变更将在本页面更新并注明新的生效日期。"
+      },
+      "contact": {
+        "title": "7. 联系方式",
+        "content": "如有关于本条款的疑问，请通过以下方式联系我们："
+      }
+    }
+  },
+  "reserve": {
+    "reserveRatio": "储备比率",
+    "warning": {
+      "below": "当储备比率低于 {percentage}% 时，不允许铸造 DJED 和销毁 SHEN。",
+      "above": "当储备比率高于 {percentage}% 时，不允许铸造 SHEN。"
+    }
+  },
+  "action": {
+    "mint": "铸造",
+    "burn": "销毁"
+  },
+  "components": {
+    "footer": {
+      "privacyPolicy": {
+        "text": "隐私政策"
+      },
+      "terms": {
+        "text": "条款与条件"
+      },
+      "allRights": "{year} {company}。保留所有权利"
+    }
+  },
+  "navbar": {
+    "dashboard": {
+      "title": "仪表板"
+    },
+    "analytics": {
+      "title": "数据分析"
+    },
+    "simulator": {
+      "title": "模拟器"
+    },
+    "orders": {
+      "title": "订单"
+    },
+    "wallet": {
+      "connect": "连接钱包",
+      "loading": "正在加载钱包"
+    }
+  },
+  "wallet": {
+    "connectWallet": "连接钱包",
+    "connectWalletDisclaimer": "连接即表示您同意我们的<terms>服务条款</terms>和<privacy>隐私政策</privacy>",
+    "orders": {
+      "cancel": "取消",
+      "paid": "已付",
+      "received": "已收"
+    },
+    "title": "钱包",
+    "noWalletsDetected": "未检测到钱包",
+    "incorrectNetwork": "请连接 {network} 钱包",
+    "connected": "您的钱包已成功连接",
+    "connectionFailed": "钱包连接失败",
+    "disconnected": "您的钱包已断开连接"
+  },
+  "settings": {
+    "title": "设置",
+    "language": {
+      "title": "语言"
+    },
+    "network": {
+      "title": "网络"
+    }
+  },
+  "errors": {
+    "404": {
+      "pageTitle": "页面未找到",
+      "title": "迷失在区块链的虚空中",
+      "content": {
+        "content1": "此页面已从网络中断开。",
+        "content2": "让我们将您重新连接到主链"
+      },
+      "button": {
+        "text": "返回首页"
+      }
+    }
+  }
+}
