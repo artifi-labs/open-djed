@@ -379,7 +379,7 @@
       "terms": {
         "text": "Termos & Condições"
       },
-      "allRights": "© {year} {company}. Todos os direitos reservados"
+      "allRights": "{year} {company}. Todos os direitos reservados"
     }
   },
   "navbar": {
