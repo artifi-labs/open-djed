@@ -6,8 +6,9 @@ import { env } from "@/lib/envLoader"
 import { useViewport } from "@/hooks/useViewport"
 import { capitalize } from "@/lib/utils"
 import { SUPPORTED_LANGUAGES } from "@/lib/constants"
+import { usePathname, useRouter } from "@/i18n/navigation"
 import { useLocale, useTranslations } from "next-intl"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { useSearchParams } from "next/navigation"
 
 export default function SettingsSidebar({
   isOpen,
@@ -35,19 +36,12 @@ export default function SettingsSidebar({
   const switchLocale = (newLocale: string) => {
     if (newLocale === locale) return
 
-    const segments = pathname.split("/").filter(Boolean)
+    const query = Object.fromEntries(searchParams.entries())
 
-    if (SUPPORTED_LANGUAGES.map((l) => l.code).includes(segments[0])) {
-      segments.shift()
-    }
-
-    const pathnameWithoutLocale = "/" + segments.join("/")
-    const query = searchParams.toString()
-
-    const newPath =
-      `/${newLocale}${pathnameWithoutLocale}` + (query ? `?${query}` : "")
-
-    router.push(newPath)
+    router.replace(
+      Object.keys(query).length > 0 ? { pathname, query } : pathname,
+      { locale: newLocale },
+    )
   }
 
   const handleLanguageChange = (item: ContextualMenuItem) => {
