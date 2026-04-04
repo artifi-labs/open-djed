@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import clsx from "clsx"
-//import Link from "next/link"
+//import { Link } from "@/i18n/navigation"
 import ButtonIcon from "./ButtonIcon"
 import { type Order } from "@open-djed/api"
 import { useViewport } from "@/hooks/useViewport"

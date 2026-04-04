@@ -44,12 +44,13 @@ export function useSettings(): Setting[] {
   // Change Functions
   const changeLocale = useCallback(
     (newLocale: string) => {
+      if (newLocale === locale) return
       router.replace(
         { pathname, query: Object.fromEntries(searchParams.entries()) },
         { locale: newLocale },
       )
     },
-    [pathname, router, searchParams],
+    [pathname, router, searchParams, locale],
   )
 
   const changeNetwork = useCallback(
