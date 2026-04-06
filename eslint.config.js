@@ -42,6 +42,19 @@ export default defineConfig([
     languageOptions: {
       parserOptions: {
         project: true,
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+  },
+  {
+    files: [
+      "packages/blockfrost/__tests__/**/*.ts",
+      "packages/blockfrost/vitest.config.ts",
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: "./packages/blockfrost/tsconfig.test.json",
+        tsconfigRootDir: import.meta.dirname,
       },
     },
   },
