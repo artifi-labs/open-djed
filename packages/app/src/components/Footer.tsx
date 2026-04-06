@@ -1,6 +1,6 @@
 "use client"
 
-import Link from "next/link"
+import { Link } from "@/i18n/navigation"
 import Image from "next/image"
 import Icon, { type IconName } from "./icons/Icon"
 import ButtonIcon from "./ButtonIcon"
@@ -84,7 +84,7 @@ const Footer = () => {
       href: "/terms",
     },
     {
-      label: "Docs",
+      label: t("components.footer.docs.text"),
       href: OPEN_DJED_DOCS_URL,
       icon: "External",
     },

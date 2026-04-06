@@ -9,6 +9,8 @@
     "volumes": "Analyse des Volumes",
     "shenAdaPrice": "Prix de SHEN & Prix d'ADA",
     "djedDexPrice": "Prix de DJED vs Marchés Secondaires",
+    "realized": "Réalisé",
+    "projected": "Projeté",
     "total": "Total {analytic}",
     "mintedToken": "{token} Frappé",
     "burnedToken": "{token} Brûlé",
@@ -378,6 +380,9 @@
       },
       "terms": {
         "text": "Conditions d'Utilisation"
+      },
+      "docs": {
+        "text": "Docs"
       },
       "allRights": "{year} {company}. Tous droits réservés"
     }

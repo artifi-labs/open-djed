@@ -2,6 +2,7 @@
 
 import { FinancialAreaChart } from "@/components/charts/FinancialAreaChart"
 import type { ShenYieldChartEntry } from "@/queries/analytics/shenYield/shenYield.schema"
+import { useTranslations } from "next-intl"
 import { useMemo } from "react"
 import { ReferenceDot } from "recharts"
 
@@ -28,6 +29,8 @@ const yTickFormatter = (value: number | string) =>
   formatPercentAxisValue(Number(value))
 
 export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({ data }) => {
+  const t = useTranslations()
+
   const { rows, anchorPoint } = useMemo(() => {
     if (!data?.length) return { rows: [], anchorPoint: null }
 
@@ -54,12 +57,12 @@ export const ShenYieldChart: React.FC<ShenYieldChartProps> = ({ data }) => {
   const lines = [
     {
       dataKey: "realized",
-      name: "Realized",
+      name: t("analytics.realized"),
       stroke: "var(--color-supportive-1-500)",
     },
     {
       dataKey: "projected",
-      name: "Projected",
+      name: t("analytics.projected"),
       stroke: "var(--color-on-warning-secondary)",
     },
   ]
