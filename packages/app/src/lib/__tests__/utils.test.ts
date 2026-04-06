@@ -1,9 +1,9 @@
-import { describe, it, expect } from "vitest"
 import {
   formatLiveStringToNumber,
   formatNumber,
   sanitizeNumberInput,
-} from "../utils"
+} from "@/utils"
+import { describe, it, expect } from "vitest"
 
 describe("formatNumber", () => {
   it("formats integers with default fraction digits", () => {

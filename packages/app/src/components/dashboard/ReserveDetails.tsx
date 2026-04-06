@@ -1,7 +1,7 @@
 import { useReserveDetails } from "@/hooks/useReserveDetails"
 import BaseCard from "../card/BaseCard"
 import { ReserveGraph } from "./ReserveGraph"
-import { formatNumber, formatValue } from "@/lib/utils"
+import { formatNumber, formatValue } from "@/utils"
 import Divider from "../Divider"
 import { useTranslations } from "next-intl"
 

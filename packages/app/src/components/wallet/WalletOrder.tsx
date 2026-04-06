@@ -4,12 +4,12 @@ import Tag from "../Tag"
 import ButtonIcon from "../ButtonIcon"
 import Coin, { type IconCoinName } from "../Coin"
 import Divider from "../Divider"
-import { type OrderStatus, useOrders } from "@/hooks/useOrders"
-import { type Order } from "@open-djed/api"
 import { STATUS_CONFIG } from "../order/OrderHistory"
 import { CARDANOSCAN_BASE_URL } from "@/lib/constants"
 import { useTranslations } from "next-intl"
-import { capitalize } from "@/lib/utils"
+import { capitalize, formatRelativeDate } from "@/utils"
+import { useCancelOrder } from "@/hooks/orders/useCancelOrder"
+import type { Order } from "@/queries/orders/orders/orders.schema"
 
 type WalletOrderProps = {
   order: Order
@@ -18,15 +18,15 @@ type WalletOrderProps = {
 
 const WalletOrder: React.FC<WalletOrderProps> = ({ order, divider }) => {
   const t = useTranslations()
-  const { handleCancelOrder, formatDate } = useOrders()
+  const { cancelOrder } = useCancelOrder()
 
-  const formatLovelace = (amount: bigint) =>
+  const formatLovelace = (amount: bigint | null) =>
     (Number(amount) / 1_000_000).toLocaleString(undefined, {
       minimumFractionDigits: 2,
       maximumFractionDigits: 6,
     })
 
-  const statusConfig = STATUS_CONFIG[order.status as OrderStatus]
+  const statusConfig = STATUS_CONFIG[order.status]
 
   return (
     <div className="flex w-full flex-col gap-12">
@@ -40,13 +40,11 @@ const WalletOrder: React.FC<WalletOrderProps> = ({ order, divider }) => {
         <div className="flex flex-row items-center gap-8">
           {order.status === "Created" && (
             <Button
-              text={t("wallet.orders.cancel")}
+              text={t("common.cancel.text")}
               variant="secondary"
               size="small"
               onClick={() => {
-                handleCancelOrder(order.tx_hash, order.out_index).catch(
-                  console.error,
-                )
+                cancelOrder(order.tx_hash, order.out_index).catch(console.error)
               }}
             />
           )}
@@ -74,17 +72,16 @@ const WalletOrder: React.FC<WalletOrderProps> = ({ order, divider }) => {
           </span>
           <span className="bg-secondary h-0.75 w-0.75 rounded-full"></span>
           <span className="text-secondary text-[10px]">
-            {formatDate(BigInt(new Date(order.orderDate).getTime()))}
+            {formatRelativeDate(BigInt(new Date(order.orderDate).getTime()))}
           </span>
         </div>
         <div className="flex flex-row items-center gap-4">
           <span className="text-xs">
-            {t("wallet.orders.paid")}: {formatLovelace(order.paid ?? 0n)}
+            {t("wallet.orders.paid")}: {formatLovelace(order.paid)}
           </span>
           <span className="bg-secondary h-0.75 w-0.75 rounded-full"></span>
           <span className="text-xs">
-            {t("wallet.orders.received")}:{" "}
-            {formatLovelace(order.received ?? 0n)}
+            {t("wallet.orders.received")}: {formatLovelace(order.received)}
           </span>
         </div>
       </div>

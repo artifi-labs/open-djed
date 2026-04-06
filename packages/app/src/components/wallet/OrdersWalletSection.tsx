@@ -3,34 +3,27 @@ import WalletOrder from "./WalletOrder"
 import Button from "../Button"
 import { Link } from "@/i18n/navigation"
 import { useSidebar } from "@/context/SidebarContext"
-import { useOrders } from "@/hooks/useOrders"
-import { useEffect } from "react"
-import { type Wallet } from "@/context/WalletContext"
-import { ORDERS_SIDEBAR } from "@/lib/constants"
+import { useOrders } from "@/hooks/orders/useOrders"
 import { useTranslations } from "next-intl"
 
-export default function OrdersWalletSection({ wallet }: { wallet: Wallet }) {
+function OrdersWalletSection() {
   const t = useTranslations()
   const { closeSidebar } = useSidebar()
-  const { orders, fetchOrders } = useOrders()
-
-  useEffect(() => {
-    fetchOrders(1, ORDERS_SIDEBAR).catch((e) => console.error(e))
-  }, [wallet])
+  const orders = useOrders({ queryParams: { limit: 5 } })
 
   return (
     <>
       <div className="flex h-full w-full flex-col gap-12 overflow-y-auto py-8">
         <h1 className="text-sm font-medium">{t("orders.title")}</h1>
         <div className="flex h-full w-full flex-col gap-12">
-          {orders.length > 0 ? (
+          {orders.orders.length > 0 ? (
             <>
-              {orders.map((order, index) => {
+              {orders.orders.map((order, index) => {
                 return (
                   <WalletOrder
                     order={order}
                     key={order.tx_hash}
-                    divider={index !== orders.length - 1}
+                    divider={index !== orders.orders.length - 1}
                   />
                 )
               })}
@@ -68,3 +61,5 @@ export default function OrdersWalletSection({ wallet }: { wallet: Wallet }) {
     </>
   )
 }
+
+export default OrdersWalletSection

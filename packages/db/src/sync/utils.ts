@@ -62,8 +62,8 @@ function mapOrderStatus(tag: number): OrderStatus | null {
     case 4: // Successful DJED mint/burn
     case 5: // Successful SHEN mint/burn
       return OrderStatus.Completed
-    case 11: // Order cancelled by the user
-      return OrderStatus.Cancelled
+    case 11: // Order Canceled by the user
+      return OrderStatus.Canceled
     case 0: // Failed because reserve ratio constraints were not met
     case 12: // Failed because the submitted price was stale (slippage)
       return OrderStatus.Rejected
@@ -325,7 +325,7 @@ export async function processOrdersToInsert(utxos: OrderUTxOWithDatum[]) {
         received,
         orderDate: new Date(Number(d.creationDate)),
         status: status,
-      } as unknown as Order
+      }
     },
     10,
     1000,

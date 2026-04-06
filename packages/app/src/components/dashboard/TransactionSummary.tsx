@@ -5,7 +5,7 @@ import { type useMintBurnAction } from "./useMintBurnAction"
 import BaseCard from "../card/BaseCard"
 import Divider from "../Divider"
 import { useTransactionSummary } from "./useTransactionSummary"
-import { isEmptyValue } from "@/lib/utils"
+import { isEmptyValue } from "@/utils"
 import { useTranslations } from "next-intl"
 
 export type TransactionSummaryProps = {

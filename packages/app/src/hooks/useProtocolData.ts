@@ -1,13 +1,8 @@
 import { useApiClient } from "@/context/ApiClientContext"
 import { useToast } from "@/context/ToastContext"
 import { env } from "@/lib/envLoader"
-import {
-  type ADAValue,
-  valueTo,
-  sumValues,
-  valueToADA,
-  type Value,
-} from "@/lib/utils"
+import type { ADAValue, Value } from "@/types"
+import { valueTo, sumValues, valueToADA } from "@/utils"
 import type { TokenType, ActionType, MarketCapValue } from "@open-djed/api"
 import {
   djedADABurnRate,

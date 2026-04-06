@@ -3,7 +3,7 @@
 import Dropdown from "./Dropdown"
 import Sidebar from "./modals/Sidebar"
 import { useViewport } from "@/hooks/useViewport"
-import { capitalize } from "@/lib/utils"
+import { capitalize } from "@/utils"
 import { useTranslations } from "next-intl"
 import { useSettings } from "@/hooks/useSettings"
 import type { Setting } from "@/lib/types"

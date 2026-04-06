@@ -14,15 +14,16 @@ import Tag from "../Tag"
 import Dialog from "../Dialog"
 import Snackbar from "../Snackbar"
 import TransactionDetails from "../TransactionDetails"
-import { type OrderStatus, useOrders } from "@/hooks/useOrders"
 
 import BaseCard from "../card/BaseCard"
 import { useViewport } from "@/hooks/useViewport"
 import Asset from "../Asset"
 import { CARDANOSCAN_BASE_URL, ORDERS_PER_PAGE } from "@/lib/constants"
-import type { Order } from "@open-djed/api"
 import { useTranslations } from "next-intl"
-import { capitalize } from "@/lib/utils"
+import { capitalize, formatRelativeDate } from "@/utils"
+import type { OrderStatus } from "@open-djed/api"
+import { useCancelOrder } from "@/hooks/orders/useCancelOrder"
+import type { Order } from "@/queries/orders/orders/orders.schema"
 
 interface RowItem {
   columns: { content: React.ReactNode }[]
@@ -48,7 +49,6 @@ export const STATUS_CONFIG: Record<
     i18nKey: string
   }
 > = {
-  // Processing: { type: "surface", text: "Processing" },
   Created: {
     type: "surface",
     i18nKey: "orders.status.created",
@@ -61,13 +61,10 @@ export const STATUS_CONFIG: Record<
     type: "error",
     i18nKey: "orders.status.rejected",
   },
-  // Cancelling: { type: "warning", text: "Cancelling" },
   Canceled: {
     type: "surface",
     i18nKey: "orders.status.canceled",
   },
-  // Failed: { type: "error", text: "Failed" },
-  // Expired: { type: "error", text: "Expired" },
 }
 
 const formatAda = (value?: bigint | null) => {
@@ -150,13 +147,12 @@ const TypeCell = ({ action }: { action: string }) => (
 )
 
 const DateCell = ({ date }: { date: string | Date }) => {
-  const { formatDate } = useOrders()
   const timestamp =
     typeof date === "string" ? new Date(date).getTime() : date.getTime()
 
   return (
     <div className="px-16 py-12 text-nowrap">
-      <span>{formatDate(BigInt(timestamp))}</span>
+      <span>{formatRelativeDate(BigInt(timestamp))}</span>
     </div>
   )
 }
@@ -222,7 +218,7 @@ const ExternalCell = ({
   const t = useTranslations()
   const [isDialogOpen, setIsDialogOpen] = React.useState(false)
   const [showSnackbar, setShowSnackbar] = React.useState(false)
-  const { handleCancelOrder } = useOrders()
+  const { cancelOrder } = useCancelOrder()
 
   const showCancel = status === "Created"
 
@@ -242,7 +238,7 @@ const ExternalCell = ({
       {showCancel && (
         <>
           <Button
-            text={t("orders.cancel")}
+            text={t("common.cancel.text")}
             variant="secondary"
             size="small"
             onClick={() => setIsDialogOpen(true)}
@@ -263,7 +259,7 @@ const ExternalCell = ({
               hasSkrim={true}
               onSecondaryButtonClick={handleCloseDialog}
               onPrimaryButtonClick={() => {
-                handleCancelOrder(txHash, outIndex).catch(console.error)
+                cancelOrder(txHash, outIndex).catch(console.error)
                 setIsDialogOpen(false)
               }}
             />
@@ -295,7 +291,7 @@ const ExternalCell = ({
 
 const MobileCell = ({ order }: { order: Order }) => {
   const t = useTranslations()
-  const { handleCancelOrder, formatDate } = useOrders()
+  const { cancelOrder } = useCancelOrder()
 
   const [isDialogOpen, setIsDialogOpen] = React.useState(false)
 
@@ -324,7 +320,7 @@ const MobileCell = ({ order }: { order: Order }) => {
               {capitalize(t("orders.table.header.date"))}
             </span>
             <span className="text-xs">
-              {formatDate(BigInt(new Date(order.orderDate).getTime()))}
+              {formatRelativeDate(BigInt(new Date(order.orderDate).getTime()))}
             </span>
           </div>
           <div className="flex w-full flex-row items-center justify-between">
@@ -359,7 +355,7 @@ const MobileCell = ({ order }: { order: Order }) => {
           {showCancel ? (
             <div className="grid grid-cols-2 gap-8">
               <Button
-                text={t("orders.cancel")}
+                text={t("common.cancel.text")}
                 variant="secondary"
                 size="small"
                 onClick={() => setIsDialogOpen(true)}
@@ -406,9 +402,7 @@ const MobileCell = ({ order }: { order: Order }) => {
           hasSkrim={true}
           onSecondaryButtonClick={() => setIsDialogOpen(false)}
           onPrimaryButtonClick={() => {
-            handleCancelOrder(order.tx_hash, order.out_index).catch(
-              console.error,
-            )
+            cancelOrder(order.tx_hash, order.out_index).catch(console.error)
             setIsDialogOpen(false)
           }}
         />

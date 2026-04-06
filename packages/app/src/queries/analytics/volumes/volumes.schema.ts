@@ -1,29 +1,5 @@
-import { z } from "zod"
-
-/**
- * Schemas for Volumes API response.
- */
-export const VolumesEntryApiSchema = z.object({
-  timestamp: z.string(),
-  djedMintedUSD: z.string(),
-  shenMintedUSD: z.string(),
-  djedBurnedUSD: z.string(),
-  shenBurnedUSD: z.string(),
-  djedMintedADA: z.string(),
-  djedBurnedADA: z.string(),
-  shenMintedADA: z.string(),
-  shenBurnedADA: z.string(),
-  totalDjedVolumeUSD: z.string(),
-  totalShenVolumeUSD: z.string(),
-  totalDjedVolumeADA: z.string(),
-  totalShenVolumeADA: z.string(),
-  totalVolumeUSD: z.string(),
-  totalVolumeADA: z.string(),
-})
-
-export const VolumesResponseApiSchema = z.array(VolumesEntryApiSchema)
-export type VolumesEntryApi = z.infer<typeof VolumesEntryApiSchema>
-export type VolumesResponseApi = z.infer<typeof VolumesResponseApiSchema>
+import { VolumesEntryApiSchema } from "@open-djed/api"
+import z from "zod"
 
 /**
  * Transformed schema to convert string values to numbers for easier usage in the app

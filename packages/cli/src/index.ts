@@ -380,7 +380,7 @@ program.command("orders").action(async () => {
       o.orderDatum.address.stakeKeyHash[0][0][0] ===
         addressDetails.stakeCredential?.hash,
   )
-  // TODO: Need to query Blockfrost for previous orders in order to capture those that have been fulfilled or cancelled.
+  // TODO: Need to query Blockfrost for previous orders in order to capture those that have been fulfilled or Canceled.
   console.log(
     JSON.stringify(
       myOrderUtxos.map((o) => ({

@@ -1,19 +1,5 @@
-import { z } from "zod"
-
-/**
- * Schemas for ReserveRatio API response.
- */
-export const ReserveRatioEntryApiSchema = z.object({
-  id: z.number(),
-  timestamp: z.string(),
-  reserveRatio: z.string(),
-})
-
-export const ReserveRatioResponseApiSchema = z.array(ReserveRatioEntryApiSchema)
-export type ReserveRatioEntryApi = z.infer<typeof ReserveRatioEntryApiSchema>
-export type ReserveRatioResponseApi = z.infer<
-  typeof ReserveRatioResponseApiSchema
->
+import { ReserveRatioEntryApiSchema } from "@open-djed/api"
+import z from "zod"
 
 /**
  * Transformed schema to convert string values to numbers for easier usage in the app

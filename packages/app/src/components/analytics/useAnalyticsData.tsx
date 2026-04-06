@@ -17,9 +17,9 @@ import { useReserveDetails } from "@/hooks/useReserveDetails"
 import { useProtocolData } from "@/hooks/useProtocolData"
 import { Rational, shenADARate, shenUSDRate } from "@open-djed/math"
 import { useTranslations } from "next-intl"
-import type { MarketCapResponse } from "@/queries/analytics/marketCap/marketCap.schema"
-import type { MarketCapValue } from "@open-djed/api"
 import type { ShenYieldEntry } from "@/queries/analytics/shenYield/shenYield.schema"
+import type { MarketCapValue } from "@open-djed/api"
+import type { MarketCapResponse } from "@/queries/analytics/marketCap/marketCap.schema"
 
 export type CurrencyValue = "ADA" | "USD"
 export const CURRENCY_OPTIONS: Array<{ label: string; value: CurrencyValue }> =

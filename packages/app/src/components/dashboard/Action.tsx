@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import Button from "../Button"
-import { capitalize, isEmptyValue } from "@/lib/utils"
+import { capitalize, isEmptyValue } from "@/utils"
 import type { ActionType } from "./actionConfig"
 import InputAction from "./InputAction"
 import type { Token } from "@/lib/tokens"

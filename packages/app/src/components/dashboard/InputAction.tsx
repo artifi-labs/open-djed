@@ -9,7 +9,7 @@ import ButtonIcon from "../ButtonIcon"
 import { useWallet } from "@/context/WalletContext"
 import type { Token } from "@/lib/tokens"
 import ValueShowcase from "./ValueShowcase"
-import { formatNumber } from "@/lib/utils"
+import { formatNumber } from "@/utils"
 import { useProtocolData } from "@/hooks/useProtocolData"
 
 export type InputActionProps = {

@@ -1,6 +1,6 @@
 "use client"
 
-import { capitalize } from "@/lib/utils"
+import { capitalize } from "@/utils"
 import { useTranslations } from "next-intl"
 
 const Privacy = () => {
