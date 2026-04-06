@@ -1,7 +1,7 @@
 import * as React from "react"
 import { type Wallet } from "@/context/WalletContext"
 import Button from "../Button"
-import Link from "next/link"
+import { Link } from "@/i18n/navigation"
 import { useSidebar } from "@/context/SidebarContext"
 import WalletDetail from "./WalletDetail"
 import type { WalletName } from "../Wallet"

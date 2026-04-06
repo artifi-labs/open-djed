@@ -2,7 +2,7 @@
 
 import Divider from "../Divider"
 import ListItem from "../ListItem"
-import Link from "next/link"
+import { Link } from "@/i18n/navigation"
 import type { WalletName } from "../Wallet"
 import { capitalizeLower } from "@/utils"
 import { useTranslations } from "next-intl"

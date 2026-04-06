@@ -1,5 +1,7 @@
+import { languages } from "@/i18n/settings"
+
 export default {
-  locales: ["en", "pt"],
+  locales: languages,
   output: "messages/$LOCALE/translations.json",
   input: ["src/**/*.{ts,tsx}"],
 

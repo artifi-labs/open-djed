@@ -11,7 +11,8 @@ import { blockfrostFetch } from "../../utils"
  */
 export async function rollbackShenYield() {
   const latestShenYield = await getLatestShenYield()
-  if (!latestShenYield) return
+  if (!latestShenYield || !latestShenYield.block || !latestShenYield.slot)
+    return
 
   const syncIsValid = await blockfrostFetch(`/blocks/${latestShenYield.block}`)
     .then(() => true)

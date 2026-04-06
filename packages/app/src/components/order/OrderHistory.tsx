@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { useMemo } from "react"
-import Link from "next/link"
+import { Link } from "@/i18n/navigation"
 import Table from "../table/Table"
 import Button from "../Button"
 import Coin from "../Coin"
