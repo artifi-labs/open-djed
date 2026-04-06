@@ -1,5 +1,5 @@
 import TTLCache from "@isaacs/ttlcache"
-import { Blockfrost } from "@open-djed/blockfrost"
+import { Blockfrost, Network } from "@open-djed/blockfrost"
 import { env } from "../lib/env"
 import { registryByNetwork } from "@open-djed/registry"
 import { Lucid, type LucidEvolution } from "@lucid-evolution/lucid"
@@ -12,9 +12,12 @@ export const registry = registryByNetwork[network]
 
 export const chainDataCache = new TTLCache({ ttl: 10_000, checkAgeOnGet: true })
 
+const blockfrostNetwork: Network =
+  env.NETWORK === "Mainnet" ? Network.MAINNET : Network.PREPROD
+
 export const blockfrost = new Blockfrost(
-  env.BLOCKFROST_URL,
   env.BLOCKFROST_PROJECT_ID,
+  blockfrostNetwork,
 )
 
 export const getLucid = async () => {
