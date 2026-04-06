@@ -1,4 +1,4 @@
-import Link from "next/link"
+import { Link } from "@/i18n/navigation"
 import type { ButtonProps } from "./Button"
 import Button from "./Button"
 

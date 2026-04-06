@@ -1,6 +1,5 @@
 "use client"
 
-import Link from "next/link"
 import React, { useState } from "react"
 import Button from "./Button"
 import ButtonIcon from "./ButtonIcon"
@@ -17,7 +16,7 @@ import { useViewport } from "@/hooks/useViewport"
 import Icon from "./icons/Icon"
 import { env } from "@/lib/envLoader"
 import { useTranslations } from "next-intl"
-import { usePathname } from "@/i18n/navigation"
+import { Link, usePathname } from "@/i18n/navigation"
 
 type NavigationItem = {
   label: string
