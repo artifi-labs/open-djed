@@ -2,7 +2,8 @@ import { logger } from "../../utils/logger"
 import { prisma } from "../../../lib/prisma"
 import { updatePendingOrders } from "./pendingOrders"
 import { rollback } from "./rollback"
-import { syncNewOrders } from "./newOrders"
+import { syncNewOrders, updateLatestBlock } from "./newOrders"
+import { updateFeesEarnings } from "./feesEarnings/updateFeesEarnings"
 
 export async function updateOrders() {
   const start = Date.now()
@@ -10,8 +11,17 @@ export async function updateOrders() {
 
   try {
     await rollback()
-    await updatePendingOrders()
-    await syncNewOrders()
+    const completedPendingOrders = await updatePendingOrders()
+    const {
+      completedOrders: completedNewOrders,
+      newOrders,
+      latestSyncedBlock,
+    } = await syncNewOrders()
+    await updateFeesEarnings([...completedPendingOrders, ...completedNewOrders])
+
+    if (latestSyncedBlock) {
+      await updateLatestBlock(latestSyncedBlock, newOrders)
+    }
 
     logger.info("=== Order Update Complete ===")
     const end = Date.now() - start

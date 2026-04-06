@@ -17,4 +17,10 @@ export const analyticsKeys = {
 
   djedDexPrice: (period: ChartPeriodValue) =>
     [...analyticsKeys.all, "djedDexPrice", period] as const,
+
+  shenYield: (period: ChartPeriodValue) =>
+    [...analyticsKeys.all, "shenYield", period] as const,
+
+  projectedShenYield: () =>
+    [...analyticsKeys.all, "projectedShenYield"] as const,
 }

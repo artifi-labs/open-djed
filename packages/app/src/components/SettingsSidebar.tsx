@@ -1,13 +1,30 @@
 "use client"
+
 import Dropdown from "./Dropdown"
 import Sidebar from "./modals/Sidebar"
-import { type ContextualMenuItem } from "./ContextualMenu"
-import { env } from "@/lib/envLoader"
 import { useViewport } from "@/hooks/useViewport"
 import { capitalize } from "@/lib/utils"
-import { SUPPORTED_LANGUAGES } from "@/lib/constants"
-import { useLocale, useTranslations } from "next-intl"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { useTranslations } from "next-intl"
+import { useSettings } from "@/hooks/useSettings"
+import type { Setting } from "@/lib/types"
+
+function SettingField({ setting }: { setting: Setting }) {
+  switch (setting.type) {
+    case "dropdown":
+      return (
+        <Dropdown
+          size="medium"
+          hasTag={false}
+          menuItems={setting.items}
+          defaultItem={setting.current}
+          onChange={(item) => setting.onChange(item.key as string)}
+          trailingIcon="Chevron-down"
+        />
+      )
+    default:
+      return null
+  }
+}
 
 export default function SettingsSidebar({
   isOpen,
@@ -19,59 +36,8 @@ export default function SettingsSidebar({
   onBack?: () => void
 }) {
   const t = useTranslations()
-  const router = useRouter()
-  const pathname = usePathname()
-  const searchParams = useSearchParams()
-  const locale = useLocale()
-
-  const { NETWORK, CONFIG } = env
   const { isMobile } = useViewport()
-
-  const supportedLanguages = SUPPORTED_LANGUAGES.map((lang) => ({
-    key: lang.code,
-    text: lang.label,
-  }))
-
-  const switchLocale = (newLocale: string) => {
-    if (newLocale === locale) return
-
-    const segments = pathname.split("/").filter(Boolean)
-
-    if (SUPPORTED_LANGUAGES.map((l) => l.code).includes(segments[0])) {
-      segments.shift()
-    }
-
-    const pathnameWithoutLocale = "/" + segments.join("/")
-    const query = searchParams.toString()
-
-    const newPath =
-      `/${newLocale}${pathnameWithoutLocale}` + (query ? `?${query}` : "")
-
-    router.push(newPath)
-  }
-
-  const handleLanguageChange = (item: ContextualMenuItem) => {
-    const newLang = item.key as string
-    switchLocale(newLang)
-  }
-
-  const currentLanguageItem = supportedLanguages.find(
-    (lang) => lang.key === locale,
-  )
-
-  const networkItems = Object.keys(CONFIG).map((key) => ({
-    key: key,
-    text: key.charAt(0).toUpperCase() + key.slice(1),
-  }))
-
-  const handleNetworkChange = (item: ContextualMenuItem) => {
-    const selectedNetwork = item.key as string
-    if (CONFIG[selectedNetwork as keyof typeof CONFIG]) {
-      window.location.href = CONFIG[selectedNetwork as keyof typeof CONFIG]
-    }
-  }
-
-  const currentNetworkItem = networkItems.find((item) => item.key === NETWORK)
+  const settings = useSettings()
 
   return (
     <Sidebar
@@ -85,33 +51,15 @@ export default function SettingsSidebar({
       paddingClassName="px-16 py-8 desktop:px-24"
     >
       <div className="flex h-full w-full flex-col items-start justify-start gap-18">
-        <div className="flex w-full flex-col items-start justify-start gap-10">
-          <span className="text-secondary text-xs">
-            {t("settings.language.title")}
-          </span>
-          <Dropdown
-            text={currentLanguageItem?.text || t("common.select")}
-            size="medium"
-            hasTag={false}
-            menuItems={supportedLanguages}
-            onChange={handleLanguageChange}
-            trailingIcon="Chevron-down"
-          />
-        </div>
-
-        <div className="flex w-full flex-col items-start justify-start gap-10">
-          <span className="text-secondary text-xs">
-            {t("settings.network.title")}
-          </span>
-          <Dropdown
-            text={currentNetworkItem?.text || t("common.select")}
-            size="medium"
-            hasTag={false}
-            menuItems={networkItems}
-            onChange={handleNetworkChange}
-            trailingIcon="Chevron-down"
-          />
-        </div>
+        {settings.map((setting) => (
+          <div
+            key={setting.key}
+            className="flex w-full flex-col items-start justify-start gap-10"
+          >
+            <span className="text-secondary text-xs">{setting.label}</span>
+            <SettingField setting={setting} />
+          </div>
+        ))}
       </div>
     </Sidebar>
   )

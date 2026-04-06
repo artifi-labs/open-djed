@@ -1,7 +1,7 @@
 "use client"
 import WalletOrder from "./WalletOrder"
 import Button from "../Button"
-import Link from "next/link"
+import { Link } from "@/i18n/navigation"
 import { useSidebar } from "@/context/SidebarContext"
 import { useOrders } from "@/hooks/useOrders"
 import { useEffect } from "react"

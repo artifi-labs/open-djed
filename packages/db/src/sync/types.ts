@@ -79,6 +79,28 @@ export type UTxO = {
   outputs: Output[]
 }
 
+export type OrderStatusOutputDatum = {
+  fields?: [
+    {
+      constructor?: number // tag
+    }?,
+    {
+      fields?: [
+        {
+          fields?: [
+            {
+              bytes?: string // tx hash
+            }?,
+          ]
+        }?,
+        {
+          int?: number // output index
+        }?,
+      ]
+    }?,
+  ]
+}
+
 export type TransactionData = {
   hash: string
   block: string
@@ -132,58 +154,33 @@ export type AddressKey = {
   stakeKeyHash: string
 }
 
+// 'poolDatum' is optional because not every order have one.
 export type OrderUTxOWithDatumAndBlock = {
-  orderDatum: {
-    address: {
-      paymentKeyHash: [string]
-      stakeKeyHash: [[[string]]]
-    }
-    actionFields:
-      | {
-          MintDJED: {
-            djedAmount: bigint
-            adaAmount: bigint
-          }
-        }
-      | {
-          BurnDJED: {
-            djedAmount: bigint
-          }
-        }
-      | {
-          MintSHEN: {
-            shenAmount: bigint
-            adaAmount: bigint
-          }
-        }
-      | {
-          BurnSHEN: {
-            shenAmount: bigint
-          }
-        }
-    adaUSDExchangeRate: {
-      numerator: bigint
-      denominator: bigint
-    }
-    creationDate: bigint
-    orderStateTokenMintingPolicyId: string
-  }
+  timestamp: string
+  orderDatum: OrderDatum
+  poolDatum?: PoolDatum
+  tx_hash: string
+  output_index: number
+  consumed_by_tx: string | null
   block_hash: string
   block_slot: number
-  tx_hash: string
   address: string
   amount: Amount[]
   collateral: boolean
   data_hash: string | null
   inline_datum: string | null
-  output_index: number
   reference_script_hash: string | null
-  consumed_by_tx: string | null
+}
+
+// Use after filtering, so 'poolDatum' is guaranteed to exist.
+export type OrderUTxOWithPoolDatum = OrderUTxOWithDatumAndBlock & {
+  poolDatum: PoolDatum
 }
 
 export enum OrderStatus {
   Created = "Created",
   Completed = "Completed",
+  Rejected = "Rejected",
   Cancelled = "Canceled",
 }
 
@@ -416,4 +413,19 @@ export type Rewards = {
 export type History = {
   active_epoch: number
   amount: string //Active Stake
+}
+
+export type ADAFeesEarnings = {
+  timestamp: Date
+  fee: number
+  rate: number
+  block?: string | null
+  slot?: number | null
+}
+
+export type ShenYield = {
+  timestamp: Date
+  yield: number
+  block?: string | null
+  slot?: bigint | null
 }

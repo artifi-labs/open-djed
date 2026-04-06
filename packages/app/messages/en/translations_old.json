@@ -5,11 +5,6 @@
       "minAction": "{action} {minMessage}"
     }
   },
-  "orders": {
-    "status": {
-      "canceled": "Canceled"
-    }
-  },
   "notFound": {
     "404": {
       "Title": "Lost in the blockchain void",
@@ -39,6 +34,15 @@
   },
   "common": {
     "burnedToken": "{token} Burned",
-    "mintedToken": "{token} Minted"
+    "mintedToken": "{token} Minted",
+    "below": "Below",
+    "above": "Above",
+    "minimum": "Minimum",
+    "maximum": "Maximum"
+  },
+  "orders": {
+    "status": {
+      "cancelled": "Cancelled"
+    }
   }
 }

@@ -13,8 +13,8 @@
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv ./cloudflare-env.d.ts",
     "locales-extract": "bunx i18next-parser",
-    "translate": "bunx inlang machine translate --project ./project.inlang",
-    "translate:validate": "bunx inlang validate --project ./project.inlang"
+    "translate": "bunx @inlang/cli machine translate --project ./project.inlang",
+    "translate:validate": "bunx @inlang/cli validate --project ./project.inlang"
   },
   "dependencies": {
     "@dcspark/cardano-multiplatform-lib-browser": "^6.2.0",
@@ -56,6 +56,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "daisyui": "^5.0.38",
+    "dotenv": "^17.3.1",
     "eslint": "^9",
     "eslint-config-next": "15.4.6",
     "prettier": "^3.7.4",

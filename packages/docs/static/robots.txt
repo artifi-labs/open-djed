@@ -1,0 +1,27 @@
+# Robots.txt for Artifi Labs Documentation
+# https://docs.artifi.finance
+# Algolia-Crawler-Verif: 3CA644D213626AD9
+
+User-agent: *
+Allow: /
+
+# Allow indexing of documentation
+Allow: /docs/
+
+# Disallow admin and build directories
+Disallow: /admin/
+Disallow: /_next/
+Disallow: /build/
+
+# Allow common crawlers
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+# Sitemap location
+Sitemap: https://docs.artifi.finance/sitemap.xml

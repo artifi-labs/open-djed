@@ -19,7 +19,7 @@ export default function Simulator() {
       {/* Header */}
       <div className="desktop:flex-row flex flex-col justify-between gap-12">
         <div className="desktop:gap-6 flex flex-col gap-4">
-          <h2 className="text font-bold">{t("simulator.title")}</h2>
+          <h2 className="font-bold">{t("simulator.title")}</h2>
           <span className="text-secondary text-sm">
             {t("simulator.description")}
           </span>

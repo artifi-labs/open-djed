@@ -1,0 +1,445 @@
+{
+  "analytics": {
+    "pageTitle": "Analytik",
+    "analyticsOverview": "Analytik-Übersicht",
+    "description": "Echtzeit-Einblicke in Protokollmetriken und Marktdynamiken",
+    "reserveRatioOverTime": "Reservequote im Zeitverlauf",
+    "djedMarketCap": "DJED Marktkapitalisierung",
+    "shenMarketCap": "SHEN Marktkapitalisierung",
+    "volumes": "Volumenanalyse",
+    "shenAdaPrice": "SHEN-Preis & ADA-Preis",
+    "djedDexPrice": "DJED-Preis vs. Sekundärmärkte",
+    "realized": "Realisiert",
+    "projected": "Prognose",
+    "total": "{analytic} Gesamt",
+    "mintedToken": "{token} geprägt",
+    "burnedToken": "{token} verbrannt",
+    "volume": "Volumen",
+    "errors": {
+      "failedToFetch": "Fehler beim Abrufen der Daten für {analytic}."
+    },
+    "currentRatio": "Aktuelle Quote",
+    "below": "Unter dem Minimum",
+    "above": "Über dem Maximum",
+    "reserve": {
+      "warning": {
+        "below": "DJED-Prägung/SHEN-Verbrennung nicht verfügbar: Reservequote unter dem Minimum.",
+        "above": "SHEN-Prägung nicht verfügbar: Reservequote über dem Maximum."
+      }
+    }
+  },
+  "keywords": {
+    "opensource": "Open Source",
+    "software": "Software",
+    "development": "Entwicklung",
+    "defi_full": "Dezentralisierte Finanzen",
+    "software_dev": "Softwareentwicklung"
+  },
+  "metadata": {
+    "layout": {
+      "description": "Prägen und brennen Sie DJED, den überbesicherten Stablecoin von Cardano, mit unserer Open-Source-Plattform. Transparente Alternative zu DJED.xyz - rund um die Uhr weltweit zugänglich."
+    }
+  },
+  "common": {
+    "illustration": "Illustration",
+    "yield": "{token} Rendite",
+    "currencyValue": "{currency} Wert",
+    "min": "Min",
+    "max": "Max",
+    "current": "Aktuell",
+    "available": "Verfügbar",
+    "half": "Hälfte",
+    "mintAndBurnNow": "Jetzt Prägen & Verbrennen",
+    "months": {
+      "march": "März",
+      "january": "Januar",
+      "february": "Februar",
+      "april": "April",
+      "may": "Mai",
+      "june": "Juni",
+      "july": "Juli",
+      "august": "August",
+      "september": "September",
+      "october": "Oktober",
+      "november": "November",
+      "december": "Dezember"
+    },
+    "select": "Auswählen",
+    "fees": "Gebühren",
+    "rewards": "Belohnungen",
+    "copiedAddress": "Adresse kopiert",
+    "copyAddress": "Adresse kopieren",
+    "weekDays": {
+      "monday": "Montag",
+      "tuesday": "Dienstag",
+      "wednesday": "Mittwoch",
+      "thursday": "Donnerstag",
+      "friday": "Freitag",
+      "saturday": "Samstag",
+      "sunday": "Sonntag"
+    },
+    "periodItems": {
+      "today": "Heute",
+      "thisWeek": "Diese Woche",
+      "lastWeek": "Letzte Woche",
+      "thisMonth": "Diesen Monat",
+      "lastMonth": "Letzten Monat",
+      "thisQuarter": "Dieses Quartal",
+      "thisYear": "Dieses Jahr"
+    },
+    "period": {
+      "day": "Heute",
+      "week": "Diese Woche",
+      "month": "Diesen Monat",
+      "year": "Dieses Jahr",
+      "all": "Gesamter Zeitraum"
+    }
+  },
+  "orders": {
+    "pageTitle": "Aufträge",
+    "noOrders": "Noch keine Aufträge",
+    "noWalletDescription": "Sobald die Wallet verbunden ist und Aktivität beginnt, erscheinen die Aufträge hier",
+    "cancel": "Abbrechen",
+    "confirmCancellation": "Stornierung bestätigen",
+    "cancellationDescription": "Sie sind dabei, Ihren Auftrag zu stornieren. Nach der Stornierung wird der Auftrag entfernt und nicht mehr verarbeitet.",
+    "cancelOrder": "Auftrag stornieren",
+    "dismiss": "Schließen",
+    "orderCanceled": "Ihr Auftrag wurde storniert.",
+    "table": {
+      "header": {
+        "type": "Typ",
+        "date": "Datum",
+        "paid": "Bezahlt",
+        "received": "Erhalten",
+        "status": "Status",
+        "token": "Token",
+        "orders": "Aufträge"
+      },
+      "filters": {
+        "clearAll": "Alle Filter löschen"
+      }
+    },
+    "viewTransaction": "Transaktion anzeigen",
+    "noOrdersMatchFilters": "Keine Aufträge entsprechen Ihren Filtern",
+    "noOrdersToDisplay": "Noch keine Aufträge vorhanden",
+    "tryAdjustingFilters": "Versuchen Sie, Ihre Filter anzupassen oder zu löschen, um mehr Ergebnisse zu sehen",
+    "ordersWillAppear": "Aufträge erscheinen hier nach Ihrem ersten Trade",
+    "estimatedExecutionFee": "Geschätzte Ausführungsgebühr",
+    "executedFee": "Ausgeführte Gebühr",
+    "title": "Aufträge",
+    "allOrders": "Alle Aufträge",
+    "noOrdersDescription": "Diese Wallet hat noch keine Transaktionen durchgeführt",
+    "status": {
+      "all": "Alle",
+      "created": "Erstellt",
+      "completed": "Abgeschlossen",
+      "rejected": "Abgelehnt",
+      "canceled": "Storniert"
+    },
+    "filters": {
+      "status": {
+        "all": "Alle",
+        "created": "Erstellt",
+        "completed": "Abgeschlossen",
+        "rejected": "Abgelehnt",
+        "canceled": "Storniert"
+      }
+    }
+  },
+  "dashboard": {
+    "pageTitle": "Dashboard",
+    "actionButton": {
+      "wallet": "Wallet zum {action} verbinden",
+      "fillAmount": "Betrag zum {action} eingeben"
+    },
+    "youPay": "Sie zahlen",
+    "youReceive": "Sie erhalten",
+    "action": {
+      "Mint": {
+        "description": "Prägen Sie DJED und SHEN, indem Sie ADA in das Protokoll einzahlen."
+      },
+      "Burn": {
+        "description": "Verbrennen Sie DJED und SHEN, um Ihre ADA aus dem Protokoll abzuheben."
+      }
+    },
+    "whatIsOpenDjed": {
+      "title": "Was ist Open DJED?",
+      "description": "Open DJED ist eine community-gesteuerte Web-App für die Interaktion mit dem algorithmischen DJED-Stablecoin auf Cardano, vollständig Open Source entwickelt von Artifi Labs. Sie bildet das ursprüngliche DJED-Erlebnis mit voller Protokollkompatibilität nach und bietet eine zuverlässigere, zugänglichere und überprüfbare Alternative.",
+      "whyOpenDjed": {
+        "title": "Warum Open DJED?",
+        "items": {
+          "protocolCompatible": "<strong>Zuverlässig:</strong> Funktioniert auch, wenn die COTI-App nicht verfügbar ist.",
+          "openSource": "<strong>Community zuerst:</strong> Gebaut für und von Cardano-Nutzern.",
+          "communityFirst": "<strong>Protokollkompatibel:</strong> Dieselbe überbesicherte Logik wie DJED.",
+          "reliable": "<strong>Globaler Zugang:</strong> Keine geografischen Einschränkungen.",
+          "globalAccess": "<strong>Open Source:</strong> Vollständig prüfbar, forkbar und im Besitz der Community.",
+          "transparentFees": "<strong>Transparente & niedrige Gebühren:</strong> Dieselbe COTI-Gebührenstruktur, ~0,1 ADA günstiger."
+        }
+      }
+    },
+    "reserveDetails": {
+      "currentRatio": "Aktuelle Quote",
+      "minRatio": "Mindestquote",
+      "maxRatio": "Höchstquote",
+      "reserveValue": "Reservewert"
+    },
+    "transactionSummary": {
+      "title": "Transaktionsübersicht",
+      "description": "Geben Sie zunächst einen Betrag ein, um die vollständige Kostenaufstellung zu sehen."
+    },
+    "baseCost": "Grundkosten",
+    "mintFee": "Prägungsgebühr",
+    "operatorFee": "Betreibergebühr",
+    "totalCost": "Gesamtkosten",
+    "refundableDeposit": "Rückerstattbare Kaution",
+    "price": "Preis",
+    "burnFee": "Verbrennungsgebühr"
+  },
+  "privacyPolicy": {
+    "pageTitle": "Datenschutzrichtlinie",
+    "title": "Datenschutzrichtlinie",
+    "effectiveDate": "Gültig ab: {date}",
+    "intro": "Artifi Labs ist dem Datenschutz und der Transparenz verpflichtet. Diese Datenschutzrichtlinie beschreibt, welche Daten wir erheben und wie sie verwendet werden.",
+    "sections": {
+      "dataCollection": "1. Datenerhebung",
+      "wallets": "2. Wallets",
+      "analytics": "3. Analytik und Telemetrie",
+      "openSource": "4. Open Source",
+      "authentication": "5. Authentifizierung",
+      "policy": "6. Aktualisierungen dieser Richtlinie",
+      "contact": "7. Kontakt"
+    },
+    "paragraphs": {
+      "dataCollection": "Wir erheben und speichern keine personenbezogenen Daten. Alle von der Anwendung genutzten oder angezeigten Daten stammen ausschließlich aus öffentlich verfügbaren Blockchain-Informationen.",
+      "wallet": "Wenn Nutzer über ihre Cardano-Wallet mit der App interagieren, interagieren wir nur mit der Wallet-Schnittstelle über den CIP-30-Standard. Wir empfangen oder speichern keine privaten Schlüssel. Wir behalten uns das Recht vor, Adressen und Transaktionen für Analysezwecke zu speichern, um die App auf Basis der Nutzung zu verbessern.",
+      "analytics1": "Wir verwenden PostHog, um begrenzte Analytik- und Anwendungstelemetriedaten zu erfassen. Dies hilft uns zu verstehen, wie die App genutzt wird, und Fehler oder Leistungsprobleme zu identifizieren.",
+      "analytics2": "Die von PostHog erfassten Daten enthalten <strong>keine</strong> personenbezogenen Informationen. Wir speichern <strong>keine</strong> Wallet-Adressen, Namen, E-Mails oder Nutzeranmeldedaten.",
+      "analytics3": "Alle Analysedaten werden ausschließlich zur Verbesserung der Anwendungserfahrung verwendet.",
+      "openSource": "Diese Anwendung ist Open Source und lizenziert unter der",
+      "sourceCode": "Quellcode:",
+      "authentication": "Die Anwendung erfordert keine Nutzerkonten, Anmeldungen oder E-Mail-Registrierung. Der Zugang ist anonym.",
+      "policy": "Wir können diese Richtlinie von Zeit zu Zeit überarbeiten. Aktualisierungen werden hier mit einem neuen Gültigkeitsdatum veröffentlicht.",
+      "contact": "Bei Fragen zu dieser Datenschutzrichtlinie kontaktieren Sie uns unter:"
+    }
+  },
+  "simulator": {
+    "pageTitle": "Simulator",
+    "usdAmount": {
+      "label": "USD-Betrag",
+      "tooltip": "Der USD-Betrag, den Sie in SHEN investieren möchten."
+    },
+    "buyDate": {
+      "label": "Kaufdatum",
+      "tooltip": "Das Datum, an dem Sie SHEN kaufen möchten."
+    },
+    "sellDate": {
+      "label": "Verkaufsdatum",
+      "tooltip": "Das Datum, an dem Sie SHEN verkaufen möchten."
+    },
+    "buyAdaPrice": {
+      "label": "ADA-Kaufpreis",
+      "tooltip": "Der ADA-Preis beim Kauf von SHEN, verwendet zur Berechnung von Gewinn/Verlust."
+    },
+    "sellAdaPrice": {
+      "label": "ADA-Verkaufspreis",
+      "tooltip": "Der ADA-Preis beim Verkauf von SHEN, verwendet zur Berechnung von Gewinn/Verlust."
+    },
+    "scenario": "Szenario",
+    "results": {
+      "title": "Simulatorergebnisse",
+      "description": "Geben Sie zunächst einen Betrag ein, um die Ergebnisse zu sehen.",
+      "comparison": {
+        "title": "Renditeentwicklung im Vergleich (SHEN vs. ADA)",
+        "description": "Dieses Diagramm zeigt alternative Ergebnisse beim Halten von SHEN oder ADA."
+      },
+      "fees": {
+        "simplified": {
+          "tooltip": "Vereinfachte Belohnungen anzeigen."
+        },
+        "detailed": {
+          "tooltip": "Detaillierte Gebührenaufschlüsselung anzeigen."
+        },
+        "buyFee": {
+          "label": "Kaufgebühr",
+          "tooltip": "Eine Gebühr, die beim Kauf von DJED/SHEN anfällt. Sie dient der Aufrechterhaltung des Protokolls und wird an SHEN-Inhaber verteilt."
+        },
+        "sellFee": {
+          "label": "Verkaufsgebühr",
+          "tooltip": "Eine Gebühr, die beim Verkauf von DJED/SHEN anfällt. Sie dient der Aufrechterhaltung des Protokolls und wird an SHEN-Inhaber verteilt."
+        },
+        "totalFee": {
+          "label": "Gesamtgebühren",
+          "tooltip": "Gesamte Gebühren beim Kauf/Verkauf von DJED/SHEN. Sie dienen der Aufrechterhaltung des Protokolls und werden an SHEN-Inhaber verteilt."
+        },
+        "stakingRewards": {
+          "label": "ADA-Staking-Belohnungen",
+          "tooltip": "Die Belohnungen aus dem gestakten ADA, das Ihr SHEN besichert. Gestaktes ADA hilft, das Cardano-Netzwerk zu sichern und generiert passives Einkommen."
+        },
+        "earnedFee": {
+          "label": "Verdiente Kauf-/Verkaufsgebühren",
+          "tooltip": "Die gesamten Gebühren aus Kauf- und Verkaufstransaktionen, die an SHEN-Inhaber verteilt werden."
+        },
+        "totalRewards": {
+          "label": "Gesamtbelohnungen",
+          "tooltip": "Die Summe der Belohnungen aus dem gestakten ADA und den gesammelten Gebühren aus Kauf- und Verkaufstransaktionen, die an SHEN-Inhaber verteilt werden."
+        }
+      },
+      "rewards": {
+        "simplified": {
+          "tooltip": "Vereinfachte Gebühren anzeigen."
+        },
+        "detailed": {
+          "tooltip": "Detaillierte Belohnungsaufschlüsselung anzeigen."
+        }
+      },
+      "chart": {
+        "profitOverTime": {
+          "title": "Gewinn im Zeitverlauf"
+        }
+      },
+      "shen": {
+        "label": "SHEN PNL",
+        "tooltip": "Zeigt den Gewinn oder Verlust bei einer Investition in SHEN, einschließlich Gebühren und Belohnungen."
+      },
+      "ada": {
+        "label": "ADA PNL",
+        "tooltip": "Zeigt den Gewinn oder Verlust beim einfachen Halten von ADA, ohne SHEN zu kaufen."
+      }
+    },
+    "title": "SHEN Trade-Simulator",
+    "description": "Überprüfen Sie schnell und übersichtlich die Ergebnisse einer SHEN-Investition.",
+    "whatIsSimulator": {
+      "title": "Was ist der Trade-Simulator?",
+      "description": "Der Trade-Simulator hilft Ihnen zu verstehen, wie rentabel eine SHEN-Investition sein kann. Durch Eingabe des USD-Betrags, der Kauf- und Verkaufsdaten sowie der ADA-Preise schätzt das Tool:",
+      "disclaimer": "Dies ist kein Trading-Tool. Es ist ein Rechner, der zeigt, wie sich Ihre Renditen je nach Eingaben verändern, damit Sie Ihre Strategie klar planen können. Es sollte nicht als Finanzberatung betrachtet werden.",
+      "items": {
+        "fees": "Gebühren beim Kauf und Verkauf",
+        "rewards": "ADA-Belohnungen beim Halten von SHEN",
+        "feesEarned": "Gebühren aus Präge- und Verbrennungsaktivitäten im Protokoll",
+        "profitOrLoss": "Gewinn oder Verlust durch ADA-Preisschwankungen",
+        "totalEstimatedPNL": "Ihr geschätzter Gesamt-PNL"
+      }
+    }
+  },
+  "termsOfService": {
+    "pageTitle": "Nutzungsbedingungen",
+    "title": "Nutzungsbedingungen",
+    "effectiveDate": "Gültig ab: {date}",
+    "welcome": "Willkommen bei Open Djed! Durch den Zugriff auf oder die Nutzung unserer Anwendung stimmen Sie diesen Nutzungsbedingungen (\"Bedingungen\") zu. Wenn Sie mit einem Teil dieser Bedingungen nicht einverstanden sind, dürfen Sie die Anwendung nicht nutzen.",
+    "sections": {
+      "description": {
+        "title": "1. Beschreibung",
+        "content": "Open Djed ist eine Open-Source-Webanwendung, die mit der Cardano-Blockchain interagiert. Nutzer können ihre Cardano-Wallets über den CIP-30-Standard verbinden, um mit der App zu interagieren."
+      },
+      "use": {
+        "title": "2. Nutzung der Anwendung",
+        "content": "Sie erklären sich damit einverstanden, die Anwendung in Übereinstimmung mit allen geltenden Gesetzen und Vorschriften zu nutzen. Sie dürfen die Anwendung nicht in einer Weise nutzen, die die Anwendung beschädigen, deaktivieren oder beeinträchtigen oder die Nutzung durch andere stören könnte."
+      },
+      "license": {
+        "title": "3. Open-Source-Lizenz",
+        "part1": "Diese Anwendung ist Open Source und lizenziert unter der",
+        "linkText": "GNU General Public License v3.0 (GPL-3.0)",
+        "part2": "Sie dürfen die Software verwenden, modifizieren und weiterverbreiten, sofern alle Modifikationen oder abgeleiteten Werke ebenfalls unter der GPL-3.0-Lizenz stehen. Bei der Weiterverbreitung muss eine Kopie der Lizenz beigelegt werden.",
+        "part3": "Quellcode auf GitHub ansehen:"
+      },
+      "wallet": {
+        "title": "4. Wallet-Interaktionen",
+        "content": "Die Anwendung verwendet den Cardano CIP-30 Wallet-Integrationsstandard, damit Nutzer unterstützte Wallets verbinden können. Wir kontrollieren, speichern oder übertragen keine privaten Wallet-Schlüssel. Alle Interaktionen mit der Blockchain erfolgen über den Wallet-Anbieter des Nutzers."
+      },
+      "disclaimers": {
+        "title": "5. Haftungsausschlüsse",
+        "item1": "Diese Anwendung wird \"wie sie ist\" ohne jegliche Gewährleistung bereitgestellt.",
+        "item2": "Wir übernehmen keine Garantie für Verfügbarkeit, Richtigkeit oder Eignung für einen bestimmten Zweck.",
+        "item3": "Nutzer sind für alle Transaktionen verantwortlich, die sie mit ihrer Wallet durchführen."
+      },
+      "changes": {
+        "title": "6. Änderungen",
+        "content": "Wir können diese Bedingungen von Zeit zu Zeit überarbeiten. Alle Änderungen werden auf dieser Seite mit einem aktualisierten Gültigkeitsdatum veröffentlicht."
+      },
+      "contact": {
+        "title": "7. Kontakt",
+        "content": "Bei Fragen zu diesen Bedingungen kontaktieren Sie uns unter:"
+      }
+    }
+  },
+  "reserve": {
+    "reserveRatio": "Reservequote",
+    "warning": {
+      "below": "DJED-Prägung und SHEN-Verbrennung sind nicht erlaubt, wenn die Reservequote unter {percentage}% fällt.",
+      "above": "SHEN-Prägung ist nicht erlaubt, wenn die Reservequote über {percentage}% steigt."
+    }
+  },
+  "action": {
+    "mint": "Prägen",
+    "burn": "Verbrennen"
+  },
+  "components": {
+    "footer": {
+      "privacyPolicy": {
+        "text": "Datenschutzrichtlinie"
+      },
+      "terms": {
+        "text": "AGB"
+      },
+      "docs": {
+        "text": "Doku"
+      },
+      "allRights": "{year} {company}. Alle Rechte vorbehalten"
+    }
+  },
+  "navbar": {
+    "dashboard": {
+      "title": "Dashboard"
+    },
+    "analytics": {
+      "title": "Analytik"
+    },
+    "simulator": {
+      "title": "Simulator"
+    },
+    "orders": {
+      "title": "Aufträge"
+    },
+    "wallet": {
+      "connect": "Wallet verbinden",
+      "loading": "Wallet wird geladen"
+    }
+  },
+  "wallet": {
+    "connectWallet": "Wallet verbinden",
+    "connectWalletDisclaimer": "Durch die Verbindung stimmen Sie unseren <terms>Nutzungsbedingungen</terms> und der <privacy>Datenschutzrichtlinie</privacy> zu",
+    "orders": {
+      "cancel": "Abbrechen",
+      "paid": "Bezahlt",
+      "received": "Erhalten"
+    },
+    "title": "Wallet",
+    "noWalletsDetected": "Keine Wallets erkannt",
+    "incorrectNetwork": "Bitte verbinden Sie eine {network}-Wallet",
+    "connected": "Ihre Wallet wurde erfolgreich verbunden",
+    "connectionFailed": "Verbindung zur Wallet fehlgeschlagen",
+    "disconnected": "Ihre Wallet wurde getrennt"
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "language": {
+      "title": "Sprache"
+    },
+    "network": {
+      "title": "Netzwerk"
+    }
+  },
+  "errors": {
+    "404": {
+      "pageTitle": "Seite nicht gefunden",
+      "title": "Verloren in der Blockchain-Leere",
+      "content": {
+        "content1": "Diese Seite hat sich vom Netzwerk entfernt.",
+        "content2": "Wir verbinden Sie wieder mit der Hauptkette"
+      },
+      "button": {
+        "text": "Zurück zur Startseite"
+      }
+    }
+  }
+}

@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import clsx from "clsx"
-//import Link from "next/link"
+//import { Link } from "@/i18n/navigation"
 import ButtonIcon from "./ButtonIcon"
 import { type Order } from "@open-djed/api"
 import { useViewport } from "@/hooks/useViewport"
@@ -31,6 +31,7 @@ const TransactionDetails: React.FC<TransactionDetailsProps> = ({
   const isCanceled = hasStatus && raw.status === "Canceled"
   const isCreated = hasStatus && raw.status === "Created"
   const isCompleted = hasStatus && raw.status === "Completed"
+  const isRejected = hasStatus && raw.status === "Rejected"
 
   return (
     <>
@@ -110,7 +111,7 @@ const TransactionDetails: React.FC<TransactionDetailsProps> = ({
                 </div>
               )}
 
-              {(isCompleted || isCanceled) && (
+              {(isCompleted || isCanceled || isRejected) && (
                 <div className="grid grid-cols-1 text-xs">
                   {/* TODO: Batched */}
                   {/* <div className="flex flex-col gap-2 px-16 py-12">

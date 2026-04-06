@@ -1,6 +1,6 @@
 "use client"
 
-import Link from "next/link"
+import { Link } from "@/i18n/navigation"
 import Image from "next/image"
 import Icon, { type IconName } from "./icons/Icon"
 import ButtonIcon from "./ButtonIcon"
@@ -11,6 +11,7 @@ import {
   DJED_URL,
   GITHUB_URL,
   LINKEDIN_URL,
+  OPEN_DJED_DOCS_URL,
   STATUS_URL,
   TWITTER_URL,
   WEBSITE_URL,
@@ -83,6 +84,11 @@ const Footer = () => {
       href: "/terms",
     },
     {
+      label: t("components.footer.docs.text"),
+      href: OPEN_DJED_DOCS_URL,
+      icon: "External",
+    },
+    {
       label: "DJED",
       href: DJED_URL,
       icon: "External",
@@ -144,6 +150,7 @@ const Footer = () => {
           <p className="text-xs">
             {t("components.footer.allRights", {
               year: new Date().getFullYear(),
+              company: "Artifi",
             })}
           </p>
         </div>
@@ -179,6 +186,7 @@ const Footer = () => {
             <p className="text-xs font-medium">
               {t("components.footer.allRights", {
                 year: new Date().getFullYear(),
+                company: "Artifi",
               })}
             </p>
           </div>

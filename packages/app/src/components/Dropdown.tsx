@@ -10,7 +10,7 @@ type Size = "small" | "medium" | "large"
 
 export type DropdownProps = {
   leadingIcon?: IconName
-  text: string
+  text?: string
   hasTag?: boolean
   tagLeadingIcon?: IconName
   tagTrailingIcon?: IconName
