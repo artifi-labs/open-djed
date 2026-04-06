@@ -119,7 +119,7 @@ export async function fetchWithRetry<T = unknown>(
 }
 
 /**
- * from an array, create a batch to proccess concurrently
+ * from an array, create a batch to process concurrently
  * bigger batch = faster, but riskier bc of rate limit
  * define wait period between batch processing
  * @param items array of items to process
@@ -152,7 +152,7 @@ export async function processBatch<T, R>(
 }
 
 /**
- * from an array, create a batch to proccess concurrently
+ * from an array, create a batch to process concurrently
  * bigger batch = faster, but riskier bc of rate limit
  * define wait period between batch processing
  * @param items array of items to process
@@ -1077,10 +1077,6 @@ export function processAnalyticsDataToInsert<
 export async function writeJsonToFile(
   data: unknown,
   filePath: string,
-  options?: {
-    replacer?: (key: string, value: unknown) => unknown
-    space?: string | number
-  },
 ): Promise<void> {
   const absolutePath = path.resolve(filePath)
 
