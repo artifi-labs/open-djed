@@ -17,3 +17,7 @@ dist
 !.env.test
 
 .vscode
+.DS_Store
+
+project.inlang/
+!project.inlang/settings.json

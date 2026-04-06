@@ -58,6 +58,7 @@ import {
 } from "@open-djed/db"
 import { type TokenMarketCap } from "@open-djed/db/generated/prisma/enums"
 import { type Order, type Period } from "@open-djed/db"
+import { Network } from "@open-djed/blockfrost/src/types"
 export type { Order } from "@open-djed/db"
 import { openAPISpecs } from "hono-openapi"
 
@@ -100,8 +101,10 @@ const txRequestBodySchema = z.object({
 })
 
 const network = env.NETWORK
+const blockfrostNetwork: Network =
+  network === "Mainnet" ? Network.MAINNET : Network.PREPROD
 
-const blockfrost = new Blockfrost(env.BLOCKFROST_URL, env.BLOCKFROST_PROJECT_ID)
+const blockfrost = new Blockfrost(env.BLOCKFROST_PROJECT_ID, blockfrostNetwork)
 
 const registry = registryByNetwork[network]
 
@@ -268,7 +271,10 @@ const parseOrderUTxOsToOrder = (orderUTxO: OrderUTxO): Order => {
 export const getChainTime = async () => {
   const cached = chainDataCache.get<number>("now")
   if (cached) return cached
-  const now = slotToUnixTime(network, await blockfrost.getLatestBlockSlot())
+  const now = slotToUnixTime(
+    network,
+    (await blockfrost.blocks.getLatest()).slot,
+  )
   chainDataCache.set("now", now)
   return now
 }
