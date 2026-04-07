@@ -35,11 +35,8 @@ export const getPeriodVolume = async (period: Period) => {
   return rows
 }
 
-export const getLatestVolume = async (validBlock = false) => {
+export const getLatestVolume = async () => {
   return await prisma.volume.findFirst({
-    where: validBlock
-      ? { block: { not: null }, slot: { not: null } }
-      : undefined,
     orderBy: {
       timestamp: "desc",
     },
@@ -49,9 +46,6 @@ export const getLatestVolume = async (validBlock = false) => {
 export const deleteVolumesUntilLatestValidBlock = async () => {
   return await prisma.$transaction(async (tx) => {
     const latestWithBlock = await tx.volume.findFirst({
-      where: {
-        block: { not: null },
-      },
       orderBy: {
         timestamp: "desc",
       },

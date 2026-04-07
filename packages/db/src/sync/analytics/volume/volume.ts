@@ -29,8 +29,14 @@ import type { Actions, AllTokens } from "../../../../generated/prisma/enums"
 import { prisma } from "../../../../lib/prisma"
 import { getLatestVolume } from "../../../client/volume"
 
-const createZeroVolumeDay = (timestamp: string) => ({
+const createZeroVolumeDay = (
+  timestamp: string,
+  block: string,
+  slot: bigint,
+) => ({
   timestamp,
+  block,
+  slot,
   djedMintedUSD: 0,
   djedBurnedUSD: 0,
   shenMintedUSD: 0,
@@ -262,7 +268,11 @@ const getVolumeFromDatum = (datum: OrderDatum) => {
   return { action, token, amount, adaUsdRate }
 }
 
-const processVolumeData = (volumeData: UnprocessedVolumeData[]) => {
+const processVolumeData = (
+  volumeData: UnprocessedVolumeData[],
+  latestKnownBlock?: string,
+  latestKnownSlot?: bigint,
+) => {
   const txVolumes: OrderVolume[] = volumeData
     .map((entry) => {
       if (!entry.orderDatum) return null
@@ -408,22 +418,51 @@ const processVolumeData = (volumeData: UnprocessedVolumeData[]) => {
     }
   })
 
-  const allDates = volumeByDay.map((d) => d.timestamp)
+  const sortedVolumeByDay = volumeByDay.sort((a, b) =>
+    a.timestamp.localeCompare(b.timestamp),
+  )
+
+  const allDates = sortedVolumeByDay.map((d) => d.timestamp)
   const minDate = new Date(
     Math.min(...allDates.map((d) => new Date(d).getTime())),
   )
   const maxDate = new Date()
   maxDate.setUTCHours(0, 0, 0, 0)
 
-  const volumeMap = new Map(volumeByDay.map((d) => [d.timestamp, d]))
+  const volumeMap = new Map(sortedVolumeByDay.map((d) => [d.timestamp, d]))
 
   const completeVolumes: Volume[] = []
   const currentDate = new Date(minDate)
 
+  let lastKnownBlock: string | undefined =
+    latestKnownBlock || sortedVolumeByDay[0]?.block
+  let lastKnownSlot: bigint =
+    latestKnownSlot || BigInt(sortedVolumeByDay[0]?.slot ?? 0)
+
   while (currentDate <= maxDate) {
     const dateStr = currentDate.toISOString().split("T")[0]
-    if (!dateStr) return
-    completeVolumes.push(volumeMap.get(dateStr) ?? createZeroVolumeDay(dateStr))
+    if (!dateStr) break
+
+    const dayData = volumeMap.get(dateStr)
+
+    if (dayData && dayData.block && dayData.slot) {
+      const newVol = {
+        ...dayData,
+        block: dayData.block,
+        slot: BigInt(dayData.slot),
+      }
+      completeVolumes.push(newVol)
+      lastKnownBlock = dayData.block
+      lastKnownSlot = newVol.slot
+    } else {
+      // If it's a gap day, use the last known block/slot
+      if (lastKnownBlock !== undefined) {
+        completeVolumes.push(
+          createZeroVolumeDay(dateStr, lastKnownBlock, lastKnownSlot),
+        )
+      }
+    }
+
     currentDate.setDate(currentDate.getDate() + 1)
   }
 
@@ -433,12 +472,20 @@ const processVolumeData = (volumeData: UnprocessedVolumeData[]) => {
   }))
 }
 
-const processVolumes = async (txs: Transaction[]) => {
+const processVolumes = async (
+  txs: Transaction[],
+  latestKnownBlock?: string,
+  latestKnownSlot?: bigint,
+) => {
   const start = Date.now()
   logger.info(`=== Processing Volumes ===`)
 
   const volumeData = await processVolumeTxs(txs)
-  const processedVolumes = processVolumeData(volumeData)
+  const processedVolumes = processVolumeData(
+    volumeData,
+    latestKnownBlock,
+    latestKnownSlot,
+  )
 
   if (!processedVolumes) {
     logger.warn("Could not process data for volumes")
@@ -504,7 +551,7 @@ export async function updateVolumes() {
     return
   }
 
-  await processVolumes(txs)
+  await processVolumes(txs, latestVolume.block, latestVolume.slot)
 
   const end = Date.now() - start
   logger.info(`=== Updating Volumes took sec: ${(end / 1000).toFixed(2)} ===`)

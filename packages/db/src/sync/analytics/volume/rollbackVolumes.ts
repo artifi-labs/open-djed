@@ -10,7 +10,7 @@ import { blockfrostFetch } from "../../utils"
  * @returns
  */
 export async function rollbackVolumes() {
-  const latestVolumes = await getLatestVolume(true)
+  const latestVolumes = await getLatestVolume()
   if (!latestVolumes || !latestVolumes.block || !latestVolumes.slot) return
 
   const syncIsValid = await blockfrostFetch(`/blocks/${latestVolumes.block}`)

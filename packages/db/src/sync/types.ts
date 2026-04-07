@@ -397,8 +397,8 @@ export type Volume = {
   totalShenVolumeADA: number
   totalVolumeUSD: number
   totalVolumeADA: number
-  block?: string
-  slot?: bigint
+  block: string
+  slot: bigint
 }
 
 export type ADAStakingRewards = {
