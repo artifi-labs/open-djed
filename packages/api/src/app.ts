@@ -4,6 +4,7 @@ import { logger } from "hono/logger"
 export type { Order } from "@open-djed/db"
 import { ordersRouter } from "./modules/orders/orders.router"
 import { protocolRouter } from "./modules/protocol/protocol.router"
+import { simulatorRouter } from "./modules/simulator/simulator.router"
 import { tokensRouter } from "./modules/tokens/tokens.router"
 import { AnalyticsRouter } from "./modules/analytics/analytics.routers"
 import { openAPIRouteHandler } from "hono-openapi"
@@ -15,6 +16,7 @@ export const app = new Hono()
   .route("/", protocolRouter)
   .route("/", tokensRouter)
   .route("/", ordersRouter)
+  .route("/", simulatorRouter)
   .route("/", AnalyticsRouter)
 
 // OpenAPI documentation endpoint

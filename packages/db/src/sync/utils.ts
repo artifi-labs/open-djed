@@ -122,7 +122,7 @@ export async function fetchWithRetry<T = unknown>(
 }
 
 /**
- * from an array, create a batch to proccess concurrently
+ * from an array, create a batch to process concurrently
  * bigger batch = faster, but riskier bc of rate limit
  * define wait period between batch processing
  * @param items array of items to process
@@ -155,7 +155,7 @@ export async function processBatch<T, R>(
 }
 
 /**
- * from an array, create a batch to proccess concurrently
+ * from an array, create a batch to process concurrently
  * bigger batch = faster, but riskier bc of rate limit
  * define wait period between batch processing
  * @param items array of items to process

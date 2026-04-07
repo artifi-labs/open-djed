@@ -1,11 +1,11 @@
 "use client"
 
 import * as React from "react"
-import { useApiClient } from "@/context/ApiClientContext"
 import { useProtocolData } from "@/hooks/useProtocolData"
-import { sumValues, valueTo } from "@/utils"
+import { useFeesEarningsRateQuery } from "@/queries/simulator/feesEarnings/feesEarnings.query"
+import { useStakingRewardsRateQuery } from "@/queries/simulator/stakingRewards/stakingRewards.query"
+import { sumValues } from "@/utils"
 import { toAdaUsdExchangeRate } from "@open-djed/math"
-import { useQuery } from "@tanstack/react-query"
 
 export interface ScenarioInputs {
   usdAmount: number
@@ -33,53 +33,28 @@ export interface ResultsData {
 type ProtocolData = NonNullable<ReturnType<typeof useProtocolData>["data"]>
 
 const calculateFeesEarned = (
-  protocolData: ProtocolData,
-  oracleDatum: {
-    oracleFields: {
-      adaUSDExchangeRate: { numerator: bigint; denominator: bigint }
-    }
-  },
-  usdAmount: number,
+  initialAdaHoldings: number,
+  feesEarningsRate: number,
 ): number => {
-  if (usdAmount <= 0) return 0
-
-  ///1% annual APR
-  const feeSharePercent = 0.01
-
-  return valueTo(
-    { SHEN: usdAmount * (feeSharePercent / 100) },
-    protocolData.poolDatum,
-    oracleDatum,
-    "ADA",
-  )
+  if (initialAdaHoldings <= 0 || feesEarningsRate <= 0) return 0
+  return initialAdaHoldings * feesEarningsRate
 }
 
 export function useSimulatorResults(inputs: ScenarioInputs) {
-  const client = useApiClient()
   const { data: protocolData } = useProtocolData()
   const hasDateRange = Boolean(inputs.buyDate && inputs.sellDate)
-  const stakingRewardsRateQuery = useQuery({
-    queryKey: [
-      "simulator-historical-staking-rewards",
-      inputs.buyDate,
-      inputs.sellDate,
-    ],
+  const stakingRewardsRateQuery = useStakingRewardsRateQuery({
+    startDate: inputs.buyDate,
+    endDate: inputs.sellDate,
     enabled: hasDateRange,
-    queryFn: async () => {
-      const res = await client.api["historical-staking-rewards"].$get({
-        query: {
-          startDate: inputs.buyDate,
-          endDate: inputs.sellDate,
-        },
-      })
-
-      if (!res.ok) throw new Error("Failed to fetch staking rewards.")
-
-      const data = await res.json()
-      return Number(data ?? 0)
-    },
   })
   const stakingRewardsRate = stakingRewardsRateQuery.data ?? 0
+  const feesEarningsRateQuery = useFeesEarningsRateQuery({
+    startDate: inputs.buyDate,
+    endDate: inputs.sellDate,
+    enabled: hasDateRange,
+  })
+  const feesEarningsRate = feesEarningsRateQuery.data ?? 0
 
   const results = React.useMemo(() => {
     if (!protocolData || inputs.usdAmount <= 0 || !hasDateRange) {
@@ -92,6 +67,7 @@ export function useSimulatorResults(inputs: ScenarioInputs) {
           inputs,
           protocolData,
           stakingRewardsRate,
+          feesEarningsRate,
         ),
         error: null,
       }
@@ -101,20 +77,23 @@ export function useSimulatorResults(inputs: ScenarioInputs) {
         error: err instanceof Error ? err.message : "Invalid ADA price.",
       }
     }
-  }, [hasDateRange, inputs, protocolData, stakingRewardsRate])
+  }, [hasDateRange, inputs, protocolData, stakingRewardsRate, feesEarningsRate])
 
   return {
     results: results.data,
     error: results.error,
     isLoading:
-      !protocolData || (hasDateRange && stakingRewardsRateQuery.isLoading),
+      !protocolData ||
+      (hasDateRange &&
+        (stakingRewardsRateQuery.isLoading || feesEarningsRateQuery.isLoading)),
   }
 }
 
 function calculateSimulatorResults(
   inputs: ScenarioInputs,
   protocolData: ProtocolData,
-  stakingRewardsRatePercent: number,
+  stakingRewardsRate: number,
+  feesEarningsRate: number,
 ): ResultsData {
   const { usdAmount, buyAdaPrice, sellAdaPrice } = inputs
 
@@ -149,12 +128,11 @@ function calculateSimulatorResults(
   )
 
   const initialAdaHoldings = buyActionData.baseCost.ADA ?? 0
-  const stakingRewardsAda = initialAdaHoldings * stakingRewardsRatePercent
+  const stakingRewardsAda = initialAdaHoldings * stakingRewardsRate
 
   const feesEarnedAda = calculateFeesEarned(
-    protocolData,
-    sellOracleDatum,
-    usdAmount,
+    initialAdaHoldings,
+    feesEarningsRate,
   )
 
   const sellActionData = protocolData.tokenActionData(
