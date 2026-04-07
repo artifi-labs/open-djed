@@ -1,10 +1,10 @@
 "use client"
 
 import * as React from "react"
-import { type useMintBurnAction } from "./useMintBurnAction"
+import { type useMintBurnAction } from "../../hooks/dashboard/useMintBurnAction"
 import BaseCard from "../card/BaseCard"
 import Divider from "../Divider"
-import { useTransactionSummary } from "./useTransactionSummary"
+import { useTransactionSummary } from "../../hooks/dashboard/useTransactionSummary"
 import { isEmptyValue } from "@/utils"
 import { useTranslations } from "next-intl"
 

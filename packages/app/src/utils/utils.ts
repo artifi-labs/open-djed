@@ -1,4 +1,4 @@
-import type { Token } from "../lib/tokens"
+import type { Token } from "../lib/types/tokens"
 import type { ToUSDConverter, Value } from "@/types"
 import { formatNumber } from "@/utils/number"
 import { capitalize } from "@/utils/string"
