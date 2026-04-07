@@ -1,11 +1,11 @@
 "use client"
 
 import * as React from "react"
-import { useApiClient } from "@/context/ApiClientContext"
 import { useProtocolData } from "@/hooks/useProtocolData"
+import { useFeesEarningsRateQuery } from "@/queries/simulator/feesEarnings/feesEarnings.query"
+import { useStakingRewardsRateQuery } from "@/queries/simulator/stakingRewards/stakingRewards.query"
 import { sumValues } from "@/utils"
 import { toAdaUsdExchangeRate } from "@open-djed/math"
-import { useQuery } from "@tanstack/react-query"
 
 export interface ScenarioInputs {
   usdAmount: number
@@ -41,51 +41,18 @@ const calculateFeesEarned = (
 }
 
 export function useSimulatorResults(inputs: ScenarioInputs) {
-  const client = useApiClient()
   const { data: protocolData } = useProtocolData()
   const hasDateRange = Boolean(inputs.buyDate && inputs.sellDate)
-  const stakingRewardsRateQuery = useQuery({
-    queryKey: [
-      "simulator-historical-staking-rewards",
-      inputs.buyDate,
-      inputs.sellDate,
-    ],
+  const stakingRewardsRateQuery = useStakingRewardsRateQuery({
+    startDate: inputs.buyDate,
+    endDate: inputs.sellDate,
     enabled: hasDateRange,
-    queryFn: async () => {
-      const res = await client.api["historical-staking-rewards"].$get({
-        query: {
-          startDate: inputs.buyDate,
-          endDate: inputs.sellDate,
-        },
-      })
-
-      if (!res.ok) throw new Error("Failed to fetch staking rewards.")
-
-      const data = await res.json()
-      return Number(data ?? 0)
-    },
   })
   const stakingRewardsRate = stakingRewardsRateQuery.data ?? 0
-  const feesEarningsRateQuery = useQuery({
-    queryKey: [
-      "simulator-historical-fees-earnings",
-      inputs.buyDate,
-      inputs.sellDate,
-    ],
+  const feesEarningsRateQuery = useFeesEarningsRateQuery({
+    startDate: inputs.buyDate,
+    endDate: inputs.sellDate,
     enabled: hasDateRange,
-    queryFn: async () => {
-      const res = await client.api["historical-fees-earnings"].$get({
-        query: {
-          startDate: inputs.buyDate,
-          endDate: inputs.sellDate,
-        },
-      })
-
-      if (!res.ok) throw new Error("Failed to fetch fees earnings.")
-
-      const data = await res.json()
-      return Number(data ?? 0)
-    },
   })
   const feesEarningsRate = feesEarningsRateQuery.data ?? 0
 
