@@ -62,7 +62,7 @@ import { type Order, type Period } from "@open-djed/db"
 export type { Order } from "@open-djed/db"
 import { openAPISpecs } from "hono-openapi"
 
-//NOTE: We only need this cache for transactions, not for other requests. Using this for `protocol-data` sligltly increases the response time.
+//NOTE: We only need this cache for transactions, not for other requests. Using this for `protocol-data` slightly increases the response time.
 const requestCache = new TTLCache<string, { value: Response; expiry: number }>({
   ttl: 10_000,
 })
@@ -953,16 +953,11 @@ const app = new Hono()
       const parsedStartDate = new Date(`${startDate}T00:00:00.000Z`)
       const parsedEndDate = new Date(`${endDate}T00:00:00.000Z`)
 
-      const cacheKey = `historicalStakingRewards:${startDate}:${endDate}`
-      const cached = chainDataCache.get<number>(cacheKey)
-      if (cached !== undefined) return c.json(cached)
-
       try {
         const sumRates = await getSumStakingRewardsRate(
           parsedStartDate,
           parsedEndDate,
         )
-        chainDataCache.set(cacheKey, sumRates)
         return c.json(sumRates)
       } catch (err) {
         if (err instanceof AppError) {
@@ -1071,16 +1066,11 @@ const app = new Hono()
       const parsedStartDate = new Date(`${startDate}T00:00:00.000Z`)
       const parsedEndDate = new Date(`${endDate}T00:00:00.000Z`)
 
-      const cacheKey = `historicalFeesEarnings:${startDate}:${endDate}`
-      const cached = chainDataCache.get<number>(cacheKey)
-      if (cached !== undefined) return c.json(cached)
-
       try {
         const sumRates = await getSumFeesEarningsRate(
           parsedStartDate,
           parsedEndDate,
         )
-        chainDataCache.set(cacheKey, sumRates)
         return c.json(sumRates)
       } catch (err) {
         if (err instanceof AppError) {
