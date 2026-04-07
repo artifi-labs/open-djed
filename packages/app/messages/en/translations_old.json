@@ -42,7 +42,17 @@
   },
   "orders": {
     "status": {
-      "cancelled": "Cancelled"
+      "Canceled": "Canceled"
+    },
+    "cancel": {
+      "text": "Cancel"
+    }
+  },
+  "wallet": {
+    "orders": {
+      "cancel": {
+        "text": ""
+      }
     }
   }
 }

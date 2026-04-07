@@ -1,8 +1,9 @@
 import React from "react"
 import Coin from "../Coin"
 import { useProtocolData } from "@/hooks/useProtocolData"
-import { formatNumber, type Value } from "@/lib/utils"
+import { formatNumber } from "@/utils"
 import { env } from "@/lib/envLoader"
+import type { Value } from "@/types"
 
 type WalletBalanceProps = {
   token: "ADA" | "SHEN" | "DJED"

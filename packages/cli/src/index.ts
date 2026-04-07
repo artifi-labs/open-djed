@@ -29,12 +29,16 @@ import {
   shenADAMintRate,
 } from "@open-djed/math"
 import { processMintDjedOrder } from "@open-djed/txs/src/process-mint-djed-order"
+import { Network } from "@open-djed/blockfrost/src/types"
 
 console.log(
   `Initializing Lucid with Blockfrost for network "${env.NETWORK}" using project id "${env.BLOCKFROST_PROJECT_ID.slice(8)}...".`,
 )
 
-const blockfrost = new Blockfrost(env.BLOCKFROST_URL, env.BLOCKFROST_PROJECT_ID)
+const blockfrostNetwork: Network =
+  env.NETWORK === "Mainnet" ? Network.MAINNET : Network.PREPROD
+
+const blockfrost = new Blockfrost(env.BLOCKFROST_PROJECT_ID, blockfrostNetwork)
 
 const lucid = await Lucid(blockfrost, env.NETWORK)
 console.log("Finished initializing Lucid.")
@@ -376,7 +380,7 @@ program.command("orders").action(async () => {
       o.orderDatum.address.stakeKeyHash[0][0][0] ===
         addressDetails.stakeCredential?.hash,
   )
-  // TODO: Need to query Blockfrost for previous orders in order to capture those that have been fulfilled or cancelled.
+  // TODO: Need to query Blockfrost for previous orders in order to capture those that have been fulfilled or Canceled.
   console.log(
     JSON.stringify(
       myOrderUtxos.map((o) => ({

@@ -9,7 +9,7 @@ import type { useMintBurnAction } from "./useMintBurnAction"
 import Snackbar from "../Snackbar"
 import { useReserveDetails } from "@/hooks/useReserveDetails"
 import { useTranslations } from "next-intl"
-import { capitalize } from "@/lib/utils"
+import { capitalize } from "@/utils"
 
 export type ActionsProps = {
   action: ReturnType<typeof useMintBurnAction>

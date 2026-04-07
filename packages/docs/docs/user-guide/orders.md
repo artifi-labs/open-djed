@@ -12,7 +12,7 @@ The Orders page helps you track mint and burn operations from creation to comple
 
 1. **Created**: transaction created, waiting for on-chain processing.
 2. **Completed**: operation finished successfully.
-3. **Cancelled**: operation was not finalized.
+3. **Canceled**: operation was not finalized.
 
 ## Step-by-Step
 

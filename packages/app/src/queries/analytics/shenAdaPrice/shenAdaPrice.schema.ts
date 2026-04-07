@@ -1,24 +1,5 @@
-import { z } from "zod"
-/**
- * Schemas for ShenAdaPrice API response.
- */
-export const ShenAdaPriceEntryApiSchema = z.object({
-  id: z.number(),
-  timestamp: z.string(),
-  usdValue: z.string(),
-  adaValue: z.string(),
-  token: z.enum(["ADA", "SHEN"]),
-})
-
-export const ShenAdaPriceResponseApiSchema = z.object({
-  ADA: z.array(ShenAdaPriceEntryApiSchema),
-  SHEN: z.array(ShenAdaPriceEntryApiSchema),
-})
-
-export type ShenAdaPriceEntryApi = z.infer<typeof ShenAdaPriceEntryApiSchema>
-export type ShenAdaPriceResponseApi = z.infer<
-  typeof ShenAdaPriceResponseApiSchema
->
+import { ShenAdaPriceEntryApiSchema } from "@open-djed/api"
+import z from "zod"
 
 /**
  * Transformed schema to convert string values to numbers for easier usage in the app

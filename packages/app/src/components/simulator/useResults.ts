@@ -7,15 +7,14 @@ import {
   formatPercent,
   formatUSDValue,
   isEmptyValue,
-  type ToUSDConverter,
-  type Value,
-} from "@/lib/utils"
+} from "@/utils"
 import {
   type ScenarioInputs,
   type ResultsData,
   useSimulatorResults,
 } from "./calculations"
 import { useTranslations } from "next-intl"
+import type { ToUSDConverter, Value } from "@/types"
 
 export type ValueItem = {
   name: string

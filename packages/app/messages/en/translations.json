@@ -49,6 +49,9 @@
     "current": "Current",
     "available": "Available",
     "half": "Half",
+    "cancel": {
+      "text": "Cancel"
+    },
     "mintAndBurnNow": "Mint & Burn Now",
     "months": {
       "march": "March",
@@ -99,7 +102,6 @@
     "pageTitle": "Orders",
     "noOrders": "No orders yet",
     "noWalletDescription": "Once the wallet is connected and activity starts, orders will appear here",
-    "cancel": "Cancel",
     "confirmCancellation": "Confirm Cancellation",
     "cancellationDescription": "You're about to cancel your order. Once canceled, the order will be removed and no longer processed.",
     "cancelOrder": "Cancel Order",
@@ -129,6 +131,10 @@
     "title": "Orders",
     "allOrders": "All orders",
     "noOrdersDescription": "Looks like this wallet hasn't made any trades",
+    "cancel": {
+      "success": "Your order has been cancelled.",
+      "error": "Something went wrong while cancelling your order."
+    },
     "status": {
       "all": "All",
       "created": "Created",
@@ -409,7 +415,6 @@
     "connectWallet": "Connect Wallet",
     "connectWalletDisclaimer": "By connecting you agree to our <terms>Terms & Services</terms> and <privacy>Privacy Policy</privacy>",
     "orders": {
-      "cancel": "Cancel",
       "paid": "Paid",
       "received": "Received"
     },

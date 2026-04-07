@@ -1,11 +1,6 @@
 import * as React from "react"
 import Wallet, { type WalletName } from "../Wallet"
-import {
-  capitalizeLower,
-  formatNumber,
-  shortenString,
-  type Value,
-} from "@/lib/utils"
+import { capitalizeLower, formatNumber, shortenString } from "@/utils"
 import Icon from "../icons/Icon"
 import { useClipboard } from "@/hooks/useClipboard"
 import ButtonIcon from "../ButtonIcon"
@@ -13,6 +8,7 @@ import Tooltip from "../tooltip/Tooltip"
 import { useProtocolData } from "@/hooks/useProtocolData"
 import { env } from "@/lib/envLoader"
 import { useTranslations } from "next-intl"
+import type { Value } from "@/types"
 
 type WalletDetailProps = {
   name: WalletName

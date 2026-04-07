@@ -15,7 +15,7 @@ import { registryByNetwork } from "@open-djed/registry"
 import { useToast } from "./ToastContext"
 import { ALLOWED_WALLETS } from "@/lib/constants"
 import { env } from "@/lib/envLoader"
-import { capitalize } from "@/lib/utils"
+import { capitalize } from "@/utils"
 import { useTranslations } from "next-intl"
 
 export type WalletMetadata = {

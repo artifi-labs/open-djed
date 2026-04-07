@@ -3,7 +3,7 @@
 import * as React from "react"
 import { useApiClient } from "@/context/ApiClientContext"
 import { useProtocolData } from "@/hooks/useProtocolData"
-import { sumValues } from "@/lib/utils"
+import { sumValues } from "@/utils"
 import { toAdaUsdExchangeRate } from "@open-djed/math"
 import { useQuery } from "@tanstack/react-query"
 

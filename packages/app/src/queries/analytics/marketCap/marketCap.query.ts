@@ -3,7 +3,7 @@ import { useApiClient } from "@/context/ApiClientContext"
 import type { ChartPeriodValue } from "@/components/analytics/useAnalyticsData"
 import { analyticsKeys } from "../keys"
 import type { TokenMarketCap } from "../../../../../db/generated/prisma/enums"
-import { MarketCapResponseSchema } from "./marketCap.schema"
+import { MarketCapResponseSchema } from "@/queries/analytics/marketCap/marketCap.schema"
 
 type Params = {
   token: TokenMarketCap
