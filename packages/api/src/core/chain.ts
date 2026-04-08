@@ -66,10 +66,12 @@ export const getOracleUTxO = async () => {
 export const getChainTime = async () => {
   const cached = chainDataCache.get<number>("now")
   if (cached) return cached
-  const now = slotToUnixTime(
-    network,
-    (await blockfrost.blocks.getLatest()).slot,
-  )
+
+  const latestBlock = await blockfrost.blocks.getLatest()
+  if (latestBlock.slot === null)
+    throw new Error("Failed to get latest block slot.")
+
+  const now = slotToUnixTime(network, latestBlock.slot)
   chainDataCache.set("now", now)
   return now
 }
