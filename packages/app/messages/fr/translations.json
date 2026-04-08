@@ -49,6 +49,9 @@
     "current": "Actuel",
     "available": "Disponible",
     "half": "Moitié",
+    "cancel": {
+      "text": ""
+    },
     "mintAndBurnNow": "Frapper & Brûler Maintenant",
     "months": {
       "march": "Mars",
@@ -99,7 +102,6 @@
     "pageTitle": "Ordres",
     "noOrders": "Aucun ordre pour l'instant",
     "noWalletDescription": "Une fois le portefeuille connecté et l'activité démarrée, les ordres apparaîtront ici",
-    "cancel": "Annuler",
     "confirmCancellation": "Confirmer l'Annulation",
     "cancellationDescription": "Vous êtes sur le point d'annuler votre ordre. Une fois annulé, l'ordre sera supprimé et ne sera plus traité.",
     "cancelOrder": "Annuler l'Ordre",
@@ -129,6 +131,10 @@
     "title": "Ordres",
     "allOrders": "Tous les ordres",
     "noOrdersDescription": "Il semble que ce portefeuille n'ait encore effectué aucune transaction",
+    "cancel": {
+      "success": "",
+      "error": ""
+    },
     "status": {
       "all": "Tous",
       "created": "Créé",
@@ -148,10 +154,6 @@
   },
   "dashboard": {
     "pageTitle": "Tableau de Bord",
-    "actionButton": {
-      "wallet": "Connecter le Portefeuille pour {action}",
-      "fillAmount": "Saisissez le Montant pour {action}"
-    },
     "youPay": "Vous payez",
     "youReceive": "Vous recevez",
     "action": {
@@ -186,6 +188,15 @@
     "transactionSummary": {
       "title": "Récapitulatif de la Transaction",
       "description": "Commencez par saisir un montant pour voir le détail complet des coûts."
+    },
+    "inputs": {
+      "available": "",
+      "max": ""
+    },
+    "actionButton": {
+      "minAmount": "",
+      "wallet": "Connecter le Portefeuille pour {action}",
+      "fillAmount": "Saisissez le Montant pour {action}"
     },
     "baseCost": "Coût de Base",
     "mintFee": "Frais de Frappe",
@@ -409,7 +420,6 @@
     "connectWallet": "Connecter le Portefeuille",
     "connectWalletDisclaimer": "En vous connectant, vous acceptez nos <terms>Conditions d'Utilisation</terms> et notre <privacy>Politique de Confidentialité</privacy>",
     "orders": {
-      "cancel": "Annuler",
       "paid": "Payé",
       "received": "Reçu"
     },

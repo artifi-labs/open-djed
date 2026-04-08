@@ -3,16 +3,22 @@
 import * as React from "react"
 import { ACTION_CONFIG, type ActionType } from "../../components/dashboard/actionConfig"
 import { type Token } from "@/lib/types/tokens"
-import { useWallet, type Wallet } from "@/context/WalletContext"
+import { useWallet } from "@/context/WalletContext"
 import { useProtocolData } from "@/hooks/useProtocolData"
-import { type TokenType } from "@open-djed/api"
-import { useSidebar } from "@/context/SidebarContext"
-import { useApiClient } from "@/context/ApiClientContext"
-import { useToast } from "@/context/ToastContext"
+import { AppError, type TokenType } from "@open-djed/api"
 import { type Registry, registryByNetwork } from "@open-djed/registry"
 import { type InputStatus } from "../../components/input-fields/TransactionInput"
 import { formatNumber, roundToDecimals } from "@/utils"
 import { env } from "@/lib/envLoader"
+import { useReserveDetails } from "@/hooks/useReserveDetails"
+import { useTranslations } from "next-intl"
+import { useSidebar } from "@/context/SidebarContext"
+import { useToast } from "@/context/ToastContext"
+import { useApiClient } from "@/context/ApiClientContext"
+import { signAndSubmitTx } from "@/lib/signAndSubmitTx"
+import { getWalletData } from "@/lib/getWalletData"
+
+// Types
 
 type ProtocolData = NonNullable<ReturnType<typeof useProtocolData>["data"]>
 type ActionData = ReturnType<ProtocolData["tokenActionData"]>
@@ -26,22 +32,27 @@ export type TokenActionState = {
   available: number | undefined
   disabled: boolean
   status: InputStatus
-  suffix?: string
-  onChange?: (value: number) => void
-  onTokenChange?: () => void
-  onHalfClick?: () => void
-  onMaxClick?: () => void
+  suffix: string
+  message?: {
+    message?: string
+  }
+  onChange: (value: number) => void
+  onTokenChange: () => void
+  onHalfClick: () => void
+  onMaxClick: () => void
+}
+
+export type SectionDualState = {
+  text: string
+  disabled: boolean
+  isDualSelected: boolean
+  isLinkSelected: boolean
+  onDualChange: () => void
+  onLinkChange: () => void
 }
 
 export type TokenActionStateConfig = {
-  dual: {
-    text?: string
-    disabled: boolean
-    isDualSelected: boolean
-    isLinkSelected?: boolean
-    onDualChange?: () => void
-    onLinkChange?: () => void
-  }
+  dual: SectionDualState
   tokens: Token[]
   activeTokens: Token[]
   inputs: TokenActionState[]
@@ -53,360 +64,430 @@ export type TokenActionStateMap = {
   receive: TokenActionStateConfig
 }
 
+export type ButtonState = {
+  text: string
+  disabled: boolean
+  onClick?: () => Promise<void>
+}
 
-function calculateTokenMinValue(registry: Registry) {
+// Internal Types
+
+type InputValues = Partial<Record<Token, number>>
+
+type DualSectionState = {
+  isDualSelected: boolean
+  isLinkSelected: boolean
+}
+
+type DualState = {
+  pay: DualSectionState
+  receive: DualSectionState
+}
+
+type SelectedTokensState = {
+  pay: Token[]
+  receive: Token[]
+}
+
+// Pure Functions
+
+function calcMin(registry: Registry): number {
   return Math.floor((Number(registry.minAmount) / 1e6) * 1000) / 1000
 }
 
-function calculateTokenMaxValue(
+function calcMax(
   token: Token,
   actionType: ActionType,
-  wallet: Wallet | null,
+  walletBalance: Record<Token, number | undefined> | null,
   data: ProtocolData | undefined,
   registry: Registry
-) {
-  if (!wallet || !data || token === "ADA") return 0
+): number {
+  if (!walletBalance || !data || token === "ADA") return 0
 
-  const max =
+  const raw =
     actionType === "Burn"
-      ? wallet.balance[token]
-      : (Math.max((wallet.balance.ADA ?? 0) - 5, 0) -
+      ? walletBalance[token] ?? 0
+      : (Math.max((walletBalance.ADA ?? 0) - 5, 0) -
           (Number(registry.operatorFeeConfig.max) +
             (data.protocolData.refundableDeposit.ADA ?? 1823130)) /
             1e6) /
-        (data.protocolData?.[token].buyPrice.ADA ?? 1)
+        (data.protocolData[token].buyPrice.ADA ?? 1)
 
-  const bounded = Math.min(
-    Math.max(max ?? 0, 0),
+  const cap =
     actionType === "Mint"
-      ? data.protocolData?.[token].mintableAmount[token] ?? 0
-      : data.protocolData?.[token].burnableAmount[token] ?? 0
-  )
+      ? data.protocolData[token].mintableAmount[token] ?? 0
+      : data.protocolData[token].burnableAmount[token] ?? 0
 
-  return Math.floor(bounded * 1000) / 1000
+  return Math.floor(Math.min(Math.max(raw, 0), cap) * 1000) / 1000
 }
 
-function getSuffix(
-  data: ProtocolData | undefined,
-  token: Token,
-  value: number
-) {
+function calcSuffix(data: ProtocolData | undefined, token: Token, value: number): string {
   if (!data) return "$0"
-
-  return `$${formatNumber(
-    data.to({ [token]: value }, "DJED") ?? 0,
-    { maximumFractionDigits: 2 }
-  )}`
+  return `$${formatNumber(data.to({ [token]: value }, "DJED") ?? 0, { maximumFractionDigits: 2 })}`
 }
 
-function createTokenInput({
-  token,
-  type,
-  actionType,
-  wallet,
-  data,
-  registry,
-  onValueChange,
-  onTokenChange,
-}: any): TokenActionState {
-  const max = calculateTokenMaxValue(token, actionType, wallet, data, registry)
-  const min = calculateTokenMinValue(registry)
-
-  return {
-    token,
-    min,
-    max,
-    available: wallet && token === "ADA" ? wallet.balance[token] ?? 0 : undefined,
-    disabled: token === "ADA",
-    value: 0,
-    status: "default",
-    suffix: `$${formatNumber(data?.to({ [token]: "00.00" }, "DJED") ?? 0)}`,
-    onChange: onValueChange,
-    onTokenChange,
-    onHalfClick: () => onValueChange(max / 2),
-    onMaxClick: () => onValueChange(max),
-  }
-}
-
-function computeOppositeValues({
-  type,
-  data,
-  actionType,
-  value,
-  sourceTokens,
-  targetTokens,
-}: any) {
-  const result: Partial<Record<Token, number>> = {}
+function computeOppositeValues(
+  type: "pay" | "receive",
+  actionType: ActionType,
+  value: number,
+  sourceTokens: Token[],
+  targetTokens: Token[],
+  data: ProtocolData
+): { values: Partial<Record<Token, number>>; actionData: ActionDataMap } {
+  const values: Partial<Record<Token, number>> = {}
   const actionData: ActionDataMap = {}
+  const isMint = actionType === "Mint"
 
-  sourceTokens.forEach((token: Token) => {
-    const isMint = actionType === "Mint"
-
+  for (const token of sourceTokens) {
     const res = data.tokenActionData(
       token as TokenType,
       actionType,
-      isMint
-        ? { type: "Out", amount: value }
-        : { type: "In", amount: value }
+      isMint ? { type: "Out", amount: value } : { type: "In", amount: value }
     )
 
-    targetTokens.forEach((t: Token) => {
-      result[t] =
+    for (const t of targetTokens) {
+      values[t] =
         type === "pay"
           ? isMint
             ? roundToDecimals(res.toSend["ADA"] ?? 0, 4)
             : roundToDecimals(res.toReceive[t] ?? 0, 4)
           : roundToDecimals(res.toSend[t] ?? 0, 4)
-    })
+    }
 
     actionData[token] = res
-  })
+  }
 
-  return { result, actionData }
+  return { values, actionData }
 }
 
 export function useMintBurnAction(defaultActionType: ActionType) {
-  const [actionType, setActionType] = React.useState(defaultActionType)
-  const [actionData, setActionData] = React.useState<ActionDataMap>({})
-
   const { wallet } = useWallet()
   const { data } = useProtocolData()
+  const { reserveBounds } = useReserveDetails()
+  const t = useTranslations()
+  const { openWalletSidebar } = useSidebar()
+  const { showToast } = useToast()
+  const client = useApiClient()
+
   const { NETWORK } = env
-
   const registry = registryByNetwork[NETWORK]
+
+  const [actionType, setActionType] = React.useState(defaultActionType)
   const config = ACTION_CONFIG[actionType]
-
   const hasWalletConnected = Boolean(wallet)
+  const hasMaxAmount = Boolean(wallet)
 
-  const [tokensStates, setTokensStates] =
-    React.useState<TokenActionStateMap>(() => ({
-      action: defaultActionType,
-      pay: { dual: { disabled: true, isDualSelected: false }, tokens: [], activeTokens: [], inputs: [] },
-      receive: { dual: { disabled: true, isDualSelected: false }, tokens: [], activeTokens: [], inputs: [] },
-    }))
+  const defaultSelectedTokens = (): SelectedTokensState => ({
+    pay: [config.pay[0]],
+    receive: [config.receive[0]],
+  })
 
+  const defaultDualState = (): DualState => ({
+    pay: { isDualSelected: false, isLinkSelected: false },
+    receive: { isDualSelected: false, isLinkSelected: false },
+  })
+
+  const [selectedTokens, setSelectedTokens] = React.useState<SelectedTokensState>(defaultSelectedTokens)
+  const [dualState, setDualState] = React.useState<DualState>(defaultDualState)
+  const [inputValues, setInputValues] = React.useState<InputValues>({})
+  const [actionData, setActionData] = React.useState<ActionDataMap>({})
+
+  React.useEffect(() => {
+    setSelectedTokens(defaultSelectedTokens())
+    setDualState(defaultDualState())
+    setInputValues({})
+    setActionData({})
+  }, [actionType])
+
+  const tokenLimits = React.useMemo(() => {
+    const allTokens = [...new Set([...selectedTokens.pay, ...selectedTokens.receive])]
+    return Object.fromEntries(
+      allTokens.map((token) => [
+        token,
+        {
+          min: calcMin(registry),
+          max: calcMax(token, actionType, wallet?.balance ?? null, data, registry),
+        },
+      ])
+    ) as Record<Token, { min: number; max: number }>
+  }, [selectedTokens, actionType, wallet, data, registry])
+
+  // Handlers
   const handleValueChange = React.useCallback(
     (type: "pay" | "receive", token: Token, value: number) => {
       if (!data) return
 
-      const oppositeType = type === "pay" ? "receive" : "pay"
+      const opposite = type === "pay" ? "receive" : "pay"
+      const isLinked = dualState[type].isLinkSelected
+      const sourceTokens = isLinked ? selectedTokens[type] : [token]
+      const targetTokens = selectedTokens[opposite]
 
-      setTokensStates((prev) => {
-        const section = prev[type]
-        const opposite = prev[oppositeType]
+      setInputValues((prev) => {
+        const next: InputValues = { ...prev }
 
-        const isLinked = section.dual.isLinkSelected
-        const sourceTokens = isLinked
-          ? section.inputs.map((i) => i.token)
-          : [token]
-
-        const targetTokens = opposite.inputs.map((i) => i.token)
-
-        const updatedSection = {
-          ...section,
-          inputs: section.inputs.map((i) =>
-            isLinked || i.token === token
-              ? {
-                  ...i,
-                  value,
-                  suffix: getSuffix(data, i.token, value),
-                }
-              : i
-          ),
+        for (const t of sourceTokens) {
+          next[t] = value
         }
 
-        let newOppositeInputs = opposite.inputs
-        let newActionData: ActionDataMap = {}
-
         if (value > 0) {
-          const { result, actionData } = computeOppositeValues({
+          const { values, actionData: newActionData } = computeOppositeValues(
             type,
-            data,
             actionType,
             value,
             sourceTokens,
             targetTokens,
-          })
-
-          newOppositeInputs = opposite.inputs.map((i) => ({
-            ...i,
-            value: result[i.token] ?? 0,
-          }))
-
-          newActionData = actionData
+            data
+          )
+          for (const t of targetTokens) {
+            next[t] = values[t] ?? 0
+          }
+          setActionData(newActionData)
         } else {
-          newOppositeInputs = opposite.inputs.map((i) => ({
-            ...i,
-            value: 0,
-          }))
+          for (const t of targetTokens) {
+            next[t] = 0
+          }
+          setActionData({})
         }
 
-        setActionData(newActionData)
-
-        return {
-          ...prev,
-          [type]: updatedSection,
-          [oppositeType]: {
-            ...opposite,
-            inputs: newOppositeInputs,
-          },
-        }
+        return next
       })
     },
-    [data, actionType]
+    [data, actionType, dualState, selectedTokens]
   )
 
   const handleTokenChange = React.useCallback(
     (type: "pay" | "receive", currentToken: Token) => {
-      setTokensStates((prev) => {
-        const section = prev[type]
-        const tokens = section.tokens
+      const tokens = config[type]
+      const nextToken = tokens[(tokens.indexOf(currentToken) + 1) % tokens.length]
 
-        const nextToken =
-          tokens[(tokens.indexOf(currentToken) + 1) % tokens.length]
+      setSelectedTokens((prev) => ({
+        ...prev,
+        [type]: prev[type].map((t) => (t === currentToken ? nextToken : t)),
+      }))
 
-        const inputs = section.inputs.map((input) =>
-          input.token === currentToken
-            ? createTokenInput({
-                token: nextToken,
-                type,
-                actionType,
-                wallet,
-                data,
-                registry,
-                onValueChange: (v: number) =>
-                  handleValueChange(type, nextToken, v),
-                onTokenChange: () =>
-                  handleTokenChange(type, nextToken),
-              })
-            : input
-        )
-
-        return {
-          ...prev,
-          [type]: {
-            ...section,
-            inputs,
-            activeTokens: inputs.map((i) => i.token),
-          },
-        }
-      })
+      setInputValues({})
+      setActionData({})
     },
-    [wallet, data, actionType, registry, handleValueChange]
+    [config]
+  )
+
+  const handleDualChange = React.useCallback(
+    (type: "pay" | "receive") => {
+      const isDual = !dualState[type].isDualSelected
+
+      setDualState((prev) => ({
+        ...prev,
+        [type]: { ...prev[type], isDualSelected: isDual },
+      }))
+
+      setSelectedTokens((prev) => ({
+        ...prev,
+        [type]: isDual ? config[type] : [config[type][0]],
+      }))
+
+      setInputValues({})
+      setActionData({})
+    },
+    [dualState, config]
   )
 
   const handleLinkChange = React.useCallback((type: "pay" | "receive") => {
-    setTokensStates((prev) => {
-      const section = prev[type]
-
-      return {
-        ...prev,
-        [type]: {
-          ...section,
-          dual: {
-            ...section.dual,
-            isLinkSelected: !section.dual.isLinkSelected,
-          },
-        },
-      }
-    })
+    setDualState((prev) => ({
+      ...prev,
+      [type]: { ...prev[type], isLinkSelected: !prev[type].isLinkSelected },
+    }))
   }, [])
-  
-  const handleDualChange = React.useCallback(
-    (type: "pay" | "receive") => {
-      setTokensStates((prev) => {
-        const section = prev[type]
-        const isDualSelected = !section.dual.isDualSelected
-        const tokens = config[type]
 
-        const inputs = isDualSelected
-          ? tokens.map((token) =>
-              createTokenInput({
-                token,
-                type,
-                actionType,
-                wallet,
-                data,
-                registry,
-                onValueChange: (v: number) =>
-                  handleValueChange(type, token, v),
-                onTokenChange: () =>
-                  handleTokenChange(type, token),
-              })
-            )
-          : [
-              createTokenInput({
-                token: tokens[0],
-                type,
-                actionType,
-                wallet,
-                data,
-                registry,
-                onValueChange: (v: number) =>
-                  handleValueChange(type, tokens[0], v),
-                onTokenChange: () =>
-                  handleTokenChange(type, tokens[0]),
-              }),
-            ]
+  const handleButtonClick = React.useCallback(async () => {
+    if (!hasWalletConnected) {
+      openWalletSidebar()
+      return
+    }
+    if (!wallet) return
+
+    const relevantInputs = actionType === "Mint"
+      ? tokensStates.receive.inputs
+      : tokensStates.pay.inputs
+
+    const activeInput = relevantInputs.find((i) => i.value > 0 && i.token !== "ADA")
+    if (!activeInput) return
+
+    const { token, value, max, min } = activeInput
+
+    if (value > max) {
+      showToast({
+        message: "The amount added is greater than the available balance.",
+        type: "error",
+      })
+      return
+    }
+
+    if (value < min) {
+      showToast({
+        message: `The amount added is less than the minimum allowed of ${min} ${token}.`,
+        type: "error",
+      })
+      return
+    }
+
+    const { Transaction, TransactionWitnessSet } =
+      await import("@dcspark/cardano-multiplatform-lib-browser")
+
+    try {
+      const { address, utxos } = await getWalletData(wallet)
+
+      const response = await client.api[":token"][":action"][":amount"]["tx"].$post({
+        param: {
+          token: token as TokenType,
+          action: actionType,
+          amount: value.toString(),
+        },
+        json: { hexAddress: address, utxosCborHex: utxos },
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new AppError(errorData.message)
+      }
+
+      const txCbor = await response.text()
+      await signAndSubmitTx(wallet, txCbor, Transaction, TransactionWitnessSet)
+
+      showToast({
+        message: "Transaction submitted successfully!",
+        type: "success",
+      })
+
+      setInputValues({})
+      setActionData({})
+    } catch (err) {
+      console.error("Action failed:", err)
+      if (err instanceof AppError) {
+        showToast({ message: err.message, type: "error" })
+        return
+      }
+      showToast({ message: "Transaction failed. Please try again.", type: "error" })
+    }
+  }, [
+    hasWalletConnected,
+    openWalletSidebar,
+    wallet,
+    actionType,
+    client,
+    showToast,
+  ])
+
+
+  // Returned values
+  const tokensStates = React.useMemo((): TokenActionStateMap => {
+    const buildSection = (type: "pay" | "receive"): TokenActionStateConfig => {
+      const tokens = config[type]
+      const active = selectedTokens[type]
+      const dual = dualState[type]
+
+      const inputs: TokenActionState[] = active.map((token) => {
+        const value = inputValues[token] ?? 0
+        const limits = tokenLimits[token] ?? { min: 0, max: 0 }
+
+        const minMessage = 
+          token !== "ADA" && value > 0 && value < limits.min
+            ? { message: `Minimum amount is ${limits.min} ${token}` }
+            : undefined
+        
+        const status: InputStatus = (minMessage !== undefined) ? "warning": "default"
 
         return {
-          ...prev,
-          [type]: {
-            ...section,
-            dual: {
-              ...section.dual,
-              isDualSelected,
-            },
-            inputs,
-            activeTokens: inputs.map((i) => i.token),
-          },
+          token,
+          value,
+          min: limits.min,
+          max: limits.max,
+          available: token === "ADA" ? wallet?.balance?.ADA ?? 0 : undefined,
+          disabled: token === "ADA",
+          status: status,
+          suffix: calcSuffix(data, token, value),
+          message: minMessage,
+          onChange: (v) => handleValueChange(type, token, v),
+          onTokenChange: () => handleTokenChange(type, token),
+          onHalfClick: () => handleValueChange(type, token, limits.max / 2),
+          onMaxClick: () => handleValueChange(type, token, limits.max),
         }
       })
-    },
-    [config, actionType, wallet, data, registry, handleValueChange]
-  )
-
-  // Reset inputs and action data when action type changes
-  React.useEffect(() => {
-    const buildSection = (type: "pay" | "receive") => {
-      const tokens = config[type]
 
       return {
         dual: {
           text: `${actionType} both (DJED & SHEN)`,
           disabled: !config[`${type}ShowDual`],
-          isDualSelected: false,
-          isLinkSelected: false,
+          isDualSelected: dual.isDualSelected,
+          isLinkSelected: dual.isLinkSelected,
           onDualChange: () => handleDualChange(type),
           onLinkChange: () => handleLinkChange(type),
         },
         tokens,
-        activeTokens: [tokens[0]],
-        inputs: [
-          createTokenInput({
-            token: tokens[0],
-            type,
-            actionType,
-            wallet,
-            data,
-            registry,
-            onValueChange: (v: number) =>
-              handleValueChange(type, tokens[0], v),
-            onTokenChange: () =>
-              handleTokenChange(type, tokens[0]),
-          }),
-        ],
+        activeTokens: active,
+        inputs,
       }
     }
 
-    setTokensStates({
+    return {
       action: actionType,
       pay: buildSection("pay"),
       receive: buildSection("receive"),
-    })
+    }
+  }, [
+    actionType,
+    config,
+    selectedTokens,
+    dualState,
+    inputValues,
+    tokenLimits,
+    wallet,
+    data,
+    handleValueChange,
+    handleTokenChange,
+    handleDualChange,
+    handleLinkChange,
+  ])
 
-    setActionData({})
-  }, [actionType, wallet, data])
+  const button = React.useMemo((): ButtonState => {
+    const actionText = t(`action.${actionType.toLowerCase()}`)
+
+    const relevantTokens = actionType === "Mint"
+      ? tokensStates.receive.activeTokens
+      : tokensStates.pay.activeTokens
+
+    const disabledDueToReserve =
+      ((relevantTokens.includes("DJED") && actionType === "Mint") ||
+        (relevantTokens.includes("SHEN") && actionType === "Burn")) &&
+      reserveBounds === "below"
+        ? true
+        : relevantTokens.includes("SHEN") && actionType === "Mint" && reserveBounds === "above"
+          ? true
+          : false
+
+    const allInputs = [...tokensStates.pay.inputs, ...tokensStates.receive.inputs]
+    const isPayEmpty = tokensStates.pay.inputs.some((i) => i.value === 0)
+    const isReceiveEmpty = tokensStates.receive.inputs.some((i) => i.value === 0)
+    const hasBelowMin = allInputs.some((i) => i.message !== undefined)
+
+    const relevantToken = actionType === "Mint"
+      ? tokensStates.receive.activeTokens[0]
+      : tokensStates.pay.activeTokens[0]
+
+    const minAmount = tokenLimits[relevantToken]?.min ?? 0
+    const minMessage = minAmount > 0 ? t("dashboard.actionButton.minAmount", { amount: minAmount, token: relevantToken }) : ""
+
+    const isDisabled = hasWalletConnected
+      ? isPayEmpty || isReceiveEmpty || hasBelowMin || disabledDueToReserve
+      : false
+
+    const text = !hasWalletConnected
+      ? t("dashboard.actionButton.wallet", { action: actionText })
+      : isPayEmpty || isReceiveEmpty
+        ? t("dashboard.actionButton.fillAmount", { action: actionText })
+        : minMessage ? `${actionText} (${minMessage})` : actionText
+
+    return { text, disabled: isDisabled, onClick: handleButtonClick }
+  }, [tokensStates, actionType, hasWalletConnected, reserveBounds, tokenLimits, t])
 
   return {
     tokensStates,
@@ -416,9 +497,7 @@ export function useMintBurnAction(defaultActionType: ActionType) {
     data,
     onActionChange: setActionType,
     config,
-    hasWalletConnected,
-    onButtonClick: undefined,
-    hasMaxAmount: Boolean(wallet),
-    minMessage: "",
+    hasMaxAmount,
+    button,
   }
 }

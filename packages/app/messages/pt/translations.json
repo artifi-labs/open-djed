@@ -154,10 +154,6 @@
   },
   "dashboard": {
     "pageTitle": "Painel",
-    "actionButton": {
-      "wallet": "Conectar Carteira para {action}",
-      "fillAmount": "Preencha o Valor para {action}"
-    },
     "youPay": "Você paga",
     "youReceive": "Você recebe",
     "action": {
@@ -192,6 +188,15 @@
     "transactionSummary": {
       "title": "Resumo da Transação",
       "description": "Comece por inserir um valor para ver a descrição completa dos custos."
+    },
+    "inputs": {
+      "available": "",
+      "max": ""
+    },
+    "actionButton": {
+      "minAmount": "",
+      "wallet": "Conectar Carteira para {action}",
+      "fillAmount": "Preencha o Valor para {action}"
     },
     "baseCost": "Custo Base",
     "mintFee": "Taxa de Cunhagem",

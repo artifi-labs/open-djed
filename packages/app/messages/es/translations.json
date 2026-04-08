@@ -49,6 +49,9 @@
     "current": "Actual",
     "available": "Disponible",
     "half": "Mitad",
+    "cancel": {
+      "text": ""
+    },
     "mintAndBurnNow": "Acuñar & Quemar Ahora",
     "months": {
       "march": "Marzo",
@@ -99,7 +102,6 @@
     "pageTitle": "Órdenes",
     "noOrders": "Aún no hay órdenes",
     "noWalletDescription": "Una vez que la cartera esté conectada y haya actividad, las órdenes aparecerán aquí",
-    "cancel": "Cancelar",
     "confirmCancellation": "Confirmar Cancelación",
     "cancellationDescription": "Estás a punto de cancelar tu orden. Una vez cancelada, la orden será eliminada y no se procesará más.",
     "cancelOrder": "Cancelar Orden",
@@ -129,6 +131,10 @@
     "title": "Órdenes",
     "allOrders": "Todas las órdenes",
     "noOrdersDescription": "Parece que esta cartera aún no ha realizado ninguna transacción",
+    "cancel": {
+      "success": "",
+      "error": ""
+    },
     "status": {
       "all": "Todas",
       "created": "Creada",
@@ -148,10 +154,6 @@
   },
   "dashboard": {
     "pageTitle": "Panel",
-    "actionButton": {
-      "wallet": "Conectar Cartera para {action}",
-      "fillAmount": "Introduce el Importe para {action}"
-    },
     "youPay": "Tú pagas",
     "youReceive": "Tú recibes",
     "action": {
@@ -186,6 +188,15 @@
     "transactionSummary": {
       "title": "Resumen de la Transacción",
       "description": "Comienza introduciendo un importe para ver el desglose completo de costes."
+    },
+    "inputs": {
+      "available": "",
+      "max": ""
+    },
+    "actionButton": {
+      "minAmount": "",
+      "wallet": "Conectar Cartera para {action}",
+      "fillAmount": "Introduce el Importe para {action}"
     },
     "baseCost": "Coste Base",
     "mintFee": "Tarifa de Acuñación",
@@ -409,7 +420,6 @@
     "connectWallet": "Conectar Cartera",
     "connectWalletDisclaimer": "Al conectar, aceptas nuestros <terms>Términos y Condiciones</terms> y <privacy>Política de Privacidad</privacy>",
     "orders": {
-      "cancel": "Cancelar",
       "paid": "Pagado",
       "received": "Recibido"
     },

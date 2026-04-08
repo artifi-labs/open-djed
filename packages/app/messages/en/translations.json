@@ -154,10 +154,6 @@
   },
   "dashboard": {
     "pageTitle": "Dashboard",
-    "actionButton": {
-      "wallet": "Connect Wallet to {action}",
-      "fillAmount": "Fill in the Amount to {action}"
-    },
     "youPay": "You pay",
     "youReceive": "You Receive",
     "action": {
@@ -192,6 +188,15 @@
     "transactionSummary": {
       "title": "Transaction Summary",
       "description": "Start by entering an amount to see the full cost breackdown."
+    },
+    "inputs": {
+      "available": "Available: {available}",
+      "max": "Max: {max}"
+    },
+    "actionButton": {
+      "minAmount": "minimum {amount} {token}",
+      "wallet": "Connect Wallet to {action}",
+      "fillAmount": "Fill in the Amount to {action}"
     },
     "baseCost": "Base Cost",
     "mintFee": "Mint Fee",

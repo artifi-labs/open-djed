@@ -6,7 +6,6 @@ import { type TokenActionState, type TokenActionStateConfig } from "@/hooks/dash
 import Checkbox from "@/components/Checkbox"
 import ValueShowcase from "@/components/dashboard/ValueShowcase"
 import TransactionInput from "@/components/input-fields/TransactionInput"
-import { useTranslations } from "next-intl"
 import { type ActionType } from "@/components/dashboard/actionConfig"
 
 export type InputSectionProps = {
@@ -41,7 +40,7 @@ const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
         hasAvailableAmount={input.available !== undefined}
       />
     ) : (
-      <div className="relative">
+      <div className="flex-1 relative">
         <TransactionInput
           disabled={input.disabled}
           placeholder="0"
@@ -67,11 +66,11 @@ const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
           maxValue={Number.MAX_SAFE_INTEGER}
           maxDecimalPlaces={4}
         />
-        {/*minWarningMessage && (
+        {input.message?.message && (
           <span className="text-xxs absolute -bottom-18 left-0">
-            {minWarningMessage}
+            {input.message.message}
           </span>
-        )*/}
+        )}
       </div>
     )
   }
@@ -86,7 +85,6 @@ const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
       {state.inputs.map((input, index) => {
         return (
           <React.Fragment key={index}>
-            
             {renderInput(state, input)}
 
             {/* LINK BUTTON */}
@@ -112,7 +110,7 @@ const InputSection: React.FC<InputSectionProps> = ({
   state,
 }) => {
   return (
-    <div className="flex flex-col gap-12">
+    <div className="flex w-full flex-col gap-12">
       <div className="flex justify-between">
         <p className="text-xxs text-secondary font-medium">{label}</p>
 

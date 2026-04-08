@@ -49,6 +49,9 @@
     "current": "当前",
     "available": "可用",
     "half": "一半",
+    "cancel": {
+      "text": ""
+    },
     "mintAndBurnNow": "立即铸造 & 销毁",
     "months": {
       "march": "三月",
@@ -99,7 +102,6 @@
     "pageTitle": "订单",
     "noOrders": "暂无订单",
     "noWalletDescription": "连接钱包并开始交易后，订单将显示在此处",
-    "cancel": "取消",
     "confirmCancellation": "确认取消",
     "cancellationDescription": "您即将取消此订单。取消后，订单将被移除且不再处理。",
     "cancelOrder": "取消订单",
@@ -129,6 +131,10 @@
     "title": "订单",
     "allOrders": "全部订单",
     "noOrdersDescription": "此钱包尚未进行任何交易",
+    "cancel": {
+      "success": "",
+      "error": ""
+    },
     "status": {
       "all": "全部",
       "created": "已创建",
@@ -148,10 +154,6 @@
   },
   "dashboard": {
     "pageTitle": "仪表板",
-    "actionButton": {
-      "wallet": "连接钱包以{action}",
-      "fillAmount": "输入金额以{action}"
-    },
     "youPay": "您支付",
     "youReceive": "您收到",
     "action": {
@@ -186,6 +188,15 @@
     "transactionSummary": {
       "title": "交易摘要",
       "description": "请输入金额以查看完整费用明细。"
+    },
+    "inputs": {
+      "available": "",
+      "max": ""
+    },
+    "actionButton": {
+      "minAmount": "",
+      "wallet": "连接钱包以{action}",
+      "fillAmount": "输入金额以{action}"
     },
     "baseCost": "基础费用",
     "mintFee": "铸造手续费",
@@ -409,7 +420,6 @@
     "connectWallet": "连接钱包",
     "connectWalletDisclaimer": "连接即表示您同意我们的<terms>服务条款</terms>和<privacy>隐私政策</privacy>",
     "orders": {
-      "cancel": "取消",
       "paid": "已付",
       "received": "已收"
     },
