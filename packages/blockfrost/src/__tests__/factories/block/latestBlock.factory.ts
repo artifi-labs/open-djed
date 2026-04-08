@@ -1,4 +1,4 @@
-import type { LatestBlock } from "../../../src/schemas/block/latestblock.schema"
+import type { LatestBlock } from "../../../schemas"
 
 const defaults: LatestBlock = {
   time: 1_700_000_000,
@@ -14,7 +14,7 @@ const defaults: LatestBlock = {
   fees: "500000",
   block_vrf: "vrf_vk1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq",
   op_cert: "0000000000000000000000000000000000000000000000000000000000000000",
-  op_cert_counter: 10,
+  op_cert_counter: "10",
   previous_block:
     "0000000000000000000000000000000000000000000000000000000000000001",
   next_block:

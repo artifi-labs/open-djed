@@ -9,23 +9,10 @@ import type { RetryOptions } from "../types/retry.types"
 import { RequestBuilder } from "./requestBuilder"
 import { PaginatedRequest } from "./paginatedRequest"
 import { type EvalRedeemer, type Transaction } from "@lucid-evolution/lucid"
-
-type BlockfrostRedeemer = {
-  result:
-    | {
-        EvaluationResult: {
-          [key: string]: {
-            memory: number
-            steps: number
-          }
-        }
-      }
-    | {
-        CannotCreateEvaluationContext: unknown
-      }
-}
-
-export type LegacyRedeemerTag = "spend" | "mint" | "certificate" | "withdrawal"
+import {
+  type BlockfrostRedeemer,
+  type LegacyRedeemerTag,
+} from "./blockfrostClient.types"
 
 export const fromLegacyRedeemerTag = (redeemerTag: LegacyRedeemerTag) => {
   switch (redeemerTag) {
