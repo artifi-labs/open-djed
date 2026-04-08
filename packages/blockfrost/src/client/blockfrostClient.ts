@@ -8,6 +8,22 @@ import { TransactionsService } from "../services/transaction.service"
 import type { RetryOptions } from "../types/retry.types"
 import { RequestBuilder } from "./requestBuilder"
 import { PaginatedRequest } from "./paginatedRequest"
+import { type EvalRedeemer, type Transaction } from "@lucid-evolution/lucid"
+import {
+  type BlockfrostRedeemer,
+  type LegacyRedeemerTag,
+} from "./blockfrostClient.types"
+
+export const fromLegacyRedeemerTag = (redeemerTag: LegacyRedeemerTag) => {
+  switch (redeemerTag) {
+    case "certificate":
+      return "publish"
+    case "withdrawal":
+      return "withdraw"
+    default:
+      return redeemerTag
+  }
+}
 
 export class Blockfrost extends BaseBlockfrost {
   public blocks: BlockService
@@ -72,5 +88,54 @@ export class Blockfrost extends BaseBlockfrost {
 
     const qs = params.toString()
     return qs ? `${this.baseUrl}${path}?${qs}` : `${this.baseUrl}${path}`
+  }
+
+  async evaluateTx(tx: Transaction): Promise<EvalRedeemer[]> {
+    const payload = {
+      cbor: tx,
+      additionalUtxoSet: [],
+    }
+
+    const res = await fetch(`${this.url}/utils/txs/evaluate/utxos`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        project_id: this.projectId,
+      },
+      body: JSON.stringify(payload),
+    }).then(
+      (res) =>
+        res.json() as {
+          fault?: unknown
+          status_code?: number
+          message?: string
+        },
+    )
+    if (!res || res.fault) {
+      const message =
+        res.status_code === 400
+          ? res.message
+          : `Could not evaluate the transaction: ${JSON.stringify(res)}. Transaction: ${tx}`
+      throw new Error(message)
+    }
+    const blockfrostRedeemer = res as BlockfrostRedeemer
+    if (!("EvaluationResult" in blockfrostRedeemer.result)) {
+      throw new Error(
+        `EvaluateTransaction fails: ${JSON.stringify(blockfrostRedeemer.result)} for transaction ${tx}`,
+      )
+    }
+    const evalRedeemers: EvalRedeemer[] = []
+    Object.entries(blockfrostRedeemer.result.EvaluationResult).forEach(
+      ([redeemerPointer, data]) => {
+        const [pTag, pIndex] = redeemerPointer.split(":")
+        evalRedeemers.push({
+          redeemer_tag: fromLegacyRedeemerTag(pTag as LegacyRedeemerTag),
+          redeemer_index: Number(pIndex),
+          ex_units: { mem: Number(data.memory), steps: Number(data.steps) },
+        })
+      },
+    )
+
+    return evalRedeemers
   }
 }

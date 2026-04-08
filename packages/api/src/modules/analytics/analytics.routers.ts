@@ -1,7 +1,6 @@
 import { Hono, type Context, type Env, type Input } from "hono"
 import { cacheMiddleware } from "../../shared/middleware"
-import { describeRoute } from "hono-openapi"
-import { resolver, validator } from "hono-openapi"
+import { describeRoute, resolver, validator } from "hono-openapi"
 import { ReserveRatioResponseApiSchema } from "./reserveRatio.schema"
 import z from "zod"
 import { periodSchema, tokenSchema, type PeriodType } from "../../shared"
@@ -22,16 +21,8 @@ import {
   getPeriodReserveRatio,
   getPeriodShenYield,
   getPeriodVolume,
-  getSumStakingRewardsRate,
   type Period,
 } from "@open-djed/db"
-import { chainDataCache } from "../../core"
-
-// TODO: Move this to a separate schema file
-const StakingRewardsSchema = z.object({
-  startDate: z.string(),
-  endDate: z.string(),
-})
 
 const historicalDataHandler = <T, S extends z.ZodType | undefined = undefined>(
   dataFetcher: (period: Period) => Promise<T>,
@@ -255,71 +246,6 @@ export const AnalyticsRouter = new Hono()
       }),
     ),
     historicalDataHandler(getPeriodVolume, VolumesResponseApiSchema),
-  )
-  .get(
-    "/historical-staking-rewards",
-    cacheMiddleware,
-    describeRoute({
-      summary: "Get historical staking rewards rate sum",
-      description: "Get historical staking rewards rate sum for a date range",
-      tags: ["Analytics"],
-      responses: {
-        200: {
-          description:
-            "Successfully got the historical staking rewards rate sum",
-          content: {
-            "text/plain": {
-              example: "Historical staking rewards rate sum",
-            },
-          },
-        },
-        400: {
-          description: "Bad Request",
-          content: {
-            "text/plain": {
-              example: "Bad Request",
-            },
-          },
-        },
-        500: {
-          description: "Internal Server Error",
-          content: {
-            "text/plain": {
-              example: "Internal Server Error",
-            },
-          },
-        },
-      },
-    }),
-    validator("query", StakingRewardsSchema),
-    async (c) => {
-      const { startDate, endDate } = c.req.valid("query")
-      const parsedStartDate = new Date(`${startDate}T00:00:00.000Z`)
-      const parsedEndDate = new Date(`${endDate}T00:00:00.000Z`)
-
-      const cacheKey = `historicalStakingRewards:${startDate}:${endDate}`
-      const cached = chainDataCache.get<number>(cacheKey)
-      if (cached !== undefined) return c.json(cached)
-
-      try {
-        const sumRates = await getSumStakingRewardsRate(
-          parsedStartDate,
-          parsedEndDate,
-        )
-        chainDataCache.set(cacheKey, sumRates)
-        return c.json(sumRates)
-      } catch (err) {
-        if (err instanceof AppError) {
-          console.error(`${err.name}: ${err.message}`)
-          return c.json({ error: err.name, message: err.message }, err.status)
-        }
-        console.error("Unhandled error:", err)
-        return c.json(
-          { error: "InternalServerError", message: "Something went wrong." },
-          500,
-        )
-      }
-    },
   )
   .get(
     "/historical-shen-yield",

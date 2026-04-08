@@ -21,7 +21,7 @@ export const blockfrost = new Blockfrost(
 )
 
 export const getLucid = async () => {
-  const cached = chainDataCache.get<LucidEvolution>("")
+  const cached = chainDataCache.get<LucidEvolution>("lucid")
   if (cached) return cached
   const lucid = await Lucid(blockfrost, network)
   chainDataCache.set("lucid", lucid, { ttl: 600_000 })

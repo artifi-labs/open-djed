@@ -106,8 +106,8 @@ model TokenPrice {
 model Volume {
   id                 Int      @id @default(autoincrement())
   timestamp          DateTime @unique @db.Date
-  block              String? // block hash
-  slot               BigInt? // block slot
+  block              String // block hash
+  slot               BigInt // block slot
   djedMintedUSD      Decimal
   djedBurnedUSD      Decimal
   shenMintedUSD      Decimal
