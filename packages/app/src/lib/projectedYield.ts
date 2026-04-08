@@ -45,7 +45,6 @@ export const calculateProjectedYield = (
     const projectedY = slope * projectedX + intercept
 
     projection.push({
-      id: lastEntry.id + i,
       timestamp: new Date(nextTimestamp).toISOString(),
       yield: Math.max(0, projectedY),
       isProjected: true,
