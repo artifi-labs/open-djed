@@ -4,7 +4,6 @@ import z from "zod"
  * Schemas for SHEN yield API responses.
  */
 export const ShenYieldEntryApiSchema = z.object({
-  id: z.number(),
   timestamp: z.string(),
   yield: z.string(),
 })

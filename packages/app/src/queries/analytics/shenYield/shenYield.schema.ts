@@ -15,7 +15,6 @@ export const ShenYieldResponseSchema = z.array(ShenYieldEntrySchema)
 export type ShenYieldEntry = z.infer<typeof ShenYieldEntrySchema>
 export type ShenYieldResponse = z.infer<typeof ShenYieldResponseSchema>
 
-// TODO: CHANGE THIS
 export type ShenYieldChartEntry = ShenYieldEntry & {
   isProjected: boolean
 }
