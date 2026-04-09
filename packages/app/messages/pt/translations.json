@@ -196,6 +196,7 @@
     "messages": {
       "amountExceedsBalance": "",
       "amountBelowMinimum": "",
+      "transactionSubmitted": "",
       "transactionFailed": ""
     },
     "actionButton": {

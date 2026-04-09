@@ -48,7 +48,7 @@ const Dashboard = () => {
       {/* Content */}
       <div className="desktop:grid-cols-2 desktop:gap-24 desktop:pt-32 grid grid-cols-1 gap-16 pt-16">
         <Actions action={action} onActionChange={action.onActionChange} />
-        {/* <TransactionSummary action={action} /> */}
+        <TransactionSummary action={action} />
       </div>
       <ReserveDetails />
     </div>

@@ -25,12 +25,9 @@ import {
   computeTokenChangeSelectedTokens,
   computeValueChange,
 } from "./useMintBurnAction.utils"
+import { type ActionData } from "./useTransactionSummary"
 
 // Types
-type ProtocolData = NonNullable<ReturnType<typeof useProtocolData>["data"]>
-type ActionData = ReturnType<ProtocolData["tokenActionData"]>
-type ActionDataMap = Partial<Record<Token, ActionData>>
-
 export type TokenActionState = {
   token: Token
   value: number
@@ -78,7 +75,6 @@ export type ButtonState = {
 }
 
 // Internal Types
-
 type InputValues = Partial<Record<Token, number>>
 
 type DualSectionState = {
@@ -96,6 +92,12 @@ type SelectedTokensState = {
   receive: Token[]
 }
 
+/**
+ * Custom hook to manage the state and logic for minting and burning actions in the dashboard.
+ * It handles user inputs, token selections, dual toggles, and computes the necessary values for executing transactions.
+ * @param defaultActionType The default action type to initialize the hook with (either "Mint" or "Burn").
+ * @returns An object containing the current state of the action, token selections, input values, and handlers for user interactions.
+ */
 export function useMintBurnAction(defaultActionType: ActionType) {
   const { wallet } = useWallet()
   const { data } = useProtocolData()
@@ -126,15 +128,21 @@ export function useMintBurnAction(defaultActionType: ActionType) {
   const [selectedTokens, setSelectedTokens] = React.useState<SelectedTokensState>(defaultSelectedTokens)
   const [dualState, setDualState] = React.useState<DualState>(defaultDualState)
   const [inputValues, setInputValues] = React.useState<InputValues>({})
-  const [actionData, setActionData] = React.useState<ActionDataMap>({})
+  const [actionData, setActionData] = React.useState<ActionData | null>(null)
 
+  /**
+   * Resets everything to the default state
+   */
   React.useEffect(() => {
     setSelectedTokens(defaultSelectedTokens())
     setDualState(defaultDualState())
     setInputValues({})
-    setActionData({})
+    setActionData(null)
   }, [actionType])
 
+  /**
+   * Calculates the minimum and maximum limits for each token.
+   */
   const tokenLimits = React.useMemo(() => {
     const allTokens = [...new Set([...selectedTokens.pay, ...selectedTokens.receive])]
     return Object.fromEntries(
@@ -149,6 +157,10 @@ export function useMintBurnAction(defaultActionType: ActionType) {
   }, [selectedTokens, actionType, wallet, data, registry])
 
   // Handlers
+  /**
+   * Handles the change in input values for a given token and section (pay or receive),
+   * computing the opposite values and updating the action data accordingly.
+   */
   const handleValueChange = React.useCallback(
     (type: "pay" | "receive", token: Token, value: number) => {
       if (!data) return
@@ -164,13 +176,17 @@ export function useMintBurnAction(defaultActionType: ActionType) {
           selectedTokens,
           data
         )
-        setActionData(newActionData as ActionDataMap)
+        setActionData(newActionData as ActionData | null)
         return nextValues
       })
     },
     [data, actionType, dualState, selectedTokens]
   )
 
+  /**
+   * Handles the token change for a given section (pay or receive), 
+   * updating the selected tokens and resetting input values and action data accordingly.
+   */
   const handleTokenChange = React.useCallback(
     (type: "pay" | "receive", currentToken: Token) => {
       setSelectedTokens((prev) => ({
@@ -178,11 +194,15 @@ export function useMintBurnAction(defaultActionType: ActionType) {
       }))
 
       setInputValues({})
-      setActionData({})
+      setActionData(null)
     },
     [config]
   )
 
+  /**
+   * Handles the dual toggle change for a given section (pay or receive), 
+   * updating the selected tokens and resetting input values and action data accordingly.
+   */
   const handleDualChange = React.useCallback(
     (type: "pay" | "receive") => {
       const nextState = computeDualToggleState(dualState, selectedTokens, type, config[type])
@@ -191,15 +211,21 @@ export function useMintBurnAction(defaultActionType: ActionType) {
       setSelectedTokens(nextState.selectedTokens)
 
       setInputValues({})
-      setActionData({})
+      setActionData(null)
     },
     [dualState, selectedTokens, config]
   )
 
+  /**
+   * Handles the link toggle change for a given section (pay or receive).
+   */
   const handleLinkChange = React.useCallback((type: "pay" | "receive") => {
     setDualState((prev) => computeLinkToggleState(prev, type))
   }, [])
 
+  /**
+   * Handles the main action button click, performing validations and executing the transaction if all checks pass.
+   */
   const handleButtonClick = React.useCallback(async () => {
     console.log("Button clicked with values:", inputValues, "and action data:", actionData)
     if (!hasWalletConnected) {
@@ -264,12 +290,12 @@ export function useMintBurnAction(defaultActionType: ActionType) {
       await signAndSubmitTx(wallet, txCbor, Transaction, TransactionWitnessSet)
 
       showToast({
-        message: "Transaction submitted successfully!",
+        message: t("dashboard.messages.transactionSubmitted"),
         type: "success",
       })
 
       setInputValues({})
-      setActionData({})
+      setActionData(null)
     } catch (err) {
       console.error("Action failed:", err)
       if (err instanceof AppError) {
@@ -293,6 +319,11 @@ export function useMintBurnAction(defaultActionType: ActionType) {
   ])
 
   // Returned values
+  /**
+   * Computes the state for the pay and receive sections, 
+   * including active tokens, input values, limits, and handlers, 
+   * based on the current configuration, selected tokens, dual toggle state, and protocol data.
+   */
   const tokensStates = React.useMemo((): TokenActionStateMap => {
     const buildSection = (type: "pay" | "receive"): TokenActionStateConfig => {
       const tokens = config[type]
@@ -303,12 +334,12 @@ export function useMintBurnAction(defaultActionType: ActionType) {
         const value = inputValues[token] ?? 0
         const limits = tokenLimits[token] ?? { min: 0, max: 0 }
 
-        const minMessage = 
+        const minMessage =
           token !== "ADA" && value > 0 && value < limits.min
             ? { message: `Minimum amount is ${limits.min} ${token}` }
             : undefined
-        
-        const status: InputStatus = (minMessage !== undefined) ? "warning": "default"
+
+        const status: InputStatus = minMessage !== undefined ? "warning" : "default"
 
         return {
           token,
@@ -317,7 +348,7 @@ export function useMintBurnAction(defaultActionType: ActionType) {
           max: limits.max,
           available: token === "ADA" ? wallet?.balance?.ADA ?? 0 : undefined,
           disabled: token === "ADA",
-          status: status,
+          status,
           suffix: calcSuffix(data, token, value),
           message: minMessage,
           onChange: (v) => handleValueChange(type, token, v),
@@ -362,6 +393,9 @@ export function useMintBurnAction(defaultActionType: ActionType) {
     handleLinkChange,
   ])
 
+  /**
+   * Computes the state of the main action button, including its text, disabled state, and click handler,
+   */
   const button = React.useMemo((): ButtonState => {
     const actionText = t(`action.${actionType.toLowerCase()}`)
 
@@ -388,7 +422,9 @@ export function useMintBurnAction(defaultActionType: ActionType) {
       : tokensStates.pay.activeTokens[0]
 
     const minAmount = tokenLimits[relevantToken]?.min ?? 0
-    const minMessage = minAmount > 0 ? t("dashboard.actionButton.minAmount", { amount: minAmount, token: relevantToken }) : ""
+    const minMessage = minAmount > 0
+      ? t("dashboard.actionButton.minAmount", { amount: minAmount, token: relevantToken })
+      : undefined
 
     const isDisabled = hasWalletConnected
       ? isPayEmpty || isReceiveEmpty || hasBelowMin || disabledDueToReserve

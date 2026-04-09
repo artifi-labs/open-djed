@@ -3,12 +3,19 @@ import { type Token } from "@/lib/types/tokens"
 import { formatNumber, roundToDecimals } from "@/utils"
 import { type TokenType } from "@open-djed/api"
 import { type Registry } from "@open-djed/registry"
+import { type ActionData } from "./useTransactionSummary"
 
 type TokenAmounts = Partial<Record<Token, number>>
 
 type TokenActionResult = {
-  toSend: TokenAmounts
+  baseCost: TokenAmounts
+  actionFee: TokenAmounts
+  actionFeePercentage: number
+  operatorFee: TokenAmounts
+  totalCost: TokenAmounts
+  toPay: TokenAmounts
   toReceive: TokenAmounts
+  price: TokenAmounts
 }
 
 export type DualSectionState = {
@@ -40,24 +47,26 @@ export type MintBurnProtocolData = {
 }
 
 /**
- * Calculates the minimum mintable or burnable amount based on the registry configuration.
+ * Calculates the minimum mint/burn amount based on the registry configuration.
  * 
- * @param registry The registry configuration containing the minimum amount for minting or burning, used to determine the lower limit for user input in the mint/burn action.
- * @returns The minimum mintable or burnable amount.
+ * @param registry The registry containing the minimum amount configuration.
+ * @returns The minimum amount in token units (e.g., DJED or SHEN).
  */
 export function calcMin(registry: Registry): number {
   return Math.floor((Number(registry.minAmount) / 1e6) * 1000) / 1000
 }
 
 /**
- * Calculates the maximum mintable or burnable amount for a given token based on the user's wallet balance, protocol data, and registry configuration.
+ * Calculates the maximum mint/burn amount for a given token and action type, based on the user's wallet balance, 
+ * protocol data, and registry configuration.
  * 
- * @param token The token for which to calculate the maximum amount, used to determine the relevant buy price and mintable/burnable amounts from the protocol data.
- * @param actionType The type of action being performed, either "Mint" or "Burn".
+ * @param token The token for which to calculate the maximum amount (e.g., DJED or SHEN).
+ * @param actionType The type of action ("Mint" or "Burn").
  * @param walletBalance The user's wallet balance for each token.
- * @param data The protocol data containing necessary information for the calculation.
- * @param registry The registry configuration containing minimum amount and operator fee information.
- * @returns The maximum mintable or burnable amount for the given token.
+ * @param data The protocol data containing price and mintable/burnable amounts.
+ * @param registry The registry containing operator fee configuration.
+ * @returns The maximum amount the user can mint or burn, in token units. 
+ * Returns 0 if wallet balance or protocol data is missing, or if the token is ADA.
  */
 export function calcMax(
   token: Token,
@@ -86,12 +95,12 @@ export function calcMax(
 }
 
 /**
- * Calculates the display suffix for a given token amount based on the protocol data and token type.
+ * Calculates the USD price suffix for a given token and value, using protocol data for conversion.
  * 
- * @param data The protocol data containing necessary information for the calculation, including token conversion logic.
- * @param token The token for which to calculate the suffix, used to determine the appropriate conversion and formatting based on the protocol data.
- * @param value The numeric value for which to calculate the suffix, representing the amount of the specified token that the user has input or is being processed in the action.
- * @returns A formatted string representing the calculated suffix for the given token amount. 
+ * @param data The protocol data containing the conversion function.
+ * @param token The token for which to calculate the price suffix (e.g., DJED or SHEN).
+ * @param value The value in token units for which to calculate the price suffix.
+ * @returns A string representing the price in USD, formatted with a dollar sign and two decimal places.
  */
 export function calcSuffix(
   data: MintBurnProtocolData | undefined,
@@ -103,20 +112,14 @@ export function calcSuffix(
 }
 
 /**
- * Computes the opposite values for the given source amounts and target tokens based on the protocol data and action type.
+ * Computes the opposite values for a given action type and source amounts, based on the protocol data.
  * 
- * For example, if the user is inputting the amount they want to "pay" in a "Mint" 
- * action, this function will compute the corresponding "receive" values for the target 
- * tokens, and vice versa for a "Burn" action. The computation relies on the `tokenActionData` 
- * function provided in the protocol data, which encapsulates the logic for how token amounts
- * convert based on the action type and direction (pay/receive).
- * 
- * @param type Determines whether to compute the "pay" or "receive" values.
- * @param actionType The type of action being performed, either "Mint" or "Burn".
- * @param sourceAmounts An object mapping source tokens to their respective amounts.
- * @param targetTokens An array of target tokens for which to compute the opposite values.
- * @param data The protocol data containing necessary information for the computation, including token action data and conversion logic.
- * @returns An object containing the computed opposite values for the target tokens and the corresponding action data for each source token.
+ * @param type The type of value to compute ("pay" or "receive").
+ * @param actionType The type of action ("Mint" or "Burn").
+ * @param sourceAmounts The amounts of the source tokens involved in the action.
+ * @param targetTokens The target tokens for which to compute the opposite values.
+ * @param data The protocol data containing the token action data function.
+ * @returns An object containing the computed opposite values and the detailed action data for the transaction.
  */
 export function computeOppositeValues(
   type: "pay" | "receive",
@@ -124,14 +127,28 @@ export function computeOppositeValues(
   sourceAmounts: TokenAmounts,
   targetTokens: Token[],
   data: MintBurnProtocolData
-): { values: TokenAmounts; actionData: Partial<Record<Token, TokenActionResult>> } {
+): { values: TokenAmounts; actionData: ActionData } {
   const values: TokenAmounts = {}
-  const actionData: Partial<Record<Token, TokenActionResult>> = {}
+  const actionData: ActionData = {
+    baseCost: {},
+    actionFee: {},
+    operatorFee: {},
+    totalCost: {},
+    refundableDeposit: data.protocolData.refundableDeposit,
+    price: {},
+  }
   const isMint = actionType === "Mint"
 
+  const mergeAmounts = (target: TokenAmounts, source: TokenAmounts) => {
+    for (const [targetToken, sourceAmount] of Object.entries(source) as [Token, number][]) {
+      target[targetToken] = (target[targetToken] ?? 0) + sourceAmount
+    }
+  }
+  
   for (const [token, amount] of Object.entries(sourceAmounts) as Array<[Token, number | undefined]>) {
     if (!amount || amount <= 0) continue
 
+    // TODO: THIS WILL NEED TO BE CHANGED TO SUPPORT DUAL BURN/MINT
     const result = data.tokenActionData(
       token as TokenType,
       actionType,
@@ -142,19 +159,46 @@ export function computeOppositeValues(
       const partialValue =
         type === "pay"
           ? isMint
-            ? result.toSend.ADA ?? 0
+            ? result.toPay.ADA ?? 0
             : result.toReceive[targetToken] ?? 0
-          : result.toSend[targetToken] ?? 0
+          : result.toPay[targetToken] ?? 0
 
       values[targetToken] = roundToDecimals((values[targetToken] ?? 0) + partialValue, 4)
     }
 
-    actionData[token] = result
+    mergeAmounts(actionData.baseCost, result.baseCost)
+    mergeAmounts(actionData.actionFee, result.actionFee)
+    mergeAmounts(actionData.operatorFee, result.operatorFee)
+    mergeAmounts(actionData.totalCost, result.totalCost)
+
+    for (const [unitToken, unitPrice] of Object.entries(result.price) as [Token, number][]) {
+      const unitPriceMap = actionData.price[unitToken] ?? {}
+      actionData.price[unitToken] = unitPriceMap
+      unitPriceMap[token] = (unitPriceMap[token] ?? 0) + unitPrice
+    }
   }
 
-  return { values, actionData }
+  console.log("ActionData", actionData)
+
+  return {
+    values,
+    actionData,
+  }
 }
 
+/**
+ * Computes the change in values for a mint/burn action based on user input, selected tokens, and protocol data.
+ * 
+ * @param type The type of value being changed ("pay" or "receive").
+ * @param token The token for which the value is being changed.
+ * @param value The new value input by the user for the specified token.
+ * @param actionType The type of action ("Mint" or "Burn").
+ * @param prevValues The previous values for all tokens before the change.
+ * @param dualState The current state of the dual selection for pay and receive sections.
+ * @param selectedTokens The currently selected tokens for pay and receive sections.
+ * @param data The protocol data containing the token action data function.
+ * @returns An object containing the next values for all tokens after the change, and the detailed action data for the transaction.
+ */
 export function computeValueChange(
   type: "pay" | "receive",
   token: Token,
@@ -164,7 +208,7 @@ export function computeValueChange(
   dualState: DualStateByType,
   selectedTokens: SelectedTokensByType,
   data: MintBurnProtocolData
-): { nextValues: TokenAmounts; actionData: Partial<Record<Token, TokenActionResult>> } {
+): { nextValues: TokenAmounts; actionData: ActionData | null } {
   const opposite = type === "pay" ? "receive" : "pay"
   const isLinked = dualState[type].isLinkSelected
   const sourceTokens = isLinked ? selectedTokens[type] : [token]
@@ -186,7 +230,7 @@ export function computeValueChange(
     for (const targetToken of targetTokens) {
       nextValues[targetToken] = 0
     }
-    return { nextValues, actionData: {} }
+    return { nextValues, actionData: null }
   }
 
   const { values, actionData } = computeOppositeValues(
@@ -201,17 +245,21 @@ export function computeValueChange(
     nextValues[targetToken] = values[targetToken] ?? 0
   }
 
-  return { nextValues, actionData }
+  return {
+    nextValues,
+    actionData,
+  }
 }
 
 /**
- * Computes the next selected tokens for a given type ("pay" or "receive") when a token change occurs.
+ * Computes the new selected tokens for a given section type when the user 
+ * toggles through available tokens.
  * 
- * @param selectedTokens The current mapping of selected tokens by type.
- * @param type The type of selection being changed, either "pay" or "receive".
- * @param currentToken The currently selected token that is being changed. 
- * @param tokens The list of available tokens to cycle through for selection.
- * @returns An updated mapping of selected tokens by type with the current token replaced by the next token in the list for the specified type.
+ * @param selectedTokens The currently selected tokens for pay and receive sections.
+ * @param type The section type for which to compute the new selected tokens ("pay" or "receive").
+ * @param currentToken The currently selected token that the user is toggling from.
+ * @param tokens The available tokens for the specified section type.
+ * @returns The updated selected tokens for pay and receive sections after toggling the token selection for the specified section type.
  */
 export function computeTokenChangeSelectedTokens(
   selectedTokens: SelectedTokensByType,
@@ -220,8 +268,8 @@ export function computeTokenChangeSelectedTokens(
   tokens: Token[]
 ): SelectedTokensByType {
   const nextToken = tokens[(tokens.indexOf(currentToken) + 1) % tokens.length]
-  const nextSelection = selectedTokens[type].map((token) =>
-    token === currentToken ? nextToken : token
+  const nextSelection = selectedTokens[type].map((t) =>
+    t === currentToken ? nextToken : t
   )
 
   if (new Set(nextSelection).size !== nextSelection.length) {
@@ -235,14 +283,13 @@ export function computeTokenChangeSelectedTokens(
 }
 
 /**
- * Toggles the dual selection state for a given type 
- * ("pay" or "receive") and updates the selected tokens accordingly.
+ * Computes the new state of the dual toggle for a given section type, based on the current dual state and selected tokens.
  * 
- * @param dualState The current dual state object containing the dual selection states for both "pay" and "receive" types.
- * @param selectedTokens The current mapping of selected tokens by type.
- * @param type The type for which to toggle the dual selection, either "pay" or "receive".
- * @param sectionTokens The list of tokens available in the section, used to determine the new selected tokens when dual selection is enabled.
- * @returns An object containing the updated dual state and selected tokens after toggling the dual selection for the specified type.
+ * @param dualState The current state of the dual selection for pay and receive sections.
+ * @param selectedTokens The currently selected tokens for pay and receive sections.
+ * @param type The section type for which to compute the dual toggle state ("pay" or "receive").
+ * @param sectionTokens The available tokens for the specified section type.
+ * @returns An object containing the updated dual state and selected tokens for the specified section type after toggling the dual selection.
  */
 export function computeDualToggleState(
   dualState: DualStateByType,
@@ -265,11 +312,11 @@ export function computeDualToggleState(
 }
 
 /**
- * Toggles the link state for a given type ("pay" or "receive") in the dual state object.
+ * Computes the new state of the link toggle for a given section type, based on the current dual state.
  * 
- * @param dualState The current dual state object containing the link and dual selection states for both "pay" and "receive" types.
- * @param type The type for which to toggle the link state, either "pay" or "receive".
- * @returns An updated dual state object with the link state toggled for the specified type.
+ * @param dualState The current state of the dual selection for pay and receive sections.
+ * @param type The section type for which to compute the link toggle state ("pay" or "receive").
+ * @returns The updated dual state with the link toggle state for the specified section type toggled.
  */
 export function computeLinkToggleState(
   dualState: DualStateByType,

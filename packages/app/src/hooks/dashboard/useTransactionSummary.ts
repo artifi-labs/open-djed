@@ -9,202 +9,169 @@ import type { Value } from "@/types"
 type Action = ReturnType<typeof useMintBurnAction>
 type DisplayValue = [string, string]
 type ToUSDConverter = (value: Value) => number
-type ActionData = NonNullable<Action["actionData"][Token]>
+
+export type ActionData = {
+  baseCost: Partial<Record<Token, number>>
+  actionFee: Partial<Record<Token, number>>
+  operatorFee: Partial<Record<Token, number>>
+  totalCost: Partial<Record<Token, number>>
+  refundableDeposit: Partial<Record<Token, number>>
+  price: Partial<Record<Token, Partial<Record<Token, number>>>>
+}
+
+type SectionKey = keyof ActionData
 
 interface SectionConfig {
+  key: SectionKey
   label: string
-  read: (action: Action, data: ActionData) => unknown
   default: (action: Action) => DisplayValue | DisplayValue[]
 }
 
-const normalizeToArray = (
-  value: DisplayValue | DisplayValue[],
-): DisplayValue[] => {
-  if (Array.isArray(value[0])) {
-    return value as DisplayValue[]
-  }
-  return [value as DisplayValue]
-}
+// Helpers
+const normalizeToArray = (value: DisplayValue | DisplayValue[]): DisplayValue[] =>
+  Array.isArray(value[0]) ? (value as DisplayValue[]) : [value as DisplayValue]
 
 const ZERO_DISPLAY: DisplayValue = ["$0.00", "$0.00"]
 
-const formatUSDValue = (
-  toUSD: ToUSDConverter | undefined,
-  valueObj: Value,
-): string => {
-  if (!toUSD) {
-    return "$0.00"
-  }
-  const usdAmount = toUSD(valueObj)
-  return `$${formatNumber(usdAmount, { maximumFractionDigits: 2 })}`
+const formatUSDValue = (toUSD: ToUSDConverter | undefined, valueObj: Value): string => {
+  if (!toUSD) return "$0.00"
+  return `$${formatNumber(toUSD(valueObj), { maximumFractionDigits: 2 })}`
 }
 
-const formatSingleValue = (
-  value: number,
-  toUSD?: ToUSDConverter,
-): DisplayValue => {
-  const isValid = Number.isFinite(value)
-  if (!isValid) {
-    return ["$0.00", "$0.00"]
-  }
-
-  const formatted = formatNumber(value, { maximumFractionDigits: 4 })
-  const usdValue = toUSD ? formatUSDValue(toUSD, value as Value) : "$0.00"
-  return [formatted, usdValue]
-}
-
-const formatTokenValue = (
+const formatTokenEntry = (
   token: string,
   amount: number,
   toUSD?: ToUSDConverter,
 ): DisplayValue => {
-  const isValid = Number.isFinite(amount)
-  if (!isValid) {
-    return ["$0.00", "$0.00"]
-  }
-
+  if (!Number.isFinite(amount)) return ZERO_DISPLAY
   const valueObj = { [token]: amount }
-  const formatted = formatValue(valueObj)
-  const usdValue = toUSD ? formatUSDValue(toUSD, valueObj) : "$0.00"
-  return [formatted, usdValue]
+  return [formatValue(valueObj), toUSD ? formatUSDValue(toUSD, valueObj) : "$0.00"]
 }
 
-const extractDisplayValues = (
-  value: Value,
+
+const tokenMapToDisplayValues = (
+  map: Partial<Record<Token, number>>,
   toUSD?: ToUSDConverter,
 ): DisplayValue[] => {
-  if (!value || typeof value !== "object") {
-    return [formatSingleValue(value as number, toUSD)]
-  }
-
-  return Object.entries(value as Record<string, number>).map(
-    ([token, amount]) => formatTokenValue(token, amount, toUSD),
-  )
-}
-
-const formatPriceLabel = (adaAmount: number, token: string): string => {
-  const formattedAda = formatNumber(adaAmount, { maximumFractionDigits: 6 })
-  return `~${formattedAda} ADA/${token}`
+  const entries = Object.entries(map) as [Token, number][]
+  if (entries.length === 0) return [ZERO_DISPLAY]
+  return entries.map(([token, amount]) => formatTokenEntry(token, amount, toUSD))
 }
 
 const extractPriceValues = (
-  entries: [string, ActionData][],
-  readFn: (action: Action, data: ActionData) => unknown,
-  action: Action,
+  price: ActionData["price"],
   toUSD?: ToUSDConverter,
 ): DisplayValue[] => {
-  return entries.map(([token, data]) => {
-    const priceValue = (readFn(action, data) as Value) ?? {}
-    const adaAmount = priceValue.ADA ?? 0
-    const priceLabel = formatPriceLabel(adaAmount, token)
-    const adaValueObj = { ADA: adaAmount }
-    const usdLabel = toUSD ? formatUSDValue(toUSD, adaValueObj) : "$0.00"
-    return [priceLabel, usdLabel]
-  })
+  const values: DisplayValue[] = []
+
+  for (const [unitToken, tokenMap] of Object.entries(price) as [Token, Partial<Record<Token, number>>][]) {
+    for (const [token, amount] of Object.entries(tokenMap) as [Token, number][]) {
+      if (amount === undefined) continue
+      const label = `~${formatNumber(amount, { maximumFractionDigits: 6 })} ${unitToken}/${token}`
+      const usd = toUSD ? formatUSDValue(toUSD, { [unitToken]: amount }) : "$0.00"
+      values.push([label, usd])
+    }
+  }
+
+  return values.length > 0 ? values : [ZERO_DISPLAY]
 }
+
 
 const extractSectionValues = (
-  entries: [string, ActionData][],
   section: SectionConfig,
+  actionData: ActionData,
   action: Action,
   toUSD?: ToUSDConverter,
 ): DisplayValue[] => {
-  if (section.label === "Price") {
-    return extractPriceValues(entries, section.read, action, toUSD)
-  }
-
-  const isBurn = action.actionType === "Burn"
-  const isTotalCost = section.label === "Total Cost"
-
-  const values: DisplayValue[] = []
-  entries.forEach(([, data]) => {
-    const sectionValue = section.read(action, data) as Value
-
-    if (
-      isBurn &&
-      isTotalCost &&
-      typeof sectionValue === "object" &&
-      sectionValue
-    ) {
-      Object.entries(sectionValue).forEach(([token, amount]) => {
-        if (amount && amount > 0) {
-          values.push(formatTokenValue(token, amount, toUSD))
-        }
-      })
-    } else {
-      values.push(...extractDisplayValues(sectionValue, toUSD))
+  switch (section.key) {
+    case "price": {
+      if (!actionData.price) return [ZERO_DISPLAY]
+      return extractPriceValues(actionData.price, toUSD)
     }
-  })
-  return values
-}
 
-const getActiveToken = (
-  action: Action,
-  isMint: boolean,
-  isPay: boolean,
-): string => {
-  if (isMint) {
-    return isPay ? action.activePayToken : action.activeReceiveToken
+    case "totalCost": {
+      if (!actionData.totalCost) return [ZERO_DISPLAY]
+      return tokenMapToDisplayValues(actionData.totalCost, toUSD)
+    }
+
+    case "refundableDeposit": {
+      if (!actionData.refundableDeposit) return [ZERO_DISPLAY]
+      return tokenMapToDisplayValues(actionData.refundableDeposit, toUSD)
+    }
+
+    case "baseCost":
+    case "actionFee":
+    case "operatorFee": {
+      if (!actionData.refundableDeposit) return [ZERO_DISPLAY]
+      return tokenMapToDisplayValues(actionData[section.key], toUSD)
+    }
+
+    default:
+      return normalizeToArray(section.default(action))
   }
-  return isPay ? action.activeReceiveToken : action.activePayToken
 }
 
-const createSectionConfigs = (
-  t: ReturnType<typeof useTranslations>,
-): SectionConfig[] => [
+// Sections Config
+const createSectionConfigs = (t: ReturnType<typeof useTranslations>): SectionConfig[] => [
   {
+    key: "baseCost",
     label: t("dashboard.baseCost"),
-    read: (_, data) => data.baseCost,
     default: (action) => {
-      const isMint = action.actionType === "Mint"
-      const token = !isMint ? getActiveToken(action, !isMint, true) : "ADA"
+      const token = action.actionType === "Mint"
+        ? "ADA"
+        : (action.tokensStates.pay.activeTokens[0] ?? "ADA")
       return [`0.00 ${token}`, "$0.00"]
     },
   },
   {
-    label: t("dashboard.mintFee"),
-    read: (_, data) => data.actionFee,
+    key: "actionFee",
+    label: t("dashboard.mintFee"), // overwritten below per actionType
     default: (action) => {
-      const isMint = action.actionType === "Mint"
-      const token = !isMint ? getActiveToken(action, !isMint, true) : "ADA"
+      const token = action.actionType === "Mint"
+        ? "ADA"
+        : (action.tokensStates.pay.activeTokens[0] ?? "ADA")
       return [`0.00 ${token}`, "$0.00"]
     },
   },
   {
+    key: "operatorFee",
     label: t("dashboard.operatorFee"),
-    read: (_, data) => data.operatorFee,
     default: () => ["0.00 ADA", "$0.00"],
   },
   {
+    key: "totalCost",
     label: t("dashboard.totalCost"),
-    read: (_, data) => data.totalCost,
     default: (action) => {
-      const isBurn = action.actionType === "Burn"
-      if (isBurn) {
+      if (action.actionType === "Burn") {
+        const payTokens = action.tokensStates.pay.activeTokens
         return [
           ["0.00 ADA", "$0.00"],
-          [`0.00 ${action.activePayToken}`, "$0.00"],
+          ...payTokens.map((t) => [`0.00 ${t}`, "$0.00"] as DisplayValue),
         ]
       }
-      return [`0.00 ${action.activePayToken}`, "$0.00"]
+      const token = action.tokensStates.pay.activeTokens[0] ?? "ADA"
+      return [`0.00 ${token}`, "$0.00"]
     },
   },
   {
+    key: "refundableDeposit",
     label: t("dashboard.refundableDeposit"),
-    read: (action) => action.protocolData?.protocolData.refundableDeposit,
     default: () => ["0.00 ADA", "$0.00"],
   },
   {
+    key: "price",
     label: t("dashboard.price"),
-    read: (_, data) => data.price,
     default: (action) => {
-      const isMint = action.actionType === "Mint"
-      const token = getActiveToken(action, !isMint, true)
-      return [`~0 ADA/${token}`, "$0.00"]
+      const tokens = action.actionType === "Mint"
+        ? action.tokensStates.receive.activeTokens
+        : action.tokensStates.pay.activeTokens
+      const targets = tokens.length > 0 ? tokens : ["DJED"]
+      return targets.map((t) => [`~0 ADA/${t}`, "$0.00"] as DisplayValue)
     },
   },
 ]
 
+// Builder
 const addSectionToBuilder = (
   builder: ReturnType<typeof transactionSummaryBuilder>,
   section: SectionConfig,
@@ -213,28 +180,28 @@ const addSectionToBuilder = (
   if (values.length > 1) {
     builder.addMulti(section.label, values)
   } else {
-    const [top, bottom] = values[0] || ZERO_DISPLAY
+    const [top, bottom] = values[0] ?? ZERO_DISPLAY
     builder.addSingle(section.label, top, bottom)
   }
 }
 
 const buildSummary = (
   action: Action,
-  actionData: Action["actionData"],
+  actionData: ActionData | null,
   t: ReturnType<typeof useTranslations>,
   toUSD?: ToUSDConverter,
 ) => {
   const builder = transactionSummaryBuilder()
-  const isEmpty = !actionData || Object.keys(actionData).length === 0
-  const entries = isEmpty ? [] : Object.entries(actionData)
+  const isEmpty = !actionData
 
   const sections = createSectionConfigs(t)
+  // Overwrite the fee label based on current action type
   sections[1].label = t(`dashboard.${action.actionType.toLowerCase()}Fee`)
 
   sections.forEach((section) => {
     const values = isEmpty
       ? normalizeToArray(section.default(action))
-      : extractSectionValues(entries, section, action, toUSD)
+      : extractSectionValues(section, actionData, action, toUSD)
 
     addSectionToBuilder(builder, section, values)
   })
@@ -242,9 +209,12 @@ const buildSummary = (
   return builder.build()
 }
 
+// Hook
 export function useTransactionSummary({ action }: { action: Action }) {
   const { actionData, data } = action
   const t = useTranslations()
+
+  console.log("ActionData", actionData)
 
   return useMemo(() => {
     const toUSD = data ? (value: Value) => data.to(value, "DJED") : undefined

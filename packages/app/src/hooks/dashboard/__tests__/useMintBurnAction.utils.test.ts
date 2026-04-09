@@ -38,24 +38,45 @@ const protocolData: MintBurnProtocolData = {
   },
   to: (values, token) => values[token],
   tokenActionData: (token, actionType, amount) => {
+    const toPay =
+      actionType === "Burn"
+        ? { ADA: token === "DJED" ? amount.amount : amount.amount * 4 }
+        : { ADA: token === "DJED" ? amount.amount * 0.5 : amount.amount * 1.5 }
+
+    const toReceive =
+      actionType === "Burn"
+        ? { ADA: token === "DJED" ? amount.amount : amount.amount * 2 }
+        : { ADA: token === "DJED" ? amount.amount * 2 : amount.amount * 3 }
+
+    const baseCost = { [token]: toPay.ADA ?? 0 }
+    const actionFee = { ADA: (toPay.ADA ?? 0) * 0.05 }
+    const operatorFee = { ADA: 0.1 }
+    const totalCost = {
+      ADA: (toPay.ADA ?? 0) + (actionFee.ADA ?? 0) + (operatorFee.ADA ?? 0),
+    }
+
     if (actionType === "Burn") {
       return {
-        toSend: {
-          ADA: token === "DJED" ? amount.amount : amount.amount * 4,
-        },
-        toReceive: {
-          ADA: token === "DJED" ? amount.amount : amount.amount * 2,
-        },
+        baseCost,
+        actionFee,
+        actionFeePercentage: 5,
+        operatorFee,
+        totalCost,
+        toPay,
+        toReceive,
+        price: { ADA: token === "DJED" ? 1 : 2 },
       }
     }
 
     return {
-      toSend: {
-        ADA: token === "DJED" ? amount.amount * 0.5 : amount.amount * 1.5,
-      },
-      toReceive: {
-        ADA: token === "DJED" ? amount.amount * 2 : amount.amount * 3,
-      },
+      baseCost,
+      actionFee,
+      actionFeePercentage: 5,
+      operatorFee,
+      totalCost,
+      toPay,
+      toReceive,
+      price: { ADA: token === "DJED" ? 1 : 2 },
     }
   },
 }
@@ -117,8 +138,9 @@ describe("computeOppositeValues", () => {
     )
 
     expect(values.ADA).toBe(8)
-    expect(actionData.DJED?.toReceive.ADA).toBe(2)
-    expect(actionData.SHEN?.toReceive.ADA).toBe(6)
+    expect(actionData.totalCost.ADA).toBe(14.899999999999999)
+    expect(actionData.price.ADA?.DJED).toBe(1)
+    expect(actionData.price.ADA?.SHEN).toBe(2)
   })
 
   it("computes the opposite values correctly when minting SHEN", () => {
@@ -135,8 +157,9 @@ describe("computeOppositeValues", () => {
     )
 
     expect(values.ADA).toBe(4.5)
-    expect(actionData.SHEN?.toSend.ADA).toBe(4.5)
-    expect(actionData.SHEN?.toReceive.ADA).toBe(9)
+    expect(actionData.baseCost.SHEN).toBe(4.5)
+    expect(actionData.totalCost.ADA).toBe(4.824999999999999)
+    expect(actionData.price.ADA?.SHEN).toBe(2)
   })
 
   it("computes the opposite values correctly when minting DJED", () => {
@@ -153,8 +176,9 @@ describe("computeOppositeValues", () => {
     )
 
     expect(values.ADA).toBe(1.5)
-    expect(actionData.DJED?.toSend.ADA).toBe(1.5)
-    expect(actionData.DJED?.toReceive.ADA).toBe(6)
+    expect(actionData.baseCost.DJED).toBe(1.5)
+    expect(actionData.totalCost.ADA).toBe(1.675)
+    expect(actionData.price.ADA?.DJED).toBe(1)
   })
 })
 
@@ -179,7 +203,8 @@ describe("computeValueChange", () => {
 
     expect(nextValues.SHEN).toBe(3)
     expect(nextValues.ADA).toBe(4.5)
-    expect(actionData.SHEN?.toSend.ADA).toBe(4.5)
+    expect(actionData?.baseCost.SHEN).toBe(4.5)
+    expect(actionData?.price.ADA?.SHEN).toBe(2)
   })
 
   it("clears opposite values and action data when all source amounts are zero", () => {
@@ -202,7 +227,7 @@ describe("computeValueChange", () => {
 
     expect(nextValues.SHEN).toBe(0)
     expect(nextValues.ADA).toBe(0)
-    expect(actionData).toEqual({})
+    expect(actionData).toBeNull()
   })
 
   it("applies linked edits to all source tokens", () => {
@@ -226,8 +251,10 @@ describe("computeValueChange", () => {
     expect(nextValues.DJED).toBe(2)
     expect(nextValues.SHEN).toBe(2)
     expect(nextValues.ADA).toBe(4)
-    expect(actionData.DJED?.toSend.ADA).toBe(1)
-    expect(actionData.SHEN?.toSend.ADA).toBe(3)
+    expect(actionData?.baseCost.DJED).toBe(1)
+    expect(actionData?.baseCost.SHEN).toBe(3)
+    expect(actionData?.price.ADA?.DJED).toBe(1)
+    expect(actionData?.price.ADA?.SHEN).toBe(2)
   })
 
   it("does not break when link is enabled but dual is off", () => {
