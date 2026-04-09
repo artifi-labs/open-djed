@@ -193,6 +193,11 @@
       "available": "",
       "max": ""
     },
+    "messages": {
+      "amountExceedsBalance": "",
+      "amountBelowMinimum": "",
+      "transactionFailed": ""
+    },
     "actionButton": {
       "minAmount": "",
       "wallet": "Conectar Cartera para {action}",

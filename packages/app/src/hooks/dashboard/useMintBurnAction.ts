@@ -6,9 +6,8 @@ import { type Token } from "@/lib/types/tokens"
 import { useWallet } from "@/context/WalletContext"
 import { useProtocolData } from "@/hooks/useProtocolData"
 import { AppError, type TokenType } from "@open-djed/api"
-import { type Registry, registryByNetwork } from "@open-djed/registry"
+import { registryByNetwork } from "@open-djed/registry"
 import { type InputStatus } from "../../components/input-fields/TransactionInput"
-import { formatNumber, roundToDecimals } from "@/utils"
 import { env } from "@/lib/envLoader"
 import { useReserveDetails } from "@/hooks/useReserveDetails"
 import { useTranslations } from "next-intl"
@@ -17,9 +16,17 @@ import { useToast } from "@/context/ToastContext"
 import { useApiClient } from "@/context/ApiClientContext"
 import { signAndSubmitTx } from "@/lib/signAndSubmitTx"
 import { getWalletData } from "@/lib/getWalletData"
+import {
+  calcMax,
+  calcMin,
+  calcSuffix,
+  computeDualToggleState,
+  computeLinkToggleState,
+  computeTokenChangeSelectedTokens,
+  computeValueChange,
+} from "./useMintBurnAction.utils"
 
 // Types
-
 type ProtocolData = NonNullable<ReturnType<typeof useProtocolData>["data"]>
 type ActionData = ReturnType<ProtocolData["tokenActionData"]>
 type ActionDataMap = Partial<Record<Token, ActionData>>
@@ -89,77 +96,6 @@ type SelectedTokensState = {
   receive: Token[]
 }
 
-// Pure Functions
-
-function calcMin(registry: Registry): number {
-  return Math.floor((Number(registry.minAmount) / 1e6) * 1000) / 1000
-}
-
-function calcMax(
-  token: Token,
-  actionType: ActionType,
-  walletBalance: Record<Token, number | undefined> | null,
-  data: ProtocolData | undefined,
-  registry: Registry
-): number {
-  if (!walletBalance || !data || token === "ADA") return 0
-
-  const raw =
-    actionType === "Burn"
-      ? walletBalance[token] ?? 0
-      : (Math.max((walletBalance.ADA ?? 0) - 5, 0) -
-          (Number(registry.operatorFeeConfig.max) +
-            (data.protocolData.refundableDeposit.ADA ?? 1823130)) /
-            1e6) /
-        (data.protocolData[token].buyPrice.ADA ?? 1)
-
-  const cap =
-    actionType === "Mint"
-      ? data.protocolData[token].mintableAmount[token] ?? 0
-      : data.protocolData[token].burnableAmount[token] ?? 0
-
-  return Math.floor(Math.min(Math.max(raw, 0), cap) * 1000) / 1000
-}
-
-function calcSuffix(data: ProtocolData | undefined, token: Token, value: number): string {
-  if (!data) return "$0"
-  return `$${formatNumber(data.to({ [token]: value }, "DJED") ?? 0, { maximumFractionDigits: 2 })}`
-}
-
-function computeOppositeValues(
-  type: "pay" | "receive",
-  actionType: ActionType,
-  value: number,
-  sourceTokens: Token[],
-  targetTokens: Token[],
-  data: ProtocolData
-): { values: Partial<Record<Token, number>>; actionData: ActionDataMap } {
-  const values: Partial<Record<Token, number>> = {}
-  const actionData: ActionDataMap = {}
-  const isMint = actionType === "Mint"
-
-  for (const token of sourceTokens) {
-    const res = data.tokenActionData(
-      token as TokenType,
-      actionType,
-      isMint ? { type: "Out", amount: value } : { type: "In", amount: value }
-    )
-
-    for (const t of targetTokens) {
-      values[t] =
-        type === "pay"
-          ? isMint
-            ? roundToDecimals(res.toSend["ADA"] ?? 0, 4)
-            : roundToDecimals(res.toReceive[t] ?? 0, 4)
-          : roundToDecimals(res.toSend[t] ?? 0, 4)
-    }
-
-    actionData[token] = res
-  }
-
-  return { values, actionData }
-}
-
 export function useMintBurnAction(defaultActionType: ActionType) {
   const { wallet } = useWallet()
   const { data } = useProtocolData()
@@ -217,39 +153,19 @@ export function useMintBurnAction(defaultActionType: ActionType) {
     (type: "pay" | "receive", token: Token, value: number) => {
       if (!data) return
 
-      const opposite = type === "pay" ? "receive" : "pay"
-      const isLinked = dualState[type].isLinkSelected
-      const sourceTokens = isLinked ? selectedTokens[type] : [token]
-      const targetTokens = selectedTokens[opposite]
-
       setInputValues((prev) => {
-        const next: InputValues = { ...prev }
-
-        for (const t of sourceTokens) {
-          next[t] = value
-        }
-
-        if (value > 0) {
-          const { values, actionData: newActionData } = computeOppositeValues(
-            type,
-            actionType,
-            value,
-            sourceTokens,
-            targetTokens,
-            data
-          )
-          for (const t of targetTokens) {
-            next[t] = values[t] ?? 0
-          }
-          setActionData(newActionData)
-        } else {
-          for (const t of targetTokens) {
-            next[t] = 0
-          }
-          setActionData({})
-        }
-
-        return next
+        const { nextValues, actionData: newActionData } = computeValueChange(
+          type,
+          token,
+          value,
+          actionType,
+          prev,
+          dualState,
+          selectedTokens,
+          data
+        )
+        setActionData(newActionData as ActionDataMap)
+        return nextValues
       })
     },
     [data, actionType, dualState, selectedTokens]
@@ -257,12 +173,8 @@ export function useMintBurnAction(defaultActionType: ActionType) {
 
   const handleTokenChange = React.useCallback(
     (type: "pay" | "receive", currentToken: Token) => {
-      const tokens = config[type]
-      const nextToken = tokens[(tokens.indexOf(currentToken) + 1) % tokens.length]
-
       setSelectedTokens((prev) => ({
-        ...prev,
-        [type]: prev[type].map((t) => (t === currentToken ? nextToken : t)),
+        ...computeTokenChangeSelectedTokens(prev, type, currentToken, config[type]),
       }))
 
       setInputValues({})
@@ -273,50 +185,48 @@ export function useMintBurnAction(defaultActionType: ActionType) {
 
   const handleDualChange = React.useCallback(
     (type: "pay" | "receive") => {
-      const isDual = !dualState[type].isDualSelected
+      const nextState = computeDualToggleState(dualState, selectedTokens, type, config[type])
 
-      setDualState((prev) => ({
-        ...prev,
-        [type]: { ...prev[type], isDualSelected: isDual },
-      }))
-
-      setSelectedTokens((prev) => ({
-        ...prev,
-        [type]: isDual ? config[type] : [config[type][0]],
-      }))
+      setDualState(nextState.dualState)
+      setSelectedTokens(nextState.selectedTokens)
 
       setInputValues({})
       setActionData({})
     },
-    [dualState, config]
+    [dualState, selectedTokens, config]
   )
 
   const handleLinkChange = React.useCallback((type: "pay" | "receive") => {
-    setDualState((prev) => ({
-      ...prev,
-      [type]: { ...prev[type], isLinkSelected: !prev[type].isLinkSelected },
-    }))
+    setDualState((prev) => computeLinkToggleState(prev, type))
   }, [])
 
   const handleButtonClick = React.useCallback(async () => {
+    console.log("Button clicked with values:", inputValues, "and action data:", actionData)
     if (!hasWalletConnected) {
       openWalletSidebar()
       return
     }
     if (!wallet) return
 
-    const relevantInputs = actionType === "Mint"
-      ? tokensStates.receive.inputs
-      : tokensStates.pay.inputs
+    const relevantTokens = actionType === "Mint"
+      ? selectedTokens.receive
+      : selectedTokens.pay
 
-    const activeInput = relevantInputs.find((i) => i.value > 0 && i.token !== "ADA")
+    const activeInput = relevantTokens
+      .map((token) => ({
+        token,
+        value: inputValues[token] ?? 0,
+        max: tokenLimits[token]?.max ?? 0,
+        min: tokenLimits[token]?.min ?? 0,
+      }))
+      .find((i) => i.value > 0 && i.token !== "ADA")
     if (!activeInput) return
 
     const { token, value, max, min } = activeInput
 
     if (value > max) {
       showToast({
-        message: "The amount added is greater than the available balance.",
+        message: t("dashboard.messages.amountExceedsBalance"),
         type: "error",
       })
       return
@@ -324,7 +234,7 @@ export function useMintBurnAction(defaultActionType: ActionType) {
 
     if (value < min) {
       showToast({
-        message: `The amount added is less than the minimum allowed of ${min} ${token}.`,
+        message: t("dashboard.messages.amountBelowMinimum", { amount: min, token }),
         type: "error",
       })
       return
@@ -366,7 +276,7 @@ export function useMintBurnAction(defaultActionType: ActionType) {
         showToast({ message: err.message, type: "error" })
         return
       }
-      showToast({ message: "Transaction failed. Please try again.", type: "error" })
+      showToast({ message: t("dashboard.messages.transactionFailed"), type: "error" })
     }
   }, [
     hasWalletConnected,
@@ -375,8 +285,12 @@ export function useMintBurnAction(defaultActionType: ActionType) {
     actionType,
     client,
     showToast,
+    inputValues,
+    actionData,
+    selectedTokens,
+    tokenLimits,
+    t,
   ])
-
 
   // Returned values
   const tokensStates = React.useMemo((): TokenActionStateMap => {
@@ -487,7 +401,7 @@ export function useMintBurnAction(defaultActionType: ActionType) {
         : minMessage ? `${actionText} (${minMessage})` : actionText
 
     return { text, disabled: isDisabled, onClick: handleButtonClick }
-  }, [tokensStates, actionType, hasWalletConnected, reserveBounds, tokenLimits, t])
+  }, [tokensStates, actionType, hasWalletConnected, reserveBounds, tokenLimits, t, handleButtonClick])
 
   return {
     tokensStates,

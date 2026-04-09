@@ -3,6 +3,10 @@
     "name": "",
     "actionButton": {
       "minAction": "{action} {minMessage}"
+    },
+    "message": {
+      "amountExceedsBalance": "",
+      "amountBelowMinimum": ""
     }
   },
   "notFound": {

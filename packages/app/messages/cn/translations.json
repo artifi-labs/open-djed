@@ -193,6 +193,11 @@
       "available": "",
       "max": ""
     },
+    "messages": {
+      "amountExceedsBalance": "",
+      "amountBelowMinimum": "",
+      "transactionFailed": ""
+    },
     "actionButton": {
       "minAmount": "",
       "wallet": "连接钱包以{action}",

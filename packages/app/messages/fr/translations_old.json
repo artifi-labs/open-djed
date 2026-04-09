@@ -72,5 +72,11 @@
     "orders": {
       "cancel": "Annuler"
     }
+  },
+  "dashboard": {
+    "message": {
+      "amountExceedsBalance": "",
+      "amountBelowMinimum": ""
+    }
   }
 }
