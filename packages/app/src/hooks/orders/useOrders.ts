@@ -22,11 +22,14 @@ export const useOrders = ({ queryParams }: UseOrdersParams = {}) => {
     enabled: !!wallet,
   })
 
+  const hasAddresses = usedAddresses.length > 0
+
   const { data, isLoading, isError, error, refetch } = useOrdersQuery({
     body: {
       usedAddresses,
     },
     queryParams: params,
+    options: { enabled: hasAddresses },
   })
 
   const setFilterStatus = (value: OrderStatus[] | undefined) => {
