@@ -5,11 +5,11 @@ import ButtonIcon from "../ButtonIcon"
 import {
   type TokenActionState,
   type TokenActionStateConfig,
-} from "@/hooks/dashboard/useMintBurnAction"
+} from "@/hooks/dashboard/useMintBurnAction.types"
 import Checkbox from "@/components/Checkbox"
 import ValueShowcase from "@/components/dashboard/ValueShowcase"
 import TransactionInput from "@/components/input-fields/TransactionInput"
-import { type ActionType } from "@/components/dashboard/actionConfig"
+import type { ActionType } from "@/types/action"
 
 export type InputSectionProps = {
   label: string

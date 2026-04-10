@@ -1,4 +1,4 @@
-import { type ActionType } from "../../components/dashboard/actionConfig"
+import type { ActionType } from "@/types/action"
 import { type Token } from "@/lib/types/tokens"
 import { formatNumber, roundToDecimals } from "@/utils"
 import { type TokenType } from "@open-djed/api"

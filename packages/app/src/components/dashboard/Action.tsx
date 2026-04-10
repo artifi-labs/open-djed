@@ -2,13 +2,13 @@
 
 import * as React from "react"
 import Button from "../Button"
-import type { ActionType } from "./actionConfig"
 import InputSection from "./InputSection"
 import { useTranslations } from "next-intl"
-import {
-  type ButtonState,
-  type TokenActionStateMap,
-} from "@/hooks/dashboard/useMintBurnAction"
+import type {
+  ButtonState,
+  TokenActionStateMap,
+} from "@/hooks/dashboard/useMintBurnAction.types"
+import type { ActionType } from "@/types/action"
 
 export type ActionProps = {
   tokensStates: TokenActionStateMap

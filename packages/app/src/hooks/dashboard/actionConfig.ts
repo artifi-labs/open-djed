@@ -1,19 +1,5 @@
-import type { Token } from "@/lib/types/tokens"
-
-export type Type = "pay" | "receive"
-
-export type ActionType = "Mint" | "Burn" // TODO: MOVE THIS
-
-export type ActionConfig = {
-  pay: Token[]
-  receive: Token[]
-  payHasLeadingIcon: boolean
-  receiveHasLeadingIcon: boolean
-  payShowDual: boolean
-  receiveShowDual: boolean
-  isPayActive: boolean
-  isReceiveActive: boolean
-}
+import type { ActionType } from "@/types/action"
+import type { ActionConfig } from "./actionConfig.types"
 
 export const ACTION_CONFIG: Record<ActionType, ActionConfig> = {
   Mint: {
