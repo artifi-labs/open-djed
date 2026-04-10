@@ -16,14 +16,14 @@ function OrdersWalletSection() {
       <div className="flex h-full w-full flex-col gap-12 overflow-y-auto py-8">
         <h1 className="text-sm font-medium">{t("orders.title")}</h1>
         <div className="flex h-full w-full flex-col gap-12">
-          {orders.orders.length > 0 ? (
+          {orders.data.length > 0 ? (
             <>
-              {orders.orders.map((order, index) => {
+              {orders.data.map((order, index) => {
                 return (
                   <WalletOrder
                     order={order}
                     key={order.tx_hash}
-                    divider={index !== orders.orders.length - 1}
+                    divider={index !== orders.data.length - 1}
                   />
                 )
               })}
