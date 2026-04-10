@@ -190,17 +190,17 @@
       "description": "Comece por inserir um valor para ver a descrição completa dos custos."
     },
     "inputs": {
-      "available": "",
-      "max": ""
+      "available": "Disponível: {value}",
+      "max": "Max: {value}"
     },
     "messages": {
-      "amountExceedsBalance": "",
-      "amountBelowMinimum": "",
-      "transactionSubmitted": "",
-      "transactionFailed": ""
+      "amountExceedsBalance": "O valor adicionado é maior do que o saldo disponível.",
+      "amountBelowMinimum": "O valor adicionado é menor do que o mínimo permitido de {amount} {token}.",
+      "transactionSubmitted": "Transação submetida com sucesso!",
+      "transactionFailed": "A Transação falhou. Por favor, tente novamente."
     },
     "actionButton": {
-      "minAmount": "",
+      "minAmount": "mínimo {amount} {token}",
       "wallet": "Conectar Carteira para {action}",
       "fillAmount": "Preencha o Valor para {action}"
     },

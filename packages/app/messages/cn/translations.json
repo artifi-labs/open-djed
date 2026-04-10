@@ -50,7 +50,7 @@
     "available": "可用",
     "half": "一半",
     "cancel": {
-      "text": ""
+      "text": "取消"
     },
     "mintAndBurnNow": "立即铸造 & 销毁",
     "months": {
@@ -132,8 +132,8 @@
     "allOrders": "全部订单",
     "noOrdersDescription": "此钱包尚未进行任何交易",
     "cancel": {
-      "success": "",
-      "error": ""
+      "success": "您的订单已取消。",
+      "error": "取消订单时发生错误。"
     },
     "status": {
       "all": "全部",
@@ -190,17 +190,17 @@
       "description": "请输入金额以查看完整费用明细。"
     },
     "inputs": {
-      "available": "",
-      "max": ""
+      "available": "可用: {amount} {token}",
+      "max": "最大: {amount} {token}"
     },
     "messages": {
-      "amountExceedsBalance": "",
-      "amountBelowMinimum": "",
-      "transactionSubmitted": "",
-      "transactionFailed": ""
+      "amountExceedsBalance": "金额超过可用余额",
+      "amountBelowMinimum": "金额低于最低要求",
+      "transactionSubmitted": "交易已提交",
+      "transactionFailed": "交易失败，请重试"
     },
     "actionButton": {
-      "minAmount": "",
+      "minAmount": "最小: {amount} {token}",
       "wallet": "连接钱包以{action}",
       "fillAmount": "输入金额以{action}"
     },

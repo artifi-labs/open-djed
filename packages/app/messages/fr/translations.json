@@ -50,7 +50,7 @@
     "available": "Disponible",
     "half": "Moitié",
     "cancel": {
-      "text": ""
+      "text": "Annuler"
     },
     "mintAndBurnNow": "Frapper & Brûler Maintenant",
     "months": {
@@ -132,8 +132,8 @@
     "allOrders": "Tous les ordres",
     "noOrdersDescription": "Il semble que ce portefeuille n'ait encore effectué aucune transaction",
     "cancel": {
-      "success": "",
-      "error": ""
+      "success": "Votre ordre a été annulé.",
+      "error": "Une erreur est survenue lors de l'annulation de votre ordre."
     },
     "status": {
       "all": "Tous",
@@ -190,17 +190,17 @@
       "description": "Commencez par saisir un montant pour voir le détail complet des coûts."
     },
     "inputs": {
-      "available": "",
-      "max": ""
+      "available": "Disponible : {value}",
+      "max": "Max : {value}"
     },
     "messages": {
-      "amountExceedsBalance": "",
-      "amountBelowMinimum": "",
-      "transactionSubmitted": "",
-      "transactionFailed": ""
+      "amountExceedsBalance": "Le montant saisi est supérieur au solde disponible.",
+      "amountBelowMinimum": "Le montant saisi est inférieur au minimum autorisé de {amount} {token}.",
+      "transactionSubmitted": "Transaction envoyée avec succès !",
+      "transactionFailed": "La transaction a échoué. Veuillez réessayer."
     },
     "actionButton": {
-      "minAmount": "",
+      "minAmount": "minimum : {amount} {token}",
       "wallet": "Connecter le Portefeuille pour {action}",
       "fillAmount": "Saisissez le Montant pour {action}"
     },

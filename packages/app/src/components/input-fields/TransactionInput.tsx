@@ -246,7 +246,7 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
         {hasAvailableAmount && availableAmount && (
           <span className={amountTextClasses}>
             {t("dashboard.inputs.available", {
-              available: availableAmount,
+              value: availableAmount,
             })}
           </span>
         )}
@@ -255,7 +255,7 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
         {hasMaxAndHalfActions && maxAmount !== undefined && (
           <span className={amountTextClasses}>
             {t("dashboard.inputs.max", {
-              max: maxAmount,
+              value: maxAmount,
             })}
           </span>
         )}

@@ -50,7 +50,7 @@
     "available": "利用可能",
     "half": "半分",
     "cancel": {
-      "text": ""
+      "text": "キャンセル"
     },
     "mintAndBurnNow": "今すぐ発行・バーン",
     "months": {
@@ -132,8 +132,8 @@
     "allOrders": "すべての注文",
     "noOrdersDescription": "このウォレットはまだ取引を行っていないようです",
     "cancel": {
-      "success": "",
-      "error": ""
+      "success": "注文がキャンセルされました。",
+      "error": "注文のキャンセル中にエラーが発生しました。"
     },
     "status": {
       "all": "すべて",
@@ -190,17 +190,17 @@
       "description": "金額を入力すると、費用の詳細が表示されます。"
     },
     "inputs": {
-      "available": "",
-      "max": ""
+      "available": "利用可能: {amount} {token}",
+      "max": "最大: {amount} {token}"
     },
     "messages": {
-      "amountExceedsBalance": "",
-      "amountBelowMinimum": "",
-      "transactionSubmitted": "",
-      "transactionFailed": ""
+      "amountExceedsBalance": "金額が利用可能残高を超過しています",
+      "amountBelowMinimum": "金額が最低要求額を下回っています",
+      "transactionSubmitted": "取引が送信されました",
+      "transactionFailed": "取引に失敗しました。再試行してください。"
     },
     "actionButton": {
-      "minAmount": "",
+      "minAmount": "最小: {amount} {token}",
       "wallet": "{action} するにはウォレットを接続してください",
       "fillAmount": "{action} するには金額を入力してください"
     },

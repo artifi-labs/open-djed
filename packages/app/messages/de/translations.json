@@ -50,7 +50,7 @@
     "available": "Verfügbar",
     "half": "Hälfte",
     "cancel": {
-      "text": ""
+      "text": "Abbrechen"
     },
     "mintAndBurnNow": "Jetzt Prägen & Verbrennen",
     "months": {
@@ -132,8 +132,8 @@
     "allOrders": "Alle Aufträge",
     "noOrdersDescription": "Diese Wallet hat noch keine Transaktionen durchgeführt",
     "cancel": {
-      "success": "",
-      "error": ""
+      "success": "Ihr Auftrag wurde storniert.",
+      "error": "Beim Stornieren Ihres Auftrags ist ein Fehler aufgetreten."
     },
     "status": {
       "all": "Alle",
@@ -190,17 +190,17 @@
       "description": "Geben Sie zunächst einen Betrag ein, um die vollständige Kostenaufstellung zu sehen."
     },
     "inputs": {
-      "available": "",
-      "max": ""
+      "available": "Verfügbar: {amount} {token}",
+      "max": "Max.: {amount} {token}"
     },
     "messages": {
-      "amountExceedsBalance": "",
-      "amountBelowMinimum": "",
-      "transactionSubmitted": "",
-      "transactionFailed": ""
+      "amountExceedsBalance": "Der eingegebene Betrag übersteigt den verfügbaren Saldo.",
+      "amountBelowMinimum": "Der eingegebene Betrag ist unter dem zulässigen Minimum von {amount} {token}.",
+      "transactionSubmitted": "Transaktion erfolgreich gesendet!",
+      "transactionFailed": "Die Transaktion ist fehlgeschlagen. Bitte versuchen Sie es erneut."
     },
     "actionButton": {
-      "minAmount": "",
+      "minAmount": "minimum: {amount} {token}",
       "wallet": "Wallet zum {action} verbinden",
       "fillAmount": "Betrag zum {action} eingeben"
     },

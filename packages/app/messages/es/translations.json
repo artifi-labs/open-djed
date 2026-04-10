@@ -50,7 +50,7 @@
     "available": "Disponible",
     "half": "Mitad",
     "cancel": {
-      "text": ""
+      "text": "Cancelar"
     },
     "mintAndBurnNow": "Acuñar & Quemar Ahora",
     "months": {
@@ -132,8 +132,8 @@
     "allOrders": "Todas las órdenes",
     "noOrdersDescription": "Parece que esta cartera aún no ha realizado ninguna transacción",
     "cancel": {
-      "success": "",
-      "error": ""
+      "success": "Su orden ha sido cancelada.",
+      "error": "Ocurrió un error al cancelar su orden."
     },
     "status": {
       "all": "Todas",
@@ -190,17 +190,17 @@
       "description": "Comienza introduciendo un importe para ver el desglose completo de costes."
     },
     "inputs": {
-      "available": "",
-      "max": ""
+      "available": "Disponible: {value}",
+      "max": "Máx.: {value}"
     },
     "messages": {
-      "amountExceedsBalance": "",
-      "amountBelowMinimum": "",
-      "transactionSubmitted": "",
-      "transactionFailed": ""
+      "amountExceedsBalance": "La cantidad introducida es mayor que el saldo disponible.",
+      "amountBelowMinimum": "La cantidad introducida es menor que el mínimo permitido de {amount} {token}.",
+      "transactionSubmitted": "¡Transacción enviada con éxito!",
+      "transactionFailed": "La transacción ha fallado. Por favor, inténtelo de nuevo."
     },
     "actionButton": {
-      "minAmount": "",
+      "minAmount": "mínimo: {amount} {token}",
       "wallet": "Conectar Cartera para {action}",
       "fillAmount": "Introduce el Importe para {action}"
     },
