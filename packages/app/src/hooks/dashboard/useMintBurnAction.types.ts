@@ -22,6 +22,15 @@ export type TokenActionState = {
   onMaxClick: () => void
 }
 
+export type DualSectionState = {
+  isDualSelected: boolean
+  isLinkSelected: boolean
+}
+
+export type DualStateByType = Record<"pay" | "receive", DualSectionState>
+
+export type SelectedTokensByType = Record<"pay" | "receive", Token[]>
+
 export type SectionDualState = {
   text: string
   disabled: boolean

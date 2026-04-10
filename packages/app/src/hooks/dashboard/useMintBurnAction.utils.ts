@@ -4,6 +4,10 @@ import { formatNumber, roundToDecimals } from "@/utils"
 import { type TokenType } from "@open-djed/api"
 import { type Registry } from "@open-djed/registry"
 import { type ActionData } from "./useTransactionSummary"
+import type {
+  DualStateByType,
+  SelectedTokensByType,
+} from "./useMintBurnAction.types"
 
 type TokenAmounts = Partial<Record<Token, number>>
 
@@ -17,15 +21,6 @@ type TokenActionResult = {
   toReceive: TokenAmounts
   price: TokenAmounts
 }
-
-export type DualSectionState = {
-  isDualSelected: boolean
-  isLinkSelected: boolean
-}
-
-export type DualStateByType = Record<"pay" | "receive", DualSectionState>
-
-export type SelectedTokensByType = Record<"pay" | "receive", Token[]>
 
 export type MintBurnProtocolData = {
   protocolData: Partial<

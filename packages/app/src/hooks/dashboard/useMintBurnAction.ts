@@ -29,6 +29,8 @@ import {
 import { type ActionData } from "./useTransactionSummary"
 import type {
   ButtonState,
+  DualStateByType,
+  SelectedTokensByType,
   TokenActionState,
   TokenActionStateConfig,
   TokenActionStateMap,
@@ -36,21 +38,6 @@ import type {
 
 // Internal Types
 type InputValues = Partial<Record<Token, number>>
-
-type DualSectionState = {
-  isDualSelected: boolean
-  isLinkSelected: boolean
-}
-
-type DualState = {
-  pay: DualSectionState
-  receive: DualSectionState
-}
-
-type SelectedTokensState = {
-  pay: Token[]
-  receive: Token[]
-}
 
 /**
  * Custom hook to manage the state and logic for minting and burning actions in the dashboard.
@@ -75,19 +62,20 @@ export function useMintBurnAction(defaultActionType: ActionType) {
   const hasWalletConnected = Boolean(wallet)
   const hasMaxAmount = Boolean(wallet)
 
-  const defaultSelectedTokens = (): SelectedTokensState => ({
+  const defaultSelectedTokens = (): SelectedTokensByType => ({
     pay: [config.pay[0]],
     receive: [config.receive[0]],
   })
 
-  const defaultDualState = (): DualState => ({
+  const defaultDualState = (): DualStateByType => ({
     pay: { isDualSelected: false, isLinkSelected: false },
     receive: { isDualSelected: false, isLinkSelected: false },
   })
 
   const [selectedTokens, setSelectedTokens] =
-    React.useState<SelectedTokensState>(defaultSelectedTokens)
-  const [dualState, setDualState] = React.useState<DualState>(defaultDualState)
+    React.useState<SelectedTokensByType>(defaultSelectedTokens)
+  const [dualState, setDualState] =
+    React.useState<DualStateByType>(defaultDualState)
   const [inputValues, setInputValues] = React.useState<InputValues>({})
   const [actionData, setActionData] = React.useState<ActionData | null>(null)
 
