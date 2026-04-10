@@ -1,4 +1,4 @@
-import z from "zod"
+import { z } from '@hono/zod-openapi'
 
 export const paginatedResponseSchema = <T extends z.ZodTypeAny>(
   itemSchema: T,
@@ -6,16 +6,16 @@ export const paginatedResponseSchema = <T extends z.ZodTypeAny>(
   z.object({
     data: z.array(itemSchema),
     pagination: z.object({
-      currentPage: z.number(),
-      hasNextPage: z.boolean(),
-      hasPreviousPage: z.boolean(),
-      ordersPerPage: z.number(),
-      totalOrders: z.number(),
-      totalPages: z.number(),
+      currentPage: z.number().openapi({ example: 1 }),
+      hasNextPage: z.boolean().openapi({ example: true }),
+      hasPreviousPage: z.boolean().openapi({ example: false }),
+      ordersPerPage: z.number().openapi({ example: 10 }),
+      totalOrders: z.number().openapi({ example: 100 }),
+      totalPages: z.number().openapi({ example: 10 }),
     }),
   })
 
 export const paginationQueryParamsSchema = z.object({
-  page: z.coerce.number().min(1).optional(),
-  limit: z.coerce.number().min(1).max(100).optional(),
+  page: z.coerce.number().min(1).optional().openapi({ example: 1 }),
+  limit: z.coerce.number().min(1).max(100).optional().openapi({ example: 10 }),
 })

@@ -12,6 +12,7 @@
   "dependencies": {
     "@hono/node-server": "^1.19.13",
     "@hono/standard-validator": "^0.2.2",
+    "@hono/zod-openapi": "^1.2.4",
     "@hono/zod-validator": "^0.5.0",
     "@isaacs/ttlcache": "^1.4.1",
     "@lucid-evolution/lucid": "^0.4.29",
