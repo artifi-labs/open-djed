@@ -1,5 +1,5 @@
 import { Hono } from "hono"
-import { describeRoute, resolver, validator } from "hono-openapi"
+import { describeRoute, resolver } from "hono-openapi"
 import { AppError } from "../../shared/errors"
 import { getOracleUTxO, getPoolUTxO } from "../../core"
 import { protocolDataResponseApiSchema } from "./protocol.schema"
