@@ -1,3 +1,9 @@
-export type Token = "ADA" | "DJED" | "SHEN"
+export const Token = {
+  ADA: "ADA",
+  DJED: "DJED",
+  SHEN: "SHEN",
+} as const
 
-export const SUPPORTED_TOKENS: Token[] = ["ADA", "DJED", "SHEN"]
+export type Token = (typeof Token)[keyof typeof Token]
+
+export const SUPPORTED_TOKENS: Token[] = [Token.ADA, Token.DJED, Token.SHEN]

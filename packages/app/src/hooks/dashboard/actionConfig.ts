@@ -1,7 +1,17 @@
-import type { ActionType } from "@/types"
-import type { ActionConfig } from "./actionConfig.types"
+import type { ActionType, Token } from "@/types"
 
-export const ACTION_CONFIG: Record<ActionType, ActionConfig> = {
+type ActionConfig = {
+  pay: Token[]
+  receive: Token[]
+  payHasLeadingIcon: boolean
+  receiveHasLeadingIcon: boolean
+  payShowDual: boolean
+  receiveShowDual: boolean
+  isPayActive: boolean
+  isReceiveActive: boolean
+}
+
+export const ACTION_CONFIG = {
   Mint: {
     pay: ["ADA"],
     receive: ["DJED", "SHEN"],
@@ -22,4 +32,4 @@ export const ACTION_CONFIG: Record<ActionType, ActionConfig> = {
     isPayActive: false,
     isReceiveActive: false,
   },
-}
+} satisfies Record<ActionType, ActionConfig>

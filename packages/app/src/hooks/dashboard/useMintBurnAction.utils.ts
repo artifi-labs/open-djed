@@ -1,4 +1,4 @@
-import type { ActionType } from "@/types"
+import type { ActionSection, ActionType } from "@/types"
 import type { Token } from "@/types"
 import { formatNumber, roundToDecimals } from "@/utils"
 import { type TokenType } from "@open-djed/api"
@@ -123,7 +123,7 @@ export function calcSuffix(
  * @returns An object containing the computed opposite values and the detailed action data for the transaction.
  */
 export function computeOppositeValues(
-  type: "pay" | "receive",
+  type: ActionSection,
   actionType: ActionType,
   sourceAmounts: TokenAmounts,
   targetTokens: Token[],
@@ -212,7 +212,7 @@ export function computeOppositeValues(
  * @returns An object containing the next values for all tokens after the change, and the detailed action data for the transaction.
  */
 export function computeValueChange(
-  type: "pay" | "receive",
+  type: ActionSection,
   token: Token,
   value: number,
   actionType: ActionType,
@@ -280,7 +280,7 @@ export function computeValueChange(
  */
 export function computeTokenChangeSelectedTokens(
   selectedTokens: SelectedTokensByType,
-  type: "pay" | "receive",
+  type: ActionSection,
   currentToken: Token,
   tokens: Token[],
 ): SelectedTokensByType {
@@ -311,7 +311,7 @@ export function computeTokenChangeSelectedTokens(
 export function computeDualToggleState(
   dualState: DualStateByType,
   selectedTokens: SelectedTokensByType,
-  type: "pay" | "receive",
+  type: ActionSection,
   sectionTokens: Token[],
 ): { dualState: DualStateByType; selectedTokens: SelectedTokensByType } {
   const isDual = !dualState[type].isDualSelected
@@ -337,7 +337,7 @@ export function computeDualToggleState(
  */
 export function computeLinkToggleState(
   dualState: DualStateByType,
-  type: "pay" | "receive",
+  type: ActionSection,
 ): DualStateByType {
   return {
     ...dualState,

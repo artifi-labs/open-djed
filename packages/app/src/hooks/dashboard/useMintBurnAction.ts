@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { ACTION_CONFIG } from "./actionConfig"
-import type { ActionType } from "@/types"
+import type { ActionSection, ActionType } from "@/types"
 import type { Token } from "@/types"
 import { useWallet } from "@/context/WalletContext"
 import { useProtocolData } from "@/hooks/useProtocolData"
@@ -119,7 +119,7 @@ export function useMintBurnAction(defaultActionType: ActionType) {
    * computing the opposite values and updating the action data accordingly.
    */
   const handleValueChange = React.useCallback(
-    (type: "pay" | "receive", token: Token, value: number) => {
+    (type: ActionSection, token: Token, value: number) => {
       if (!data) return
 
       setInputValues((prev) => {
@@ -145,7 +145,7 @@ export function useMintBurnAction(defaultActionType: ActionType) {
    * updating the selected tokens and resetting input values and action data accordingly.
    */
   const handleTokenChange = React.useCallback(
-    (type: "pay" | "receive", currentToken: Token) => {
+    (type: ActionSection, currentToken: Token) => {
       setSelectedTokens((prev) => ({
         ...computeTokenChangeSelectedTokens(
           prev,
@@ -166,7 +166,7 @@ export function useMintBurnAction(defaultActionType: ActionType) {
    * updating the selected tokens and resetting input values and action data accordingly.
    */
   const handleDualChange = React.useCallback(
-    (type: "pay" | "receive") => {
+    (type: ActionSection) => {
       const nextState = computeDualToggleState(
         dualState,
         selectedTokens,
@@ -186,7 +186,7 @@ export function useMintBurnAction(defaultActionType: ActionType) {
   /**
    * Handles the link toggle change for a given section (pay or receive).
    */
-  const handleLinkChange = React.useCallback((type: "pay" | "receive") => {
+  const handleLinkChange = React.useCallback((type: ActionSection) => {
     setDualState((prev) => computeLinkToggleState(prev, type))
   }, [])
 
@@ -304,7 +304,7 @@ export function useMintBurnAction(defaultActionType: ActionType) {
    * based on the current configuration, selected tokens, dual toggle state, and protocol data.
    */
   const tokensStates = React.useMemo((): TokenActionStateMap => {
-    const buildSection = (type: "pay" | "receive"): TokenActionStateConfig => {
+    const buildSection = (type: ActionSection): TokenActionStateConfig => {
       const tokens = config[type]
       const active = selectedTokens[type]
       const dual = dualState[type]

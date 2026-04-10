@@ -1,5 +1,5 @@
 import type { InputStatus } from "../../components/input-fields/TransactionInput"
-import type { Token } from "@/types"
+import type { ActionSection, Token } from "@/types"
 import type { ActionType } from "@/types"
 
 export type ReserveBoundsType = "below" | "above" | "in-bounds"
@@ -27,9 +27,9 @@ export type DualSectionState = {
   isLinkSelected: boolean
 }
 
-export type DualStateByType = Record<"pay" | "receive", DualSectionState>
+export type DualStateByType = Record<ActionSection, DualSectionState>
 
-export type SelectedTokensByType = Record<"pay" | "receive", Token[]>
+export type SelectedTokensByType = Record<ActionSection, Token[]>
 
 export type SectionDualState = {
   text: string
