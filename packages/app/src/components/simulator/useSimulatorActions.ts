@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from "react"
 import type { ScenarioInputs } from "@/components/simulator/calculations"
-import { useProtocolData } from "@/hooks/useProtocolData"
+import { useProtocolData } from "@/hooks/protocol/useProtocolData"
 
 const NUMBER_FIELDS = new Set<keyof ScenarioInputs>([
   "usdAmount",

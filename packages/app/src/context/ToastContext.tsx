@@ -9,7 +9,7 @@ import React, {
 } from "react"
 import clsx from "clsx"
 import ToastItem from "@/components/ToastItem"
-import { useViewport } from "@/hooks/useViewport"
+import { useViewport } from "@/hooks/shared/useViewport"
 
 type ToastType = "success" | "attention" | "error"
 

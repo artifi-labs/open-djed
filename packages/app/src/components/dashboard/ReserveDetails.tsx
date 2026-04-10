@@ -1,4 +1,4 @@
-import { useReserveDetails } from "@/hooks/useReserveDetails"
+import { useReserveDetails } from "@/hooks/protocol/useReserveDetails"
 import BaseCard from "../card/BaseCard"
 import { ReserveGraph } from "./ReserveGraph"
 import { formatNumber, formatValue } from "@/utils"

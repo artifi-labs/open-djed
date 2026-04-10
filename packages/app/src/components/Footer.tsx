@@ -5,7 +5,7 @@ import Image from "next/image"
 import Icon, { type IconName } from "./icons/Icon"
 import ButtonIcon from "./ButtonIcon"
 import React from "react"
-import { useViewport } from "@/hooks/useViewport"
+import { useViewport } from "@/hooks/shared/useViewport"
 import {
   DISCORD_URL,
   DJED_URL,

@@ -7,7 +7,7 @@ import Action from "./Action"
 import type { ActionType } from "@/types"
 import type { useMintBurnAction } from "../../hooks/dashboard/useMintBurnAction"
 import Snackbar from "../Snackbar"
-import { useReserveDetails } from "@/hooks/useReserveDetails"
+import { useReserveDetails } from "@/hooks/protocol/useReserveDetails"
 import { useTranslations } from "next-intl"
 import { capitalize } from "@/utils"
 

@@ -1,10 +1,10 @@
 import { useTranslations } from "next-intl"
 import type { Currency, ChartPeriod } from "../analytics/useAnalyticsData"
 import { type ContextualMenuItem } from "../ContextualMenu"
-import { type ReserveBoundsType } from "../../hooks/dashboard/useMintBurnAction"
 import Dropdown from "../Dropdown"
 import Icon from "../icons/Icon"
 import BaseCard from "./BaseCard"
+import type { ReserveBoundsType } from "@/hooks"
 
 type WarningBannerProps = {
   message: string

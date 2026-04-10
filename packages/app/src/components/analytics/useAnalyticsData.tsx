@@ -13,8 +13,8 @@ import {
   useProjectedShenYieldQuery,
   useShenYieldQuery,
 } from "@/queries/analytics/shenYield/shenYield.query"
-import { useReserveDetails } from "@/hooks/useReserveDetails"
-import { useProtocolData } from "@/hooks/useProtocolData"
+import { useReserveDetails } from "@/hooks/protocol/useReserveDetails"
+import { useProtocolData } from "@/hooks/protocol/useProtocolData"
 import { Rational, shenADARate, shenUSDRate } from "@open-djed/math"
 import { useTranslations } from "next-intl"
 import type { ShenYieldEntry } from "@/queries/analytics/shenYield/shenYield.schema"

@@ -3,7 +3,7 @@
 import * as React from "react"
 import clsx from "clsx"
 import ButtonIcon from "./ButtonIcon"
-import { useViewport } from "@/hooks/useViewport"
+import { useViewport } from "@/hooks/shared/useViewport"
 import { useTranslations } from "next-intl"
 import type { Order } from "@/queries/orders/orders/orders.schema"
 
