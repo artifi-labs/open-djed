@@ -2,8 +2,8 @@ import { Hono } from "hono"
 import { describeRoute, resolver, validator } from "hono-openapi"
 import {
   ordersBodySchema,
+  ordersQueryParamsSchema,
   ordersResponseApiSchema,
-  orderStatusSchema,
 } from "./orders.schema"
 import {
   AppError,
@@ -161,14 +161,7 @@ export const ordersRouter = new Hono()
       },
     }),
     validator("json", ordersBodySchema),
-    validator(
-      "query",
-      z.object({
-        page: z.coerce.number().optional().default(1),
-        limit: z.coerce.number().optional().default(10),
-        status: orderStatusSchema.optional(),
-      }),
-    ),
+    validator("query", ordersQueryParamsSchema),
     async (c) => {
       let json
       try {
@@ -181,15 +174,7 @@ export const ordersRouter = new Hono()
         throw new ValidationError("Invalid or missing request payload.")
       }
       try {
-        // Get filters and pagination parameters
-        const { page, limit, status: statusFilter } = c.req.valid("query")
-
-        // Validate pagination parameters
-        if (page < 1 || limit < 1 || limit > 100) {
-          throw new ValidationError(
-            "Invalid pagination parameters. Page must be >= 1, limit must be between 1 and 100.",
-          )
-        }
+        const { page, limit, status } = c.req.valid("query")
 
         const pendingOrders = await getOrderUTxOs()
 
@@ -222,8 +207,10 @@ export const ordersRouter = new Hono()
           },
         )
 
-        const userHistoricalOrders: Order[] =
-          await getOrdersByAddressKeys(usedAddressesKeys)
+        const userHistoricalOrders: Order[] = await getOrdersByAddressKeys(
+          usedAddressesKeys,
+          status,
+        )
 
         const sortedOrders = [...parsedPendingOrders, ...userHistoricalOrders]
           .sort((a, b) => b.orderDate.getTime() - a.orderDate.getTime())
@@ -232,8 +219,8 @@ export const ordersRouter = new Hono()
               self.findIndex((o) => o.tx_hash === order.tx_hash) === index,
           )
 
-        const orders = statusFilter
-          ? sortedOrders.filter((order) => order.status === statusFilter)
+        const orders = status?.length
+          ? sortedOrders.filter((order) => status.includes(order.status))
           : sortedOrders
 
         // Calculate pagination

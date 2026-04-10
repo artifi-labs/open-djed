@@ -16,6 +16,6 @@ export const paginatedResponseSchema = <T extends z.ZodTypeAny>(
   })
 
 export const paginationQueryParamsSchema = z.object({
-  page: z.number().optional(),
-  limit: z.number().optional(),
+  page: z.coerce.number().min(1).default(1),
+  limit: z.coerce.number().min(1).max(100).default(1),
 })
