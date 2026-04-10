@@ -1,16 +1,13 @@
-import { z } from '@hono/zod-openapi'
+import { z } from "@hono/zod-openapi"
 import {
   actionSchema,
   paginatedResponseSchema,
   paginationQueryParamsSchema,
 } from "../../shared"
 
-export const orderStatusSchema = z.enum([
-  "Created",
-  "Completed",
-  "Rejected",
-  "Canceled",
-]).openapi({ example: "Created" })
+export const orderStatusSchema = z
+  .enum(["Created", "Completed", "Rejected", "Canceled"])
+  .openapi({ example: "Created" })
 
 export type OrderStatus = z.infer<typeof orderStatusSchema>
 
@@ -24,19 +21,15 @@ export const orderApiSchema = z
       paymentKeyHash: z.array(z.string()),
       stakeKeyHash: z.array(z.any()),
     }),
-    tx_hash: z
-      .string()
-      .openapi({
-        example:
-          "5fe2b28e9d73acf76c5ebec3841f8e1e18a1a7da135bb9db8f93d198a0409e91",
-      }),
+    tx_hash: z.string().openapi({
+      example:
+        "5fe2b28e9d73acf76c5ebec3841f8e1e18a1a7da135bb9db8f93d198a0409e91",
+    }),
     out_index: z.number().openapi({ example: 0 }),
-    block: z
-      .string()
-      .openapi({
-        example:
-          "7a6c295c3ef0a0a35f215932fc684b640602cc3846d3328fd9d062d64bce9171",
-      }),
+    block: z.string().openapi({
+      example:
+        "7a6c295c3ef0a0a35f215932fc684b640602cc3846d3328fd9d062d64bce9171",
+    }),
     slot: z.string().openapi({ example: "128853646" }),
     action: actionSchema,
     token: z.enum(["DJED", "SHEN", "BOTH"]).openapi({ example: "DJED" }),
@@ -53,7 +46,8 @@ export const orderApiSchema = z
         paymentKeyHash: ["2f8f6e3a..."],
         stakeKeyHash: [[["2dbf9f1c..."]]],
       },
-      tx_hash: "5fe2b28e9d73acf76c5ebec3841f8e1e18a1a7da135bb9db8f93d198a0409e91",
+      tx_hash:
+        "5fe2b28e9d73acf76c5ebec3841f8e1e18a1a7da135bb9db8f93d198a0409e91",
       out_index: 0,
       block: "7a6c295c3ef0a0a35f215932fc684b640602cc3846d3328fd9d062d64bce9171",
       slot: "128853646",
@@ -82,6 +76,8 @@ export type OrdersQueryParams = z.infer<typeof ordersQueryParamsSchema>
 
 // Body
 export const ordersBodySchema = z.object({
-  usedAddresses: z.array(z.string()).openapi({ example: ["addr1q9a5v5k5j5k5j5k5j5k5j5k5j5k5j5k5j5k5j5k5j5k5j5k5j5k"] }),
+  usedAddresses: z.array(z.string()).openapi({
+    example: ["addr1q9a5v5k5j5k5j5k5j5k5j5k5j5k5j5k5j5k5j5k5j5k5j5k5j5k"],
+  }),
 })
 export type OrdersBody = z.infer<typeof ordersBodySchema>

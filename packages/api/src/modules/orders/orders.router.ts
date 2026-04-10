@@ -207,8 +207,10 @@ export const ordersRouter = new Hono()
           },
         )
 
-        const userHistoricalOrders: Order[] =
-          await getOrdersByAddressKeys(usedAddressesKeys, status)
+        const userHistoricalOrders: Order[] = await getOrdersByAddressKeys(
+          usedAddressesKeys,
+          status,
+        )
 
         const sortedOrders = [...parsedPendingOrders, ...userHistoricalOrders]
           .sort((a, b) => b.orderDate.getTime() - a.orderDate.getTime())
@@ -216,10 +218,10 @@ export const ordersRouter = new Hono()
             (order, index, self) =>
               self.findIndex((o) => o.tx_hash === order.tx_hash) === index,
           )
-        
-          const orders = status?.length
-            ? sortedOrders.filter((order) => status.includes(order.status))
-            : sortedOrders
+
+        const orders = status?.length
+          ? sortedOrders.filter((order) => status.includes(order.status))
+          : sortedOrders
 
         // Calculate pagination
         const totalOrders = orders.length

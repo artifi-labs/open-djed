@@ -1,4 +1,4 @@
-import { z } from '@hono/zod-openapi'
+import { z } from "@hono/zod-openapi"
 
 export const paginatedResponseSchema = <T extends z.ZodTypeAny>(
   itemSchema: T,
