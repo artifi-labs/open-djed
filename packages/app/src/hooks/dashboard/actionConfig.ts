@@ -1,4 +1,4 @@
-import type { ActionType } from "@/types/action"
+import type { ActionType } from "@/types"
 import type { ActionConfig } from "./actionConfig.types"
 
 export const ACTION_CONFIG: Record<ActionType, ActionConfig> = {

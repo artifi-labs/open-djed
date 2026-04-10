@@ -1,6 +1,6 @@
 import type { InputStatus } from "../../components/input-fields/TransactionInput"
-import type { Token } from "@/lib/types/tokens"
-import type { ActionType } from "@/types/action"
+import type { Token } from "@/types"
+import type { ActionType } from "@/types"
 
 export type ReserveBoundsType = "below" | "above" | "in-bounds"
 

@@ -8,7 +8,7 @@ import type {
   ButtonState,
   TokenActionStateMap,
 } from "@/hooks/dashboard/useMintBurnAction.types"
-import type { ActionType } from "@/types/action"
+import type { ActionType } from "@/types"
 
 export type ActionProps = {
   tokensStates: TokenActionStateMap

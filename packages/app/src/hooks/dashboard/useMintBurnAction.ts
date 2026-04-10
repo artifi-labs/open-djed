@@ -2,8 +2,8 @@
 
 import * as React from "react"
 import { ACTION_CONFIG } from "./actionConfig"
-import type { ActionType } from "@/types/action"
-import { type Token } from "@/lib/types/tokens"
+import type { ActionType } from "@/types"
+import type { Token } from "@/types"
 import { useWallet } from "@/context/WalletContext"
 import { useProtocolData } from "@/hooks/useProtocolData"
 import { AppError, type TokenType } from "@open-djed/api"

@@ -6,7 +6,7 @@ import { useViewport } from "@/hooks/useViewport"
 import { capitalize } from "@/utils"
 import { useTranslations } from "next-intl"
 import { useSettings } from "@/hooks/useSettings"
-import type { Setting } from "@/lib/types"
+import type { Setting } from "@/types"
 
 function SettingField({ setting }: { setting: Setting }) {
   switch (setting.type) {

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 import { registryByNetwork, type Registry } from "@open-djed/registry"
-import { type Token } from "@/lib/types/tokens"
+import type { Token } from "@/types"
 import {
   calcMax,
   calcMin,

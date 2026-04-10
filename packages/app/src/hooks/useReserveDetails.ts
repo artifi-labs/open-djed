@@ -1,7 +1,7 @@
-import { type ReserveBoundsType } from "@/hooks/dashboard/useMintBurnAction"
 import { maxReserveRatio, minReserveRatio } from "@open-djed/math"
 import { useProtocolData } from "./useProtocolData"
 import { useTranslations } from "next-intl"
+import type { ReserveBoundsType } from "@/hooks/dashboard"
 
 export const useReserveDetails = () => {
   const t = useTranslations()

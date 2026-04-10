@@ -1,5 +1,5 @@
-import type { ActionType } from "@/types/action"
-import { type Token } from "@/lib/types/tokens"
+import type { ActionType } from "@/types"
+import type { Token } from "@/types"
 import { formatNumber, roundToDecimals } from "@/utils"
 import { type TokenType } from "@open-djed/api"
 import { type Registry } from "@open-djed/registry"

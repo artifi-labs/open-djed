@@ -9,7 +9,7 @@ import {
 import Checkbox from "@/components/Checkbox"
 import ValueShowcase from "@/components/dashboard/ValueShowcase"
 import TransactionInput from "@/components/input-fields/TransactionInput"
-import type { ActionType } from "@/types/action"
+import type { ActionType } from "@/types"
 
 export type InputSectionProps = {
   label: string

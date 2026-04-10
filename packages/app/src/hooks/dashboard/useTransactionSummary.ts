@@ -2,7 +2,7 @@ import { useMemo } from "react"
 import { transactionSummaryBuilder } from "../../components/dashboard/transactionSummaryBuilder"
 import { formatNumber, formatValue } from "@/utils"
 import { type useMintBurnAction } from "./useMintBurnAction"
-import type { Token } from "@/lib/types/tokens"
+import type { Token } from "@/types"
 import { useTranslations } from "next-intl"
 import type { Value } from "@/types"
 
