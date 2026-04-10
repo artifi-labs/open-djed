@@ -161,10 +161,7 @@ export const ordersRouter = new Hono()
       },
     }),
     validator("json", ordersBodySchema),
-    validator(
-      "query",
-      ordersQueryParamsSchema
-    ),
+    validator("query", ordersQueryParamsSchema),
     async (c) => {
       let json
       try {

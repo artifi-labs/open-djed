@@ -9,9 +9,7 @@ export const getOrdersByAddressKeys = async (
   return await prisma.order.findMany({
     where: {
       AND: [
-        ...(statuses?.length
-          ? [{ status: { in: statuses } }]
-          : []),
+        ...(statuses?.length ? [{ status: { in: statuses } }] : []),
         {
           OR: keys.map((key) => ({
             AND: [
