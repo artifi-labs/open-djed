@@ -84,7 +84,7 @@ const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
   }
 
   return (
-    <div className="flex gap-8">
+    <div className="flex items-center gap-8">
       {state.inputs.map((input, index) => {
         return (
           <React.Fragment key={index}>
