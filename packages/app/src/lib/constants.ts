@@ -25,8 +25,8 @@ export const SUPPORTED_LANGUAGES = [
   { code: "cn", label: "中文 (Chinese)" },
 ]
 
-export const ORDERS_PER_PAGE = 10
-export const ORDERS_SIDEBAR = 5
+export const MAX_ORDERS_PER_PAGE = 10
+export const MAX_ORDERS_SIDEBAR = 5
 
 export const ALLOWED_WALLETS = [
   "eternl",

@@ -5,11 +5,12 @@ import { Link } from "@/i18n/navigation"
 import { useSidebar } from "@/context/SidebarContext"
 import { useOrders } from "@/hooks/orders/useOrders"
 import { useTranslations } from "next-intl"
+import { MAX_ORDERS_SIDEBAR } from "@/lib/constants"
 
 function OrdersWalletSection() {
   const t = useTranslations()
   const { closeSidebar } = useSidebar()
-  const orders = useOrders({ queryParams: { limit: 5 } })
+  const orders = useOrders({ queryParams: { limit: MAX_ORDERS_SIDEBAR } })
 
   return (
     <>
