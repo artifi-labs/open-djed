@@ -18,7 +18,7 @@ export const ACTION_CONFIG = {
     payHasLeadingIcon: false,
     receiveHasLeadingIcon: true,
     payShowDual: false,
-    receiveShowDual: true,
+    receiveShowDual: false, // Change to true if you want to show dual values for Mint receive tokens
     isPayActive: false,
     isReceiveActive: false,
   },
@@ -27,7 +27,7 @@ export const ACTION_CONFIG = {
     receive: ["ADA"],
     payHasLeadingIcon: true,
     receiveHasLeadingIcon: false,
-    payShowDual: true,
+    payShowDual: false, // Change to true if you want to show dual values for Burn pay tokens
     receiveShowDual: false,
     isPayActive: false,
     isReceiveActive: false,

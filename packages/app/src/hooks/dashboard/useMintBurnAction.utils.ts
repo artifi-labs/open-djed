@@ -154,7 +154,7 @@ export function computeOppositeValues(
   >) {
     if (!amount || amount <= 0) continue
 
-    // TODO: THIS WILL NEED TO BE CHANGED TO SUPPORT DUAL BURN/MINT
+    // THIS WILL NEED TO BE CHANGED TO SUPPORT DUAL BURN/MINT
     const result = data.tokenActionData(
       token as TokenType,
       actionType,

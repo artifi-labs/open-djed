@@ -79,7 +79,6 @@ const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
     )
   }
 
-  // TODO: CHECK THIS
   if (!state.dual.isDualSelected && state.inputs.length === 1) {
     return renderInput(state, state.inputs[0])
   }
