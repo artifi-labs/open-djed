@@ -15,10 +15,7 @@ export type ActionConfig = {
   isReceiveActive: boolean
 }
 
-export const ACTION_CONFIG: Record<
-  ActionType,
-  ActionConfig
-> = {
+export const ACTION_CONFIG: Record<ActionType, ActionConfig> = {
   Mint: {
     pay: ["ADA"],
     receive: ["DJED", "SHEN"],

@@ -2,12 +2,13 @@
 
 import * as React from "react"
 import Button from "../Button"
-import { capitalize } from "@/utils"
 import type { ActionType } from "./actionConfig"
 import InputSection from "./InputSection"
-import { useReserveDetails } from "@/hooks/useReserveDetails"
 import { useTranslations } from "next-intl"
-import { type ButtonState, type TokenActionStateMap } from "@/hooks/dashboard/useMintBurnAction"
+import {
+  type ButtonState,
+  type TokenActionStateMap,
+} from "@/hooks/dashboard/useMintBurnAction"
 
 export type ActionProps = {
   tokensStates: TokenActionStateMap
@@ -19,13 +20,9 @@ export type ActionProps = {
 const Action: React.FC<ActionProps> = ({
   tokensStates,
   actionType,
-  minMessage,
   button,
 }) => {
   const t = useTranslations()
-  const { reserveBounds } = useReserveDetails()
-
-  const actionText = capitalize(t(`action.${actionType.toLowerCase()}`))
 
   const inputSections = [
     {
@@ -56,7 +53,7 @@ const Action: React.FC<ActionProps> = ({
         size="medium"
         text={button.text}
         disabled={button.disabled}
-        onClick={button.onClick}
+        onClick={() => void button.onClick?.()}
       />
     </div>
   )

@@ -2,7 +2,10 @@
 
 import * as React from "react"
 import ButtonIcon from "../ButtonIcon"
-import { type TokenActionState, type TokenActionStateConfig } from "@/hooks/dashboard/useMintBurnAction"
+import {
+  type TokenActionState,
+  type TokenActionStateConfig,
+} from "@/hooks/dashboard/useMintBurnAction"
 import Checkbox from "@/components/Checkbox"
 import ValueShowcase from "@/components/dashboard/ValueShowcase"
 import TransactionInput from "@/components/input-fields/TransactionInput"
@@ -21,9 +24,10 @@ export type TransactionInputGroupProps = {
 const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
   state,
 }) => {
-
-  const renderInput = (state: TokenActionStateConfig, input: TokenActionState) => {
-    
+  const renderInput = (
+    state: TokenActionStateConfig,
+    input: TokenActionState,
+  ) => {
     return input.token === "ADA" ? (
       <ValueShowcase
         asset={{
@@ -40,7 +44,7 @@ const TransactionInputGroup: React.FC<TransactionInputGroupProps> = ({
         hasAvailableAmount={input.available !== undefined}
       />
     ) : (
-      <div className="flex-1 relative">
+      <div className="relative flex-1">
         <TransactionInput
           disabled={input.disabled}
           placeholder="0"
@@ -119,7 +123,9 @@ const InputSection: React.FC<InputSectionProps> = ({
             <Checkbox
               size={24}
               order={["Deselected", "Selected"]}
-              defaultType={state.dual.isDualSelected ? "Selected" : "Deselected"}
+              defaultType={
+                state.dual.isDualSelected ? "Selected" : "Deselected"
+              }
               onClick={state.dual.onDualChange}
             />
             <p className="text-secondary text-xxs font-medium">
@@ -129,9 +135,7 @@ const InputSection: React.FC<InputSectionProps> = ({
         )}
       </div>
 
-      <TransactionInputGroup
-        state={state} 
-      />
+      <TransactionInputGroup state={state} />
     </div>
   )
 }

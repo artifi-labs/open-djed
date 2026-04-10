@@ -85,22 +85,29 @@ describe("calcMin", () => {
   it.each([
     ["Preprod", registryByNetwork.Preprod, 0],
     ["Mainnet", registryByNetwork.Mainnet, 50],
-  ])("converts lovelace minimum to ADA for %s", (_network, networkRegistry, expected) => {
-    expect(calcMin(networkRegistry as Registry)).toBe(expected)
-  })
+  ])(
+    "converts lovelace minimum to ADA for %s",
+    (_network, networkRegistry, expected) => {
+      expect(calcMin(networkRegistry as Registry)).toBe(expected)
+    },
+  )
 })
 
 describe("calcMax", () => {
   it("limits mint max by cap and available ADA", () => {
     const walletBalance = { ADA: 20, DJED: 0, SHEN: 0 }
 
-    expect(calcMax("DJED", "Mint", walletBalance, protocolData, registry)).toBe(3.456)
+    expect(calcMax("DJED", "Mint", walletBalance, protocolData, registry)).toBe(
+      3.456,
+    )
   })
 
   it("limits burn max by burnable amount", () => {
     const walletBalance = { ADA: 20, DJED: 12.3456, SHEN: 7.89 }
 
-    expect(calcMax("DJED", "Burn", walletBalance, protocolData, registry)).toBe(10.123)
+    expect(calcMax("DJED", "Burn", walletBalance, protocolData, registry)).toBe(
+      10.123,
+    )
   })
 })
 
@@ -108,7 +115,7 @@ describe("calcSuffix", () => {
   it("formats the DJED value returned by protocol conversion", () => {
     expect(calcSuffix(protocolData, "DJED", 12.5)).toBe("$12.50")
   })
-  
+
   it("formats negative values with a minus sign", () => {
     expect(calcSuffix(protocolData, "DJED", -12.5)).toBe("$-12.50")
   })
@@ -134,7 +141,7 @@ describe("computeOppositeValues", () => {
       "Burn",
       sourceAmounts,
       ["ADA"],
-      protocolData
+      protocolData,
     )
 
     expect(values.ADA).toBe(8)
@@ -153,7 +160,7 @@ describe("computeOppositeValues", () => {
       "Mint",
       sourceAmounts,
       ["ADA"],
-      protocolData
+      protocolData,
     )
 
     expect(values.ADA).toBe(4.5)
@@ -172,7 +179,7 @@ describe("computeOppositeValues", () => {
       "Mint",
       sourceAmounts,
       ["ADA"],
-      protocolData
+      protocolData,
     )
 
     expect(values.ADA).toBe(1.5)
@@ -198,7 +205,7 @@ describe("computeValueChange", () => {
         pay: ["ADA"],
         receive: ["DJED", "SHEN"],
       },
-      protocolData
+      protocolData,
     )
 
     expect(nextValues.SHEN).toBe(3)
@@ -222,7 +229,7 @@ describe("computeValueChange", () => {
         pay: ["ADA"],
         receive: ["DJED", "SHEN"],
       },
-      protocolData
+      protocolData,
     )
 
     expect(nextValues.SHEN).toBe(0)
@@ -245,7 +252,7 @@ describe("computeValueChange", () => {
         pay: ["ADA"],
         receive: ["DJED", "SHEN"],
       },
-      protocolData
+      protocolData,
     )
 
     expect(nextValues.DJED).toBe(2)
@@ -272,7 +279,7 @@ describe("computeValueChange", () => {
         pay: ["DJED"],
         receive: ["ADA"],
       },
-      protocolData
+      protocolData,
     )
 
     expect(nextValues.DJED).toBe(5)
@@ -280,7 +287,6 @@ describe("computeValueChange", () => {
 })
 
 describe("Token Change Helper", () => {
-
   it("keeps selection unchanged when cycling would create duplicates", () => {
     const next = computeTokenChangeSelectedTokens(
       {
@@ -289,7 +295,7 @@ describe("Token Change Helper", () => {
       },
       "pay",
       "DJED",
-      ["DJED", "SHEN"]
+      ["DJED", "SHEN"],
     )
 
     expect(next.pay).toEqual(["DJED", "SHEN"])
@@ -304,7 +310,7 @@ describe("Token Change Helper", () => {
       },
       "pay",
       "DJED",
-      ["DJED", "SHEN"]
+      ["DJED", "SHEN"],
     )
 
     expect(next.pay).toEqual(["SHEN"])
@@ -313,7 +319,6 @@ describe("Token Change Helper", () => {
 })
 
 describe("Dual Toggle Helper", () => {
-
   it("toggles dual selection and active tokens", () => {
     const tokens: Token[] = ["DJED", "SHEN"]
     const enabled = computeDualToggleState(
@@ -326,7 +331,7 @@ describe("Dual Toggle Helper", () => {
         receive: ["ADA"],
       },
       "pay",
-      tokens
+      tokens,
     )
 
     expect(enabled.dualState.pay.isDualSelected).toBe(true)
@@ -336,7 +341,7 @@ describe("Dual Toggle Helper", () => {
       enabled.dualState,
       enabled.selectedTokens,
       "pay",
-      tokens
+      tokens,
     )
 
     expect(disabled.dualState.pay.isDualSelected).toBe(false)
@@ -349,7 +354,7 @@ describe("Dual Toggle Helper", () => {
         pay: { isDualSelected: false, isLinkSelected: false },
         receive: { isDualSelected: true, isLinkSelected: false },
       },
-      "receive"
+      "receive",
     )
 
     expect(next.receive.isLinkSelected).toBe(true)

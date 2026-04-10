@@ -28,12 +28,17 @@ interface SectionConfig {
 }
 
 // Helpers
-const normalizeToArray = (value: DisplayValue | DisplayValue[]): DisplayValue[] =>
+const normalizeToArray = (
+  value: DisplayValue | DisplayValue[],
+): DisplayValue[] =>
   Array.isArray(value[0]) ? (value as DisplayValue[]) : [value as DisplayValue]
 
 const ZERO_DISPLAY: DisplayValue = ["$0.00", "$0.00"]
 
-const formatUSDValue = (toUSD: ToUSDConverter | undefined, valueObj: Value): string => {
+const formatUSDValue = (
+  toUSD: ToUSDConverter | undefined,
+  valueObj: Value,
+): string => {
   if (!toUSD) return "$0.00"
   return `$${formatNumber(toUSD(valueObj), { maximumFractionDigits: 2 })}`
 }
@@ -45,9 +50,11 @@ const formatTokenEntry = (
 ): DisplayValue => {
   if (!Number.isFinite(amount)) return ZERO_DISPLAY
   const valueObj = { [token]: amount }
-  return [formatValue(valueObj), toUSD ? formatUSDValue(toUSD, valueObj) : "$0.00"]
+  return [
+    formatValue(valueObj),
+    toUSD ? formatUSDValue(toUSD, valueObj) : "$0.00",
+  ]
 }
-
 
 const tokenMapToDisplayValues = (
   map: Partial<Record<Token, number>>,
@@ -55,7 +62,9 @@ const tokenMapToDisplayValues = (
 ): DisplayValue[] => {
   const entries = Object.entries(map) as [Token, number][]
   if (entries.length === 0) return [ZERO_DISPLAY]
-  return entries.map(([token, amount]) => formatTokenEntry(token, amount, toUSD))
+  return entries.map(([token, amount]) =>
+    formatTokenEntry(token, amount, toUSD),
+  )
 }
 
 const extractPriceValues = (
@@ -64,18 +73,25 @@ const extractPriceValues = (
 ): DisplayValue[] => {
   const values: DisplayValue[] = []
 
-  for (const [unitToken, tokenMap] of Object.entries(price) as [Token, Partial<Record<Token, number>>][]) {
-    for (const [token, amount] of Object.entries(tokenMap) as [Token, number][]) {
+  for (const [unitToken, tokenMap] of Object.entries(price) as [
+    Token,
+    Partial<Record<Token, number>>,
+  ][]) {
+    for (const [token, amount] of Object.entries(tokenMap) as [
+      Token,
+      number,
+    ][]) {
       if (amount === undefined) continue
       const label = `~${formatNumber(amount, { maximumFractionDigits: 6 })} ${unitToken}/${token}`
-      const usd = toUSD ? formatUSDValue(toUSD, { [unitToken]: amount }) : "$0.00"
+      const usd = toUSD
+        ? formatUSDValue(toUSD, { [unitToken]: amount })
+        : "$0.00"
       values.push([label, usd])
     }
   }
 
   return values.length > 0 ? values : [ZERO_DISPLAY]
 }
-
 
 const extractSectionValues = (
   section: SectionConfig,
@@ -112,14 +128,17 @@ const extractSectionValues = (
 }
 
 // Sections Config
-const createSectionConfigs = (t: ReturnType<typeof useTranslations>): SectionConfig[] => [
+const createSectionConfigs = (
+  t: ReturnType<typeof useTranslations>,
+): SectionConfig[] => [
   {
     key: "baseCost",
     label: t("dashboard.baseCost"),
     default: (action) => {
-      const token = action.actionType === "Mint"
-        ? "ADA"
-        : (action.tokensStates.pay.activeTokens[0] ?? "ADA")
+      const token =
+        action.actionType === "Mint"
+          ? "ADA"
+          : (action.tokensStates.pay.activeTokens[0] ?? "ADA")
       return [`0.00 ${token}`, "$0.00"]
     },
   },
@@ -127,9 +146,10 @@ const createSectionConfigs = (t: ReturnType<typeof useTranslations>): SectionCon
     key: "actionFee",
     label: t("dashboard.mintFee"), // overwritten below per actionType
     default: (action) => {
-      const token = action.actionType === "Mint"
-        ? "ADA"
-        : (action.tokensStates.pay.activeTokens[0] ?? "ADA")
+      const token =
+        action.actionType === "Mint"
+          ? "ADA"
+          : (action.tokensStates.pay.activeTokens[0] ?? "ADA")
       return [`0.00 ${token}`, "$0.00"]
     },
   },
@@ -162,9 +182,10 @@ const createSectionConfigs = (t: ReturnType<typeof useTranslations>): SectionCon
     key: "price",
     label: t("dashboard.price"),
     default: (action) => {
-      const tokens = action.actionType === "Mint"
-        ? action.tokensStates.receive.activeTokens
-        : action.tokensStates.pay.activeTokens
+      const tokens =
+        action.actionType === "Mint"
+          ? action.tokensStates.receive.activeTokens
+          : action.tokensStates.pay.activeTokens
       const targets = tokens.length > 0 ? tokens : ["DJED"]
       return targets.map((t) => [`~0 ADA/${t}`, "$0.00"] as DisplayValue)
     },

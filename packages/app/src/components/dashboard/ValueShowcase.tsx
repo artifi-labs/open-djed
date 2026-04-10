@@ -23,11 +23,11 @@ const ValueShowcase: React.FC<ValueShowcaseProps> = ({
   availableAmount,
   hasAvailableAmount,
   value,
-  defaultValue = 0.00,
+  defaultValue = 0.0,
   hasTag = false,
   tagLeadingIcon,
   tagTrailingIcon,
-  suffix ,
+  suffix,
 }) => {
   const t = useTranslations()
   const showValue = value || defaultValue

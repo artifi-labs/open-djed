@@ -1,7 +1,10 @@
 "use client"
 
 import * as React from "react"
-import { ACTION_CONFIG, type ActionType } from "../../components/dashboard/actionConfig"
+import {
+  ACTION_CONFIG,
+  type ActionType,
+} from "../../components/dashboard/actionConfig"
 import { type Token } from "@/lib/types/tokens"
 import { useWallet } from "@/context/WalletContext"
 import { useProtocolData } from "@/hooks/useProtocolData"
@@ -28,6 +31,8 @@ import {
 import { type ActionData } from "./useTransactionSummary"
 
 // Types
+export type ReserveBoundsType = "below" | "above" | "in-bounds"
+
 export type TokenActionState = {
   token: Token
   value: number
@@ -125,7 +130,8 @@ export function useMintBurnAction(defaultActionType: ActionType) {
     receive: { isDualSelected: false, isLinkSelected: false },
   })
 
-  const [selectedTokens, setSelectedTokens] = React.useState<SelectedTokensState>(defaultSelectedTokens)
+  const [selectedTokens, setSelectedTokens] =
+    React.useState<SelectedTokensState>(defaultSelectedTokens)
   const [dualState, setDualState] = React.useState<DualState>(defaultDualState)
   const [inputValues, setInputValues] = React.useState<InputValues>({})
   const [actionData, setActionData] = React.useState<ActionData | null>(null)
@@ -144,15 +150,23 @@ export function useMintBurnAction(defaultActionType: ActionType) {
    * Calculates the minimum and maximum limits for each token.
    */
   const tokenLimits = React.useMemo(() => {
-    const allTokens = [...new Set([...selectedTokens.pay, ...selectedTokens.receive])]
+    const allTokens = [
+      ...new Set([...selectedTokens.pay, ...selectedTokens.receive]),
+    ]
     return Object.fromEntries(
       allTokens.map((token) => [
         token,
         {
           min: calcMin(registry),
-          max: calcMax(token, actionType, wallet?.balance ?? null, data, registry),
+          max: calcMax(
+            token,
+            actionType,
+            wallet?.balance ?? null,
+            data,
+            registry,
+          ),
         },
-      ])
+      ]),
     ) as Record<Token, { min: number; max: number }>
   }, [selectedTokens, actionType, wallet, data, registry])
 
@@ -174,38 +188,48 @@ export function useMintBurnAction(defaultActionType: ActionType) {
           prev,
           dualState,
           selectedTokens,
-          data
+          data,
         )
         setActionData(newActionData as ActionData | null)
         return nextValues
       })
     },
-    [data, actionType, dualState, selectedTokens]
+    [data, actionType, dualState, selectedTokens],
   )
 
   /**
-   * Handles the token change for a given section (pay or receive), 
+   * Handles the token change for a given section (pay or receive),
    * updating the selected tokens and resetting input values and action data accordingly.
    */
   const handleTokenChange = React.useCallback(
     (type: "pay" | "receive", currentToken: Token) => {
       setSelectedTokens((prev) => ({
-        ...computeTokenChangeSelectedTokens(prev, type, currentToken, config[type]),
+        ...computeTokenChangeSelectedTokens(
+          prev,
+          type,
+          currentToken,
+          config[type],
+        ),
       }))
 
       setInputValues({})
       setActionData(null)
     },
-    [config]
+    [config],
   )
 
   /**
-   * Handles the dual toggle change for a given section (pay or receive), 
+   * Handles the dual toggle change for a given section (pay or receive),
    * updating the selected tokens and resetting input values and action data accordingly.
    */
   const handleDualChange = React.useCallback(
     (type: "pay" | "receive") => {
-      const nextState = computeDualToggleState(dualState, selectedTokens, type, config[type])
+      const nextState = computeDualToggleState(
+        dualState,
+        selectedTokens,
+        type,
+        config[type],
+      )
 
       setDualState(nextState.dualState)
       setSelectedTokens(nextState.selectedTokens)
@@ -213,7 +237,7 @@ export function useMintBurnAction(defaultActionType: ActionType) {
       setInputValues({})
       setActionData(null)
     },
-    [dualState, selectedTokens, config]
+    [dualState, selectedTokens, config],
   )
 
   /**
@@ -227,16 +251,20 @@ export function useMintBurnAction(defaultActionType: ActionType) {
    * Handles the main action button click, performing validations and executing the transaction if all checks pass.
    */
   const handleButtonClick = React.useCallback(async () => {
-    console.log("Button clicked with values:", inputValues, "and action data:", actionData)
+    console.log(
+      "Button clicked with values:",
+      inputValues,
+      "and action data:",
+      actionData,
+    )
     if (!hasWalletConnected) {
       openWalletSidebar()
       return
     }
     if (!wallet) return
 
-    const relevantTokens = actionType === "Mint"
-      ? selectedTokens.receive
-      : selectedTokens.pay
+    const relevantTokens =
+      actionType === "Mint" ? selectedTokens.receive : selectedTokens.pay
 
     const activeInput = relevantTokens
       .map((token) => ({
@@ -260,7 +288,10 @@ export function useMintBurnAction(defaultActionType: ActionType) {
 
     if (value < min) {
       showToast({
-        message: t("dashboard.messages.amountBelowMinimum", { amount: min, token }),
+        message: t("dashboard.messages.amountBelowMinimum", {
+          amount: min,
+          token,
+        }),
         type: "error",
       })
       return
@@ -272,7 +303,9 @@ export function useMintBurnAction(defaultActionType: ActionType) {
     try {
       const { address, utxos } = await getWalletData(wallet)
 
-      const response = await client.api[":token"][":action"][":amount"]["tx"].$post({
+      const response = await client.api[":token"][":action"][":amount"][
+        "tx"
+      ].$post({
         param: {
           token: token as TokenType,
           action: actionType,
@@ -302,7 +335,10 @@ export function useMintBurnAction(defaultActionType: ActionType) {
         showToast({ message: err.message, type: "error" })
         return
       }
-      showToast({ message: t("dashboard.messages.transactionFailed"), type: "error" })
+      showToast({
+        message: t("dashboard.messages.transactionFailed"),
+        type: "error",
+      })
     }
   }, [
     hasWalletConnected,
@@ -320,8 +356,8 @@ export function useMintBurnAction(defaultActionType: ActionType) {
 
   // Returned values
   /**
-   * Computes the state for the pay and receive sections, 
-   * including active tokens, input values, limits, and handlers, 
+   * Computes the state for the pay and receive sections,
+   * including active tokens, input values, limits, and handlers,
    * based on the current configuration, selected tokens, dual toggle state, and protocol data.
    */
   const tokensStates = React.useMemo((): TokenActionStateMap => {
@@ -339,14 +375,15 @@ export function useMintBurnAction(defaultActionType: ActionType) {
             ? { message: `Minimum amount is ${limits.min} ${token}` }
             : undefined
 
-        const status: InputStatus = minMessage !== undefined ? "warning" : "default"
+        const status: InputStatus =
+          minMessage !== undefined ? "warning" : "default"
 
         return {
           token,
           value,
           min: limits.min,
           max: limits.max,
-          available: token === "ADA" ? wallet?.balance?.ADA ?? 0 : undefined,
+          available: token === "ADA" ? (wallet?.balance?.ADA ?? 0) : undefined,
           disabled: token === "ADA",
           status,
           suffix: calcSuffix(data, token, value),
@@ -399,32 +436,45 @@ export function useMintBurnAction(defaultActionType: ActionType) {
   const button = React.useMemo((): ButtonState => {
     const actionText = t(`action.${actionType.toLowerCase()}`)
 
-    const relevantTokens = actionType === "Mint"
-      ? tokensStates.receive.activeTokens
-      : tokensStates.pay.activeTokens
+    const relevantTokens =
+      actionType === "Mint"
+        ? tokensStates.receive.activeTokens
+        : tokensStates.pay.activeTokens
 
     const disabledDueToReserve =
       ((relevantTokens.includes("DJED") && actionType === "Mint") ||
         (relevantTokens.includes("SHEN") && actionType === "Burn")) &&
       reserveBounds === "below"
         ? true
-        : relevantTokens.includes("SHEN") && actionType === "Mint" && reserveBounds === "above"
+        : relevantTokens.includes("SHEN") &&
+            actionType === "Mint" &&
+            reserveBounds === "above"
           ? true
           : false
 
-    const allInputs = [...tokensStates.pay.inputs, ...tokensStates.receive.inputs]
+    const allInputs = [
+      ...tokensStates.pay.inputs,
+      ...tokensStates.receive.inputs,
+    ]
     const isPayEmpty = tokensStates.pay.inputs.some((i) => i.value === 0)
-    const isReceiveEmpty = tokensStates.receive.inputs.some((i) => i.value === 0)
+    const isReceiveEmpty = tokensStates.receive.inputs.some(
+      (i) => i.value === 0,
+    )
     const hasBelowMin = allInputs.some((i) => i.message !== undefined)
 
-    const relevantToken = actionType === "Mint"
-      ? tokensStates.receive.activeTokens[0]
-      : tokensStates.pay.activeTokens[0]
+    const relevantToken =
+      actionType === "Mint"
+        ? tokensStates.receive.activeTokens[0]
+        : tokensStates.pay.activeTokens[0]
 
     const minAmount = tokenLimits[relevantToken]?.min ?? 0
-    const minMessage = minAmount > 0
-      ? t("dashboard.actionButton.minAmount", { amount: minAmount, token: relevantToken })
-      : undefined
+    const minMessage =
+      minAmount > 0
+        ? t("dashboard.actionButton.minAmount", {
+            amount: minAmount,
+            token: relevantToken,
+          })
+        : undefined
 
     const isDisabled = hasWalletConnected
       ? isPayEmpty || isReceiveEmpty || hasBelowMin || disabledDueToReserve
@@ -434,10 +484,20 @@ export function useMintBurnAction(defaultActionType: ActionType) {
       ? t("dashboard.actionButton.wallet", { action: actionText })
       : isPayEmpty || isReceiveEmpty
         ? t("dashboard.actionButton.fillAmount", { action: actionText })
-        : minMessage ? `${actionText} (${minMessage})` : actionText
+        : minMessage
+          ? `${actionText} (${minMessage})`
+          : actionText
 
     return { text, disabled: isDisabled, onClick: handleButtonClick }
-  }, [tokensStates, actionType, hasWalletConnected, reserveBounds, tokenLimits, t, handleButtonClick])
+  }, [
+    tokensStates,
+    actionType,
+    hasWalletConnected,
+    reserveBounds,
+    tokenLimits,
+    t,
+    handleButtonClick,
+  ])
 
   return {
     tokensStates,
