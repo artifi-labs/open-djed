@@ -194,12 +194,6 @@ export function useMintBurnAction(defaultActionType: ActionType) {
    * Handles the main action button click, performing validations and executing the transaction if all checks pass.
    */
   const handleButtonClick = React.useCallback(async () => {
-    console.log(
-      "Button clicked with values:",
-      inputValues,
-      "and action data:",
-      actionData,
-    )
     if (!hasWalletConnected) {
       openWalletSidebar()
       return

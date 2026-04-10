@@ -2,13 +2,26 @@ import { useMemo } from "react"
 import { transactionSummaryBuilder } from "../../components/dashboard/transactionSummaryBuilder"
 import { formatNumber, formatValue } from "@/utils"
 import { type useMintBurnAction } from "./useMintBurnAction"
-import type { Token } from "@/types"
+import type { ActionType, Token } from "@/types"
 import { useTranslations } from "next-intl"
 import type { Value } from "@/types"
 
 type Action = ReturnType<typeof useMintBurnAction>
 type DisplayValue = [string, string]
-type ToUSDConverter = (value: Value) => number
+type ValueConverter = (value: Value) => number
+type TranslateFn = (key: string) => string
+
+export type TransactionSummaryAction = {
+  actionType: ActionType
+  actionData: ActionData | null
+  data?: {
+    to: (value: Value, target: Token) => number
+  }
+  tokensStates: {
+    pay: { activeTokens: Token[] }
+    receive: { activeTokens: Token[] }
+  }
+}
 
 export type ActionData = {
   baseCost: Partial<Record<Token, number>>
@@ -24,7 +37,7 @@ type SectionKey = keyof ActionData
 interface SectionConfig {
   key: SectionKey
   label: string
-  default: (action: Action) => DisplayValue | DisplayValue[]
+  default: (action: TransactionSummaryAction) => DisplayValue | DisplayValue[]
 }
 
 // Helpers
@@ -36,40 +49,40 @@ const normalizeToArray = (
 const ZERO_DISPLAY: DisplayValue = ["$0.00", "$0.00"]
 
 const formatUSDValue = (
-  toUSD: ToUSDConverter | undefined,
+  convertValue: ValueConverter | undefined,
   valueObj: Value,
 ): string => {
-  if (!toUSD) return "$0.00"
-  return `$${formatNumber(toUSD(valueObj), { maximumFractionDigits: 2 })}`
+  if (!convertValue) return "$0.00"
+  return `$${formatNumber(convertValue(valueObj), { maximumFractionDigits: 2 })}`
 }
 
 const formatTokenEntry = (
   token: string,
   amount: number,
-  toUSD?: ToUSDConverter,
+  convertValue?: ValueConverter,
 ): DisplayValue => {
   if (!Number.isFinite(amount)) return ZERO_DISPLAY
   const valueObj = { [token]: amount }
   return [
     formatValue(valueObj),
-    toUSD ? formatUSDValue(toUSD, valueObj) : "$0.00",
+    convertValue ? formatUSDValue(convertValue, valueObj) : "$0.00",
   ]
 }
 
 const tokenMapToDisplayValues = (
   map: Partial<Record<Token, number>>,
-  toUSD?: ToUSDConverter,
+  convertValue?: ValueConverter,
 ): DisplayValue[] => {
   const entries = Object.entries(map) as [Token, number][]
   if (entries.length === 0) return [ZERO_DISPLAY]
   return entries.map(([token, amount]) =>
-    formatTokenEntry(token, amount, toUSD),
+    formatTokenEntry(token, amount, convertValue),
   )
 }
 
 const extractPriceValues = (
   price: ActionData["price"],
-  toUSD?: ToUSDConverter,
+  convertValue?: ValueConverter,
 ): DisplayValue[] => {
   const values: DisplayValue[] = []
 
@@ -83,8 +96,8 @@ const extractPriceValues = (
     ][]) {
       if (amount === undefined) continue
       const label = `~${formatNumber(amount, { maximumFractionDigits: 6 })} ${unitToken}/${token}`
-      const usd = toUSD
-        ? formatUSDValue(toUSD, { [unitToken]: amount })
+      const usd = convertValue
+        ? formatUSDValue(convertValue, { [unitToken]: amount })
         : "$0.00"
       values.push([label, usd])
     }
@@ -96,30 +109,30 @@ const extractPriceValues = (
 const extractSectionValues = (
   section: SectionConfig,
   actionData: ActionData,
-  action: Action,
-  toUSD?: ToUSDConverter,
+  action: TransactionSummaryAction,
+  convertValue?: ValueConverter,
 ): DisplayValue[] => {
   switch (section.key) {
     case "price": {
       if (!actionData.price) return [ZERO_DISPLAY]
-      return extractPriceValues(actionData.price, toUSD)
+      return extractPriceValues(actionData.price, convertValue)
     }
 
     case "totalCost": {
       if (!actionData.totalCost) return [ZERO_DISPLAY]
-      return tokenMapToDisplayValues(actionData.totalCost, toUSD)
+      return tokenMapToDisplayValues(actionData.totalCost, convertValue)
     }
 
     case "refundableDeposit": {
       if (!actionData.refundableDeposit) return [ZERO_DISPLAY]
-      return tokenMapToDisplayValues(actionData.refundableDeposit, toUSD)
+      return tokenMapToDisplayValues(actionData.refundableDeposit, convertValue)
     }
 
     case "baseCost":
     case "actionFee":
     case "operatorFee": {
       if (!actionData.refundableDeposit) return [ZERO_DISPLAY]
-      return tokenMapToDisplayValues(actionData[section.key], toUSD)
+      return tokenMapToDisplayValues(actionData[section.key], convertValue)
     }
 
     default:
@@ -128,9 +141,7 @@ const extractSectionValues = (
 }
 
 // Sections Config
-const createSectionConfigs = (
-  t: ReturnType<typeof useTranslations>,
-): SectionConfig[] => [
+const createSectionConfigs = (t: TranslateFn): SectionConfig[] => [
   {
     key: "baseCost",
     label: t("dashboard.baseCost"),
@@ -207,10 +218,10 @@ const addSectionToBuilder = (
 }
 
 const buildSummary = (
-  action: Action,
+  action: TransactionSummaryAction,
   actionData: ActionData | null,
-  t: ReturnType<typeof useTranslations>,
-  toUSD?: ToUSDConverter,
+  t: TranslateFn,
+  convertValue?: ValueConverter,
 ) => {
   const builder = transactionSummaryBuilder()
   const isEmpty = !actionData
@@ -222,7 +233,7 @@ const buildSummary = (
   sections.forEach((section) => {
     const values = isEmpty
       ? normalizeToArray(section.default(action))
-      : extractSectionValues(section, actionData, action, toUSD)
+      : extractSectionValues(section, actionData, action, convertValue)
 
     addSectionToBuilder(builder, section, values)
   })
@@ -230,15 +241,29 @@ const buildSummary = (
   return builder.build()
 }
 
+export const buildTransactionSummary = ({
+  action,
+  translate,
+  convertValue,
+}: {
+  action: TransactionSummaryAction
+  translate: TranslateFn
+  convertValue?: ValueConverter
+}) => buildSummary(action, action.actionData, translate, convertValue)
+
 // Hook
 export function useTransactionSummary({ action }: { action: Action }) {
   const { actionData, data } = action
   const t = useTranslations()
 
-  console.log("ActionData", actionData)
-
   return useMemo(() => {
-    const toUSD = data ? (value: Value) => data.to(value, "DJED") : undefined
-    return buildSummary(action, actionData, t, toUSD)
+    const convertValue = data
+      ? (value: Value) => data.to(value, "DJED")
+      : undefined
+    return buildTransactionSummary({
+      action,
+      translate: t,
+      convertValue,
+    })
   }, [action, actionData, data, t])
 }
