@@ -2,7 +2,7 @@
 
 import { useMemo } from "react"
 import { FinancialAreaChart } from "@/components/charts/FinancialAreaChart"
-import { useViewport } from "@/hooks/useViewport"
+import { useViewport } from "@/hooks/shared/useViewport"
 import type { Currency } from "../useAnalyticsData"
 import type { ShenAdaPriceResponse } from "@/queries/analytics/shenAdaPrice/shenAdaPrice.schema"
 

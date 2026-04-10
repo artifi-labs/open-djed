@@ -29,8 +29,7 @@ export type TransactionInputProps = {
   trailingIcon?: IconName
   availableAmount?: string
   hasAvailableAmount?: boolean
-  maxAmount?: string
-  hasMaxAmount?: boolean
+  maxAmount?: number
   status?: InputStatus
   disabled?: boolean
   hasMaxAndHalfActions?: boolean
@@ -58,7 +57,6 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
   availableAmount,
   hasAvailableAmount = true,
   maxAmount,
-  hasMaxAmount = false,
   status = "default",
   disabled = false,
   hasMaxAndHalfActions = true,
@@ -207,7 +205,7 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
       </div>
 
       <div className="text-primary flex w-full items-center justify-between text-xs">
-        {hasMaxAndHalfActions && availableAmount && (
+        {hasMaxAndHalfActions && (
           <div className="flex gap-8">
             {/* Half */}
             <Button
@@ -247,14 +245,18 @@ const TransactionInput: React.FC<TransactionInputProps> = ({
         {/* Available Amount */}
         {hasAvailableAmount && availableAmount && (
           <span className={amountTextClasses}>
-            {capitalize(t("common.available"))}: {availableAmount}
+            {t("dashboard.inputs.available", {
+              value: availableAmount,
+            })}
           </span>
         )}
 
         {/* Max Amount */}
-        {hasMaxAmount && maxAmount && (
+        {hasMaxAndHalfActions && maxAmount !== undefined && (
           <span className={amountTextClasses}>
-            {capitalize(t("common.max"))}: {maxAmount}
+            {t("dashboard.inputs.max", {
+              value: maxAmount,
+            })}
           </span>
         )}
       </div>

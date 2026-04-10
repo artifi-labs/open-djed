@@ -1,6 +1,6 @@
 import React from "react"
 import Coin from "../Coin"
-import { useProtocolData } from "@/hooks/useProtocolData"
+import { useProtocolData } from "@/hooks/protocol/useProtocolData"
 import { formatNumber } from "@/utils"
 import { env } from "@/lib/envLoader"
 import type { Value } from "@/types"

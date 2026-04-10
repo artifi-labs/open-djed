@@ -1,10 +1,10 @@
 "use client"
 
 import * as React from "react"
-import { type useMintBurnAction } from "./useMintBurnAction"
+import { type useMintBurnAction } from "../../hooks/dashboard/useMintBurnAction"
 import BaseCard from "../card/BaseCard"
 import Divider from "../Divider"
-import { useTransactionSummary } from "./useTransactionSummary"
+import { useTransactionSummary } from "../../hooks/dashboard/useTransactionSummary"
 import { isEmptyValue } from "@/utils"
 import { useTranslations } from "next-intl"
 
@@ -54,7 +54,10 @@ const TransactionSummaryItem: React.FC<TransactionItem> = ({
 const TransactionSummary: React.FC<TransactionSummaryProps> = ({ action }) => {
   const t = useTranslations()
   const items = useTransactionSummary({ action })
-  const totalPay = action.payValues[action.activePayToken]
+  const totalPay = action.tokensStates.pay.inputs.reduce(
+    (acc, input) => acc + (input.value || 0),
+    0,
+  )
   const isContentBlured = isEmptyValue(totalPay)
 
   const BlurContent = React.useMemo(() => {

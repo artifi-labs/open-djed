@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { useProtocolData } from "@/hooks/useProtocolData"
+import { useProtocolData } from "@/hooks/protocol/useProtocolData"
 import { useFeesEarningsRateQuery } from "@/queries/simulator/feesEarnings/feesEarnings.query"
 import { useStakingRewardsRateQuery } from "@/queries/simulator/stakingRewards/stakingRewards.query"
 import { sumValues } from "@/utils"

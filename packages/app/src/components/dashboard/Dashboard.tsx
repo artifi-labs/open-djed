@@ -2,7 +2,7 @@
 
 import Actions from "@/components/dashboard/Actions"
 import TransactionSummary from "@/components/dashboard/TransactionSummary"
-import { useMintBurnAction } from "@/components/dashboard/useMintBurnAction"
+import { useMintBurnAction } from "@/hooks/dashboard/useMintBurnAction"
 import React, { useState } from "react"
 import Button from "@/components/Button"
 import ReserveDetails from "@/components/dashboard/ReserveDetails"
@@ -12,7 +12,7 @@ import { useTranslations } from "next-intl"
 
 const Dashboard = () => {
   const t = useTranslations()
-  const action: ReturnType<typeof useMintBurnAction> = useMintBurnAction("Mint")
+  const action = useMintBurnAction("Mint")
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   return (

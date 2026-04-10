@@ -2,184 +2,58 @@
 
 import * as React from "react"
 import Button from "../Button"
-import { capitalize, isEmptyValue } from "@/utils"
-import type { ActionType } from "./actionConfig"
-import InputAction from "./InputAction"
-import type { Token } from "@/lib/tokens"
-import { useReserveDetails } from "@/hooks/useReserveDetails"
-import { type InputStatus } from "../input-fields/TransactionInput"
+import InputSection from "./InputSection"
 import { useTranslations } from "next-intl"
+import type {
+  ButtonState,
+  TokenActionStateMap,
+} from "@/hooks/dashboard/useMintBurnAction.types"
+import type { ActionType } from "@/types"
 
 export type ActionProps = {
+  tokensStates: TokenActionStateMap
   actionType: ActionType
-  hasWalletConnected: boolean
-  config: {
-    pay: Token[]
-    receive: Token[]
-    payHasLeadingIcon: boolean
-    receiveHasLeadingIcon: boolean
-    payShowDual: boolean
-    receiveShowDual: boolean
-  }
-  bothSelected: boolean
-  onBothSelectedChange: (v: boolean) => void
-  payValues: Record<Token, string>
-  receiveValues: Record<Token, string>
-  activePayToken: Token
-  activeReceiveToken: Token
-  onPayValueChange: (t: Token, value: string) => void
-  onReceiveValueChange: (t: Token, value: string) => void
-  onPayTokenChange: (t: Token) => void
-  onReceiveTokenChange: (t: Token) => void
-  onHalfClick?: (t: Token) => void
-  onMaxClick?: (t: Token) => void
-  onButtonClick?: () => void
-  linkClicked?: boolean
-  onLinkClick?: () => void
-  maxAmount?: number
-  inputStatus: InputStatus
-  hasMaxAmount?: boolean
-  minWarningMessage?: string
   minMessage?: string
+  button: ButtonState
 }
 
 const Action: React.FC<ActionProps> = ({
+  tokensStates,
   actionType,
-  hasWalletConnected,
-  config,
-  bothSelected,
-  onBothSelectedChange,
-  payValues,
-  receiveValues,
-  activePayToken,
-  activeReceiveToken,
-  onPayValueChange,
-  onReceiveValueChange,
-  onPayTokenChange,
-  onReceiveTokenChange,
-  onButtonClick,
-  onHalfClick,
-  onMaxClick,
-  linkClicked,
-  onLinkClick,
-  maxAmount,
-  hasMaxAmount,
-  inputStatus,
-  minWarningMessage,
-  minMessage,
+  button,
 }) => {
   const t = useTranslations()
-  const { reserveBounds } = useReserveDetails()
 
-  const actionText = capitalize(t(`action.${actionType.toLowerCase()}`))
-
-  const payEmpty = Object.values(payValues).every(isEmptyValue)
-  const receiveEmpty = Object.values(receiveValues).every(isEmptyValue)
-
-  const buttonControls = React.useMemo(() => {
-    const token = actionType === "Mint" ? activeReceiveToken : activePayToken
-
-    const disabledDueToReserve =
-      ((token === "DJED" && actionType === "Mint") ||
-        (token === "SHEN" && actionType === "Burn")) &&
-      reserveBounds === "below"
-        ? true
-        : token === "SHEN" && actionType === "Mint" && reserveBounds === "above"
-          ? true
-          : false
-
-    const isDisabled =
-      (hasWalletConnected && (payEmpty || receiveEmpty)) || disabledDueToReserve
-
-    const text = !hasWalletConnected
-      ? t("dashboard.actionButton.wallet", { action: actionText })
-      : payEmpty || receiveEmpty
-        ? t("dashboard.actionButton.fillAmount", { action: actionText })
-        : `${actionText} ${minMessage || ""}`
-
-    return { isDisabled, text }
-  }, [hasWalletConnected, actionType, payValues, receiveValues])
-
-  const inputs = [
+  const inputSections = [
     {
       key: "pay",
       label: t("dashboard.youPay"),
-      coins: config.pay,
-      hasLeadingIcon: !bothSelected && config.payHasLeadingIcon,
-      showDual: config.payShowDual && bothSelected,
-      showCheckbox: config.payShowDual,
-      activeToken: activePayToken,
-      values: payValues,
-      onTokenChange: onPayTokenChange,
-      onValueChange: onPayValueChange,
-      onHalfClick,
-      onMaxClick,
-      hasMaxAndHalfActions: true,
-      hasAvailableAmount: actionType === "Mint" ? true : false,
-      hasMaxAmount: hasMaxAmount,
-      maxAmount: maxAmount,
-      inputStatus: inputStatus,
-      disable: false,
+      states: tokensStates.pay,
     },
     {
       key: "receive",
       label: t("dashboard.youReceive"),
-      coins: config.receive,
-      hasLeadingIcon: !bothSelected && config.receiveHasLeadingIcon,
-      showDual: config.receiveShowDual && bothSelected,
-      showCheckbox: config.receiveShowDual,
-      activeToken: activeReceiveToken,
-      values: receiveValues,
-      onTokenChange: onReceiveTokenChange,
-      onValueChange: onReceiveValueChange,
-      onHalfClick,
-      onMaxClick,
-      hasMaxAndHalfActions: true,
-      hasAvailableAmount: actionType === "Mint" ? false : true,
-      hasMaxAmount: hasMaxAmount,
-      maxAmount: maxAmount,
-      inputStatus: inputStatus,
-      disabled: false,
+      states: tokensStates.receive,
     },
   ]
 
   return (
     <div className="desktop:gap-24 flex flex-col gap-18">
-      {inputs.map((i) => (
-        <InputAction
+      {inputSections.map((i) => (
+        <InputSection
           key={i.key}
+          action={actionType}
           label={i.label}
-          coins={i.coins}
-          hasLeadingIcon={i.hasLeadingIcon}
-          showDual={i.showDual}
-          showCheckbox={i.showCheckbox}
-          checkboxLabel={`${actionText} both (DJED & SHEN)`}
-          checkboxChecked={bothSelected}
-          onCheckboxChange={onBothSelectedChange}
-          activeToken={i.activeToken}
-          values={i.values}
-          onTokenChange={i.onTokenChange}
-          onValueChange={i.onValueChange}
-          onHalfClick={i.onHalfClick}
-          onMaxClick={i.onMaxClick}
-          linkClicked={linkClicked}
-          onLinkClick={onLinkClick}
-          hasMaxAndHalfActions={i.hasMaxAndHalfActions}
-          hasAvailableAmount={i.hasAvailableAmount}
-          disabled={i.disabled}
-          hasMaxAmount={i.hasMaxAmount}
-          maxAmount={i.maxAmount}
-          inputStatus={inputStatus}
-          minWarningMessage={minWarningMessage}
+          state={i.states}
         />
       ))}
 
       <Button
         variant="secondary"
         size="medium"
-        text={buttonControls.text}
-        disabled={buttonControls.isDisabled}
-        onClick={onButtonClick}
+        text={button.text}
+        disabled={button.disabled}
+        onClick={() => void button.onClick?.()}
       />
     </div>
   )

@@ -49,6 +49,9 @@
     "current": "Aktuell",
     "available": "Verfügbar",
     "half": "Hälfte",
+    "cancel": {
+      "text": "Abbrechen"
+    },
     "mintAndBurnNow": "Jetzt Prägen & Verbrennen",
     "months": {
       "march": "März",
@@ -99,7 +102,6 @@
     "pageTitle": "Aufträge",
     "noOrders": "Noch keine Aufträge",
     "noWalletDescription": "Sobald die Wallet verbunden ist und Aktivität beginnt, erscheinen die Aufträge hier",
-    "cancel": "Abbrechen",
     "confirmCancellation": "Stornierung bestätigen",
     "cancellationDescription": "Sie sind dabei, Ihren Auftrag zu stornieren. Nach der Stornierung wird der Auftrag entfernt und nicht mehr verarbeitet.",
     "cancelOrder": "Auftrag stornieren",
@@ -129,6 +131,10 @@
     "title": "Aufträge",
     "allOrders": "Alle Aufträge",
     "noOrdersDescription": "Diese Wallet hat noch keine Transaktionen durchgeführt",
+    "cancel": {
+      "success": "Ihr Auftrag wurde storniert.",
+      "error": "Beim Stornieren Ihres Auftrags ist ein Fehler aufgetreten."
+    },
     "status": {
       "all": "Alle",
       "created": "Erstellt",
@@ -148,10 +154,6 @@
   },
   "dashboard": {
     "pageTitle": "Dashboard",
-    "actionButton": {
-      "wallet": "Wallet zum {action} verbinden",
-      "fillAmount": "Betrag zum {action} eingeben"
-    },
     "youPay": "Sie zahlen",
     "youReceive": "Sie erhalten",
     "action": {
@@ -186,6 +188,21 @@
     "transactionSummary": {
       "title": "Transaktionsübersicht",
       "description": "Geben Sie zunächst einen Betrag ein, um die vollständige Kostenaufstellung zu sehen."
+    },
+    "inputs": {
+      "available": "Verfügbar: {amount} {token}",
+      "max": "Max.: {amount} {token}"
+    },
+    "messages": {
+      "amountExceedsBalance": "Der eingegebene Betrag übersteigt den verfügbaren Saldo.",
+      "amountBelowMinimum": "Der eingegebene Betrag ist unter dem zulässigen Minimum von {amount} {token}.",
+      "transactionSubmitted": "Transaktion erfolgreich gesendet!",
+      "transactionFailed": "Die Transaktion ist fehlgeschlagen. Bitte versuchen Sie es erneut."
+    },
+    "actionButton": {
+      "minAmount": "minimum: {amount} {token}",
+      "wallet": "Wallet zum {action} verbinden",
+      "fillAmount": "Betrag zum {action} eingeben"
     },
     "baseCost": "Grundkosten",
     "mintFee": "Prägungsgebühr",
@@ -409,7 +426,6 @@
     "connectWallet": "Wallet verbinden",
     "connectWalletDisclaimer": "Durch die Verbindung stimmen Sie unseren <terms>Nutzungsbedingungen</terms> und der <privacy>Datenschutzrichtlinie</privacy> zu",
     "orders": {
-      "cancel": "Abbrechen",
       "paid": "Bezahlt",
       "received": "Erhalten"
     },

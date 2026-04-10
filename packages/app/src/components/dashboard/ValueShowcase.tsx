@@ -10,12 +10,12 @@ type ValueShowcaseProps = {
   asset: AssetProps
   availableAmount?: string
   hasAvailableAmount?: boolean
-  value?: string
-  defaultValue?: string
+  value?: number
+  defaultValue?: number
   hasTag?: boolean
   tagLeadingIcon?: IconName
   tagTrailingIcon?: IconName
-  suffix: string
+  suffix?: string
 }
 
 const ValueShowcase: React.FC<ValueShowcaseProps> = ({
@@ -23,7 +23,7 @@ const ValueShowcase: React.FC<ValueShowcaseProps> = ({
   availableAmount,
   hasAvailableAmount,
   value,
-  defaultValue = "0.00",
+  defaultValue = 0.0,
   hasTag = false,
   tagLeadingIcon,
   tagTrailingIcon,
@@ -36,7 +36,7 @@ const ValueShowcase: React.FC<ValueShowcaseProps> = ({
     <div className="flex w-full flex-row items-center justify-between">
       <div className="flex flex-col gap-6">
         <span className="text-tertiary text-sm font-medium">
-          {formatNumber(parseFloat(showValue), { maximumFractionDigits: 4 })}
+          {formatNumber(showValue, { maximumFractionDigits: 4 })}
         </span>
         {hasAvailableAmount && availableAmount && (
           <span className="text-tertiary text-xxs">
@@ -58,7 +58,7 @@ const ValueShowcase: React.FC<ValueShowcaseProps> = ({
             <Divider orientation="vertical" />
           </>
         )}
-        <span className="text-tertiary text-xxs">{suffix}</span>
+        {suffix && <span className="text-tertiary text-xxs">{suffix}</span>}
         <Asset {...asset} />
       </div>
     </div>

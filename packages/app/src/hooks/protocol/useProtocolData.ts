@@ -93,7 +93,7 @@ export function useProtocolData() {
             actionFeePercentage: number
             operatorFee: ADAValue
             totalCost: Value
-            toSend: Value
+            toPay: Value
             toReceive: Value
             price: ADAValue
           }
@@ -292,7 +292,7 @@ export function useProtocolData() {
                     actionFeePercentage: actionFeeRatio.toNumber() * 100,
                     operatorFee,
                     totalCost,
-                    toSend: sumValues(totalCost, refundableDeposit),
+                    toPay: sumValues(totalCost, refundableDeposit),
                     toReceive: sumValues(
                       { [token]: amount.amount },
                       refundableDeposit,
@@ -340,7 +340,7 @@ export function useProtocolData() {
                   actionFeePercentage,
                   operatorFee,
                   totalCost,
-                  toSend: sumValues(totalCost, refundableDeposit),
+                  toPay: sumValues(totalCost, refundableDeposit),
                   toReceive,
                   price: {
                     ADA:
@@ -393,7 +393,7 @@ export function useProtocolData() {
                   actionFeePercentage,
                   operatorFee,
                   totalCost,
-                  toSend: sumValues(totalCost, refundableDeposit),
+                  toPay: sumValues(totalCost, refundableDeposit),
                   toReceive,
                   price: {
                     ADA:

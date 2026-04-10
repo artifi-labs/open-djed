@@ -1,6 +1,6 @@
 "use client"
 
-import { useReserveDetails } from "@/hooks/useReserveDetails"
+import { useReserveDetails } from "@/hooks/protocol/useReserveDetails"
 import ChartCard from "../card/ChartCard"
 import { DjedMarketCapChart } from "./charts/DjedMarketCapChart"
 import { ReserveRatioOverTimeChart } from "./charts/ReserveRatioOverTimeChart"

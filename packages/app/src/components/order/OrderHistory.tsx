@@ -16,7 +16,7 @@ import Snackbar from "../Snackbar"
 import TransactionDetails from "../TransactionDetails"
 
 import BaseCard from "../card/BaseCard"
-import { useViewport } from "@/hooks/useViewport"
+import { useViewport } from "@/hooks/shared/useViewport"
 import Asset from "../Asset"
 import { CARDANOSCAN_BASE_URL, ORDERS_PER_PAGE } from "@/lib/constants"
 import { useTranslations } from "next-intl"

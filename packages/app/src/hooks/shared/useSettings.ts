@@ -4,7 +4,7 @@ import { useLocale, useTranslations } from "next-intl"
 import { useCallback, useMemo } from "react"
 import { usePathname, useRouter } from "@/i18n/navigation"
 import { useSearchParams } from "next/navigation"
-import type { Network, Setting } from "@/lib/types"
+import type { Network, Setting } from "@/types"
 
 export function useSettings(): Setting[] {
   const locale = useLocale()
