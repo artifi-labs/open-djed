@@ -41,7 +41,7 @@ const Order = () => {
     filter: "All" | OrderStatus,
   ): OrderStatus[] | undefined => (filter === "All" ? undefined : [filter])
 
-  const hasOrders = orders.orders.length > 0
+  const hasOrders = orders.data.length > 0
   const hasActiveFilters = orders.status !== undefined
 
   return (
@@ -95,7 +95,7 @@ const Order = () => {
           {/* Table */}
           <OrderHistory
             totalPages={orders.pagination?.totalPages}
-            data={orders.orders}
+            data={orders.data}
             filters={hasActiveFilters && hasOrders}
             totalCount={
               orders.pagination && orders.pagination.totalPages > 1

@@ -52,7 +52,7 @@ export const useOrders = ({ queryParams }: UseOrdersParams = {}) => {
 
   return {
     // data
-    orders: data?.data ?? [],
+    data: data?.data ?? [],
     pagination: data?.pagination,
 
     //state
