@@ -1,6 +1,15 @@
 "use client"
 
 import * as React from "react"
+import {
+  useFloating,
+  autoUpdate,
+  offset,
+  flip,
+  shift,
+  size,
+  FloatingPortal,
+} from "@floating-ui/react"
 import clsx from "clsx"
 import ContextualMenu, { type ContextualMenuItem } from "./ContextualMenu"
 import Icon, { type IconName } from "./icons/Icon"
@@ -24,7 +33,7 @@ export type DropdownProps = {
 }
 
 const Dropdown: React.FC<DropdownProps> = ({
-  size = "large",
+  size: dropdownSize = "large",
   leadingIcon,
   text,
   hasTag = true,
@@ -40,21 +49,40 @@ const Dropdown: React.FC<DropdownProps> = ({
   const [isOpen, setIsOpen] = React.useState(false)
   const [itemSelected, setItemSelected] =
     React.useState<ContextualMenuItem | null>(defaultItem || null)
-  const dropdownRef = React.useRef<HTMLDivElement>(null)
+
+  const { refs, floatingStyles } = useFloating({
+    open: isOpen,
+    onOpenChange: setIsOpen,
+    middleware: [
+      offset(8),
+      flip(),
+      shift(),
+      size({
+        apply({ rects, elements }) {
+          Object.assign(elements.floating.style, {
+            width: `${rects.reference.width}px`,
+          })
+        },
+      }),
+    ],
+    whileElementsMounted: autoUpdate,
+  })
 
   React.useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
+    if (!isOpen) return
+    const handleClick = (e: MouseEvent) => {
+      const target = e.target as Node
       if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
+        !refs.domReference.current?.contains(target) &&
+        !refs.floating.current?.contains(target)
       ) {
         setIsOpen(false)
       }
     }
 
-    document.addEventListener("mousedown", handleClickOutside)
-    return () => document.removeEventListener("mousedown", handleClickOutside)
-  }, [])
+    document.addEventListener("mousedown", handleClick)
+    return () => document.removeEventListener("mousedown", handleClick)
+  }, [isOpen, refs])
 
   const handleToggle = (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -86,7 +114,7 @@ const Dropdown: React.FC<DropdownProps> = ({
 
   const dropdownClasses = clsx(
     baseClasses,
-    sizeClasses[size],
+    sizeClasses[dropdownSize],
     interactiveClasses,
     "group cursor-pointer",
   )
@@ -97,8 +125,9 @@ const Dropdown: React.FC<DropdownProps> = ({
   const displayIcon = currentItem?.icon || leadingIcon
 
   return (
-    <div ref={dropdownRef} className="relative w-full">
+    <>
       <button
+        ref={refs.setReference}
         className={dropdownClasses}
         onClick={handleToggle}
         aria-expanded={isOpen}
@@ -141,18 +170,22 @@ const Dropdown: React.FC<DropdownProps> = ({
       </button>
 
       {isOpen && (
-        <div
-          className="absolute right-0 left-0 z-30 mt-8"
-          onClick={(e) => e.stopPropagation()}
-        >
-          {renderMenu ? (
-            renderMenu(() => setIsOpen(false))
-          ) : (
-            <ContextualMenu items={menuItems} onClick={handleItemClick} />
-          )}
-        </div>
+        <FloatingPortal>
+          <div
+            ref={refs.setFloating}
+            style={floatingStyles}
+            className="z-9999"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {renderMenu ? (
+              renderMenu(() => setIsOpen(false))
+            ) : (
+              <ContextualMenu items={menuItems} onClick={handleItemClick} />
+            )}
+          </div>
+        </FloatingPortal>
       )}
-    </div>
+    </>
   )
 }
 
