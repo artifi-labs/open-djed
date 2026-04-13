@@ -49,6 +49,9 @@
     "current": "当前",
     "available": "可用",
     "half": "一半",
+    "cancel": {
+      "text": "取消"
+    },
     "mintAndBurnNow": "立即铸造 & 销毁",
     "months": {
       "march": "三月",
@@ -99,7 +102,6 @@
     "pageTitle": "订单",
     "noOrders": "暂无订单",
     "noWalletDescription": "连接钱包并开始交易后，订单将显示在此处",
-    "cancel": "取消",
     "confirmCancellation": "确认取消",
     "cancellationDescription": "您即将取消此订单。取消后，订单将被移除且不再处理。",
     "cancelOrder": "取消订单",
@@ -129,6 +131,10 @@
     "title": "订单",
     "allOrders": "全部订单",
     "noOrdersDescription": "此钱包尚未进行任何交易",
+    "cancel": {
+      "success": "订单已成功取消",
+      "error": "取消订单时出错"
+    },
     "status": {
       "all": "全部",
       "created": "已创建",
@@ -409,7 +415,6 @@
     "connectWallet": "连接钱包",
     "connectWalletDisclaimer": "连接即表示您同意我们的<terms>服务条款</terms>和<privacy>隐私政策</privacy>",
     "orders": {
-      "cancel": "取消",
       "paid": "已付",
       "received": "已收"
     },
@@ -427,6 +432,13 @@
     },
     "network": {
       "title": "网络"
+    }
+  },
+  "api": {
+    "protocolData": {
+      "messages": {
+        "fetchError": "无法获取协议数据。"
+      }
     }
   },
   "errors": {

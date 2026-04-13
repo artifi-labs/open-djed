@@ -434,6 +434,13 @@
       "title": "Rede"
     }
   },
+  "api": {
+    "protocolData": {
+      "messages": {
+        "fetchError": "Não foi possível obter os dados do protocolo."
+      }
+    }
+  },
   "errors": {
     "404": {
       "pageTitle": "Página Não Encontrada",

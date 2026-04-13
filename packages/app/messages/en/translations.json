@@ -434,6 +434,13 @@
       "title": "Network"
     }
   },
+  "api": {
+    "protocolData": {
+      "messages": {
+        "fetchError": "Failed to fetch protocol data."
+      }
+    }
+  },
   "errors": {
     "404": {
       "pageTitle": "Page Not Found",

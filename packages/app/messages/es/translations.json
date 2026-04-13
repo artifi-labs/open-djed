@@ -49,6 +49,9 @@
     "current": "Actual",
     "available": "Disponible",
     "half": "Mitad",
+    "cancel": {
+      "text": "Cancelar"
+    },
     "mintAndBurnNow": "Acuñar & Quemar Ahora",
     "months": {
       "march": "Marzo",
@@ -99,7 +102,6 @@
     "pageTitle": "Órdenes",
     "noOrders": "Aún no hay órdenes",
     "noWalletDescription": "Una vez que la cartera esté conectada y haya actividad, las órdenes aparecerán aquí",
-    "cancel": "Cancelar",
     "confirmCancellation": "Confirmar Cancelación",
     "cancellationDescription": "Estás a punto de cancelar tu orden. Una vez cancelada, la orden será eliminada y no se procesará más.",
     "cancelOrder": "Cancelar Orden",
@@ -129,6 +131,10 @@
     "title": "Órdenes",
     "allOrders": "Todas las órdenes",
     "noOrdersDescription": "Parece que esta cartera aún no ha realizado ninguna transacción",
+    "cancel": {
+      "success": "Orden cancelada con éxito",
+      "error": "Error al cancelar la orden"
+    },
     "status": {
       "all": "Todas",
       "created": "Creada",
@@ -409,7 +415,6 @@
     "connectWallet": "Conectar Cartera",
     "connectWalletDisclaimer": "Al conectar, aceptas nuestros <terms>Términos y Condiciones</terms> y <privacy>Política de Privacidad</privacy>",
     "orders": {
-      "cancel": "Cancelar",
       "paid": "Pagado",
       "received": "Recibido"
     },
@@ -427,6 +432,13 @@
     },
     "network": {
       "title": "Red"
+    }
+  },
+  "api": {
+    "protocolData": {
+      "messages": {
+        "fetchError": "No se pudieron obtener los datos del protocolo."
+      }
     }
   },
   "errors": {
