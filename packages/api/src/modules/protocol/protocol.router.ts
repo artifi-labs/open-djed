@@ -1,7 +1,8 @@
 import { Hono } from "hono"
-import { describeRoute } from "hono-openapi"
+import { describeRoute, resolver } from "hono-openapi"
 import { AppError } from "../../shared/errors"
 import { getOracleUTxO, getPoolUTxO } from "../../core"
+import { protocolDataResponseApiSchema } from "./protocol.schema"
 
 export const protocolRouter = new Hono().get(
   "/protocol-data",
@@ -9,6 +10,35 @@ export const protocolRouter = new Hono().get(
     summary: "Get protocol data",
     description: "Get on-chain protocol data",
     tags: ["Protocol"],
+    responses: {
+      200: {
+        description: "Successfully retrieved protocol data",
+        content: {
+          "application/json": {
+            schema: resolver(protocolDataResponseApiSchema),
+          },
+        },
+      },
+      400: {
+        description: "Bad Request",
+        content: {
+          "application/json": {
+            example: { error: "BadRequestError", message: "Invalid input" },
+          },
+        },
+      },
+      500: {
+        description: "Internal Server Error",
+        content: {
+          "application/json": {
+            example: {
+              error: "InternalServerError",
+              message: "Something went wrong.",
+            },
+          },
+        },
+      },
+    },
   }),
   async (c) => {
     try {
