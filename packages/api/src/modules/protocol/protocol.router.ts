@@ -12,7 +12,7 @@ export const protocolRouter = new Hono().get(
     tags: ["Protocol"],
     responses: {
       200: {
-        description: "Successfully built the cancel order transaction",
+        description: "Successfully retrieved protocol data",
         content: {
           "application/json": {
             schema: resolver(protocolDataResponseApiSchema),
