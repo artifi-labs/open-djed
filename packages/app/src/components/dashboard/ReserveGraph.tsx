@@ -38,7 +38,6 @@ export function ReserveGraph({
       position: "bottom-full mb-1",
       style:
         "h-[18px] w-[18px] rounded-full bg-gradient-angular-2 border border-[var(--color-border-secondary)]",
-      tooltipModalClass: "py-4",
     },
   ]
 
@@ -66,7 +65,7 @@ export function ReserveGraph({
           />
         </div>
         {reserves.map(
-          ({ label, value, position, style, tooltipModalClass }, index) =>
+          ({ label, value, position, style }, index) =>
             value !== undefined && (
               <div
                 key={index}
@@ -77,8 +76,6 @@ export function ReserveGraph({
               >
                 <Tooltip
                   text={`${formatNumber(Math.round((value !== undefined ? value : 0) * 100), { minimumFractionDigits: 0 })}%`}
-                  style={{ display: "contents" }}
-                  tooltipModalClass={tooltipModalClass || ""}
                 >
                   <div className="relative flex flex-col items-center justify-center">
                     <div className={style} />
