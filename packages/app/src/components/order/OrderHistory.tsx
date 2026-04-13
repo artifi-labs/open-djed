@@ -18,7 +18,7 @@ import TransactionDetails from "../TransactionDetails"
 import BaseCard from "../card/BaseCard"
 import { useViewport } from "@/hooks/useViewport"
 import Asset from "../Asset"
-import { CARDANOSCAN_BASE_URL, ORDERS_PER_PAGE } from "@/lib/constants"
+import { CARDANOSCAN_BASE_URL, MAX_ORDERS_PER_PAGE } from "@/lib/constants"
 import { useTranslations } from "next-intl"
 import { capitalize, formatRelativeDate } from "@/utils"
 import type { OrderStatus } from "@open-djed/api"
@@ -580,7 +580,7 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({
       totalPages={totalPages}
       headers={isMobile ? headersMobile : headersDesktop}
       rows={isMobile ? rowsMobile : rowsDesktop}
-      rowsPerPage={ORDERS_PER_PAGE}
+      rowsPerPage={MAX_ORDERS_PER_PAGE}
       totalCount={totalCount ?? data.length}
       currentPage={currentPage}
       onPageChange={onPageChange}

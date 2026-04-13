@@ -11,6 +11,7 @@ import Chip from "@/components/Chip"
 import { useTranslations } from "next-intl"
 import { type OrderStatus } from "@open-djed/api"
 import { type Type } from "@/components/Tag"
+import { MAX_ORDERS_PER_PAGE } from "@/lib/constants"
 
 const statusFilters: Array<{
   key: "All" | OrderStatus
@@ -35,7 +36,7 @@ const Order = () => {
   const t = useTranslations()
   const { wallet } = useWallet()
   const { openWalletSidebar } = useSidebar()
-  const orders = useOrders()
+  const orders = useOrders({ queryParams: { limit: MAX_ORDERS_PER_PAGE } })
 
   const toStatusFilter = (
     filter: "All" | OrderStatus,
