@@ -77,7 +77,6 @@ export function ReserveGraph({
               >
                 <Tooltip
                   text={`${formatNumber(Math.round((value !== undefined ? value : 0) * 100), { minimumFractionDigits: 0 })}%`}
-                  style={{ display: "contents" }}
                   tooltipModalClass={tooltipModalClass || ""}
                 >
                   <div className="relative flex flex-col items-center justify-center">

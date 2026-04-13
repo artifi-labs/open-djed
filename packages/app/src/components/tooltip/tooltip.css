@@ -15,13 +15,15 @@
   pointer-events: none;
 }
 
+.tooltip-content.visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
 .tooltip:hover .tooltip-content {
   opacity: 1;
   visibility: visible;
-}
-
-.tooltip-top {
-  display: inline-block;
 }
 
 .tooltip-top .tooltip-content {
@@ -31,10 +33,6 @@
   margin-bottom: 8px;
 }
 
-.tooltip-bottom {
-  display: inline-block;
-}
-
 .tooltip-bottom .tooltip-content {
   top: 100%;
   left: 50%;
@@ -42,19 +40,11 @@
   margin-top: 8px;
 }
 
-.tooltip-left {
-  display: inline-block;
-}
-
 .tooltip-left .tooltip-content {
   right: 100%;
   top: 50%;
   transform: translateY(-50%);
   margin-right: 8px;
-}
-
-.tooltip-right {
-  display: inline-block;
 }
 
 .tooltip-right .tooltip-content {

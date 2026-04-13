@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { createPortal } from "react-dom"
 import clsx from "clsx"
 import ContextualMenu, { type ContextualMenuItem } from "./ContextualMenu"
 import Icon, { type IconName } from "./icons/Icon"
@@ -40,7 +41,13 @@ const Dropdown: React.FC<DropdownProps> = ({
   const [isOpen, setIsOpen] = React.useState(false)
   const [itemSelected, setItemSelected] =
     React.useState<ContextualMenuItem | null>(defaultItem || null)
+
+  const [mounted, setMounted] = React.useState(false)
+  const [position, setPosition] = React.useState({ top: 0, left: 0 })
+
   const dropdownRef = React.useRef<HTMLDivElement>(null)
+
+  React.useEffect(() => setMounted(true), [])
 
   React.useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -56,8 +63,24 @@ const Dropdown: React.FC<DropdownProps> = ({
     return () => document.removeEventListener("mousedown", handleClickOutside)
   }, [])
 
+  const updatePosition = () => {
+    if (!dropdownRef.current) return
+
+    const rect = dropdownRef.current.getBoundingClientRect()
+
+    setPosition({
+      top: rect.bottom + window.scrollY + 8,
+      left: rect.left + window.scrollX,
+    })
+  }
+
   const handleToggle = (e: React.MouseEvent) => {
     e.stopPropagation()
+
+    if (!isOpen) {
+      updatePosition()
+    }
+
     setIsOpen((prev) => !prev)
   }
 
@@ -66,6 +89,8 @@ const Dropdown: React.FC<DropdownProps> = ({
     setIsOpen(false)
     onChange?.(item)
   }
+
+  const close = () => setIsOpen(false)
 
   const sizeClasses: Record<Size, string> = {
     small: "px-10 py-8 text-sm",
@@ -80,8 +105,7 @@ const Dropdown: React.FC<DropdownProps> = ({
 
   const interactiveClasses = clsx(
     "hover:bg-surface-primary-hover focus:bg-surface-primary-focused active:bg-surface-primary-pressed",
-    "border-color-gradient-hover border-color-gradient-focus",
-    isOpen && "border-color-gradient", // To keeps the gradient active while the menu is open
+    isOpen && "border-color-gradient",
   )
 
   const dropdownClasses = clsx(
@@ -91,68 +115,78 @@ const Dropdown: React.FC<DropdownProps> = ({
     "group cursor-pointer",
   )
 
-  const currentItem: ContextualMenuItem | null =
-    itemSelected ?? defaultItem ?? null
-
+  const currentItem = itemSelected ?? defaultItem ?? null
   const displayIcon = currentItem?.icon || leadingIcon
 
+  const menuContent = renderMenu?.(close) ?? (
+    <ContextualMenu items={menuItems} onClick={handleItemClick} />
+  )
+
   return (
-    <div ref={dropdownRef} className="relative w-full">
-      <button
-        className={dropdownClasses}
-        onClick={handleToggle}
-        aria-expanded={isOpen}
-        aria-haspopup="menu"
-        type="button"
-      >
-        <div className="inline-flex items-center gap-8">
-          {displayIcon && <Icon name={displayIcon} />}
-
-          <span className="text-tertiary group-hover:text-primary font-medium">
-            {currentItem?.text || text}
-          </span>
-        </div>
-
-        <div className="inline-flex items-center gap-8">
-          {hasTag && (
-            <Tag
-              type="surface"
-              role="Primary"
-              size="tiny"
-              text="Tag"
-              leadingIcon={tagLeadingIcon}
-              trailingIcon={tagTrailingIcon}
-            />
-          )}
-
-          {suffix && (
-            <span className="text-tertiary text-xxs font-medium">{suffix}</span>
-          )}
-
-          {trailingIcon && (
-            <Icon
-              name={trailingIcon}
-              className={clsx("transition-transform duration-200", {
-                "rotate-180": isOpen,
-              })}
-            />
-          )}
-        </div>
-      </button>
-
-      {isOpen && (
-        <div
-          className="absolute right-0 left-0 z-30 mt-8"
-          onClick={(e) => e.stopPropagation()}
+    <>
+      <div ref={dropdownRef} className="relative w-full">
+        <button
+          className={dropdownClasses}
+          onClick={handleToggle}
+          aria-expanded={isOpen}
+          aria-haspopup="menu"
+          type="button"
         >
-          {renderMenu ? (
-            renderMenu(() => setIsOpen(false))
-          ) : (
-            <ContextualMenu items={menuItems} onClick={handleItemClick} />
-          )}
-        </div>
-      )}
-    </div>
+          <div className="inline-flex items-center gap-8">
+            {displayIcon && <Icon name={displayIcon} />}
+
+            <span className="text-tertiary group-hover:text-primary font-medium">
+              {currentItem?.text || text}
+            </span>
+          </div>
+
+          <div className="inline-flex items-center gap-8">
+            {hasTag && (
+              <Tag
+                type="surface"
+                role="Primary"
+                size="tiny"
+                text="Tag"
+                leadingIcon={tagLeadingIcon}
+                trailingIcon={tagTrailingIcon}
+              />
+            )}
+
+            {suffix && (
+              <span className="text-tertiary text-xxs font-medium">
+                {suffix}
+              </span>
+            )}
+
+            {trailingIcon && (
+              <Icon
+                name={trailingIcon}
+                className={clsx("transition-transform duration-200", {
+                  "rotate-180": isOpen,
+                })}
+              />
+            )}
+          </div>
+        </button>
+      </div>
+
+      {isOpen &&
+        mounted &&
+        createPortal(
+          <div
+            className="absolute z-50"
+            style={{
+              top: position.top,
+              left: position.left,
+              minWidth: dropdownRef.current?.offsetWidth,
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {menuContent}
+          </div>,
+          document.body,
+        )}
+    </>
   )
 }
 

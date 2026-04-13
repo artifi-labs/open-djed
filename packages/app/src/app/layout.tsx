@@ -94,6 +94,7 @@ export default function RootLayout({
         className={`${poppins.className} relative flex min-h-screen flex-col antialiased`}
       >
         {children}
+        <div id="tooltip-root" />
       </body>
     </html>
   )
