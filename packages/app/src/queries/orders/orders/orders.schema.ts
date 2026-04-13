@@ -14,4 +14,6 @@ export const orderSchema = orderApiSchema.transform((entry) => ({
 }))
 
 export const ordersResponseSchema = paginatedResponseSchema(orderSchema)
+export type OrdersResponse = z.infer<typeof ordersResponseSchema>
+
 export type Order = z.infer<typeof orderSchema>

@@ -39,7 +39,10 @@ export type OrderApi = z.infer<typeof orderApiSchema>
 
 // Query Params
 export const ordersQueryParamsSchema = paginationQueryParamsSchema.extend({
-  status: z.array(orderStatusSchema).optional(),
+  status: z
+    .union([orderStatusSchema, z.array(orderStatusSchema)])
+    .transform((val) => (Array.isArray(val) ? val : [val]))
+    .optional(),
 })
 export type OrdersQueryParams = z.infer<typeof ordersQueryParamsSchema>
 
