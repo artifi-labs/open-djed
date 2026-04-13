@@ -49,6 +49,9 @@
     "current": "現在",
     "available": "利用可能",
     "half": "半分",
+    "cancel": {
+      "text": "キャンセル"
+    },
     "mintAndBurnNow": "今すぐ発行・バーン",
     "months": {
       "march": "3月",
@@ -99,7 +102,6 @@
     "pageTitle": "注文",
     "noOrders": "まだ注文はありません",
     "noWalletDescription": "ウォレットが接続され、取引が開始されると、注文がここに表示されます",
-    "cancel": "キャンセル",
     "confirmCancellation": "キャンセルの確認",
     "cancellationDescription": "注文をキャンセルしようとしています。キャンセル後、注文は削除され、処理されなくなります。",
     "cancelOrder": "注文をキャンセル",
@@ -129,6 +131,10 @@
     "title": "注文",
     "allOrders": "すべての注文",
     "noOrdersDescription": "このウォレットはまだ取引を行っていないようです",
+    "cancel": {
+      "success": "注文が正常にキャンセルされました",
+      "error": "注文のキャンセルに失敗しました"
+    },
     "status": {
       "all": "すべて",
       "created": "作成済み",
@@ -409,7 +415,6 @@
     "connectWallet": "ウォレットを接続",
     "connectWalletDisclaimer": "接続することで、<terms>利用規約</terms>および<privacy>プライバシーポリシー</privacy>に同意したことになります",
     "orders": {
-      "cancel": "キャンセル",
       "paid": "支払済み",
       "received": "受取済み"
     },
@@ -427,6 +432,13 @@
     },
     "network": {
       "title": "ネットワーク"
+    }
+  },
+  "api": {
+    "protocolData": {
+      "messages": {
+        "fetchError": "プロトコルデータの取得に失敗しました。"
+      }
     }
   },
   "errors": {
