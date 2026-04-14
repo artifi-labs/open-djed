@@ -4,9 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "lint": "eslint .",
+    "lint": "bun biome check --write",
+    "lint:check": "bun biome check",
     "test": "vitest"
   },
   "devDependencies": {

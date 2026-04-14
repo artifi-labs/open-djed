@@ -1,13 +1,16 @@
 {
-  "name": "@open-djed/txs",
-  "version": "0.0.1",
-  "main": "src/index.ts",
-  "scripts": {},
-  "type": "module",
-  "dependencies": {
-    "@lucid-evolution/lucid": "^0.4.29",
-    "@open-djed/math": "workspace:*",
-    "@open-djed/data": "workspace:*",
-    "@open-djed/registry": "workspace:*"
-  }
+	"name": "@open-djed/txs",
+	"version": "0.0.1",
+	"main": "src/index.ts",
+	"scripts": {
+    "lint": "bun biome check --write",
+    "lint:check": "bun biome check"
+  },
+	"type": "module",
+	"dependencies": {
+		"@lucid-evolution/lucid": "^0.4.29",
+		"@open-djed/math": "workspace:*",
+		"@open-djed/data": "workspace:*",
+		"@open-djed/registry": "workspace:*"
+	}
 }

@@ -1,18 +1,21 @@
 {
-  "name": "@open-djed/cli",
-  "version": "0.0.1",
-  "type": "module",
-  "main": "src/index.ts",
-  "scripts": {},
-  "dependencies": {
-    "@lucid-evolution/lucid": "^0.4.29",
-    "@t3-oss/env-core": "^0.12.0",
-    "commander": "^13.1.0",
-    "zod": "^4.1.12",
-    "@open-djed/txs": "workspace:*",
-    "@open-djed/math": "workspace:*",
-    "@open-djed/registry": "workspace:*",
-    "@open-djed/data": "workspace:*",
-    "@open-djed/blockfrost": "workspace:*"
-  }
+	"name": "@open-djed/cli",
+	"version": "0.0.1",
+	"type": "module",
+	"main": "src/index.ts",
+	"scripts": {
+    "lint": "bun biome check --write",
+    "lint:check": "bun biome check"
+  },
+	"dependencies": {
+		"@lucid-evolution/lucid": "^0.4.29",
+		"@t3-oss/env-core": "^0.12.0",
+		"commander": "^13.1.0",
+		"zod": "^4.1.12",
+		"@open-djed/txs": "workspace:*",
+		"@open-djed/math": "workspace:*",
+		"@open-djed/registry": "workspace:*",
+		"@open-djed/data": "workspace:*",
+		"@open-djed/blockfrost": "workspace:*"
+	}
 }

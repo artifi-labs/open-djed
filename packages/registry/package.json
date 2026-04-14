@@ -1,12 +1,15 @@
 {
-  "name": "@open-djed/registry",
-  "version": "0.0.1",
-  "main": "src/index.ts",
-  "scripts": {},
-  "type": "module",
-  "dependencies": {
-    "@open-djed/math": "workspace:*",
-    "@lucid-evolution/lucid": "^0.4.27",
-    "zod": "^4.1.12"
-  }
+	"name": "@open-djed/registry",
+	"version": "0.0.1",
+	"main": "src/index.ts",
+	"scripts": {
+    "lint": "bun biome check --write",
+    "lint:check": "bun biome check"
+  },
+	"type": "module",
+	"dependencies": {
+		"@open-djed/math": "workspace:*",
+		"@lucid-evolution/lucid": "^0.4.27",
+		"zod": "^4.1.12"
+	}
 }
