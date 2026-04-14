@@ -1,3 +1,8 @@
 {
-  "root": false
+	"root": false,
+  "files": {
+    "includes": [
+      "!**/build/**"
+    ]
+  }
 }
