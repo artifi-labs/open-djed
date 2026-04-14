@@ -1,0 +1,9 @@
+{
+  "root": false,
+  "files": {
+    "includes": [
+      "!**/.next/**",
+      "!**/.open-next/**"
+    ]
+  }
+}
