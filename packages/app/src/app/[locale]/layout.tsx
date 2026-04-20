@@ -8,6 +8,8 @@ import { getTranslations } from "next-intl/server"
 export async function generateMetadata() {
   const t = await getTranslations()
 
+  const description = t("metadata.layout.description")
+
   const keywords = [
     "Stablecoin",
     "Djed",
@@ -15,6 +17,7 @@ export async function generateMetadata() {
     "DeFi",
     "Cardano",
     "Artifi Labs",
+    "Artifi Finance",
     "Blockchain",
     "Cryptocurrency",
     "Web3",
@@ -26,13 +29,13 @@ export async function generateMetadata() {
   ]
 
   return {
-    description: t("metadata.layout.description"),
+    description: description,
     keywords: keywords,
     openGraph: {
-      description: t("metadata.layout.description"),
+      description: description,
     },
     twitter: {
-      description: t("metadata.layout.description"),
+      description: description,
     },
   }
 }

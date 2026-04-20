@@ -1,7 +1,6 @@
 import "@/app/styles/globals.css"
 import { Poppins } from "next/font/google"
 import { env } from "@/lib/envLoader"
-import { type Metadata } from "next"
 import {
   APP_NAME,
   TEAM_NAME,
@@ -19,65 +18,70 @@ const poppins = Poppins({
   fallback: ["sans-serif"],
 })
 
-const title = buildTitle()
 
-export const metadata: Metadata = {
-  metadataBase: new URL(env.BASE_URL),
-  title: title,
-  applicationName: APP_NAME,
-  description: `Mint and burn DJED, Cardano's overcollateralized stablecoin, with our open-source platform. Transparent alternative to DJED.xyz - accessible 24/7 anywhere.`,
-  keywords: [
-    "Stablecoin",
-    "DJED",
-    "djed",
-    "SHEN",
-    "shen",
-    "DeFi",
-    "Cardano",
-    "Open Source",
-    "Artifi Labs",
-    "Software",
-    "Development",
-    "Blockchain",
-    "Cryptocurrency",
-    "Decentralized Finance",
-    "Software Development",
-    "web3",
-  ],
-  authors: [{ name: TEAM_NAME, url: WEBSITE_URL }],
-  creator: TEAM_NAME,
-  publisher: TEAM_NAME,
-  alternates: {
-    canonical: WEBSITE_URL,
-  },
-  openGraph: {
-    type: "website",
+export function generateMetadata() {
+  const title = buildTitle()
+  const description = "Mint and burn DJED, Cardano's overcollateralized stablecoin, with our open-source platform. Transparent alternative to DJED.xyz - accessible 24/7 anywhere."
+
+  return {
+    metadataBase: new URL(env.BASE_URL),
     title: title,
-    description: `Mint and burn DJED, Cardano's overcollateralized stablecoin, with our open-source platform. Transparent alternative to DJED.xyz - accessible 24/7 anywhere.`,
-    url: env.BASE_URL,
-    siteName: APP_NAME,
-    images: [
-      {
-        url: `${env.BASE_URL}/logos/opendjed-banner.png`,
-        width: 512,
-        height: 512,
-        alt: `${APP_NAME} Banner`,
-      },
+    applicationName: APP_NAME,
+    description: description,
+    keywords: [
+      "Stablecoin",
+      "DJED",
+      "djed",
+      "SHEN",
+      "shen",
+      "DeFi",
+      "Cardano",
+      "Open Source",
+      "Artifi Labs",
+      "Artifi Finance",
+      "Software",
+      "Development",
+      "Blockchain",
+      "Cryptocurrency",
+      "Decentralized Finance",
+      "Software Development",
+      "web3",
     ],
-    locale: "en_US",
-  },
-  twitter: {
-    card: "summary",
-    title: title,
-    description: `Mint and burn DJED, Cardano's overcollateralized stablecoin, with our open-source platform. Transparent alternative to DJED.xyz - accessible 24/7 anywhere.`,
-    images: [`${env.BASE_URL}/logos/opendjed-banner.png`],
-    creator: TWITTER_HANDLE,
-    site: TWITTER_URL,
-  },
-  icons: {
-    icon: "/logos/opendjed-icon.svg",
-    shortcut: "/logos/opendjed-icon.svg",
-  },
+    authors: [{ name: TEAM_NAME, url: WEBSITE_URL }],
+    creator: TEAM_NAME,
+    publisher: TEAM_NAME,
+    alternates: {
+      canonical: WEBSITE_URL,
+    },
+    openGraph: {
+      type: "website",
+      title: title,
+      description: description,
+      url: env.BASE_URL,
+      siteName: APP_NAME,
+      images: [
+        {
+          url: `/logos/opendjed-banner.png`,
+          width: 512,
+          height: 512,
+          alt: `${APP_NAME} Banner`,
+        },
+      ],
+      locale: "en_US",
+    },
+    twitter: {
+      card: "summary",
+      title: title,
+      description: description,
+      images: [`/logos/opendjed-banner.png`],
+      creator: TWITTER_HANDLE,
+      site: TWITTER_URL,
+    },
+    icons: {
+      icon: "/logos/opendjed-icon.svg",
+      shortcut: "/logos/opendjed-icon.svg",
+    },
+  }
 }
 
 export default function RootLayout({

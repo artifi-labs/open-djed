@@ -13,6 +13,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     title,
+    description: t("notFound.pageDescription"),
     openGraph: {
       title,
       images: [
