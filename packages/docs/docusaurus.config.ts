@@ -95,8 +95,8 @@ const config: Config = {
       },
       innerHTML: JSON.stringify({
         "@context": "https://schema.org/",
-        "@type": "Organization",
-        name: "Artifi Labs",
+        "@type": "WebSite",
+        name: "Open DJED Docs",
         url: "https://docs.djed.artifi.finance",
         logo: "https://docs.djed.artifi.finance/icons/opendjed-icon.svg",
       }),
