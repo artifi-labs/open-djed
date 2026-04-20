@@ -18,12 +18,6 @@ import {
 } from "@/lib/constants"
 import { useTranslations } from "next-intl"
 
-type FooterItem = {
-  label: string
-  href: string
-  icon?: IconName
-}
-
 type SocialIcon = {
   icon: IconName
   href: string
@@ -33,21 +27,59 @@ type SocialIconProps = {
   items: SocialIcon[]
 }
 
+type FooterItem = {
+  label: string
+  href: string
+  icon?: IconName
+}
+
+type FooterLinkProps = {
+  href: string
+  children: React.ReactNode
+  className?: string
+}
+
+const isExternalLink = (href: string): boolean => {
+  return /^https?:\/\/|^\/\//.test(href)
+}
+
+const FooterLink: React.FC<FooterLinkProps> = ({
+  href,
+  children,
+  className,
+}) => {
+  const isExternal = isExternalLink(href)
+
+  if (isExternal) {
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={className}
+      >
+        {children}
+      </a>
+    )
+  }
+
+  return (
+    <Link href={href} className={className}>
+      {children}
+    </Link>
+  )
+}
+
 const Logo = () => {
   return (
-    <Link
-      href={WEBSITE_URL}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="w-53.5"
-    >
+    <FooterLink href={WEBSITE_URL} className="w-53.5">
       <Image
         src="/logos/artifilabs-logo.svg"
         alt="Artifi Logo"
         width={98}
         height={22}
       />
-    </Link>
+    </FooterLink>
   )
 }
 
@@ -129,17 +161,15 @@ const Footer = () => {
         </div>
         <div className="flex flex-row items-center justify-between">
           {footerItems.map((item) => (
-            <Link
-              key={item.label}
-              id={`footer-item-${item.label.toLowerCase()}`}
-              href={item.href}
-              className="p-6"
-            >
-              <div className="flex flex-row gap-4">
+            <FooterLink key={item.label} href={item.href} className="p-6">
+              <div
+                id={`footer-item-${item.label.toLowerCase()}`}
+                className="flex flex-row gap-4"
+              >
                 <p className="text-xs font-medium">{item.label}</p>
                 {item.icon && <Icon name={item.icon} size={16} />}
               </div>
-            </Link>
+            </FooterLink>
           ))}
         </div>
 
@@ -166,12 +196,15 @@ const Footer = () => {
             <Logo />
             <div className="flex flex-row items-center gap-40">
               {footerItems.map((item) => (
-                <Link key={item.label} href={item.href} className="p-6">
-                  <div className="flex flex-row gap-4">
+                <FooterLink key={item.label} href={item.href} className="p-6">
+                  <div
+                    id={`footer-item-${item.label.toLowerCase()}`}
+                    className="flex flex-row gap-4"
+                  >
                     <p className="text-xs font-medium">{item.label}</p>
                     {item.icon && <Icon name={item.icon} size={16} />}
                   </div>
-                </Link>
+                </FooterLink>
               ))}
             </div>
             <div className="flex gap-16">

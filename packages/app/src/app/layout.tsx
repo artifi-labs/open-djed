@@ -18,10 +18,10 @@ const poppins = Poppins({
   fallback: ["sans-serif"],
 })
 
-
 export function generateMetadata() {
   const title = buildTitle()
-  const description = "Mint and burn DJED, Cardano's overcollateralized stablecoin, with our open-source platform. Transparent alternative to DJED.xyz - accessible 24/7 anywhere."
+  const description =
+    "Mint and burn DJED, Cardano's overcollateralized stablecoin, with our open-source platform. Transparent alternative to DJED.xyz - accessible 24/7 anywhere."
 
   return {
     metadataBase: new URL(env.BASE_URL),
@@ -52,6 +52,16 @@ export function generateMetadata() {
     publisher: TEAM_NAME,
     alternates: {
       canonical: WEBSITE_URL,
+      languages: {
+        en: WEBSITE_URL,
+        pt: `${WEBSITE_URL}/pt`,
+        es: `${WEBSITE_URL}/es`,
+        fr: `${WEBSITE_URL}/fr`,
+        de: `${WEBSITE_URL}/de`,
+        cn: `${WEBSITE_URL}/cn`,
+        ja: `${WEBSITE_URL}/ja`,
+        "x-default": WEBSITE_URL,
+      },
     },
     openGraph: {
       type: "website",
@@ -89,11 +99,27 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "Open DJED",
+    alternateName: "DJED Stablecoin",
+    url: env.BASE_URL,
+  }
+
   return (
     <html
       suppressHydrationWarning
       className={`${poppins.variable} bg-background-primary`}
     >
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+          }}
+        />
+      </head>
       <body
         className={`${poppins.className} relative flex min-h-screen flex-col antialiased`}
       >
