@@ -17,7 +17,8 @@
     },
     "title": "",
     "subtitle": "",
-    "buttonText": ""
+    "buttonText": "",
+    "pageDescription": ""
   },
   "analytics": {
     "failedToGetHistoricalReserveRatioData": "",
@@ -31,7 +32,9 @@
     "totalDjed": "",
     "totalShen": "",
     "totalVolume": "",
-    "djedMinted": ""
+    "djedMinted": "",
+    "pageTitle": "Analíticas",
+    "pageDescription": ""
   },
   "common": {
     "burnedToken": "",
@@ -47,7 +50,9 @@
     },
     "cancel": {
       "text": "Cancelar"
-    }
+    },
+    "pageTitle": "Ordens",
+    "pageDescription": ""
   },
   "wallet": {
     "orders": {
@@ -55,5 +60,12 @@
         "text": "Cancelar"
       }
     }
+  },
+  "privacyPolicy": {
+    "pageTitle": "Política de Privacidade"
+  },
+  "simulator": {
+    "pageTitle": "Simulador",
+    "pageDescription": ""
   }
 }

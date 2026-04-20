@@ -1,0 +1,20 @@
+{
+  "notFound": {
+    "pageDescription": ""
+  },
+  "analytics": {
+    "pageTitle": "Analytik",
+    "pageDescription": ""
+  },
+  "orders": {
+    "pageTitle": "Aufträge",
+    "pageDescription": ""
+  },
+  "privacyPolicy": {
+    "pageTitle": "Datenschutzrichtlinie"
+  },
+  "simulator": {
+    "pageTitle": "Simulator",
+    "pageDescription": ""
+  }
+}

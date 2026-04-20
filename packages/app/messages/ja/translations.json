@@ -1,6 +1,14 @@
 {
+  "notFound": {
+    "metadata": {
+      "pageDescription": "ページが見つかりません。URLを確認するか、Open DJEDダッシュボードに戻ってDJEDを鋳造・焼却します。"
+    }
+  },
   "analytics": {
-    "pageTitle": "アナリティクス",
+    "metadata": {
+      "title": "アナリティクス",
+      "description": "CardanoのDJEDとSHENのプロトコルメトリックス、時価総額トレンド、準備金比率のダイナミクスをリアルタイムで監視します。"
+    },
     "analyticsOverview": "アナリティクス概要",
     "description": "プロトコル指標と市場動向のリアルタイムインサイト",
     "reserveRatioOverTime": "準備率の推移",
@@ -28,17 +36,17 @@
       }
     }
   },
+  "metadata": {
+    "layout": {
+      "description": "オープンソースプラットフォームで、CardanoのDJED（過剰担保型ステーブルコイン）を発行・バーン。DJED.xyzの透明な代替として、世界中で24時間365日アクセス可能。"
+    }
+  },
   "keywords": {
     "opensource": "オープンソース",
     "software": "ソフトウェア",
     "development": "開発",
     "defi_full": "分散型金融",
     "software_dev": "ソフトウェア開発"
-  },
-  "metadata": {
-    "layout": {
-      "description": "オープンソースプラットフォームで、CardanoのDJED（過剰担保型ステーブルコイン）を発行・バーン。DJED.xyzの透明な代替として、世界中で24時間365日アクセス可能。"
-    }
   },
   "common": {
     "illustration": "イラスト",
@@ -99,7 +107,10 @@
     }
   },
   "orders": {
-    "pageTitle": "注文",
+    "metadata": {
+      "title": "注文",
+      "description": "DJEDおよびSHENの鋳造/焼却トランザクションを表示および管理します。トランザクション状況、手数料、実行詳細を追跡します。"
+    },
     "noOrders": "まだ注文はありません",
     "noWalletDescription": "ウォレットが接続され、取引が開始されると、注文がここに表示されます",
     "confirmCancellation": "キャンセルの確認",
@@ -202,7 +213,9 @@
     "burnFee": "バーン手数料"
   },
   "privacyPolicy": {
-    "pageTitle": "プライバシーポリシー",
+    "metadata": {
+      "title": "プライバシーポリシー"
+    },
     "title": "プライバシーポリシー",
     "effectiveDate": "発効日：{date}",
     "intro": "Artifi Labsはプライバシーと透明性を重視しています。このプライバシーポリシーでは、収集するデータとその使用方法について説明します。",
@@ -229,7 +242,10 @@
     }
   },
   "simulator": {
-    "pageTitle": "シミュレーター",
+    "metadata": {
+      "title": "シミュレーター",
+      "description": "SHENの潜在的な投資成果をシミュレーションおよび分析します。カスタム買値/売値日付とADA価格に基づいて利益、手数料、報酬を計算します。"
+    },
     "usdAmount": {
       "label": "USD金額",
       "tooltip": "SHENに投資したいUSD金額。"

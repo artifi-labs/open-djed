@@ -1,6 +1,14 @@
 {
+  "notFound": {
+    "metadata": {
+      "pageDescription": "页面未找到。检查URL或返回Open DJED仪表板以铸造和销毁DJED。"
+    }
+  },
   "analytics": {
-    "pageTitle": "数据分析",
+    "metadata": {
+      "title": "数据分析",
+      "description": "实时监控Cardano上DJED和SHEN的协议指标、市值趋势和准备金比率动态。"
+    },
     "analyticsOverview": "分析概览",
     "description": "协议指标与市场动态的实时洞察",
     "reserveRatioOverTime": "储备率变化趋势",
@@ -28,17 +36,17 @@
       }
     }
   },
+  "metadata": {
+    "layout": {
+      "description": "在我们的开源平台上铸造和销毁 DJED-Cardano 的超额抵押稳定币。DJED.xyz 的透明替代方案，随时随地全天候可用。"
+    }
+  },
   "keywords": {
     "opensource": "开源",
     "software": "软件",
     "development": "开发",
     "defi_full": "去中心化金融",
     "software_dev": "软件开发"
-  },
-  "metadata": {
-    "layout": {
-      "description": "在我们的开源平台上铸造和销毁 DJED-Cardano 的超额抵押稳定币。DJED.xyz 的透明替代方案，随时随地全天候可用。"
-    }
   },
   "common": {
     "illustration": "插图",
@@ -99,7 +107,10 @@
     }
   },
   "orders": {
-    "pageTitle": "订单",
+    "metadata": {
+      "title": "订单",
+      "description": "查看和管理您的DJED和SHEN铸造/销毁交易。跟踪交易状态、费用和执行详情。"
+    },
     "noOrders": "暂无订单",
     "noWalletDescription": "连接钱包并开始交易后，订单将显示在此处",
     "confirmCancellation": "确认取消",
@@ -202,7 +213,9 @@
     "burnFee": "销毁手续费"
   },
   "privacyPolicy": {
-    "pageTitle": "隐私政策",
+    "metadata": {
+      "title": "隐私政策"
+    },
     "title": "隐私政策",
     "effectiveDate": "生效日期：{date}",
     "intro": "Artifi Labs 致力于保护隐私与透明度。本隐私政策说明我们收集哪些数据以及如何使用。",
@@ -229,7 +242,10 @@
     }
   },
   "simulator": {
-    "pageTitle": "模拟器",
+    "metadata": {
+      "title": "模拟器",
+      "description": "模拟和分析SHEN投资的潜在结果。根据自定义买入/卖出日期和ADA价格计算利润、费用和奖励。"
+    },
     "usdAmount": {
       "label": "美元金额",
       "tooltip": "您希望投资 SHEN 的美元金额。"

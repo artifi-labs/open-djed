@@ -1,6 +1,14 @@
 {
+  "notFound": {
+    "metadata": {
+      "pageDescription": "Page not found. Check the URL or return to the Open DJED dashboard to mint and burn DJED."
+    }
+  },
   "analytics": {
-    "pageTitle": "Analytics",
+    "metadata": {
+      "title": "Analytics",
+      "description": "Monitor real-time protocol metrics, market cap trends, and reserve ratio dynamics for DJED and SHEN on Cardano."
+    },
     "analyticsOverview": "Analytics Overview",
     "description": "Real-time insights into protocol metrics and market dynamics",
     "reserveRatioOverTime": "Reserve Ratio Over Time",
@@ -28,17 +36,17 @@
       }
     }
   },
+  "metadata": {
+    "layout": {
+      "description": "Mint and burn DJED, Cardano's overcollateralized stablecoin, with our open-source platform. Transparent alternative to DJED.xyz - accessible 24/7 anywhere."
+    }
+  },
   "keywords": {
     "opensource": "Open Source",
     "software": "Software",
     "development": "Development",
     "defi_full": "Decentralized Finance",
     "software_dev": "Software Development"
-  },
-  "metadata": {
-    "layout": {
-      "description": "Mint and burn DJED, Cardano's overcollateralized stablecoin, with our open-source platform. Transparent alternative to DJED.xyz - accessible 24/7 anywhere."
-    }
   },
   "common": {
     "illustration": "Illustration",
@@ -99,7 +107,10 @@
     }
   },
   "orders": {
-    "pageTitle": "Orders",
+    "metadata": {
+      "title": "Orders",
+      "description": "View and manage your DJED and SHEN mint/burn transactions. Track transaction status, fees, and execution details."
+    },
     "noOrders": "No orders yet",
     "noWalletDescription": "Once the wallet is connected and activity starts, orders will appear here",
     "confirmCancellation": "Confirm Cancellation",
@@ -202,7 +213,9 @@
     "burnFee": "Burn Fee"
   },
   "privacyPolicy": {
-    "pageTitle": "Privacy Policy",
+    "metadata": {
+      "title": "Privacy Policy"
+    },
     "title": "Privacy Policy",
     "effectiveDate": "Effective Date: {date}",
     "intro": "Artifi Labs is committed to privacy and transparency. This Privacy Policy outlines what data we collect and how it is used.",
@@ -229,7 +242,10 @@
     }
   },
   "simulator": {
-    "pageTitle": "Simulator",
+    "metadata": {
+      "title": "Simulator",
+      "description": "Simulate and analyze potential SHEN investment outcomes. Calculate profits, fees, and rewards based on custom buy/sell dates and ADA prices."
+    },
     "usdAmount": {
       "label": "USD Amount",
       "tooltip": "The amount of USD you want to invest in SHEN."

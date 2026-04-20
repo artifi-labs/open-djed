@@ -1,6 +1,14 @@
 {
+  "notFound": {
+    "metadata": {
+      "pageDescription": "Seite nicht gefunden. Überprüfe die URL oder kehre zum Open DJED-Dashboard zurück, um DJED zu prägen und zu verbrennen."
+    }
+  },
   "analytics": {
-    "pageTitle": "Analytik",
+    "metadata": {
+      "title": "Analytik",
+      "description": "Überwachen Sie in Echtzeit die Protokollmetriken, Kapitalisierungstrends und Reserve-Quote-Dynamik für DJED und SHEN auf Cardano."
+    },
     "analyticsOverview": "Analytik-Übersicht",
     "description": "Echtzeit-Einblicke in Protokollmetriken und Marktdynamiken",
     "reserveRatioOverTime": "Reservequote im Zeitverlauf",
@@ -28,17 +36,17 @@
       }
     }
   },
+  "metadata": {
+    "layout": {
+      "description": "Prägen und brennen Sie DJED, den überbesicherten Stablecoin von Cardano, mit unserer Open-Source-Plattform. Transparente Alternative zu DJED.xyz - rund um die Uhr weltweit zugänglich."
+    }
+  },
   "keywords": {
     "opensource": "Open Source",
     "software": "Software",
     "development": "Entwicklung",
     "defi_full": "Dezentralisierte Finanzen",
     "software_dev": "Softwareentwicklung"
-  },
-  "metadata": {
-    "layout": {
-      "description": "Prägen und brennen Sie DJED, den überbesicherten Stablecoin von Cardano, mit unserer Open-Source-Plattform. Transparente Alternative zu DJED.xyz - rund um die Uhr weltweit zugänglich."
-    }
   },
   "common": {
     "illustration": "Illustration",
@@ -99,7 +107,10 @@
     }
   },
   "orders": {
-    "pageTitle": "Aufträge",
+    "metadata": {
+      "title": "Aufträge",
+      "description": "Zeigen Sie Ihre DJED- und SHEN-Prägvorgänge/Brenntransaktionen an und verwalten Sie sie. Verfolgen Sie Status, Gebühren und Ausführungsdetails."
+    },
     "noOrders": "Noch keine Aufträge",
     "noWalletDescription": "Sobald die Wallet verbunden ist und Aktivität beginnt, erscheinen die Aufträge hier",
     "confirmCancellation": "Stornierung bestätigen",
@@ -202,7 +213,9 @@
     "burnFee": "Verbrennungsgebühr"
   },
   "privacyPolicy": {
-    "pageTitle": "Datenschutzrichtlinie",
+    "metadata": {
+      "title": "Datenschutzrichtlinie"
+    },
     "title": "Datenschutzrichtlinie",
     "effectiveDate": "Gültig ab: {date}",
     "intro": "Artifi Labs ist dem Datenschutz und der Transparenz verpflichtet. Diese Datenschutzrichtlinie beschreibt, welche Daten wir erheben und wie sie verwendet werden.",
@@ -229,7 +242,10 @@
     }
   },
   "simulator": {
-    "pageTitle": "Simulator",
+    "metadata": {
+      "title": "Simulator",
+      "description": "Simulieren und analysieren Sie potenzielle SHEN-Anlageergebnisse. Berechnen Sie Gewinne, Gebühren und Belohnungen basierend auf benutzerdefinierten Kauf-/Verkaufsdaten und ADA-Preisen."
+    },
     "usdAmount": {
       "label": "USD-Betrag",
       "tooltip": "Der USD-Betrag, den Sie in SHEN investieren möchten."
