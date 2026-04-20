@@ -1,0 +1,20 @@
+{
+  "notFound": {
+    "pageDescription": ""
+  },
+  "analytics": {
+    "pageTitle": "Analíticas",
+    "pageDescription": ""
+  },
+  "orders": {
+    "pageTitle": "Órdenes",
+    "pageDescription": ""
+  },
+  "privacyPolicy": {
+    "pageTitle": "Política de Privacidad"
+  },
+  "simulator": {
+    "pageTitle": "Simulador",
+    "pageDescription": ""
+  }
+}

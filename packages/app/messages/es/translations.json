@@ -1,6 +1,14 @@
 {
+  "notFound": {
+    "metadata": {
+      "pageDescription": "Página no encontrada. Verifica la URL o vuelve al panel de Open DJED para acuñar y quemar DJED."
+    }
+  },
   "analytics": {
-    "pageTitle": "Analíticas",
+    "metadata": {
+      "title": "Analíticas",
+      "description": "Monitorea en tiempo real las métricas del protocolo, tendencias de capitalización y dinámicas de la tasa de reserva para DJED y SHEN en Cardano."
+    },
     "analyticsOverview": "Panel de Analíticas",
     "description": "Información en tiempo real sobre métricas del protocolo y dinámicas del mercado",
     "reserveRatioOverTime": "Evolución del Ratio de Reservas",
@@ -28,17 +36,17 @@
       }
     }
   },
+  "metadata": {
+    "layout": {
+      "description": "Acuña y quema DJED, la stablecoin sobrecolateralizada de Cardano, en nuestra plataforma de código abierto. Una alternativa transparente a DJED.xyz — accesible 24/7 desde cualquier lugar."
+    }
+  },
   "keywords": {
     "opensource": "Código Abierto",
     "software": "Software",
     "development": "Desarrollo",
     "defi_full": "Finanzas Descentralizadas",
     "software_dev": "Desarrollo de Software"
-  },
-  "metadata": {
-    "layout": {
-      "description": "Acuña y quema DJED, la stablecoin sobrecolateralizada de Cardano, en nuestra plataforma de código abierto. Una alternativa transparente a DJED.xyz — accesible 24/7 desde cualquier lugar."
-    }
   },
   "common": {
     "illustration": "Ilustración",
@@ -99,7 +107,10 @@
     }
   },
   "orders": {
-    "pageTitle": "Órdenes",
+    "metadata": {
+      "title": "Órdenes",
+      "description": "Visualiza y gestiona tus transacciones de acuñación/quema de DJED y SHEN. Rastrea el estado, tarifas y detalles de ejecución."
+    },
     "noOrders": "Aún no hay órdenes",
     "noWalletDescription": "Una vez que la cartera esté conectada y haya actividad, las órdenes aparecerán aquí",
     "confirmCancellation": "Confirmar Cancelación",
@@ -202,7 +213,9 @@
     "burnFee": "Tarifa de Quema"
   },
   "privacyPolicy": {
-    "pageTitle": "Política de Privacidad",
+    "metadata": {
+      "title": "Política de Privacidad"
+    },
     "title": "Política de Privacidad",
     "effectiveDate": "Fecha de Vigencia: {date}",
     "intro": "Artifi Labs está comprometida con la privacidad y la transparencia. Esta Política de Privacidad describe los datos que recopilamos y cómo se utilizan.",
@@ -229,7 +242,10 @@
     }
   },
   "simulator": {
-    "pageTitle": "Simulador",
+    "metadata": {
+      "title": "Simulador",
+      "description": "Simula y analiza posibles resultados de inversión en SHEN. Calcula ganancias, tarifas y recompensas basado en fechas y precios de ADA personalizados."
+    },
     "usdAmount": {
       "label": "Importe en USD",
       "tooltip": "El importe en USD que deseas invertir en SHEN."

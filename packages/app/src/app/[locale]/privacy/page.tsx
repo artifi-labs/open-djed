@@ -7,7 +7,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations()
 
   return {
-    title: buildTitle(t("privacyPolicy.pageTitle")),
+    title: buildTitle(t("privacyPolicy.metadata.title")),
   }
 }
 

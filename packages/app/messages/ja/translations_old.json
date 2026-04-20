@@ -1,0 +1,20 @@
+{
+  "notFound": {
+    "pageDescription": ""
+  },
+  "analytics": {
+    "pageTitle": "アナリティクス",
+    "pageDescription": ""
+  },
+  "orders": {
+    "pageTitle": "注文",
+    "pageDescription": ""
+  },
+  "privacyPolicy": {
+    "pageTitle": "プライバシーポリシー"
+  },
+  "simulator": {
+    "pageTitle": "シミュレーター",
+    "pageDescription": ""
+  }
+}

@@ -7,8 +7,8 @@ export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations()
 
   return {
-    title: buildTitle(t("simulator.pageTitle")),
-    description: t("simulator.pageDescription"),
+    title: buildTitle(t("simulator.metadata.title")),
+    description: t("simulator.metadata.description"),
   }
 }
 export default function SimulatorPage() {

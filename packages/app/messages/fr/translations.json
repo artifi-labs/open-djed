@@ -1,6 +1,14 @@
 {
+  "notFound": {
+    "metadata": {
+      "pageDescription": "Page non trouvée. Vérifiez l'URL ou retournez au tableau de bord Open DJED pour frapper et brûler DJED."
+    }
+  },
   "analytics": {
-    "pageTitle": "Analytiques",
+    "metadata": {
+      "title": "Analytiques",
+      "description": "Suivez en temps réel les métriques du protocole, les tendances de capitalisation et la dynamique du ratio de réserve pour DJED et SHEN sur Cardano."
+    },
     "analyticsOverview": "Tableau de Bord Analytique",
     "description": "Informations en temps réel sur les métriques du protocole et les dynamiques du marché",
     "reserveRatioOverTime": "Évolution du Ratio de Réserves",
@@ -28,17 +36,17 @@
       }
     }
   },
+  "metadata": {
+    "layout": {
+      "description": "Frappez et brûlez DJED, le stablecoin surcollatéralisé de Cardano, sur notre plateforme open source. Une alternative transparente à DJED.xyz — accessible 24h/24 et 7j/7, partout."
+    }
+  },
   "keywords": {
     "opensource": "Open Source",
     "software": "Logiciel",
     "development": "Développement",
     "defi_full": "Finance Décentralisée",
     "software_dev": "Développement Logiciel"
-  },
-  "metadata": {
-    "layout": {
-      "description": "Frappez et brûlez DJED, le stablecoin surcollatéralisé de Cardano, sur notre plateforme open source. Une alternative transparente à DJED.xyz — accessible 24h/24 et 7j/7, partout."
-    }
   },
   "common": {
     "illustration": "Illustration",
@@ -99,7 +107,10 @@
     }
   },
   "orders": {
-    "pageTitle": "Ordres",
+    "metadata": {
+      "title": "Ordres",
+      "description": "Visualisez et gérez vos transactions de frappe/brûlage DJED et SHEN. Suivez l'état, les frais et les détails d'exécution."
+    },
     "noOrders": "Aucun ordre pour l'instant",
     "noWalletDescription": "Une fois le portefeuille connecté et l'activité démarrée, les ordres apparaîtront ici",
     "confirmCancellation": "Confirmer l'Annulation",
@@ -202,7 +213,9 @@
     "burnFee": "Frais de Destruction"
   },
   "privacyPolicy": {
-    "pageTitle": "Politique de Confidentialité",
+    "metadata": {
+      "title": "Politique de Confidentialité"
+    },
     "title": "Politique de Confidentialité",
     "effectiveDate": "Date d'Entrée en Vigueur : {date}",
     "intro": "Artifi Labs s'engage en faveur de la confidentialité et de la transparence. Cette Politique de Confidentialité décrit les données que nous collectons et la façon dont elles sont utilisées.",
@@ -229,7 +242,10 @@
     }
   },
   "simulator": {
-    "pageTitle": "Simulateur",
+    "metadata": {
+      "title": "Simulateur",
+      "description": "Simulez et analysez les résultats potentiels d'investissement en SHEN. Calculez les profits, les frais et les récompenses selon les dates et prix ADA personnalisés."
+    },
     "usdAmount": {
       "label": "Montant en USD",
       "tooltip": "Le montant en USD que vous souhaitez investir dans SHEN."

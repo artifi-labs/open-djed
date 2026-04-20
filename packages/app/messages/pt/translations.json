@@ -1,6 +1,14 @@
 {
+  "notFound": {
+    "metadata": {
+      "pageDescription": "Página não encontrada. Verifique a URL ou volte ao dashboard Open DJED para cunhar e queimar DJED."
+    }
+  },
   "analytics": {
-    "pageTitle": "Analíticas",
+    "metadata": {
+      "title": "Analíticas",
+      "description": "Monitore em tempo real as métricas do protocolo, tendências de capitalização e dinâmica da taxa de reserva para DJED e SHEN na Cardano."
+    },
     "analyticsOverview": "Painel de Analíticas",
     "description": "Informações em tempo real sobre métricas de protocolo e dinâmicas de mercado",
     "reserveRatioOverTime": "Evolução da Taxa de Reservas",
@@ -28,17 +36,17 @@
       }
     }
   },
+  "metadata": {
+    "layout": {
+      "description": "Cunhe e queime DJED, a stablecoin sobrecolateralizada da Cardano, na nossa plataforma de código aberto. Uma alternativa transparente ao DJED.xyz — acessível 24/7 em qualquer lugar."
+    }
+  },
   "keywords": {
     "opensource": "Código Aberto",
     "software": "Software",
     "development": "Desenvolvimento",
     "defi_full": "Finança Descentralizada",
     "software_dev": "Desenvolvimento de Software"
-  },
-  "metadata": {
-    "layout": {
-      "description": "Cunhe e queime DJED, a stablecoin sobrecolateralizada da Cardano, na nossa plataforma de código aberto. Uma alternativa transparente ao DJED.xyz — acessível 24/7 em qualquer lugar."
-    }
   },
   "common": {
     "illustration": "Ilustração",
@@ -99,7 +107,10 @@
     }
   },
   "orders": {
-    "pageTitle": "Ordens",
+    "metadata": {
+      "title": "Ordens",
+      "description": "Visualize e gerencie suas transações de cunhagem/queima de DJED e SHEN. Acompanhe status, taxas e detalhes de execução."
+    },
     "noOrders": "Ainda não há ordens",
     "noWalletDescription": "Assim que a carteira estiver conectada e houver atividade, as ordens aparecerão aqui",
     "confirmCancellation": "Confirmar Cancelamento",
@@ -202,7 +213,9 @@
     "burnFee": "Taxa de Queima"
   },
   "privacyPolicy": {
-    "pageTitle": "Política de Privacidade",
+    "metadata": {
+      "title": "Política de Privacidade"
+    },
     "title": "Política de Privacidade",
     "effectiveDate": "Data de Vigência: {date}",
     "intro": "A Artifi Labs valoriza a privacidade e a transparência. Esta Política de Privacidade descreve os dados recolhidos e como eles são utilizados.",
@@ -229,7 +242,10 @@
     }
   },
   "simulator": {
-    "pageTitle": "Simulador",
+    "metadata": {
+      "title": "Simulador",
+      "description": "Simule e analise resultados potenciais de investimento em SHEN. Calcule lucros, taxas e recompensas com datas de compra/venda e preços de ADA personalizados."
+    },
     "usdAmount": {
       "label": "Valor em USD",
       "tooltip": "O valor em USD que deseja investir em SHEN."

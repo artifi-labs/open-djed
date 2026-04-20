@@ -1,0 +1,20 @@
+{
+  "notFound": {
+    "pageDescription": ""
+  },
+  "analytics": {
+    "pageTitle": "数据分析",
+    "pageDescription": ""
+  },
+  "orders": {
+    "pageTitle": "订单",
+    "pageDescription": ""
+  },
+  "privacyPolicy": {
+    "pageTitle": "隐私政策"
+  },
+  "simulator": {
+    "pageTitle": "模拟器",
+    "pageDescription": ""
+  }
+}
