@@ -9,6 +9,6 @@
     "@open-djed/registry": "workspace:*"
   },
   "devDependencies": {
-    "vitest": "^4.0.1"
+    "vitest": "^4.1.7"
   }
 }
