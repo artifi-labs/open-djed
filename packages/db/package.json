@@ -12,28 +12,28 @@
     "test": "vitest"
   },
   "dependencies": {
-    "@lucid-evolution/lucid": "^0.4.29",
+    "@lucid-evolution/lucid": "^0.4.31",
     "@open-djed/blockfrost": "workspace:*",
     "@open-djed/data": "workspace:*",
     "@open-djed/math": "workspace:*",
     "@open-djed/registry": "workspace:*",
-    "@prisma/adapter-pg": "^7.1.0",
-    "@prisma/client": "^7.1.0",
+    "@prisma/adapter-pg": "^7.8.0",
+    "@prisma/client": "^7.8.0",
     "@t3-oss/env-core": "^0.12.0",
-    "@types/node": "^24.10.1",
-    "cbor-x": "^1.6.0",
+    "@types/node": "^24.12.4",
+    "cbor-x": "^1.6.4",
     "cbor2": "^1.12.0",
-    "dotenv": "^17.2.3",
+    "dotenv": "^17.4.2",
     "json-bigint": "^1.0.0",
     "node-cron": "^4.2.1",
-    "pino": "^9.2.0",
-    "prisma": "^7.1.0",
-    "zod": "^4.1.12"
+    "pino": "^9.14.0",
+    "prisma": "^7.8.0",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@types/json-bigint": "^1.0.4",
     "dotenv-expand": "^12.0.3",
-    "pino-pretty": "^11.2.1",
-    "vitest": "^4.0.18"
+    "pino-pretty": "^11.3.0",
+    "vitest": "^4.1.7"
   }
 }
