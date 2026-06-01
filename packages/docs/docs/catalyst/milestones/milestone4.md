@@ -4,7 +4,7 @@ sidebar_position: 4
 
 # Milestone 4 - Translations & Documentation & Maintenance
 
-- **Submitted:** OnGoing
+- **Submitted:** April 10, 2026 at 3:04 PM UTC
 - **Milestone Cost:** 10% (ADA 10,000)
 - **Milestone Link:** [Milestone 4](https://milestones.projectcatalyst.io/projects/1400095/milestones/4)
 
