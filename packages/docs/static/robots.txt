@@ -1,5 +1,5 @@
 # Robots.txt for Artifi Labs Documentation
-# https://docs.artifi.finance
+# https://docs.djed.artifi.finance
 # Algolia-Crawler-Verif: 3CA644D213626AD9
 
 User-agent: *
@@ -24,4 +24,4 @@ User-agent: Slurp
 Allow: /
 
 # Sitemap location
-Sitemap: https://docs.artifi.finance/sitemap.xml
+Sitemap: https://docs.djed.artifi.finance/sitemap.xml
