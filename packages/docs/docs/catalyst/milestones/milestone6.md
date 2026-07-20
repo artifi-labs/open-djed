@@ -4,7 +4,7 @@ sidebar_position: 6
 
 # Milestone 6 - Maintenance & Support for Months 7-8
 
-- **Submitted:** OnGoing
+- **Submitted:** July 20, 2026
 - **Milestone Cost:** 7.5% (ADA 7,500)
 - **Milestone Link:** [Milestone 6](https://milestones.projectcatalyst.io/projects/1400095/milestones/6)
 

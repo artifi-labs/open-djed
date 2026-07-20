@@ -4,7 +4,7 @@ sidebar_position: 3
 
 # Milestone 3 - DJED Analytics Dashboard & Maintenance
 
-- **Submitted:** OnGoing
+- **Submitted:** April 1, 2026 at 2:39 PM UTC
 - **Milestone Cost:** 17.50% (ADA 17,500)
 - **Milestone Link:** [Milestone 3](https://milestones.projectcatalyst.io/projects/1400095/milestones/3)
 
