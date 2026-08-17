@@ -1,14 +1,22 @@
 import "@/app/styles/globals.css"
 import { Poppins } from "next/font/google"
+import { getLocale } from "next-intl/server"
 import { env } from "@/lib/envLoader"
 import {
   APP_NAME,
+  DISCORD_URL,
+  GITHUB_URL,
+  LINKEDIN_URL,
   TEAM_NAME,
-  TWITTER_HANDLE,
   TWITTER_URL,
   WEBSITE_URL,
 } from "@/lib/constants"
-import { buildTitle } from "@/lib/metadata"
+import {
+  buildAlternates,
+  buildOpenGraph,
+  buildTitle,
+  buildTwitter,
+} from "@/lib/metadata"
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -18,7 +26,7 @@ const poppins = Poppins({
   fallback: ["sans-serif"],
 })
 
-export function generateMetadata() {
+export async function generateMetadata() {
   const title = buildTitle()
   const description =
     "Mint and burn DJED, Cardano's overcollateralized stablecoin, with our open-source platform. Transparent alternative to DJED.xyz - accessible 24/7 anywhere."
@@ -50,43 +58,9 @@ export function generateMetadata() {
     authors: [{ name: TEAM_NAME, url: WEBSITE_URL }],
     creator: TEAM_NAME,
     publisher: TEAM_NAME,
-    alternates: {
-      canonical: WEBSITE_URL,
-      languages: {
-        en: WEBSITE_URL,
-        pt: `${WEBSITE_URL}/pt`,
-        es: `${WEBSITE_URL}/es`,
-        fr: `${WEBSITE_URL}/fr`,
-        de: `${WEBSITE_URL}/de`,
-        cn: `${WEBSITE_URL}/cn`,
-        ja: `${WEBSITE_URL}/ja`,
-        "x-default": WEBSITE_URL,
-      },
-    },
-    openGraph: {
-      type: "website",
-      title: title,
-      description: description,
-      url: env.BASE_URL,
-      siteName: APP_NAME,
-      images: [
-        {
-          url: `/logos/opendjed-banner.png`,
-          width: 512,
-          height: 512,
-          alt: `${APP_NAME} Banner`,
-        },
-      ],
-      locale: "en_US",
-    },
-    twitter: {
-      card: "summary",
-      title: title,
-      description: description,
-      images: [`/logos/opendjed-banner.png`],
-      creator: TWITTER_HANDLE,
-      site: TWITTER_URL,
-    },
+    alternates: await buildAlternates(),
+    openGraph: buildOpenGraph({ title, description, url: env.BASE_URL }),
+    twitter: buildTwitter({ title, description }),
     icons: {
       icon: "/logos/opendjed-icon.svg",
       shortcut: "/logos/opendjed-icon.svg",
@@ -94,21 +68,32 @@ export function generateMetadata() {
   }
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const locale = await getLocale()
+  const alternates = await buildAlternates()
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "Open DJED",
+    name: APP_NAME,
     alternateName: "DJED Stablecoin",
-    url: env.BASE_URL,
+    url: alternates.canonical,
+    inLanguage: locale,
+    publisher: {
+      "@type": "Organization",
+      name: TEAM_NAME,
+      url: WEBSITE_URL,
+      sameAs: [TWITTER_URL, GITHUB_URL, LINKEDIN_URL, DISCORD_URL],
+    },
   }
 
   return (
     <html
+      lang={locale}
       suppressHydrationWarning
       className={`${poppins.variable} bg-background-primary`}
     >
