@@ -56,7 +56,9 @@ const Analytics = () => {
       {/* Header */}
       <div className="desktop:flex-row flex flex-col justify-between gap-12">
         <div className="desktop:gap-6 flex flex-col gap-4">
-          <h2 className="font-bold">{t("analytics.analyticsOverview")}</h2>
+          <h1 className="text-h2 font-bold">
+            {t("analytics.analyticsOverview")}
+          </h1>
           <span className="text-secondary text-sm">
             {t("analytics.description")}
           </span>

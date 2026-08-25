@@ -15,7 +15,7 @@ function OrdersWalletSection() {
   return (
     <>
       <div className="flex h-full w-full flex-col gap-12 overflow-y-auto py-8">
-        <h1 className="text-sm font-medium">{t("orders.title")}</h1>
+        <h2 className="text-sm font-medium">{t("orders.title")}</h2>
         <div className="flex h-full w-full flex-col gap-12">
           {orders.data.length > 0 ? (
             <>
