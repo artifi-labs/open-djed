@@ -1,5 +1,5 @@
 import Analytics from "@/components/analytics/Analytics"
-import { buildTitle } from "@/lib/metadata"
+import { buildAlternates, buildTitle } from "@/lib/metadata"
 import type { Metadata } from "next"
 import { getTranslations } from "next-intl/server"
 
@@ -9,6 +9,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: buildTitle(t("analytics.metadata.title")),
     description: t("analytics.metadata.description"),
+    alternates: await buildAlternates("/analytics"),
   }
 }
 

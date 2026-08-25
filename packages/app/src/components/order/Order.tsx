@@ -47,6 +47,11 @@ const Order = () => {
 
   return (
     <div className="desktop:pt-32 desktop:pb-64 mx-auto flex w-full max-w-280 flex-1 flex-col">
+      {/* Header */}
+      <div className="pb-16">
+        <h1 className="text-h2 font-bold">{t("orders.title")}</h1>
+      </div>
+
       {!wallet ? (
         <BaseCard
           border="border-gradient border-color-primary"

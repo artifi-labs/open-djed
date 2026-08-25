@@ -20,7 +20,7 @@ const Dashboard = () => {
       {/* Header */}
       <div className="desktop:flex-row flex flex-col justify-between gap-12">
         <div className="flex items-center gap-6">
-          <h2 className="font-bold">Open DJED</h2>
+          <h1 className="text-h2 font-bold">Open DJED</h1>
           <span className="text-secondary text-xs">Stablecoin</span>
         </div>
         <div className="flex items-center">

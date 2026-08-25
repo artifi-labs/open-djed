@@ -3,11 +3,20 @@ import { Providers } from "@/app/providers"
 import { Navbar } from "@/components/Navbar"
 import Footer from "@/components/Footer"
 import Background from "@/components/Background"
-import { getTranslations } from "next-intl/server"
+import { getLocale, getTranslations } from "next-intl/server"
+import {
+  buildAlternates,
+  buildOpenGraph,
+  buildTitle,
+  buildTwitter,
+  OG_LOCALE_MAP,
+} from "@/lib/metadata"
 
 export async function generateMetadata() {
   const t = await getTranslations()
+  const locale = await getLocale()
 
+  const title = buildTitle()
   const description = t("metadata.layout.description")
 
   const keywords = [
@@ -28,15 +37,19 @@ export async function generateMetadata() {
     t("keywords.software_dev"),
   ]
 
+  const alternates = await buildAlternates()
+
   return {
     description: description,
     keywords: keywords,
-    openGraph: {
-      description: description,
-    },
-    twitter: {
-      description: description,
-    },
+    alternates,
+    openGraph: buildOpenGraph({
+      title,
+      description,
+      url: alternates.canonical,
+      locale: OG_LOCALE_MAP[locale],
+    }),
+    twitter: buildTwitter({ title, description }),
   }
 }
 
