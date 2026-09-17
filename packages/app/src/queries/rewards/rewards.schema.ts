@@ -26,10 +26,12 @@ export const CurrentEpochResponseSchema = z.object({
   currentEpochNumber: z.number().int(),
 })
 
-/** Known values of `distributionStatus`, anything else falls back to raw text. */
+/**
+ * Known values of `distributionStatus`, anything else falls back to raw text.
+ */
 export const KNOWN_DISTRIBUTION_STATUSES = [
   "snapshot_taken",
-  "to_be_distrusted",
+  "to_be_distrusted", // This is a typo in the API, but we must keep it to match the real value.
   "distribution_confirmed",
   "distributed",
 ] as const

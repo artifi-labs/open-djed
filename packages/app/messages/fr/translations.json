@@ -476,39 +476,39 @@
   "rewards": {
     "metadata": {
       "title": "Récompenses",
-      "description": "Delegation rewards for SHEN holders. Check your ADA rewards per epoch."
+      "description": "Récompenses de délégation pour les détenteurs de SHEN. Consultez vos récompenses en ADA par époque."
     },
     "title": "Récompenses",
-    "subtitle": "Delegation rewards for SHEN holders",
-    "noWallet": "Connect your wallet to see your rewards",
-    "noData": "No available data",
-    "pendingRewardsHint": "Reward amounts below {threshold} ₳ are added to your pending rewards",
+    "subtitle": "Récompenses de délégation pour les détenteurs de SHEN",
+    "noWallet": "Connectez votre portefeuille pour voir vos récompenses",
+    "noData": "Aucune donnée disponible",
+    "pendingRewardsHint": "Les montants de récompense inférieurs à {threshold} ₳ sont ajoutés à vos récompenses en attente",
     "stats": {
-      "currentEpoch": "Current Epoch",
-      "totalDistributed": "Total Distributed Rewards",
-      "totalPending": "Total Pending Rewards"
+      "currentEpoch": "Époque Actuelle",
+      "totalDistributed": "Total des Récompenses Distribuées",
+      "totalPending": "Total des Récompenses en Attente"
     },
     "table": {
-      "title": "Rewards by epoch",
-      "rewardTx": "View reward transaction",
-      "airdropTx": "View airdrop transaction",
+      "title": "Récompenses par époque",
+      "rewardTx": "Voir la transaction de récompense",
+      "airdropTx": "Voir la transaction d'airdrop",
       "header": {
-        "epoch": "Epoch",
-        "amount": "Amount",
-        "reward": "Reward",
-        "status": "Status",
+        "epoch": "Époque",
+        "amount": "Montant",
+        "reward": "Récompense",
+        "status": "Statut",
         "date": "Date"
       },
       "details": {
-        "epochStart": "Epoch start",
-        "epochEnd": "Epoch end"
+        "epochStart": "Début de l'époque",
+        "epochEnd": "Fin de l'époque"
       }
     },
     "status": {
-      "snapshot_taken": "Snapshot taken",
-      "to_be_distrusted": "To be distributed",
-      "distribution_confirmed": "Distribution confirmed",
-      "distributed": "Distributed"
+      "snapshot_taken": "Snapshot effectué",
+      "to_be_distrusted": "À distribuer",
+      "distribution_confirmed": "Distribution confirmée",
+      "distributed": "Distribuée"
     }
   }
 }

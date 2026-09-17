@@ -11,7 +11,7 @@ import {
   isKnownDistributionStatus,
   type RewardEpoch,
 } from "@/queries/rewards/rewards.schema"
-import { STATUS_TAG } from "./rewardStatus"
+import { getStatusTagType } from "./rewardStatus"
 import { formatReward } from "./rewardFormat"
 import RewardTxLinks from "./RewardTxLinks"
 import RewardEpochDetails from "./RewardEpochDetails"
@@ -88,7 +88,7 @@ const RewardMobileCard = ({ epoch }: { epoch: RewardEpoch }) => {
         </Line>
         <Line label={t("rewards.table.header.status")}>
           <Tag
-            type={STATUS_TAG[epoch.distributionStatus] ?? "surface"}
+            type={getStatusTagType(epoch.distributionStatus)}
             role="Secondary"
             size="small"
             text={statusLabel}

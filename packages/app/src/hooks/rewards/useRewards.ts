@@ -33,6 +33,7 @@ export const useRewards = () => {
     page,
     setPage,
 
-    isLoading: rewardsQuery.isPending || rewardsQuery.isPlaceholderData,
+    statsLoading: rewardsQuery.isPending || epochQuery.isPending,
+    tableLoading: rewardsQuery.isPending || rewardsQuery.isPlaceholderData,
   }
 }

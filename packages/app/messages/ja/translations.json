@@ -476,39 +476,39 @@
   "rewards": {
     "metadata": {
       "title": "報酬",
-      "description": "Delegation rewards for SHEN holders. Check your ADA rewards per epoch."
+      "description": "SHEN 保有者向けのデリゲーション報酬。エポックごとの ADA 報酬を確認できます。"
     },
     "title": "報酬",
-    "subtitle": "Delegation rewards for SHEN holders",
-    "noWallet": "Connect your wallet to see your rewards",
-    "noData": "No available data",
-    "pendingRewardsHint": "Reward amounts below {threshold} ₳ are added to your pending rewards",
+    "subtitle": "SHEN 保有者向けのデリゲーション報酬",
+    "noWallet": "ウォレットを接続して報酬を確認してください",
+    "noData": "利用可能なデータがありません",
+    "pendingRewardsHint": "{threshold} ₳ 未満の報酬額は保留中の報酬に加算されます",
     "stats": {
-      "currentEpoch": "Current Epoch",
-      "totalDistributed": "Total Distributed Rewards",
-      "totalPending": "Total Pending Rewards"
+      "currentEpoch": "現在のエポック",
+      "totalDistributed": "配布済み報酬合計",
+      "totalPending": "保留中の報酬合計"
     },
     "table": {
-      "title": "Rewards by epoch",
-      "rewardTx": "View reward transaction",
-      "airdropTx": "View airdrop transaction",
+      "title": "エポック別報酬",
+      "rewardTx": "報酬トランザクションを表示",
+      "airdropTx": "エアドロップトランザクションを表示",
       "header": {
-        "epoch": "Epoch",
-        "amount": "Amount",
-        "reward": "Reward",
-        "status": "Status",
-        "date": "Date"
+        "epoch": "エポック",
+        "amount": "金額",
+        "reward": "報酬",
+        "status": "状態",
+        "date": "日付"
       },
       "details": {
-        "epochStart": "Epoch start",
-        "epochEnd": "Epoch end"
+        "epochStart": "エポック開始",
+        "epochEnd": "エポック終了"
       }
     },
     "status": {
-      "snapshot_taken": "Snapshot taken",
-      "to_be_distrusted": "To be distributed",
-      "distribution_confirmed": "Distribution confirmed",
-      "distributed": "Distributed"
+      "snapshot_taken": "スナップショット取得済み",
+      "to_be_distrusted": "配布予定",
+      "distribution_confirmed": "配布確認済み",
+      "distributed": "配布済み"
     }
   }
 }

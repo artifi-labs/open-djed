@@ -17,7 +17,7 @@ import RewardRow, { type RewardRowData } from "./RewardRow"
 import RewardMobileCard from "./RewardMobileCard"
 import RewardTxLinks from "./RewardTxLinks"
 import RewardEpochDetails from "./RewardEpochDetails"
-import { STATUS_TAG } from "./rewardStatus"
+import { getStatusTagType } from "./rewardStatus"
 import { formatReward } from "./rewardFormat"
 
 type Props = {
@@ -111,7 +111,7 @@ const RewardsTable = ({
             content: (
               <div className="px-16 py-12">
                 <Tag
-                  type={STATUS_TAG[e.distributionStatus] ?? "surface"}
+                  type={getStatusTagType(e.distributionStatus)}
                   role="Secondary"
                   size="small"
                   text={statusLabel}
@@ -159,7 +159,7 @@ const RewardsTable = ({
           : Array.from({ length: COLUMN_COUNT }).map(() => ({
               content: (
                 <div className="px-16 py-12">
-                  <Skeleton width="w-full" height="h-[18px]" />
+                  <Skeleton width="w-full" height="h-[26px]" />
                 </div>
               ),
             })),

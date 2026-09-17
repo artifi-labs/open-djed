@@ -476,39 +476,39 @@
   "rewards": {
     "metadata": {
       "title": "Recompensas",
-      "description": "Delegation rewards for SHEN holders. Check your ADA rewards per epoch."
+      "description": "Recompensas de delegación para holders de SHEN. Consulta tus recompensas en ADA por época."
     },
     "title": "Recompensas",
-    "subtitle": "Delegation rewards for SHEN holders",
-    "noWallet": "Connect your wallet to see your rewards",
-    "noData": "No available data",
-    "pendingRewardsHint": "Reward amounts below {threshold} ₳ are added to your pending rewards",
+    "subtitle": "Recompensas de delegación para holders de SHEN",
+    "noWallet": "Conecta tu wallet para ver tus recompensas",
+    "noData": "No hay datos disponibles",
+    "pendingRewardsHint": "Los importes de recompensa inferiores a {threshold} ₳ se añaden a tus recompensas pendientes",
     "stats": {
-      "currentEpoch": "Current Epoch",
-      "totalDistributed": "Total Distributed Rewards",
-      "totalPending": "Total Pending Rewards"
+      "currentEpoch": "Época Actual",
+      "totalDistributed": "Total de Recompensas Distribuidas",
+      "totalPending": "Total de Recompensas Pendientes"
     },
     "table": {
-      "title": "Rewards by epoch",
-      "rewardTx": "View reward transaction",
-      "airdropTx": "View airdrop transaction",
+      "title": "Recompensas por época",
+      "rewardTx": "Ver transacción de recompensa",
+      "airdropTx": "Ver transacción de airdrop",
       "header": {
-        "epoch": "Epoch",
-        "amount": "Amount",
-        "reward": "Reward",
-        "status": "Status",
-        "date": "Date"
+        "epoch": "Época",
+        "amount": "Importe",
+        "reward": "Recompensa",
+        "status": "Estado",
+        "date": "Fecha"
       },
       "details": {
-        "epochStart": "Epoch start",
-        "epochEnd": "Epoch end"
+        "epochStart": "Inicio de época",
+        "epochEnd": "Fin de época"
       }
     },
     "status": {
-      "snapshot_taken": "Snapshot taken",
-      "to_be_distrusted": "To be distributed",
-      "distribution_confirmed": "Distribution confirmed",
-      "distributed": "Distributed"
+      "snapshot_taken": "Snapshot realizado",
+      "to_be_distrusted": "Por distribuir",
+      "distribution_confirmed": "Distribución confirmada",
+      "distributed": "Distribuida"
     }
   }
 }

@@ -23,7 +23,8 @@ const Rewards = () => {
     totalPages,
     page,
     setPage,
-    isLoading,
+    statsLoading,
+    tableLoading,
   } = useRewards()
 
   return (
@@ -55,10 +56,11 @@ const Rewards = () => {
               currentEpoch={currentEpoch}
               totalDistributed={totalDistributed}
               totalPending={totalPending}
+              loading={statsLoading}
             />
             <RewardsTable
               epochs={epochs}
-              loading={isLoading}
+              loading={tableLoading}
               totalCount={totalCount}
               totalPages={totalPages}
               currentPage={page}
