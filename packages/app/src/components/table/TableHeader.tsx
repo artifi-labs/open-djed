@@ -7,6 +7,7 @@ interface TableHeaderProps {
   column: React.ReactNode
   columnKey: string
   size?: TableHeaderSize
+  align?: "left" | "right"
   onSort?: (columnKey: string) => void
   sortDirection?: "asc" | "desc" | "none"
   sortable?: boolean
@@ -17,6 +18,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
   column,
   columnKey,
   size = "full",
+  align = "left",
   onSort,
   sortDirection = "none",
   sortable = false,
@@ -56,7 +58,8 @@ const TableHeader: React.FC<TableHeaderProps> = ({
     <th
       scope="col"
       className={clsx(
-        "desktop:text-tertiary desktop:text-xxs text-md dektop:font-normal px-16 py-12 text-left font-medium",
+        "desktop:text-tertiary desktop:text-xxs text-md dektop:font-normal px-16 py-12 font-medium",
+        align === "right" ? "text-right" : "text-left",
         columnWidths[size],
         {
           "cursor-pointer": isSortable,
@@ -65,7 +68,12 @@ const TableHeader: React.FC<TableHeaderProps> = ({
       onClick={handleClick}
       aria-sort={isSortable ? ariaSortValue : "none"}
     >
-      <div className={"flex items-center justify-between gap-1"}>
+      <div
+        className={clsx(
+          "flex items-center gap-1",
+          align === "right" ? "justify-end" : "justify-between",
+        )}
+      >
         <div className="flex items-center gap-1">
           <span>{column}</span>
           {iconName && (

@@ -21,6 +21,7 @@ import Error from "@icons/Error.svg"
 import Export from "@icons/Export.svg"
 import External from "@icons/External.svg"
 import Ellipse from "@icons/Ellipse.svg"
+import ElipsisVertical from "@icons/elipsis-vertical.svg"
 import Github from "@icons/Github.svg"
 import Group from "@icons/Group.svg"
 import Hide from "@icons/Hide.svg"
@@ -71,6 +72,7 @@ export const icons = {
   Export: Export,
   External: External,
   Ellipse: Ellipse,
+  ElipsisVertical: ElipsisVertical,
   Github: Github,
   Group: Group,
   Hide: Hide,

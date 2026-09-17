@@ -3,7 +3,7 @@
 import * as React from "react"
 import clsx from "clsx"
 import ButtonIcon from "@/components/ButtonIcon"
-import { isSelectingText } from "./rowToggle"
+import { isSelectingText } from "@/components/rowToggle"
 
 export type RewardRowData = {
   key: string

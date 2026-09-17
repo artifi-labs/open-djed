@@ -8,6 +8,7 @@ export interface HeaderItem {
   column: React.ReactNode
   columnKey: string
   size?: TableHeaderSize
+  align?: "left" | "right"
   onSort?: (columnKey: string) => void
   sortDirection?: "asc" | "desc" | "none"
   sortable?: boolean
@@ -94,6 +95,7 @@ function Table<T>({
                     column={header.column}
                     columnKey={header.columnKey}
                     size={header.size}
+                    align={header.align}
                     onSort={header.onSort}
                     sortDirection={header.sortDirection}
                     sortable={header.sortable}

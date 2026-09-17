@@ -15,18 +15,20 @@ import { STATUS_TAG } from "./rewardStatus"
 import { formatReward } from "./rewardFormat"
 import RewardTxLinks from "./RewardTxLinks"
 import RewardEpochDetails from "./RewardEpochDetails"
-import { isSelectingText } from "./rowToggle"
+import { isSelectingText } from "@/components/rowToggle"
 
 const Line = ({
   label,
   children,
+  valueClassName,
 }: {
   label: string
   children: React.ReactNode
+  valueClassName?: string
 }) => (
   <div className="flex w-full flex-row items-center justify-between">
     <span className="text-tertiary text-xxs">{label}</span>
-    <span className="text-xs">{children}</span>
+    <span className={clsx("text-xs", valueClassName)}>{children}</span>
   </div>
 )
 
@@ -69,10 +71,16 @@ const RewardMobileCard = ({ epoch }: { epoch: RewardEpoch }) => {
       </div>
 
       <div className="flex w-full flex-col gap-8">
-        <Line label={t("rewards.table.header.amount")}>
+        <Line
+          label={t("rewards.table.header.amount")}
+          valueClassName="tabular-nums"
+        >
           {formatNumber(epoch.shenAmount)} SHEN
         </Line>
-        <Line label={t("rewards.table.header.reward")}>
+        <Line
+          label={t("rewards.table.header.reward")}
+          valueClassName="tabular-nums"
+        >
           {formatReward(epoch.rewardAmount, epoch.distributionStatus)}
         </Line>
         <Line label={t("rewards.table.header.date")}>

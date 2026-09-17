@@ -30,8 +30,14 @@ type Props = {
   rowsPerPage: number
 }
 
-const HEADER_KEYS = ["epoch", "amount", "reward", "status", "date"] as const
-const COLUMN_COUNT = HEADER_KEYS.length + 1 // + the actions column
+const HEADERS = [
+  { key: "epoch", align: undefined },
+  { key: "amount", align: "right" },
+  { key: "reward", align: "right" },
+  { key: "status", align: undefined },
+  { key: "date", align: undefined },
+] as const
+const COLUMN_COUNT = HEADERS.length + 1 // + the actions column
 
 const RewardsTable = ({
   epochs,
@@ -56,10 +62,11 @@ const RewardsTable = ({
       ]
     }
     return [
-      ...HEADER_KEYS.map((key) => ({
+      ...HEADERS.map(({ key, align }) => ({
         column: t(`rewards.table.header.${key}`),
         columnKey: key,
         size: "full" as const,
+        align,
       })),
       { column: undefined, columnKey: "actions", size: "small" as const },
     ]
@@ -81,17 +88,21 @@ const RewardsTable = ({
         key: String(e.epochNumber),
         details: <RewardEpochDetails epoch={e} />,
         columns: [
-          { content: <div className="px-16 py-12">{e.epochNumber}</div> },
           {
             content: (
-              <div className="px-16 py-12 text-nowrap">
+              <div className="px-16 py-12 tabular-nums">{e.epochNumber}</div>
+            ),
+          },
+          {
+            content: (
+              <div className="px-16 py-12 text-right text-nowrap tabular-nums">
                 {formatNumber(e.shenAmount)} SHEN
               </div>
             ),
           },
           {
             content: (
-              <div className="px-16 py-12 text-nowrap">
+              <div className="px-16 py-12 text-right text-nowrap tabular-nums">
                 {formatReward(e.rewardAmount, e.distributionStatus)}
               </div>
             ),
