@@ -422,6 +422,9 @@
     "orders": {
       "title": "Ordres"
     },
+    "rewards": {
+      "title": "Récompenses"
+    },
     "wallet": {
       "connect": "Connecter le Portefeuille",
       "loading": "Chargement du Portefeuille"
@@ -468,6 +471,44 @@
       "button": {
         "text": "Retour à l'Accueil"
       }
+    }
+  },
+  "rewards": {
+    "metadata": {
+      "title": "Récompenses",
+      "description": "Récompenses de délégation pour les détenteurs de SHEN. Consultez vos récompenses en ADA par époque."
+    },
+    "title": "Récompenses",
+    "subtitle": "Récompenses de délégation pour les détenteurs de SHEN",
+    "noWallet": "Connectez votre portefeuille pour voir vos récompenses",
+    "noData": "Aucune donnée disponible",
+    "pendingRewardsHint": "Les montants de récompense inférieurs à {threshold} ₳ sont ajoutés à vos récompenses en attente",
+    "stats": {
+      "currentEpoch": "Époque Actuelle",
+      "totalDistributed": "Total des Récompenses Distribuées",
+      "totalPending": "Total des Récompenses en Attente"
+    },
+    "table": {
+      "title": "Récompenses par époque",
+      "rewardTx": "Voir la transaction de récompense",
+      "airdropTx": "Voir la transaction d'airdrop",
+      "header": {
+        "epoch": "Époque",
+        "amount": "Montant",
+        "reward": "Récompense",
+        "status": "Statut",
+        "date": "Date"
+      },
+      "details": {
+        "epochStart": "Début de l'époque",
+        "epochEnd": "Fin de l'époque"
+      }
+    },
+    "status": {
+      "snapshot_taken": "Snapshot effectué",
+      "to_be_distrusted": "À distribuer",
+      "distribution_confirmed": "Distribution confirmée",
+      "distributed": "Distribuée"
     }
   }
 }

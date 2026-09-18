@@ -422,6 +422,9 @@
     "orders": {
       "title": "Orders"
     },
+    "rewards": {
+      "title": "Rewards"
+    },
     "wallet": {
       "connect": "Connect Wallet",
       "loading": "Loading Wallet"
@@ -468,6 +471,44 @@
       "button": {
         "text": "Return Home"
       }
+    }
+  },
+  "rewards": {
+    "metadata": {
+      "title": "Rewards",
+      "description": "Delegation rewards for SHEN holders. Check your ADA rewards per epoch."
+    },
+    "title": "Rewards",
+    "subtitle": "Delegation rewards for SHEN holders",
+    "noWallet": "Connect your wallet to see your rewards",
+    "noData": "No available data",
+    "pendingRewardsHint": "Reward amounts below {threshold} ₳ are added to your pending rewards",
+    "stats": {
+      "currentEpoch": "Current Epoch",
+      "totalDistributed": "Total Distributed Rewards",
+      "totalPending": "Total Pending Rewards"
+    },
+    "table": {
+      "title": "Rewards by epoch",
+      "rewardTx": "View reward transaction",
+      "airdropTx": "View airdrop transaction",
+      "header": {
+        "epoch": "Epoch",
+        "amount": "Amount",
+        "reward": "Reward",
+        "status": "Status",
+        "date": "Date"
+      },
+      "details": {
+        "epochStart": "Epoch start",
+        "epochEnd": "Epoch end"
+      }
+    },
+    "status": {
+      "snapshot_taken": "Snapshot taken",
+      "to_be_distrusted": "To be distributed",
+      "distribution_confirmed": "Distribution confirmed",
+      "distributed": "Distributed"
     }
   }
 }

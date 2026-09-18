@@ -15,6 +15,7 @@ import Logo from "./Logo"
 import { useViewport } from "@/hooks/useViewport"
 import Icon from "./icons/Icon"
 import { env } from "@/lib/envLoader"
+import { REWARDS_ENABLED } from "@/lib/constants"
 import { useTranslations } from "next-intl"
 import { Link, usePathname } from "@/i18n/navigation"
 
@@ -134,6 +135,9 @@ export const Navbar = () => {
     { label: t("navbar.analytics.title"), href: "/analytics" },
     { label: t("navbar.simulator.title"), href: "/simulator" },
     { label: t("navbar.orders.title"), href: "/orders" },
+    ...(REWARDS_ENABLED
+      ? [{ label: t("navbar.rewards.title"), href: "/rewards" }]
+      : []),
   ]
   const getWalletButtonText = () => {
     if (!wallet) return t("navbar.wallet.connect")

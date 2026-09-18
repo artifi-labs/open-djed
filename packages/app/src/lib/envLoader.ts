@@ -17,6 +17,8 @@ const schema = z.object({
   NETWORK: z.enum(["Preprod", "Mainnet"]),
   CONFIG: z.string().transform((val) => ConfigSchema.parse(JSON.parse(val))),
   POSTHOG_API_KEY: z.string().optional(),
+  // Rewards API base URL.
+  REWARDS_API_URL: z.url().optional(),
 })
 
 /**
@@ -27,6 +29,7 @@ const parsed = schema.parse({
   NETWORK: process.env.NEXT_PUBLIC_NETWORK,
   CONFIG: process.env.NEXT_PUBLIC_CONFIG,
   POSTHOG_API_KEY: process.env.NEXT_PUBLIC_POSTHOG_API_KEY,
+  REWARDS_API_URL: process.env.NEXT_PUBLIC_REWARDS_API_URL,
 })
 
 /**

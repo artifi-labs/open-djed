@@ -11,6 +11,11 @@ export const TWITTER_URL = "https://x.com/artifi_labs"
 export const TWITTER_HANDLE = "@artifi_labs"
 export const DJED_URL = "https://djed.xyz"
 export const OPEN_DJED_DOCS_URL = "https://docs.djed.artifi.finance"
+/** Rewards API base URL */
+export const REWARDS_API_URL = env.REWARDS_API_URL
+export const REWARDS_ENABLED = Boolean(env.REWARDS_API_URL)
+/** Rewards below this ADA amount roll over into the pending balance. */
+export const REWARD_DISTRIBUTION_THRESHOLD_ADA = 2
 export const APP_NAME = "Open Djed"
 export const TEAM_NAME = "Artifi Labs"
 export const CARDANOSCAN_BASE_URL = `https://${env.NETWORK === "Preprod" ? env.NETWORK.toLowerCase() + "." : ""}cardanoscan.io`
