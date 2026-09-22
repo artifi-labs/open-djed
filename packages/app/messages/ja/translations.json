@@ -422,6 +422,9 @@
     "orders": {
       "title": "注文"
     },
+    "rewards": {
+      "title": "報酬"
+    },
     "wallet": {
       "connect": "ウォレットを接続",
       "loading": "ウォレットを読み込み中"
@@ -468,6 +471,44 @@
       "button": {
         "text": "ホームに戻る"
       }
+    }
+  },
+  "rewards": {
+    "metadata": {
+      "title": "報酬",
+      "description": "SHEN 保有者向けのデリゲーション報酬。エポックごとの ADA 報酬を確認できます。"
+    },
+    "title": "報酬",
+    "subtitle": "SHEN 保有者向けのデリゲーション報酬",
+    "noWallet": "ウォレットを接続して報酬を確認してください",
+    "noData": "利用可能なデータがありません",
+    "pendingRewardsHint": "{threshold} ₳ 未満の報酬額は保留中の報酬に加算されます",
+    "stats": {
+      "currentEpoch": "現在のエポック",
+      "totalDistributed": "配布済み報酬合計",
+      "totalPending": "保留中の報酬合計"
+    },
+    "table": {
+      "title": "エポック別報酬",
+      "rewardTx": "報酬トランザクションを表示",
+      "airdropTx": "エアドロップトランザクションを表示",
+      "header": {
+        "epoch": "エポック",
+        "amount": "金額",
+        "reward": "報酬",
+        "status": "状態",
+        "date": "日付"
+      },
+      "details": {
+        "epochStart": "エポック開始",
+        "epochEnd": "エポック終了"
+      }
+    },
+    "status": {
+      "snapshot_taken": "スナップショット取得済み",
+      "to_be_distrusted": "配布予定",
+      "distribution_confirmed": "配布確認済み",
+      "distributed": "配布済み"
     }
   }
 }

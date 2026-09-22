@@ -4,7 +4,5 @@ type SkeletonProps = {
 }
 
 export const Skeleton = ({ width = "w-20", height = "h-5" }: SkeletonProps) => (
-  <div
-    className={`bg-background-primary animate-pulse rounded ${width} ${height}`}
-  />
+  <div className={`bg-skeleton animate-pulse rounded ${width} ${height}`} />
 )

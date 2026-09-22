@@ -5,6 +5,7 @@ import clsx from "clsx"
 import ButtonIcon from "./ButtonIcon"
 import { useViewport } from "@/hooks/useViewport"
 import { useTranslations } from "next-intl"
+import { isSelectingText } from "@/components/rowToggle"
 import type { Order } from "@/queries/orders/orders/orders.schema"
 
 interface TransactionDetailsProps {
@@ -30,11 +31,18 @@ const TransactionDetails: React.FC<TransactionDetailsProps> = ({
   const isCreated = hasStatus && raw.status === "Created"
   const isCompleted = hasStatus && raw.status === "Completed"
   const isRejected = hasStatus && raw.status === "Rejected"
+  const expandable = hasStatus
+
+  const handleRowClick = () => {
+    if (isSelectingText()) return
+    setIsOpen((v) => !v)
+  }
 
   return (
     <>
       {/* Main Row */}
       <tr
+        onClick={expandable ? handleRowClick : undefined}
         className={clsx(
           "text-primary text-xs",
           isOpen

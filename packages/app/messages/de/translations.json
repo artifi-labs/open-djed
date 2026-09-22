@@ -422,6 +422,9 @@
     "orders": {
       "title": "Aufträge"
     },
+    "rewards": {
+      "title": "Belohnungen"
+    },
     "wallet": {
       "connect": "Wallet verbinden",
       "loading": "Wallet wird geladen"
@@ -468,6 +471,44 @@
       "button": {
         "text": "Zurück zur Startseite"
       }
+    }
+  },
+  "rewards": {
+    "metadata": {
+      "title": "Belohnungen",
+      "description": "Delegationsbelohnungen für SHEN-Inhaber. Prüfe deine ADA-Belohnungen pro Epoche."
+    },
+    "title": "Belohnungen",
+    "subtitle": "Delegationsbelohnungen für SHEN-Inhaber",
+    "noWallet": "Verbinde deine Wallet, um deine Belohnungen zu sehen",
+    "noData": "Keine Daten verfügbar",
+    "pendingRewardsHint": "Belohnungsbeträge unter {threshold} ₳ werden zu deinen ausstehenden Belohnungen hinzugefügt",
+    "stats": {
+      "currentEpoch": "Aktuelle Epoche",
+      "totalDistributed": "Gesamt ausgeschüttete Belohnungen",
+      "totalPending": "Gesamt ausstehende Belohnungen"
+    },
+    "table": {
+      "title": "Belohnungen nach Epoche",
+      "rewardTx": "Belohnungstransaktion anzeigen",
+      "airdropTx": "Airdrop-Transaktion anzeigen",
+      "header": {
+        "epoch": "Epoche",
+        "amount": "Betrag",
+        "reward": "Belohnung",
+        "status": "Status",
+        "date": "Datum"
+      },
+      "details": {
+        "epochStart": "Epochenbeginn",
+        "epochEnd": "Epochenende"
+      }
+    },
+    "status": {
+      "snapshot_taken": "Snapshot erstellt",
+      "to_be_distrusted": "Wird ausgeschüttet",
+      "distribution_confirmed": "Ausschüttung bestätigt",
+      "distributed": "Ausgeschüttet"
     }
   }
 }

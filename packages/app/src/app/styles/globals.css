@@ -223,6 +223,7 @@
 
   --color-skrim: var(--color-neutral-925);
   --color-link: var(--color-supportive-2-700);
+  --color-skeleton: rgba(255, 255, 255, 0.1);
 
   --color-error-text: var(--color-red-300);
   --color-error-primary: var(--color-red-700);

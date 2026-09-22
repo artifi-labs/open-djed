@@ -422,6 +422,9 @@
     "orders": {
       "title": "订单"
     },
+    "rewards": {
+      "title": "奖励"
+    },
     "wallet": {
       "connect": "连接钱包",
       "loading": "正在加载钱包"
@@ -468,6 +471,44 @@
       "button": {
         "text": "返回首页"
       }
+    }
+  },
+  "rewards": {
+    "metadata": {
+      "title": "奖励",
+      "description": "SHEN 持有者的委托奖励。查看您每个纪元的 ADA 奖励。"
+    },
+    "title": "奖励",
+    "subtitle": "SHEN 持有者的委托奖励",
+    "noWallet": "连接您的钱包以查看奖励",
+    "noData": "暂无数据",
+    "pendingRewardsHint": "低于 {threshold} ₳ 的奖励金额将计入待发放奖励",
+    "stats": {
+      "currentEpoch": "当前纪元",
+      "totalDistributed": "已发放奖励总额",
+      "totalPending": "待发放奖励总额"
+    },
+    "table": {
+      "title": "按纪元划分的奖励",
+      "rewardTx": "查看奖励交易",
+      "airdropTx": "查看空投交易",
+      "header": {
+        "epoch": "纪元",
+        "amount": "金额",
+        "reward": "奖励",
+        "status": "状态",
+        "date": "日期"
+      },
+      "details": {
+        "epochStart": "纪元开始",
+        "epochEnd": "纪元结束"
+      }
+    },
+    "status": {
+      "snapshot_taken": "已拍摄快照",
+      "to_be_distrusted": "待发放",
+      "distribution_confirmed": "发放已确认",
+      "distributed": "已发放"
     }
   }
 }

@@ -1,10 +1,14 @@
 import { languages } from "@/i18n/settings"
+import { REWARDS_ENABLED } from "@/lib/constants"
 import { env } from "@/lib/envLoader"
 import { type MetadataRoute } from "next"
 
 const routes = [
   { path: "", priority: 1.0, changeFrequency: "weekly" as const },
   { path: "/orders", priority: 0.8, changeFrequency: "weekly" as const },
+  ...(REWARDS_ENABLED
+    ? [{ path: "/rewards", priority: 0.8, changeFrequency: "weekly" as const }]
+    : []),
   { path: "/simulator", priority: 0.8, changeFrequency: "weekly" as const },
   { path: "/analytics", priority: 0.8, changeFrequency: "weekly" as const },
   { path: "/privacy", priority: 0.2, changeFrequency: "monthly" as const },

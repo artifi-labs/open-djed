@@ -89,7 +89,7 @@ const renderValueDisplay = (
   const adaValue = formatAda(value)
   if (showAda) {
     return (
-      <div className="flex items-center gap-2 px-16 py-12">
+      <div className="flex items-center justify-end gap-2 px-16 py-12 tabular-nums">
         <span>{adaValue}</span>
         <span>ADA</span>
       </div>
@@ -97,7 +97,7 @@ const renderValueDisplay = (
   }
   /* For BOTH tokens showing DJED + SHEN */
   return (
-    <div className="flex items-center gap-8 px-16 py-12">
+    <div className="flex items-center justify-end gap-8 px-16 py-12 tabular-nums">
       <div className="flex items-center gap-2">
         <span>{adaValue}</span>
         <span>DJED</span>
@@ -178,7 +178,7 @@ const ValueCell = ({
 
   /* Single token */
   return (
-    <div className="flex items-center gap-2 px-16 py-12">
+    <div className="flex items-center justify-end gap-2 px-16 py-12 tabular-nums">
       <span>{formatAda(value)}</span>
       <span>{showAda ? "ADA" : token}</span>
     </div>
@@ -234,7 +234,10 @@ const ExternalCell = ({
   }, [showSnackbar])
 
   return (
-    <div className="flex justify-end gap-8">
+    <div
+      className="flex justify-end gap-8"
+      onClick={(e) => e.stopPropagation()}
+    >
       {showCancel && (
         <>
           <Button
@@ -327,7 +330,7 @@ const MobileCell = ({ order }: { order: Order }) => {
             <span className="text-tertiary text-xxs">
               {capitalize(t("orders.table.header.paid"))}
             </span>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 tabular-nums">
               <span>{formatAda(order.paid)}</span>
               <span>{showAdaPaid ? "ADA" : order.token}</span>
             </div>
@@ -336,7 +339,7 @@ const MobileCell = ({ order }: { order: Order }) => {
             <span className="text-tertiary text-xxs">
               {capitalize(t("orders.table.header.received"))}
             </span>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 tabular-nums">
               <span>{formatAda(order.received)}</span>
               <span>{showAdaReceived ? "ADA" : order.token}</span>
             </div>
@@ -352,14 +355,28 @@ const MobileCell = ({ order }: { order: Order }) => {
               text={t(statusConfig.i18nKey)}
             />
           </div>
-          {showCancel ? (
-            <div className="grid grid-cols-2 gap-8">
-              <Button
-                text={t("common.cancel.text")}
-                variant="secondary"
-                size="small"
-                onClick={() => setIsDialogOpen(true)}
-              />
+          <div onClick={(e) => e.stopPropagation()}>
+            {showCancel ? (
+              <div className="grid grid-cols-2 gap-8">
+                <Button
+                  text={t("common.cancel.text")}
+                  variant="secondary"
+                  size="small"
+                  onClick={() => setIsDialogOpen(true)}
+                />
+                <Link
+                  href={`${CARDANOSCAN_BASE_URL}/transaction/${order.tx_hash}`}
+                  target="_blank"
+                >
+                  <Button
+                    text={t("orders.viewTransaction")}
+                    variant="secondary"
+                    size="small"
+                    className="w-full"
+                  />
+                </Link>
+              </div>
+            ) : (
               <Link
                 href={`${CARDANOSCAN_BASE_URL}/transaction/${order.tx_hash}`}
                 target="_blank"
@@ -371,20 +388,8 @@ const MobileCell = ({ order }: { order: Order }) => {
                   className="w-full"
                 />
               </Link>
-            </div>
-          ) : (
-            <Link
-              href={`${CARDANOSCAN_BASE_URL}/transaction/${order.tx_hash}`}
-              target="_blank"
-            >
-              <Button
-                text={t("orders.viewTransaction")}
-                variant="secondary"
-                size="small"
-                className="w-full"
-              />
-            </Link>
-          )}
+            )}
+          </div>
         </div>
       </div>
       {isDialogOpen && (
@@ -505,11 +510,13 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({
       column: t("orders.table.header.paid"),
       columnKey: "paid",
       size: "medium",
+      align: "right",
     },
     {
       column: t("orders.table.header.received"),
       columnKey: "received",
       size: "medium",
+      align: "right",
     },
     {
       column: t("orders.table.header.status"),
