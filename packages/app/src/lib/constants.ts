@@ -40,4 +40,5 @@ export const ALLOWED_WALLETS = [
   "begin",
   "gerowallet",
   "vespr",
+  "1am",
 ]
