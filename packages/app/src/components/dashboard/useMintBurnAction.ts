@@ -11,6 +11,7 @@ import { getWalletData } from "@/lib/getWalletData"
 import { useApiClient } from "@/context/ApiClientContext"
 import { signAndSubmitTx } from "@/lib/signAndSubmitTx"
 import { useToast } from "@/context/ToastContext"
+import { captureEvent } from "@/lib/analytics"
 import { registryByNetwork } from "@open-djed/registry"
 import { type InputStatus } from "../input-fields/TransactionInput"
 import { roundToDecimals } from "@/utils"
@@ -510,6 +511,8 @@ export function useMintBurnAction(defaultActionType: ActionType) {
     const tokenAmount = tokenAmountArray[1]
     const tokenAmountNumber = parseFloat(tokenAmountArray[1])
 
+    const eventPrefix = actionType.toLowerCase()
+
     if (wallet && tokenAmountNumber > maxAmount) {
       setInputStatus("error")
       showToast({
@@ -530,6 +533,13 @@ export function useMintBurnAction(defaultActionType: ActionType) {
     const { Transaction, TransactionWitnessSet } =
       await import("@dcspark/cardano-multiplatform-lib-browser")
 
+    captureEvent(`${eventPrefix}_submitted`, {
+      token,
+      amount: tokenAmountNumber,
+      pay: payValues,
+      receive: receiveValues,
+    })
+
     try {
       const { address, utxos } = await getWalletData(wallet)
 
@@ -546,14 +556,36 @@ export function useMintBurnAction(defaultActionType: ActionType) {
 
       if (!response.ok) {
         const errorData = await response.json()
+        captureEvent(`${eventPrefix}_failed`, {
+          token,
+          amount: tokenAmountNumber,
+          pay: payValues,
+          receive: receiveValues,
+          reason: "app_error",
+          error: errorData.error,
+          status: response.status,
+          message: errorData.message,
+        })
         throw new AppError(errorData.message)
       }
 
       const txCbor = await response.text()
-      await signAndSubmitTx(wallet, txCbor, Transaction, TransactionWitnessSet)
+      const txHash = await signAndSubmitTx(
+        wallet,
+        txCbor,
+        Transaction,
+        TransactionWitnessSet,
+      )
       showToast({
         message: `Transaction submitted succesfully!`,
         type: "success",
+      })
+      captureEvent(`${eventPrefix}_succeeded`, {
+        token,
+        amount: tokenAmountNumber,
+        pay: payValues,
+        receive: receiveValues,
+        txHash,
       })
     } catch (err) {
       console.error("Action failed:", err)
@@ -568,6 +600,18 @@ export function useMintBurnAction(defaultActionType: ActionType) {
       showToast({
         message: `Transaction failed. Please try again.`,
         type: "error",
+      })
+      captureEvent(`${eventPrefix}_failed`, {
+        token,
+        amount: tokenAmountNumber,
+        pay: payValues,
+        receive: receiveValues,
+        reason: "wallet_error",
+        code:
+          typeof err === "object" && err !== null && "code" in err
+            ? err.code
+            : undefined,
+        message: err instanceof Error ? err.message : String(err),
       })
     }
   }, [
