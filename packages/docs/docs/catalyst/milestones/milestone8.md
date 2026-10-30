@@ -4,7 +4,7 @@ sidebar_position: 8
 
 # Milestone 8 - Project Close-out, Contingency & Volatility Buffer & Maintenance & Support for Month 12
 
-- **Submitted:** OnGoing
+- **Submitted:** October 30, 2026 at 9:55 PM UTC
 - **Milestone Cost:** 30% (ADA 30,000)
 - **Milestone Link:** [Milestone 8](https://milestones.projectcatalyst.io/projects/1400095/milestones/8)
 
