@@ -39,7 +39,7 @@ To consider this milestone completed:
 Completion is evidenced by:
 
 - [Final close-out report](/catalyst/milestones/close-out-report.pdf)
-- [Final close-out video]()
+- [Final close-out video](https://youtu.be/QE1MAK0BkQ4)
 - Link to a public up-time monitoring dashboard (https://status.artifi.finance/)
 - Link to the GitHub repository (https://github.com/artifi-labs/open-djed) showing bugfix pull requests and resolved issues
 - Screenshots or links to public conversations on public channels (Discord/GitHub)
