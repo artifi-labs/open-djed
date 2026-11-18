@@ -9,6 +9,7 @@ import ReserveDetails from "@/components/dashboard/ReserveDetails"
 import Modal from "@/components/modals/Modal"
 import OpenDjedContent from "@/components/OpenDjedContent"
 import { useTranslations } from "next-intl"
+import Snackbar from "@/components/Snackbar"
 
 const Dashboard = () => {
   const t = useTranslations()
@@ -44,6 +45,18 @@ const Dashboard = () => {
       >
         <OpenDjedContent />
       </Modal>
+
+      {/* Djed winding down warning */}
+      <div className="desktop:pt-32 pt-16">
+        <Snackbar
+          text={t("dashboard.windingDownWarning")}
+          type="attention"
+          leadingIcon={"Information"}
+          closeIcon={false}
+          action={false}
+          full={true}
+        />
+      </div>
 
       {/* Content */}
       <div className="desktop:grid-cols-2 desktop:gap-24 desktop:pt-32 grid grid-cols-1 gap-16 pt-16">

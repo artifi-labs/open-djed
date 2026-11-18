@@ -210,7 +210,8 @@
     "totalCost": "Gesamtkosten",
     "refundableDeposit": "Rückerstattbare Kaution",
     "price": "Preis",
-    "burnFee": "Verbrennungsgebühr"
+    "burnFee": "Verbrennungsgebühr",
+    "windingDownWarning": "Das offizielle DJED-Protokoll wird am 31. Dezember 2027 eingestellt. Open DJED kann nicht in der bisherigen Form weiterbetrieben werden, aber Analysen und schreibgeschützte Funktionen bleiben weiterhin nutzbar."
   },
   "privacyPolicy": {
     "metadata": {
@@ -509,6 +510,21 @@
       "to_be_distrusted": "Wird ausgeschüttet",
       "distribution_confirmed": "Ausschüttung bestätigt",
       "distributed": "Ausgeschüttet"
+    }
+  },
+  "windingDown": {
+    "modal": {
+      "title": "Das offizielle DJED wird eingestellt",
+      "description": "Der offizielle DJED-Betreiber hat angekündigt, dass das DJED-Protokoll abgewickelt und am 31. Dezember 2027 eingestellt wird. Da Open DJED direkt mit den offiziellen On-Chain-Verträgen interagiert, ist auch Open DJED davon betroffen.",
+      "whatThisMeans": {
+        "title": "Was das für dich bedeutet",
+        "items": {
+          "closingDate": "<strong>Einstellungsdatum:</strong> Das offizielle DJED-Protokoll wird am 31. Dezember 2027 eingestellt.",
+          "openDjedImpact": "<strong>Open DJED ist betroffen:</strong> Open DJED ist auf die offiziellen Verträge angewiesen und kann daher nicht in der bisherigen Form weiterbetrieben werden.",
+          "readOnly": "<strong>Lesezugriff bleibt verfügbar:</strong> Analysen und schreibgeschützte Funktionen bleiben weiterhin nutzbar.",
+          "planAhead": "<strong>Plane voraus:</strong> Überprüfe deine DJED- und SHEN-Positionen vor dem Einstellungsdatum."
+        }
+      }
     }
   }
 }

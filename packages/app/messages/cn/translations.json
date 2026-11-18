@@ -210,7 +210,8 @@
     "totalCost": "总费用",
     "refundableDeposit": "可退还押金",
     "price": "价格",
-    "burnFee": "销毁手续费"
+    "burnFee": "销毁手续费",
+    "windingDownWarning": "官方 DJED 协议将于 2027 年 12 月 31 日关闭。Open DJED 无法按现有方式继续运营，但数据分析和只读功能将继续正常运行。"
   },
   "privacyPolicy": {
     "metadata": {
@@ -509,6 +510,21 @@
       "to_be_distrusted": "待发放",
       "distribution_confirmed": "发放已确认",
       "distributed": "已发放"
+    }
+  },
+  "windingDown": {
+    "modal": {
+      "title": "官方 DJED 即将关闭",
+      "description": "官方 DJED 运营方已宣布 DJED 协议将逐步停止运营，并于 2027 年 12 月 31 日关闭。由于 Open DJED 直接与官方链上合约交互，Open DJED 也将受到影响。",
+      "whatThisMeans": {
+        "title": "这对您意味着什么",
+        "items": {
+          "closingDate": "<strong>关闭日期：</strong>官方 DJED 协议将于 2027 年 12 月 31 日关闭。",
+          "openDjedImpact": "<strong>Open DJED 受到影响：</strong>Open DJED 依赖官方合约，因此无法按现有方式继续运营。",
+          "readOnly": "<strong>只读功能仍可使用：</strong>数据分析和只读功能将继续正常运行。",
+          "planAhead": "<strong>提前规划：</strong>请在关闭日期之前检查您的 DJED 和 SHEN 持仓。"
+        }
+      }
     }
   }
 }

@@ -210,7 +210,8 @@
     "totalCost": "Total Cost",
     "refundableDeposit": "Refundable Deposit",
     "price": "Price",
-    "burnFee": "Burn Fee"
+    "burnFee": "Burn Fee",
+    "windingDownWarning": "The official DJED protocol is closing on 31 December 2027. Open DJED cannot continue operating as it is, but analytics and read-only features will remain functional."
   },
   "privacyPolicy": {
     "metadata": {
@@ -509,6 +510,21 @@
       "to_be_distrusted": "To be distributed",
       "distribution_confirmed": "Distribution confirmed",
       "distributed": "Distributed"
+    }
+  },
+  "windingDown": {
+    "modal": {
+      "title": "Official DJED is closing",
+      "description": "The official DJED operator has announced that the DJED protocol is winding down and will close on 31 December 2027. Because Open DJED interacts directly with the official on-chain contracts, this affects Open DJED too.",
+      "whatThisMeans": {
+        "title": "What this means for you",
+        "items": {
+          "closingDate": "<strong>Closing date:</strong> The official DJED protocol will close on 31 December 2027.",
+          "openDjedImpact": "<strong>Open DJED is affected:</strong> Open DJED depends on the official contracts, so it cannot continue operating as it is.",
+          "readOnly": "<strong>Read-only stays available:</strong> Analytics and read-only features will remain functional.",
+          "planAhead": "<strong>Plan ahead:</strong> Review your DJED and SHEN positions before the closing date."
+        }
+      }
     }
   }
 }

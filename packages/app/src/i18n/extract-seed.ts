@@ -70,5 +70,10 @@ function seed() {
   t("dashboard.whatIsOpenDjed.whyOpenDjed.items.globalAccess")
   t("dashboard.whatIsOpenDjed.whyOpenDjed.items.transparentFees")
 
+  t("windingDown.modal.whatThisMeans.items.closingDate")
+  t("windingDown.modal.whatThisMeans.items.openDjedImpact")
+  t("windingDown.modal.whatThisMeans.items.readOnly")
+  t("windingDown.modal.whatThisMeans.items.planAhead")
+
   t("dashboard.burnFee")
 }

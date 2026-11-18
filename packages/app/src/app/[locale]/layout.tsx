@@ -11,6 +11,7 @@ import {
   buildTwitter,
   OG_LOCALE_MAP,
 } from "@/lib/metadata"
+import WindingDownModal from "@/components/WindingDownModal"
 
 export async function generateMetadata() {
   const t = await getTranslations()
@@ -67,6 +68,7 @@ export default function LocaleLayout({
           {children}
         </main>
         <Footer />
+        <WindingDownModal />
       </Providers>
     </NextIntlClientProvider>
   )
