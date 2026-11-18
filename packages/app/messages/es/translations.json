@@ -211,7 +211,7 @@
     "refundableDeposit": "Depósito Reembolsable",
     "price": "Precio",
     "burnFee": "Tarifa de Quema",
-    "windingDownWarning": "El protocolo DJED oficial cerrará el 31 de diciembre de 2027. Open DJED no puede seguir funcionando tal como está, pero las analíticas y las funciones de solo lectura seguirán funcionando."
+    "windingDownWarning": "El protocolo DJED oficial cerrará el 31 de diciembre de 2026. Open DJED no puede seguir funcionando tal como está, pero las analíticas y las funciones de solo lectura seguirán funcionando."
   },
   "privacyPolicy": {
     "metadata": {
@@ -515,11 +515,11 @@
   "windingDown": {
     "modal": {
       "title": "El DJED oficial va a cerrar",
-      "description": "El operador oficial de DJED ha anunciado que el protocolo DJED se está retirando y cerrará el 31 de diciembre de 2027. Como Open DJED interactúa directamente con los contratos on-chain oficiales, esto también afecta a Open DJED.",
+      "description": "El operador oficial de DJED ha anunciado que el protocolo DJED se está retirando y cerrará el 31 de diciembre de 2026. Como Open DJED interactúa directamente con los contratos on-chain oficiales, esto también afecta a Open DJED.",
       "whatThisMeans": {
         "title": "Qué significa esto para ti",
         "items": {
-          "closingDate": "<strong>Fecha de cierre:</strong> El protocolo DJED oficial cerrará el 31 de diciembre de 2027.",
+          "closingDate": "<strong>Fecha de cierre:</strong> El protocolo DJED oficial cerrará el 31 de diciembre de 2026.",
           "openDjedImpact": "<strong>Open DJED se ve afectado:</strong> Open DJED depende de los contratos oficiales, por lo que no puede seguir funcionando tal como está.",
           "readOnly": "<strong>La consulta sigue disponible:</strong> Las analíticas y las funciones de solo lectura seguirán funcionando.",
           "planAhead": "<strong>Planifica con antelación:</strong> Revisa tus posiciones en DJED y SHEN antes de la fecha de cierre."

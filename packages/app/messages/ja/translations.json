@@ -211,7 +211,7 @@
     "refundableDeposit": "返金可能なデポジット",
     "price": "価格",
     "burnFee": "バーン手数料",
-    "windingDownWarning": "公式DJEDプロトコルは2027年12月31日に終了します。Open DJEDは現在の形で運用を続けることはできませんが、アナリティクスと読み取り専用の機能は引き続きご利用いただけます。"
+    "windingDownWarning": "公式DJEDプロトコルは2026年12月31日に終了します。Open DJEDは現在の形で運用を続けることはできませんが、アナリティクスと読み取り専用の機能は引き続きご利用いただけます。"
   },
   "privacyPolicy": {
     "metadata": {
@@ -515,11 +515,11 @@
   "windingDown": {
     "modal": {
       "title": "公式DJEDは終了します",
-      "description": "公式DJEDの運営者は、DJEDプロトコルを段階的に終了し、2027年12月31日にサービスを終了すると発表しました。Open DJEDは公式のオンチェーンコントラクトと直接やり取りするため、Open DJEDも影響を受けます。",
+      "description": "公式DJEDの運営者は、DJEDプロトコルを段階的に終了し、2026年12月31日にサービスを終了すると発表しました。Open DJEDは公式のオンチェーンコントラクトと直接やり取りするため、Open DJEDも影響を受けます。",
       "whatThisMeans": {
         "title": "ユーザーへの影響",
         "items": {
-          "closingDate": "<strong>終了日：</strong>公式DJEDプロトコルは2027年12月31日に終了します。",
+          "closingDate": "<strong>終了日：</strong>公式DJEDプロトコルは2026年12月31日に終了します。",
           "openDjedImpact": "<strong>Open DJEDへの影響：</strong>Open DJEDは公式コントラクトに依存しているため、現在の形で運用を続けることはできません。",
           "readOnly": "<strong>閲覧機能は引き続き利用可能：</strong>アナリティクスと読み取り専用の機能は引き続きご利用いただけます。",
           "planAhead": "<strong>早めの準備を：</strong>終了日までにDJEDとSHENのポジションをご確認ください。"
